@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release
+      - develop
   pull_request:
 jobs:
   sonarcloud:
