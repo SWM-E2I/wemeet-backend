@@ -1,5 +1,6 @@
 package com.e2i.wemeet.controller;
 
+import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
@@ -11,6 +12,8 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
 @Slf4j
 @RestControllerAdvice
@@ -59,6 +62,16 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.warn(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity.internalServerError()
+                .body(new ErrorResponse(code, message));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
+        final int code = UNEXPECTED_INTERNAL.getCode();
+        final String message = messageSourceAccessor.getMessage(UNEXPECTED_INTERNAL.getMessageKey());
+
+        log.error(ERROR_LOG_FORMAT, e.getClass().getName(), message);
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(code, message));
     }

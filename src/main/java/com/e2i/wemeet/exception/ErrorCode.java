@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    INVALID_SMS_CREDENTIAL(40100, "invalid.sms.credential")
+    INVALID_SMS_CREDENTIAL(40100, "invalid.sms.credential"),
 
+    UNEXPECTED_INTERNAL(50000, "unexpected.internal")
     ;
 
     private final int code;
