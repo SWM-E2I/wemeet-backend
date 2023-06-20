@@ -1,4 +1,4 @@
-package com.e2i.wemeet.global.config;
+package com.e2i.wemeet.config.h2;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
