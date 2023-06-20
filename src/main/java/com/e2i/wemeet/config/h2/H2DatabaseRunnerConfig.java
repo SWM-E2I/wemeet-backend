@@ -25,7 +25,7 @@ public class H2DatabaseRunnerConfig {
 
     @Bean
     @Profile("default")
-    ApplicationRunner applicationRunner(DataSource dataSource, H2ConsoleProperties h2ConsoleProperties) {
+    ApplicationRunner applicationRunner(final DataSource dataSource, final H2ConsoleProperties h2ConsoleProperties) {
         return args -> {
             DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
 

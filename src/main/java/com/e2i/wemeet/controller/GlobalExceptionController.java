@@ -1,6 +1,5 @@
 package com.e2i.wemeet.controller;
 
-import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
@@ -37,7 +36,7 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
@@ -47,7 +46,7 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnAuthorizedException(UnAuthorizedException e) {
+    public ResponseEntity<ErrorResponse> handleUnAuthorizedException(final UnAuthorizedException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
@@ -57,7 +56,7 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(InternalServerException.class)
-    public ResponseEntity<ErrorResponse> handleInternalServerException(InternalServerException e) {
+    public ResponseEntity<ErrorResponse> handleInternalServerException(final InternalServerException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
@@ -67,11 +66,11 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(final Exception e) {
         final int code = UNEXPECTED_INTERNAL.getCode();
         final String message = messageSourceAccessor.getMessage(UNEXPECTED_INTERNAL.getMessageKey());
 
-        log.error(ERROR_LOG_FORMAT, e.getClass().getName(), message);
+        log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(code, message));
     }
