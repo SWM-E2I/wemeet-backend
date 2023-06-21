@@ -1,14 +1,18 @@
 package com.e2i.wemeet.domain.member;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.team.Team;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,12 +82,16 @@ public class Member extends BaseTimeEntity {
   @Column
   private PreferenceMbti preferenceMbti;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "teamId")
+  private Team team;
+
   @Builder
   public Member(Long memberId, String memberCode, String nickname, Gender gender, String college,
       String collegeType, int admissionYear, String mail, String phoneNumber, Mbti mbti,
       String introduction, int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
       int credit, boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
-      PreferenceMbti preferenceMbti) {
+      PreferenceMbti preferenceMbti, Team team) {
     this.memberId = memberId;
     this.memberCode = memberCode;
     this.nickname = nickname;
@@ -102,5 +110,6 @@ public class Member extends BaseTimeEntity {
     this.drinkingOption = drinkingOption;
     this.isAvoidedFriends = isAvoidedFriends;
     this.preferenceMbti = preferenceMbti;
+    this.team = team;
   }
 }
