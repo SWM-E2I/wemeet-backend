@@ -5,6 +5,7 @@ import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.NotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -15,15 +16,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionController {
 
     private static final String ERROR_LOG_FORMAT = "Error Class : {}, Error Code : {}, Message : {}";
     private final MessageSourceAccessor messageSourceAccessor;
-
-    public GlobalExceptionController(MessageSource messageSource) {
-        this.messageSourceAccessor = new MessageSourceAccessor(messageSource);
-    }
 
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<ErrorResponse> handleInvalidValueException(final InvalidValueException e) {
