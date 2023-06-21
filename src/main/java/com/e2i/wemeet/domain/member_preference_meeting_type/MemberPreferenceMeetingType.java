@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class MemberPreferenceMeetingType extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long MemberPreferenceMeetingTypeId;
+  private Long memberPreferenceMeetingTypeId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "memberId", nullable = false)
@@ -30,12 +30,12 @@ public class MemberPreferenceMeetingType extends BaseTimeEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
-  @JoinColumn(name = "CodeId", referencedColumnName = "CodeId")
+  @JoinColumn(name = "codeId", referencedColumnName = "codeId")
   private Code code;
 
   @Builder
   public MemberPreferenceMeetingType(Long memberPreferenceMeetingTypeId, Member member, Code code) {
-    MemberPreferenceMeetingTypeId = memberPreferenceMeetingTypeId;
+    this.memberPreferenceMeetingTypeId = memberPreferenceMeetingTypeId;
     this.member = member;
     this.code = code;
   }
