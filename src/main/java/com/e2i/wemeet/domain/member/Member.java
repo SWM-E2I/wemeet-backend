@@ -38,20 +38,14 @@ public class Member extends BaseTimeEntity {
   @Enumerated(value = EnumType.STRING)
   private Gender gender;
 
-  @Column(length = 30, nullable = false)
-  private String college;
-
-  @Column(length = 20, nullable = false)
-  private String collegeType;
-
-  @Column(nullable = false)
-  private int admissionYear;
-
-  @Column(length = 50, unique = true)
-  private String mail;
-
   @Column(length = 13, unique = true, nullable = false)
   private String phoneNumber;
+
+  @Embedded
+  private CollegeInfo collegeInfo;
+
+  @Embedded
+  private Preference preference;
 
   @Column(length = 7, nullable = false)
   @Enumerated(value = EnumType.STRING)
@@ -60,56 +54,27 @@ public class Member extends BaseTimeEntity {
   @Column(length = 100)
   private String introduction;
 
-  @Column
-  private int startPreferenceAdmissionYear;
-
-  @Column
-  private int endPreferenceAdmissionYear;
-
   @Column(nullable = false)
   private int credit;
-
-  @Column
-  private boolean sameCollegeState;
-
-  @Column
-  private boolean drinkingOption;
-
-  @Column
-  private boolean isAvoidedFriends;
-
-  @Embedded
-  @Column
-  private PreferenceMbti preferenceMbti;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "teamId")
   private Team team;
 
   @Builder
-  public Member(Long memberId, String memberCode, String nickname, Gender gender, String college,
-      String collegeType, int admissionYear, String mail, String phoneNumber, Mbti mbti,
-      String introduction, int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
-      int credit, boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
-      PreferenceMbti preferenceMbti, Team team) {
+  public Member(Long memberId, String memberCode, String nickname, Gender gender,
+      String phoneNumber, CollegeInfo collegeInfo, Preference preference, Mbti mbti,
+      String introduction, int credit, Team team) {
     this.memberId = memberId;
     this.memberCode = memberCode;
     this.nickname = nickname;
     this.gender = gender;
-    this.college = college;
-    this.collegeType = collegeType;
-    this.admissionYear = admissionYear;
-    this.mail = mail;
     this.phoneNumber = phoneNumber;
+    this.collegeInfo = collegeInfo;
+    this.preference = preference;
     this.mbti = mbti;
     this.introduction = introduction;
-    this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
-    this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
     this.credit = credit;
-    this.sameCollegeState = sameCollegeState;
-    this.drinkingOption = drinkingOption;
-    this.isAvoidedFriends = isAvoidedFriends;
-    this.preferenceMbti = preferenceMbti;
     this.team = team;
   }
 }
