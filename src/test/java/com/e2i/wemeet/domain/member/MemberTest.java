@@ -1,7 +1,10 @@
 package com.e2i.wemeet.domain.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,12 +18,12 @@ class MemberTest {
       .college("서울대학교")
       .collegeType("자연과학대")
       .admissionYear(23)
-      .mail("test@example.com")
+      .mail("test@example.ac.kr")
       .phoneNumber("010-1234-1234")
       .mbti(Mbti.ENFJ)
       .introduction("test_introduction")
-      .startPreferenceAdmissionYear(0)
-      .endPreferenceAdmissionYear(0)
+      .startPreferenceAdmissionYear(20)
+      .endPreferenceAdmissionYear(20)
       .credit(10)
       .sameCollegeState(true)
       .drinkingOption(true)
@@ -72,19 +75,19 @@ class MemberTest {
   @Test
   @DisplayName("학번 조회")
   void getAdmissionYear() {
-    assertNotNull(member.getAdmissionYear());
+    assertThat(member.getAdmissionYear()).isEqualTo(23);
   }
 
   @Test
   @DisplayName("메일 조회")
   void getMail() {
-    assertNotNull(member.getMail());
+    assertThat(member.getMail()).isEqualTo("test@example.ac.kr");
   }
 
   @Test
   @DisplayName("휴대폰 번호 조회")
   void getPhoneNumber() {
-    assertNotNull(member.getPhoneNumber());
+    assertThat(member.getPhoneNumber()).isEqualTo("010-1234-1234");
   }
 
   @Test
@@ -102,39 +105,39 @@ class MemberTest {
   @Test
   @DisplayName("선호 학번 시작점 조회")
   void getStartPreferenceAdmissionYear() {
-    assertNotNull(member.getStartPreferenceAdmissionYear());
+    assertThat(member.getStartPreferenceAdmissionYear()).isEqualTo(20);
   }
 
   @Test
   @DisplayName("선호 학번 끝점 조회")
   void getEndPreferenceAdmissionYear() {
-    assertNotNull(member.getEndPreferenceAdmissionYear());
+    assertThat(member.getEndPreferenceAdmissionYear()).isEqualTo(20);
   }
 
   @Test
   @DisplayName("크레딧 조회")
   void getCredit() {
-    assertNotNull(member.getCredit());
+    assertThat(member.getCredit()).isEqualTo(10);
   }
 
   @Test
   @DisplayName("같은 학교 매칭 여부 조회")
   void isSameCollegeState() {
-    assertNotNull(member.isSameCollegeState());
+    assertTrue(member.isSameCollegeState());
   }
 
   @Test
   @DisplayName("음주 여부 조회")
   void isDrinkingOption() {
-    assertNotNull(member.isDrinkingOption());
+    assertTrue(member.isDrinkingOption());
   }
 
   @Test
   @DisplayName("아는 사람 피하기 기능 여부 조회")
   void isAvoidedFriends() {
-    assertNotNull(member.isAvoidedFriends());
+    assertFalse(member.isAvoidedFriends());
   }
-  
+
   @Test
   @DisplayName("선호 mbti 조회")
   void getPreferenceMbti() {
