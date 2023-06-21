@@ -56,26 +56,26 @@ public class Member extends BaseTimeEntity {
   @Column(length = 100)
   private String introduction;
 
-  @Column(nullable = false)
+  @Column
   private int startPreferenceAdmissionYear;
 
-  @Column(nullable = false)
+  @Column
   private int endPreferenceAdmissionYear;
 
   @Column(nullable = false)
   private int credit;
 
-  @Column(nullable = false)
+  @Column
   private boolean sameCollegeState;
 
-  @Column(nullable = false)
+  @Column
   private boolean drinkingOption;
 
-  @Column(nullable = false)
+  @Column
   private boolean isAvoidedFriends;
 
   @Embedded
-  @Column(nullable = false)
+  @Column
   private PreferenceMbti preferenceMbti;
 
   @Builder
