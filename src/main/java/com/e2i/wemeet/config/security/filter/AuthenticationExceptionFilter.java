@@ -2,6 +2,7 @@ package com.e2i.wemeet.config.security.filter;
 
 import com.e2i.wemeet.exception.CustomException;
 import com.e2i.wemeet.exception.ErrorResponse;
+import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,17 +31,28 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
+        } catch (InvalidHttpRequestException e) {
+            setErrorResponse(response, e, 405);
         } catch (CustomException e) {
-            final int code = e.getErrorCode().getCode();
-            final String message = messageSourceAccessor.getMessage(e.getMessage());
-
-            log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-
-            response.setStatus(401);
-            response.setCharacterEncoding("utf-8");
-            response.getWriter()
-                    .println(objectMapper.writeValueAsString(
-                            new ErrorResponse(code, message)));
+            setErrorResponse(response, e);
         }
+    }
+
+    private void setErrorResponse(HttpServletResponse response, CustomException e, int httpStatus) throws IOException {
+        setErrorResponse(response, e);
+        response.setStatus(httpStatus);
+    }
+
+    private void setErrorResponse(HttpServletResponse response, CustomException e) throws IOException {
+        final int code = e.getErrorCode().getCode();
+        final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+
+        response.setStatus(401);
+        response.setCharacterEncoding("utf-8");
+        response.getWriter()
+                .println(objectMapper.writeValueAsString(
+                        new ErrorResponse(code, message)));
     }
 }
