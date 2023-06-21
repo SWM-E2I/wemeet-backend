@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.profileImage;
+package com.e2i.wemeet.domain.profile_image;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Member;
