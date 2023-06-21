@@ -1,6 +1,7 @@
 package com.e2i.wemeet.config.security.config;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
+import com.e2i.wemeet.config.security.filter.LoginAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final AuthenticationExceptionFilter authenticationExceptionFilter;
+    private final LoginAuthenticationFilter loginAuthenticationFilter;
 
 
     @Bean
@@ -40,7 +42,8 @@ public class SecurityConfig {
 
         // 커스텀 필터 적용
         http
-                .addFilterAfter(authenticationExceptionFilter, LogoutFilter.class);
+                .addFilterAfter(authenticationExceptionFilter, LogoutFilter.class)
+                .addFilterAfter(loginAuthenticationFilter, AuthenticationExceptionFilter.class);
 
         return http.build();
     }
