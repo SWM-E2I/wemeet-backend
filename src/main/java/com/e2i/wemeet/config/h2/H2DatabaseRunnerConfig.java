@@ -1,4 +1,4 @@
-package com.e2i.wemeet.global.config;
+package com.e2i.wemeet.config.h2;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -25,7 +25,7 @@ public class H2DatabaseRunnerConfig {
 
     @Bean
     @Profile("default")
-    ApplicationRunner applicationRunner(DataSource dataSource, H2ConsoleProperties h2ConsoleProperties) {
+    ApplicationRunner applicationRunner(final DataSource dataSource, final H2ConsoleProperties h2ConsoleProperties) {
         return args -> {
             DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
 
