@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
+import static org.springframework.http.HttpMethod.POST;
+
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
@@ -31,12 +33,15 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable);
 
-        // URL 인가 정책 적용
+        /* URL 인가 정책 적용
+        * 허용 목록
+        * - 회원 가입
+        * - 인증 번호 발송, 인증 번호 확인
+         */
         http
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers("/v1/member").permitAll()
-                                .requestMatchers("/v1/auth/phone/*").permitAll()
+                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/*").permitAll()
                                 .anyRequest().authenticated()
                 );
 
