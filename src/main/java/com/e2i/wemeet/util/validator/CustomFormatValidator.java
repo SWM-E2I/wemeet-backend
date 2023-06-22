@@ -11,7 +11,7 @@ public abstract class CustomFormatValidator {
     private CustomFormatValidator() {
     }
 
-    private static final String PHONE_REG = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$";
+    private static final String PHONE_REG = "^01(?:0|1|[6-9])(\\d{3}|\\d{4})(\\d{4})$";
     private static final String EMAIL_REG = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:ac\\.kr)$";
     private static final String SMS_CREDENTIAL_REG = "^\\d{6}$";
     private static final String EMAIL_CREDENTIAL_REG = "^\\d{6}$";
