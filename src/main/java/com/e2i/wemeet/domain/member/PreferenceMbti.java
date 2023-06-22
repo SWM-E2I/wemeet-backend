@@ -1,13 +1,14 @@
 package com.e2i.wemeet.domain.member;
 
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Embeddable
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
 public class PreferenceMbti {
   private int eOrI;
   private int sOrN;

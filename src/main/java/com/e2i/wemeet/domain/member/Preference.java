@@ -2,13 +2,14 @@ package com.e2i.wemeet.domain.member;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Embeddable
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
 public class Preference {
 
   private int startPreferenceAdmissionYear;
