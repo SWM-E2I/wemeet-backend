@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
     INVALID_SMS_CREDENTIAL(40100, "invalid.sms.credential"),
     INVALID_GENDER_VALUE(40200, "invalid.gender.value"),
+    INVALID_MBTI_VALUE(40201, "invalid.mbti.value"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal")
     ;

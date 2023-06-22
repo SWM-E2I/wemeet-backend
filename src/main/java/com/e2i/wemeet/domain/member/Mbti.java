@@ -1,6 +1,9 @@
 package com.e2i.wemeet.domain.member;
 
+import com.e2i.wemeet.exception.ErrorCode;
+import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Arrays;
 
 public enum Mbti {
 
@@ -11,12 +14,9 @@ public enum Mbti {
   @JsonCreator
   public static Mbti findBy(String value) {
 
-    for (Mbti mbti : Mbti.values()) {
-      if (mbti.name().equals(value.toUpperCase())) {
-        return mbti;
-      }
-    }
-
-    return null;
+    return Arrays.stream(Mbti.values())
+        .filter(mbti -> mbti.name().equals(value.toUpperCase()))
+        .findFirst()
+        .orElseThrow(() -> new InvalidValueException(ErrorCode.INVALID_MBTI_VALUE));
   }
 }
