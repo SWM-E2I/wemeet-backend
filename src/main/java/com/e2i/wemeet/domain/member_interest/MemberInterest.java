@@ -22,23 +22,23 @@ import lombok.NoArgsConstructor;
 @Entity
 public class MemberInterest extends BaseTimeEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long memberInterestId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long memberInterestId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "memberId", nullable = false)
-  private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId", nullable = false)
+    private Member member;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
-  @JoinColumn(name = "codePk", referencedColumnName = "CodeId")
-  private Code code;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
+    @JoinColumn(name = "codePk", referencedColumnName = "CodeId")
+    private Code code;
 
-  @Builder
-  public MemberInterest(Long memberInterestId, Member member, Code code) {
-    this.memberInterestId = memberInterestId;
-    this.member = member;
-    this.code = code;
-  }
+    @Builder
+    public MemberInterest(Long memberInterestId, Member member, Code code) {
+        this.memberInterestId = memberInterestId;
+        this.member = member;
+        this.code = code;
+    }
 }

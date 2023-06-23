@@ -12,28 +12,28 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Preference {
 
-  private int startPreferenceAdmissionYear;
+    private int startPreferenceAdmissionYear;
 
-  private int endPreferenceAdmissionYear;
+    private int endPreferenceAdmissionYear;
 
-  private boolean sameCollegeState;
+    private boolean sameCollegeState;
 
-  private boolean drinkingOption;
+    private boolean drinkingOption;
 
-  private boolean isAvoidedFriends;
+    private boolean isAvoidedFriends;
 
-  @Column(length = 8)
-  private String preferenceMbti;
+    @Column(length = 8)
+    private String preferenceMbti;
 
-  @Builder
-  public Preference(int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
-      boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
-      String preferenceMbti) {
-    this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
-    this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
-    this.sameCollegeState = sameCollegeState;
-    this.drinkingOption = drinkingOption;
-    this.isAvoidedFriends = isAvoidedFriends;
-    this.preferenceMbti = preferenceMbti;
-  }
+    @Builder
+    public Preference(int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
+        boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
+        String preferenceMbti) {
+        this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
+        this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
+        this.sameCollegeState = sameCollegeState;
+        this.drinkingOption = drinkingOption;
+        this.isAvoidedFriends = isAvoidedFriends;
+        this.preferenceMbti = preferenceMbti;
+    }
 }

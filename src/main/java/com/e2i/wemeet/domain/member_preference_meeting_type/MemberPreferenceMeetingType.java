@@ -21,23 +21,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "MEMBER_PREFERENCE_MEETING_TYPE")
 @Entity
 public class MemberPreferenceMeetingType extends BaseTimeEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long memberPreferenceMeetingTypeId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "memberId", nullable = false)
-  private Member member;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long memberPreferenceMeetingTypeId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
-  @JoinColumn(name = "codeId", referencedColumnName = "codeId")
-  private Code code;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId", nullable = false)
+    private Member member;
 
-  @Builder
-  public MemberPreferenceMeetingType(Long memberPreferenceMeetingTypeId, Member member, Code code) {
-    this.memberPreferenceMeetingTypeId = memberPreferenceMeetingTypeId;
-    this.member = member;
-    this.code = code;
-  }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
+    @JoinColumn(name = "codeId", referencedColumnName = "codeId")
+    private Code code;
+
+    @Builder
+    public MemberPreferenceMeetingType(Long memberPreferenceMeetingTypeId, Member member,
+        Code code) {
+        this.memberPreferenceMeetingTypeId = memberPreferenceMeetingTypeId;
+        this.member = member;
+        this.code = code;
+    }
 }
