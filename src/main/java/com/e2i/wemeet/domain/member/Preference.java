@@ -1,7 +1,7 @@
 package com.e2i.wemeet.domain.member;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,13 +22,13 @@ public class Preference {
 
   private boolean isAvoidedFriends;
 
-  @Embedded
-  private PreferenceMbti preferenceMbti;
+  @Column(length = 8)
+  private String preferenceMbti;
 
   @Builder
   public Preference(int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
       boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
-      PreferenceMbti preferenceMbti) {
+      String preferenceMbti) {
     this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
     this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
     this.sameCollegeState = sameCollegeState;
