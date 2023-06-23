@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.member_interest;
+package com.e2i.wemeet.domain.memberpreferencemeetingtype;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.code.Code;
@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_INTEREST")
+@Table(name = "MEMBER_PREFERENCE_MEETING_TYPE")
 @Entity
-public class MemberInterest extends BaseTimeEntity {
+public class MemberPreferenceMeetingType extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberInterestId;
+    private Long memberPreferenceMeetingTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId", nullable = false)
@@ -32,12 +32,13 @@ public class MemberInterest extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
-    @JoinColumn(name = "codePk", referencedColumnName = "CodeId")
+    @JoinColumn(name = "codeId", referencedColumnName = "codeId")
     private Code code;
 
     @Builder
-    public MemberInterest(Long memberInterestId, Member member, Code code) {
-        this.memberInterestId = memberInterestId;
+    public MemberPreferenceMeetingType(Long memberPreferenceMeetingTypeId, Member member,
+        Code code) {
+        this.memberPreferenceMeetingTypeId = memberPreferenceMeetingTypeId;
         this.member = member;
         this.code = code;
     }

@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.member_preference_meeting_type;
+package com.e2i.wemeet.domain.memberpreferencemeetingtype;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
