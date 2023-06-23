@@ -13,6 +13,9 @@ public enum ErrorCode {
 
     INVALID_SMS_CREDENTIAL(40100, "invalid.sms.credential"),
 
+    ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
+    REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
+
     UNEXPECTED_INTERNAL(50000, "unexpected.internal")
     ;
 
