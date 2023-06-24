@@ -1,6 +1,6 @@
 package com.e2i.wemeet.service.aws;
 
-import com.e2i.wemeet.config.aws.AWSConfig;
+import com.e2i.wemeet.config.aws.AwsSnsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.sns.SnsClient;
 @Service
 public class CredentialService {
 
-    private final AWSConfig awsConfig;
+    private final AwsSnsConfig awsSnsConfig;
 
     public AwsCredentialsProvider getAwsCredentials(String accessKeyId, String secretAccessKey) {
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKeyId,
@@ -23,8 +23,8 @@ public class CredentialService {
     public SnsClient getSnsClient() {
         return SnsClient.builder()
             .credentialsProvider(
-                getAwsCredentials(awsConfig.getAwsAccessKey(), awsConfig.getAwsSecretKey())
-            ).region(Region.of(awsConfig.getAwsRegion()))
+                getAwsCredentials(awsSnsConfig.getAwsAccessKey(), awsSnsConfig.getAwsSecretKey())
+            ).region(Region.of(awsSnsConfig.getAwsRegion()))
             .build();
     }
 }

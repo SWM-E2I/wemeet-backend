@@ -19,6 +19,7 @@ spring:
     baseline-on-migrate: true
 
 aws:
-  accessKey: ${AWS_SNS_ACCESS_KEY}
-  secretKey: ${AWS_SNS_SECRET_KEY}
-  region: ${AWS_SNS_REGION}
+  sns:
+    accessKey: ${AWS_SNS_ACCESS_KEY}
+    secretKey: ${AWS_SNS_SECRET_KEY}
+    region: ${AWS_SNS_REGION}

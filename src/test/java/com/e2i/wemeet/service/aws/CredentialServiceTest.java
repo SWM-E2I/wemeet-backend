@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-import com.e2i.wemeet.config.aws.AWSConfig;
+import com.e2i.wemeet.config.aws.AwsSnsConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.sns.SnsClient;
 class CredentialServiceTest {
 
     @Mock
-    private AWSConfig awsConfig;
+    private AwsSnsConfig awsSnsConfig;
 
     private static final String accessKeyId = "your-access-key-id";
     private static final String secretAccessKey = "your-secret-access-key";
@@ -27,7 +27,7 @@ class CredentialServiceTest {
 
     @Test
     void testGetAwsCredentials() {
-        CredentialService credentialService = new CredentialService(awsConfig);
+        CredentialService credentialService = new CredentialService(awsSnsConfig);
         AwsCredentialsProvider credentialsProvider = credentialService.getAwsCredentials(
             accessKeyId, secretAccessKey);
 
@@ -40,11 +40,11 @@ class CredentialServiceTest {
     void testGetSnsClient() {
         String region = "your-region";
 
-        when(awsConfig.getAwsAccessKey()).thenReturn(accessKeyId);
-        when(awsConfig.getAwsSecretKey()).thenReturn(secretAccessKey);
-        when(awsConfig.getAwsRegion()).thenReturn(region);
+        when(awsSnsConfig.getAwsAccessKey()).thenReturn(accessKeyId);
+        when(awsSnsConfig.getAwsSecretKey()).thenReturn(secretAccessKey);
+        when(awsSnsConfig.getAwsRegion()).thenReturn(region);
 
-        CredentialService credentialService = new CredentialService(awsConfig);
+        CredentialService credentialService = new CredentialService(awsSnsConfig);
         SnsClient snsClient = credentialService.getSnsClient();
 
         assertNotNull(snsClient);

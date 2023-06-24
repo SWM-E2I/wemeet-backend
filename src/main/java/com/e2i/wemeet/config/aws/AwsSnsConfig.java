@@ -6,14 +6,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-public class AWSConfig {
+public class AwsSnsConfig {
 
-    @Value("${aws.accessKey}")
+    @Value("${aws.sns.accessKey}")
     private String awsAccessKey;
 
-    @Value("${aws.secretKey}")
+    @Value("${aws.sns.secretKey}")
     private String awsSecretKey;
 
-    @Value("${aws.region}")
+    @Value("${aws.sns.region}")
     private String awsRegion;
 }
