@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS `member` (
+    `member_id` bigint NOT NULL AUTO_INCREMENT,
+    `member_code` char(4) NOT NULL,
+    `nickname` varchar(20) NOT NULL,
+    `gender` varchar(6) NOT NULL,
+    `college` varchar(30) NOT NULL,
+    `college_type` varchar(20) NOT NULL,
+    `admission_year` int NOT NULL,
+    `mail`  varchar(50),
+    `phone_number` char(13) NOT NULL,
+    `mbti` varchar(7) NOT NULL,
+    `introduction` varchar(100),
+    `start_preference_admission_year` int,
+    `end_preference_admission_year` int,
+    `credit` int NOT NULL,
+    `same_college_state` tinyint,
+    `drinking_option` tinyint,
+    `is_avoided_friends` tinyint,
+    `preference_mbti` char(8),
+    `created_at` datetime(6),
+    `modified_at` datetime(6),
+    PRIMARY KEY (`member_id`),
+    UNIQUE KEY `member_mail` (`mail`),
+    UNIQUE KEY `member_phone_number` (`phone_number`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET=utf8mb4;

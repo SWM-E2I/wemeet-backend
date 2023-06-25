@@ -32,3 +32,9 @@ spring:
   config:
     activate:
       on-profile: prod
+---
+aws:
+  sns:
+    accessKey: ${AWS_SNS_ACCESS_KEY}
+    secretKey: ${AWS_SNS_SECRET_KEY}
+    region: ${AWS_SNS_REGION}
