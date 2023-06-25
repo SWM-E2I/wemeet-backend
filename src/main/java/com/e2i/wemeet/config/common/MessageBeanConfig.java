@@ -1,5 +1,6 @@
 package com.e2i.wemeet.config.common;
 
+import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,8 @@ public class MessageBeanConfig {
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setDefaultLocale(Locale.KOREA);
+        messageSource.setBasename("messages");
         messageSource.setDefaultEncoding("utf-8");
 
         return messageSource;
