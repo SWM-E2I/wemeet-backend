@@ -1,19 +1,19 @@
 package com.e2i.wemeet.config.aws;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
+@Setter
+@ConfigurationProperties("aws.sns")
 @Configuration
 public class AwsSnsConfig {
 
-    @Value("${aws.sns.accessKey}")
-    private String awsAccessKey;
+    private String accessKey;
 
-    @Value("${aws.sns.secretKey}")
-    private String awsSecretKey;
+    private String secretKey;
 
-    @Value("${aws.sns.region}")
-    private String awsRegion;
+    private String region;
 }

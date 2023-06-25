@@ -23,8 +23,8 @@ public class AwsCredentialService {
     public SnsClient getSnsClient() {
         return SnsClient.builder()
             .credentialsProvider(
-                getAwsCredentials(awsSnsConfig.getAwsAccessKey(), awsSnsConfig.getAwsSecretKey())
-            ).region(Region.of(awsSnsConfig.getAwsRegion()))
+                getAwsCredentials(awsSnsConfig.getAccessKey(), awsSnsConfig.getSecretKey())
+            ).region(Region.of(awsSnsConfig.getRegion()))
             .build();
     }
 }

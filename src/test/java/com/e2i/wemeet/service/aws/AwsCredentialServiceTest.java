@@ -40,9 +40,9 @@ class AwsCredentialServiceTest {
     void testGetSnsClient() {
         String region = "your-region";
 
-        when(awsSnsConfig.getAwsAccessKey()).thenReturn(accessKeyId);
-        when(awsSnsConfig.getAwsSecretKey()).thenReturn(secretAccessKey);
-        when(awsSnsConfig.getAwsRegion()).thenReturn(region);
+        when(awsSnsConfig.getAccessKey()).thenReturn(accessKeyId);
+        when(awsSnsConfig.getSecretKey()).thenReturn(secretAccessKey);
+        when(awsSnsConfig.getRegion()).thenReturn(region);
 
         AwsCredentialService awsCredentialService = new AwsCredentialService(awsSnsConfig);
         SnsClient snsClient = awsCredentialService.getSnsClient();
