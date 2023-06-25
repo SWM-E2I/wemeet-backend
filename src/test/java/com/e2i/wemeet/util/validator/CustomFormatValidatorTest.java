@@ -23,7 +23,7 @@ class CustomFormatValidatorTest {
     @ParameterizedTest
     void validatePhoneFormatFail(String phone) {
         assertThatThrownBy(() -> CustomFormatValidator.validatePhoneFormat(phone))
-                        .isExactlyInstanceOf(InvalidDataFormatException.class);
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
 
     @DisplayName("주어진 입력 값이 이메일 형식에 맞으면 예외가 발생하지 않는다.")
@@ -38,7 +38,7 @@ class CustomFormatValidatorTest {
     @ParameterizedTest
     void validateEmailFormatFail(String email) {
         assertThatThrownBy(() -> CustomFormatValidator.validateEmailFormat(email))
-                .isExactlyInstanceOf(InvalidDataFormatException.class);
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
 
     @DisplayName("SMS 인증 번호가 형식에 맞지 않으면 예외가 발생한다.")
@@ -46,7 +46,7 @@ class CustomFormatValidatorTest {
     @ParameterizedTest
     void validateSmsCredentialFormat(int credential) {
         assertThatThrownBy(() -> CustomFormatValidator.validateSmsCredentialFormat(credential))
-                .isExactlyInstanceOf(InvalidDataFormatException.class);
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
 
     @DisplayName("Email 인증 번호가 형식에 맞지 않으면 예외가 발생한다.")
@@ -54,6 +54,6 @@ class CustomFormatValidatorTest {
     @ParameterizedTest
     void validateEmailCredentialFormat(int credential) {
         assertThatThrownBy(() -> CustomFormatValidator.validateEmailCredentialFormat(credential))
-                .isExactlyInstanceOf(InvalidDataFormatException.class);
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
 }
