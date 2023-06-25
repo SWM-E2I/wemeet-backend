@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -24,8 +23,7 @@ public class GlobalExceptionController {
     private final MessageSourceAccessor messageSourceAccessor;
 
     @ExceptionHandler(InvalidValueException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidValueException(
-        final InvalidValueException e) {
+    public ResponseEntity<ErrorResponse> handleInvalidValueException(final InvalidValueException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
@@ -45,8 +43,7 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnAuthorizedException(
-        final UnAuthorizedException e) {
+    public ResponseEntity<ErrorResponse> handleUnAuthorizedException(final UnAuthorizedException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
@@ -56,8 +53,7 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(InternalServerException.class)
-    public ResponseEntity<ErrorResponse> handleInternalServerException(
-        final InternalServerException e) {
+    public ResponseEntity<ErrorResponse> handleInternalServerException(final InternalServerException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 

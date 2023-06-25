@@ -7,15 +7,15 @@ import java.util.Arrays;
 
 public enum Gender {
 
-  MALE,
-  FEMALE;
+    MALE,
+    FEMALE;
 
-  @JsonCreator
-  public static Gender findBy(String value) {
+    @JsonCreator
+    public static Gender findBy(String value) {
 
-    return Arrays.stream(Gender.values())
-        .filter(gender -> gender.name().equals(value.toUpperCase()))
-        .findFirst()
-        .orElseThrow(() -> new InvalidValueException(ErrorCode.INVALID_GENDER_VALUE));
-  }
+        return Arrays.stream(Gender.values())
+            .filter(gender -> gender.name().equals(value.toUpperCase()))
+            .findFirst()
+            .orElseThrow(() -> new InvalidValueException(ErrorCode.INVALID_GENDER_VALUE));
+    }
 }
