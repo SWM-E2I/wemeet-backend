@@ -16,10 +16,10 @@ import software.amazon.awssdk.services.sns.model.SnsException;
 @Service
 public class AwsSnsService {
 
-    private final CredentialService credentialService;
+    private final AwsCredentialService awsCredentialService;
 
     public void sendSms(String phoneNumber, String message) {
-        SnsClient snsClient = credentialService.getSnsClient();
+        SnsClient snsClient = awsCredentialService.getSnsClient();
         try {
             PublishRequest request = PublishRequest.builder()
                 .message(message)

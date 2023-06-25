@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.services.sns.SnsClient;
 
-class CredentialServiceTest {
+class AwsCredentialServiceTest {
 
     @Mock
     private AwsSnsConfig awsSnsConfig;
@@ -27,8 +27,8 @@ class CredentialServiceTest {
 
     @Test
     void testGetAwsCredentials() {
-        CredentialService credentialService = new CredentialService(awsSnsConfig);
-        AwsCredentialsProvider credentialsProvider = credentialService.getAwsCredentials(
+        AwsCredentialService awsCredentialService = new AwsCredentialService(awsSnsConfig);
+        AwsCredentialsProvider credentialsProvider = awsCredentialService.getAwsCredentials(
             accessKeyId, secretAccessKey);
 
         assertNotNull(credentialsProvider);
@@ -44,8 +44,8 @@ class CredentialServiceTest {
         when(awsSnsConfig.getAwsSecretKey()).thenReturn(secretAccessKey);
         when(awsSnsConfig.getAwsRegion()).thenReturn(region);
 
-        CredentialService credentialService = new CredentialService(awsSnsConfig);
-        SnsClient snsClient = credentialService.getSnsClient();
+        AwsCredentialService awsCredentialService = new AwsCredentialService(awsSnsConfig);
+        SnsClient snsClient = awsCredentialService.getSnsClient();
 
         assertNotNull(snsClient);
     }

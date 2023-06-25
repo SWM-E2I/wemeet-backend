@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.sns.SnsClient;
 
 @RequiredArgsConstructor
 @Service
-public class CredentialService {
+public class AwsCredentialService {
 
     private final AwsSnsConfig awsSnsConfig;
 

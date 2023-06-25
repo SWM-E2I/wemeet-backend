@@ -20,7 +20,7 @@ class AwsSnsServiceTest {
     private AwsSnsService awsSnsService;
 
     @Mock
-    private CredentialService credentialService;
+    private AwsCredentialService awsCredentialService;
 
     @Mock
     private SnsClient snsClient;
@@ -31,12 +31,12 @@ class AwsSnsServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        awsSnsService = new AwsSnsService(credentialService);
+        awsSnsService = new AwsSnsService(awsCredentialService);
     }
 
     @Test
     void testSendSms() {
-        when(credentialService.getSnsClient()).thenReturn(snsClient);
+        when(awsCredentialService.getSnsClient()).thenReturn(snsClient);
         PublishResponse publishResponse = PublishResponse.builder().build();
         when(snsClient.publish(any(PublishRequest.class))).thenReturn(publishResponse);
 
@@ -50,7 +50,7 @@ class AwsSnsServiceTest {
 
     @Test
     void testSendSms_Failure() {
-        when(credentialService.getSnsClient()).thenReturn(snsClient);
+        when(awsCredentialService.getSnsClient()).thenReturn(snsClient);
         when(snsClient.publish(any(PublishRequest.class))).thenThrow(SnsException.class);
 
         assertThrows(InternalServerException.class,
