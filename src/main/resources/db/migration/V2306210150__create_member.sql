@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `member` (
     `preference_mbti` char(8),
     `created_at` datetime(6),
     `modified_at` datetime(6),
+    `role` varchar(6),
     PRIMARY KEY (`member_id`),
     UNIQUE KEY `member_mail` (`mail`),
     UNIQUE KEY `member_phone_number` (`phone_number`))
