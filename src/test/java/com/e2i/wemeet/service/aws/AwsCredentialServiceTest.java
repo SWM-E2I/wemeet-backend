@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import com.e2i.wemeet.config.aws.AwsSnsConfig;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.services.sns.SnsClient;
 
+@ExtendWith(MockitoExtension.class)
 class AwsCredentialServiceTest {
 
     @Mock
@@ -19,11 +20,6 @@ class AwsCredentialServiceTest {
 
     private static final String accessKeyId = "your-access-key-id";
     private static final String secretAccessKey = "your-secret-access-key";
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testGetAwsCredentials() {
