@@ -21,3 +21,5 @@ spring:
     redis:
       port: 6000
       host: localhost
+  profiles:
+    active: jwt
