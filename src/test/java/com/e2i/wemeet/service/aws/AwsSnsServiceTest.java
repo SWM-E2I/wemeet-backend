@@ -1,6 +1,6 @@
 package com.e2i.wemeet.service.aws;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,7 +53,7 @@ class AwsSnsServiceTest {
         when(awsCredentialService.getSnsClient()).thenReturn(snsClient);
         when(snsClient.publish(any(PublishRequest.class))).thenThrow(SnsException.class);
 
-        assertThrows(InternalServerException.class,
-            () -> awsSnsService.sendSms(phoneNumber, message));
+        assertThatThrownBy(() -> awsSnsService.sendSms(phoneNumber, message))
+            .isExactlyInstanceOf(InternalServerException.class);
     }
 }
