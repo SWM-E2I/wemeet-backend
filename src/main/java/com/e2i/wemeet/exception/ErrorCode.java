@@ -14,8 +14,15 @@ public enum ErrorCode {
     INVALID_EMAIL_FORMAT(40006, "invalid.email.format"),
     INVALID_CREDENTIAL_FORMAT(40007, "invalid.credential.format"),
 
+    NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
+
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
+    JWT_SIGNATURE_MISMATCH(40202, "jwt.signature.mismatch"),
+    JWT_CLAIM_INCORRECT(40203, "jwt.claim.incorrect"),
+    JWT_DECODE(40204, "jwt.decode"),
+    REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
+    REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal")
     ;
