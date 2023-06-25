@@ -19,17 +19,17 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Code extends BaseTimeEntity {
 
-  @EmbeddedId
-  private CodePk codePk;
+    @EmbeddedId
+    private CodePk codePk;
 
-  @Column(nullable = false)
-  private String codeName;
+    @Column(nullable = false)
+    private String codeName;
 
-  @Column(nullable = false)
-  private String description;
+    @Column(nullable = false)
+    private String description;
 
-  @MapsId("groupCodeId")
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "groupCodeId")
-  private GroupCode groupCode;
+    @MapsId("groupCodeId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupCodeId")
+    private GroupCode groupCode;
 }

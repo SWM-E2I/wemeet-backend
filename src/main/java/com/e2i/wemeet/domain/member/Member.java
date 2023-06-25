@@ -25,42 +25,42 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long memberId;
 
-    @Column(length = 4, nullable = false)
-    private String memberCode;
+  @Column(length = 4, nullable = false)
+  private String memberCode;
 
-    @Column(length = 20, nullable = false)
-    private String nickname;
+  @Column(length = 20, nullable = false)
+  private String nickname;
 
-    @Column(length = 6, nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Gender gender;
+  @Column(length = 6, nullable = false)
+  @Enumerated(value = EnumType.STRING)
+  private Gender gender;
 
-    @Column(length = 13, unique = true, nullable = false)
-    private String phoneNumber;
+  @Column(length = 13, unique = true, nullable = false)
+  private String phoneNumber;
 
-    @Embedded
-    private CollegeInfo collegeInfo;
+  @Embedded
+  private CollegeInfo collegeInfo;
 
-    @Embedded
-    private Preference preference;
+  @Embedded
+  private Preference preference;
 
-    @Column(length = 7, nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Mbti mbti;
+  @Column(length = 7, nullable = false)
+  @Enumerated(value = EnumType.STRING)
+  private Mbti mbti;
 
-    @Column(length = 100)
-    private String introduction;
+  @Column(length = 100)
+  private String introduction;
 
-    @Column(nullable = false)
-    private int credit;
+  @Column(nullable = false)
+  private int credit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teamId")
-    private Team team;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "teamId")
+  private Team team;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

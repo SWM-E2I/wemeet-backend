@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.profile_image;
+package com.e2i.wemeet.domain.profileimage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
