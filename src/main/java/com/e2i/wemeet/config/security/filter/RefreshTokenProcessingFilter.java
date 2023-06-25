@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -28,6 +29,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * FilterChainProxy - LoginProcessingFilter 이후 실행
  * AccessToken 의 유효성을 검증하고 인증 객체 (authenticated == true) 생성
  * */
+@Slf4j
 public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private static final String REFRESH_REQUEST_URL = "/v1/auth/refresh";
 
@@ -66,6 +68,8 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
 
         validateRefreshToken(request, payload.getMemberId());
         tokenInjector.injectToken(response, payload);
+
+        log.info("RefreshToken has reIssued - memberId : {}", payload.getMemberId());
     }
 
     private Payload getPayload(HttpServletRequest request) throws IOException {

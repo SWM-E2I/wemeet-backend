@@ -12,9 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+@Slf4j
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -44,6 +46,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
      * */
     private void writeResponse(HttpServletResponse response, MemberPrincipal principal)
         throws IOException {
+        log.info("Login Request Success - memberId : {}, registered : {}",
+            principal.getMemberId(), principal.isRegistered());
+
         SmsCredentialResponse data = new SmsCredentialResponse(
             principal.isRegistered(), principal.getMemberId(), principal.getAuthorities());
         ResponseDto result = new ResponseDto(SUCCESS, "인증에 성공하였습니다.", data);
