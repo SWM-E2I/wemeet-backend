@@ -1,19 +1,17 @@
 package com.e2i.wemeet.config.aws;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 @Getter
-@Setter
+@RequiredArgsConstructor
 @ConfigurationProperties("aws.ses")
-@Configuration
 public class AwsSesConfig {
 
-    private String accessKey;
+    private final String accessKey;
 
-    private String secretKey;
+    private final String secretKey;
 
-    private String region;
+    private final String region;
 }
