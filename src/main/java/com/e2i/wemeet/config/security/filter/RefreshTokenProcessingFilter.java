@@ -2,7 +2,7 @@ package com.e2i.wemeet.config.security.filter;
 
 import static org.springframework.http.HttpMethod.POST;
 
-import com.e2i.wemeet.config.security.token.JwtInfo;
+import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
@@ -66,7 +66,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         throws IOException {
         Payload payload = getPayload(request);
 
-        validateRefreshToken(request, payload.getMemberId());
+        validateRefreshToken(request, payload);
         tokenInjector.injectToken(response, payload);
 
         log.info("RefreshToken has reIssued - memberId : {}", payload.getMemberId());
@@ -76,29 +76,32 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         return objectMapper.readValue(request.getInputStream(), Payload.class);
     }
 
-    private void validateRefreshToken(HttpServletRequest request, Long memberId) {
+    private void validateRefreshToken(HttpServletRequest request, Payload payload) {
         String refreshToken = getRefreshTokenFromCookie(request);
 
         // RefreshToken  유효성 검증
         refreshTokenHandler.decodeToken(refreshToken);
 
         // Redis 에 저장된 RefreshToken 값과 일치하는지 검증
-        if (!matchesRefreshTokenInRedis(memberId, refreshToken)) {
+        if (!matchesRefreshTokenInRedis(payload, refreshToken)) {
             throw new RefreshTokenMismatchException();
         }
     }
 
     // Redis 에서 발급했던 SMS 인증 번호를 가져옴
-    private boolean matchesRefreshTokenInRedis(Long memberId, String refreshToken) {
+    private boolean matchesRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        String savedRefresh = operations.get(String.valueOf(memberId));
+
+        // get Key from payload (Ex) "memberId-1-USER"
+        String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
+        String savedRefresh = operations.get(redisKey);
         return refreshToken.equals(savedRefresh);
     }
 
     // Cookie 에서 Refresh Token 을 가져옴
     private static String getRefreshTokenFromCookie(HttpServletRequest request) {
         return Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals(JwtInfo.REFRESH.getKey()))
+            .filter(cookie -> cookie.getName().equals(JwtEnv.REFRESH.getKey()))
             .map(Cookie::getValue)
             .findFirst()
             .orElseThrow(() -> new TokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
