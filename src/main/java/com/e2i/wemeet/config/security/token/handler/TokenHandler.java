@@ -6,8 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.IncorrectClaimException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.e2i.wemeet.config.security.token.JwtInfo;
+import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.token.JwtClaimIncorrectException;
@@ -28,8 +29,8 @@ public abstract class TokenHandler {
     @Value("${jwt.secretKey}")
     protected String secretKey;
 
-    protected Date generateExpirationTime(final JwtInfo jwtInfo) {
-        long expiration = System.currentTimeMillis() + jwtInfo.getExpirationTimeToMillis();
+    protected Date generateExpirationTime(final JwtEnv jwtEnv) {
+        long expiration = System.currentTimeMillis() + jwtEnv.getExpirationTimeToMillis();
         return new Date(expiration);
     }
 
@@ -41,19 +42,15 @@ public abstract class TokenHandler {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC512(secretKey)).build();
 
         try {
-            // 토큰 검증
-            DecodedJWT decodedJWT = verifier.verify(token);
+            // 토큰 검증 & 반환
+            return verifier.verify(token);
 
-            // 만료 기한이 지났으면 Exception 발생
-            if (decodedJWT.getExpiresAt().before(new Date())) {
-                throw new JwtExpiredException(ErrorCode.ACCESS_TOKEN_EXPIRED);
-            }
-
-            return decodedJWT;
         } catch (AlgorithmMismatchException algorithmMismatchException) {
             throw new JwtSignatureMismatchException();
         } catch (IncorrectClaimException incorrectClaimException) {
             throw new JwtClaimIncorrectException();
+        } catch (TokenExpiredException tokenExpiredException) {
+            throw new JwtExpiredException(ErrorCode.ACCESS_TOKEN_EXPIRED);
         } catch (JWTDecodeException jwtDecodeException) {
             throw new JwtDecodeException();
         }
