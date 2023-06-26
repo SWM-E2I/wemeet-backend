@@ -1,7 +1,7 @@
 package com.e2i.wemeet.config.security.filter;
 
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.JwtInfo;
+import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import jakarta.servlet.FilterChain;
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = request.getHeader(JwtInfo.ACCESS.getKey());
+        String accessToken = request.getHeader(JwtEnv.ACCESS.getKey());
         Payload payload = accessTokenHandler.extractToken(accessToken);
 
         if (payload != null) {
