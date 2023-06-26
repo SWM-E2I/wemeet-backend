@@ -3,7 +3,6 @@ package com.e2i.wemeet.config.security.filter;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.dto.request.LoginRequestDto;
-import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,7 +44,6 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
-        validateHttpRequestMethod(request);
         LoginRequestDto loginRequest = objectMapper.readValue(request.getInputStream(),
             LoginRequestDto.class);
         loginRequest.validateDataFormat();
@@ -64,11 +62,5 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         successHandler.onAuthenticationSuccess(request, response, authResult);
-    }
-
-    private void validateHttpRequestMethod(HttpServletRequest request) {
-        if (!request.getMethod().equals(POST.name())) {
-            throw new InvalidHttpRequestException();
-        }
     }
 }
