@@ -8,7 +8,8 @@ public enum ErrorCode {
     INVALID_GENDER_VALUE(40002, "invalid.gender.value"),
     INVALID_MBTI_VALUE(40003, "invalid.mbti.value"),
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
-    AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error");
+    AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
+    AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error");
 
     private final int code;
     private final String messageKey;
