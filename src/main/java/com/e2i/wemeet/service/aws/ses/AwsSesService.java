@@ -23,7 +23,7 @@ public class AwsSesService {
     private final AwsSesCredentialService awsSesCredentialService;
     private static final String TEMPLATE_NAME = "certifyEmailTemplate";
 
-    private static final String SOURCE_EMAIL = "wemeet@gmail.com";
+    private static final String SOURCE_EMAIL = "qkrdbsk28@naver.com";
 
     public void sendEmail(String email, String message) throws JsonProcessingException {
         SesClient sesClient = awsSesCredentialService.getSesClient();
@@ -50,7 +50,7 @@ public class AwsSesService {
 
         Map<String, String> templateData = new HashMap<>();
         templateData.put("code", message);
-        
+
         return mapper.writeValueAsString(templateData);
     }
 }
