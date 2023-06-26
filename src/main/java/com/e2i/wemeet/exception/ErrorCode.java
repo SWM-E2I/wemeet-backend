@@ -25,7 +25,8 @@ public enum ErrorCode {
     REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
     REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
 
-    UNEXPECTED_INTERNAL(50000, "unexpected.internal")
+    UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
+    AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error");
     ;
 
     private final int code;
