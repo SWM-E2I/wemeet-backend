@@ -6,6 +6,7 @@ import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -36,17 +37,27 @@ public class TokenInjector {
     public void injectToken(HttpServletResponse response, final Payload payload) {
         String accessToken = accessTokenHandler.createToken(payload);
         String refreshToken = refreshTokenHandler.createToken(payload);
-        Cookie refreshTokenCookie = new Cookie(JwtInfo.REFRESH.getKey(), refreshToken);
+        Cookie refreshTokenCookie = createRefreshTokenCookie(refreshToken);
 
-        saveRefreshTokenInRedis(payload.getMemberId(), refreshToken);
-        response.setHeader(JwtInfo.ACCESS.getKey(), accessToken);
+        saveRefreshTokenInRedis(payload, refreshToken);
+        response.setHeader(JwtEnv.ACCESS.getKey(), accessToken);
         response.addCookie(refreshTokenCookie);
     }
 
     // Redis 에 RefreshToken 저장
-    private void saveRefreshTokenInRedis(Long memberId, String refreshToken) {
+    private void saveRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
-        operations.set(String.valueOf(memberId), refreshToken);
+        // get Key from payload (Ex) "memberId-1-USER"
+        String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
+        operations.set(redisKey, refreshToken);
+    }
+
+    private Cookie createRefreshTokenCookie(String refreshToken) {
+        Cookie refreshTokenCookie = new Cookie(JwtEnv.REFRESH.getKey(), refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setMaxAge((int) Duration.ofMinutes(10).toSeconds());
+        return refreshTokenCookie;
     }
 }
