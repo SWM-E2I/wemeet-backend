@@ -17,9 +17,18 @@ spring:
     enabled: true
     locations: classpath:/db/migration
     baseline-on-migrate: true
-
-aws:
-  sns:
-    accessKey: ${AWS_SNS_ACCESS_KEY}
-    secretKey: ${AWS_SNS_SECRET_KEY}
-    region: ${AWS_SNS_REGION}
+  config:
+    import: sub/application-jwt.yml, sub/application-aws.yml
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: sub/dev/application-db.yml
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
