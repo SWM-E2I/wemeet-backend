@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: release
+          token: ${{ secrets.ACCESS_TOKEN }}
+          submodules: true
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
