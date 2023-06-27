@@ -1,5 +1,6 @@
 package com.e2i.wemeet.service.aws.s3;
 
+import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_FILE_CONVERSION_ERROR;
 import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_OBJECT_DELETE_ERROR;
 import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_OBJECT_UPLOAD_ERROR;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,7 @@ public class AwsS3Service {
 
     private final AwsS3CredentialService awsS3CredentialService;
 
-    public String putObject(MultipartFile multipartFile, String directory) throws IOException {
+    public String putObject(MultipartFile multipartFile, String directory) {
         S3Client s3Client = awsS3CredentialService.getS3Client();
 
         String objectKey = createObjectKey(directory, multipartFile.getOriginalFilename());
@@ -44,7 +46,6 @@ public class AwsS3Service {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("content-type", multipartFile.getContentType());
         metadata.put("content-length", String.valueOf(multipartFile.getSize()));
-
         try {
             PutObjectRequest putObject = PutObjectRequest.builder()
                 .bucket(bucket)
@@ -93,9 +94,15 @@ public class AwsS3Service {
         return directory + pathDelimiter + uuid + "_" + fileName;
     }
 
-    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = File.createTempFile(multipartFile.getOriginalFilename(), null);
-        multipartFile.transferTo(file);
-        return file;
+    private File convertMultipartFileToFile(MultipartFile multipartFile) {
+        String originalFilename = Objects.requireNonNull(multipartFile.getOriginalFilename());
+        try {
+            File file = File.createTempFile(originalFilename,
+                null);
+            multipartFile.transferTo(file);
+            return file;
+        } catch (IOException e) {
+            throw new InternalServerException(AWS_S3_FILE_CONVERSION_ERROR);
+        }
     }
 }
