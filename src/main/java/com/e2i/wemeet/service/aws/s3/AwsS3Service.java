@@ -48,13 +48,13 @@ public class AwsS3Service {
         metadata.put("content-type", multipartFile.getContentType());
         metadata.put("content-length", String.valueOf(multipartFile.getSize()));
         try {
-            PutObjectRequest putObject = PutObjectRequest.builder()
+            PutObjectRequest putObj = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(objectKey)
                 .metadata(metadata)
                 .build();
 
-            s3Client.putObject(putObject, RequestBody.fromFile(file));
+            s3Client.putObject(putObj, RequestBody.fromFile(file));
             log.info("Object Upload. ObjectKey: " + objectKey);
         } catch (S3Exception e) {
             log.info(e.getMessage());
