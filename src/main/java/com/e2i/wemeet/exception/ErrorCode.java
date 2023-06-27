@@ -10,7 +10,9 @@ public enum ErrorCode {
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
     AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error"),
-    AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error");
+    AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error"),
+    AWS_S3_OBJECT_DELETE_ERROR(50301, "aws.s3.object.delete.error");
+
 
     private final int code;
     private final String messageKey;

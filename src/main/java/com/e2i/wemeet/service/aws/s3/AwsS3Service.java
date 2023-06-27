@@ -1,11 +1,14 @@
 package com.e2i.wemeet.service.aws.s3;
 
+import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_OBJECT_DELETE_ERROR;
 import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_OBJECT_UPLOAD_ERROR;
 
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -51,6 +57,30 @@ public class AwsS3Service {
         } catch (S3Exception e) {
             log.info(e.getMessage());
             throw new InternalServerException(AWS_S3_OBJECT_UPLOAD_ERROR);
+        }
+
+        return objectKey;
+    }
+
+    public String deleteObject(String objectKey) {
+        S3Client s3Client = awsS3CredentialService.getS3Client();
+
+        List<ObjectIdentifier> toDelete = new ArrayList<>();
+        toDelete.add(ObjectIdentifier.builder()
+            .key(objectKey)
+            .build());
+
+        try {
+            DeleteObjectsRequest deleteTargetObject = DeleteObjectsRequest.builder()
+                .bucket(bucket)
+                .delete(d -> d.objects(toDelete).build())
+                .build();
+
+            DeleteObjectsResponse result = s3Client.deleteObjects(deleteTargetObject);
+            log.info("Object deleted. " + result.deleted());
+        } catch (S3Exception e) {
+            log.info(e.getMessage());
+            throw new InternalServerException(AWS_S3_OBJECT_DELETE_ERROR);
         }
 
         return objectKey;
