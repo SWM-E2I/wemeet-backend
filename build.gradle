@@ -47,7 +47,8 @@ dependencies {
     implementation platform('software.amazon.awssdk:bom:2.20.26')
     implementation 'software.amazon.awssdk:sns:2.20.90'
     implementation 'software.amazon.awssdk:ses:2.20.86'
-
+    implementation 'software.amazon.awssdk:s3:2.20.82'
+    
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
