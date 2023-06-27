@@ -7,11 +7,12 @@ import static com.e2i.wemeet.exception.ErrorCode.AWS_S3_OBJECT_UPLOAD_ERROR;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,12 +96,15 @@ public class AwsS3Service {
     }
 
     private File convertMultipartFileToFile(MultipartFile multipartFile) {
-        String originalFilename = Objects.requireNonNull(multipartFile.getOriginalFilename());
+        String uniqueFileName = UUID.randomUUID().toString();
+
         try {
-            File file = File.createTempFile(originalFilename,
+            File tempFile = File.createTempFile(uniqueFileName + "_" + "prefix", "suffix",
                 null);
-            multipartFile.transferTo(file);
-            return file;
+            Files.copy(multipartFile.getInputStream(), tempFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+            tempFile.deleteOnExit();
+            return tempFile;
         } catch (IOException e) {
             throw new InternalServerException(AWS_S3_FILE_CONVERSION_ERROR);
         }
