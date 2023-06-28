@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 /*
 * SecurityContext 에 저장되는 인증 객체
@@ -86,5 +87,17 @@ public class MemberPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        final String role = StringUtils.collectionToCommaDelimitedString(
+            authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList()
+        );
+        final String format = "MemberPrincipal(memberId=%d, role=%s, registered=%s)";
+
+        return String.format(format, memberId, role, registered);
     }
 }
