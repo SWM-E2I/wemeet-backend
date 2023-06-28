@@ -44,7 +44,6 @@ public class SecurityConfig {
                 .sessionManagement(
                     sessionConfigurer -> sessionConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .sessionFixation().none()
                         .disable());
 
 
@@ -58,9 +57,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh",
-                                    "/test**").permitAll()
-                                .requestMatchers("/v1/member/**").hasRole(Role.USER.name())
+                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh", "/test**").permitAll()
+                                .requestMatchers("/**").hasRole(Role.USER.name())
                                 .anyRequest().authenticated());
 
 
