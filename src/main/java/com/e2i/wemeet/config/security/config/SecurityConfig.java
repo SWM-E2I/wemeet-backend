@@ -46,6 +46,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .disable());
 
+        // Custom filter 로 예외처리하기 위해 ExceptionTranslationFilter 비활성화
+        http
+                .exceptionHandling(
+                    AbstractHttpConfigurer::disable);
 
         /* URL 인가 정책 적용
         * 허용 목록
