@@ -16,6 +16,8 @@ public enum ErrorCode {
     INVALID_CREDENTIAL_FORMAT(40007, "invalid.credential.format"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
+    MEMBER_NOT_FOUND(40101, "member.not.found"),
+    MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
