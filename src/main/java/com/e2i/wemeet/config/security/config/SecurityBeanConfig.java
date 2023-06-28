@@ -5,6 +5,7 @@ import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.config.security.filter.LoginProcessingFilter;
 import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
 import com.e2i.wemeet.config.security.handler.CustomAuthenticationSuccessHandler;
+import com.e2i.wemeet.config.security.manager.CreditAuthorizationManager;
 import com.e2i.wemeet.config.security.provider.SmsCredentialAuthenticationProvider;
 import com.e2i.wemeet.config.security.provider.SmsUserDetailsService;
 import com.e2i.wemeet.config.security.token.TokenInjector;
@@ -13,6 +14,8 @@ import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.service.credential.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -26,9 +29,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class SecurityBeanConfig {
@@ -121,5 +121,11 @@ public class SecurityBeanConfig {
         DefaultMethodSecurityExpressionHandler methodSecurityExpressionHandler = new DefaultMethodSecurityExpressionHandler();
         methodSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
         return methodSecurityExpressionHandler;
+    }
+
+    // Credit 개수를 확인하는 AuthorizationManager
+    @Bean
+    public CreditAuthorizationManager authorizationManager(MemberRepository memberRepository) {
+        return new CreditAuthorizationManager(memberRepository);
     }
 }
