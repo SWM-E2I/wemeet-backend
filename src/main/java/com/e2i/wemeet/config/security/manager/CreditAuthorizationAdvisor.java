@@ -18,13 +18,13 @@ public class CreditAuthorizationAdvisor {
 
     private final CreditAuthorizationManager creditAuthorizationManager;
 
-    @Before("@annotation(CreditAuthorize)")
+    @Before("@annotation(com.e2i.wemeet.config.security.manager.CreditCheck)")
     public void verify(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        CreditAuthorize creditAuthorize = signature.getMethod().getAnnotation(CreditAuthorize.class);
+        CreditCheck creditCheck = signature.getMethod().getAnnotation(CreditCheck.class);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        creditAuthorizationManager.verify(authentication, creditAuthorize);
+        creditAuthorizationManager.verify(authentication, creditCheck);
     }
 
 }

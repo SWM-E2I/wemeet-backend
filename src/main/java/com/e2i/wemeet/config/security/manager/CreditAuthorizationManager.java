@@ -17,14 +17,14 @@ public class CreditAuthorizationManager {
 
     private final MemberRepository memberRepository;
 
-    public void verify(final Authentication authentication, final CreditAuthorize object) {
+    public void verify(final Authentication authentication, final CreditCheck object) {
         if (!check(authentication, object).isGranted()) {
             log.info("HAS NOT ENOUGH CREDIT");
             throw new UnAuthorizedCreditException();
         }
     }
 
-    private AuthorizationDecision check(final Authentication authentication, final CreditAuthorize object) {
+    private AuthorizationDecision check(final Authentication authentication, final CreditCheck object) {
         int requiredCredit = object.value();
         int memberCredit = getMemberCredit(authentication);
 
