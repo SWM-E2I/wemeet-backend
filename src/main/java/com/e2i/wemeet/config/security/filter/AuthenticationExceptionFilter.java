@@ -37,19 +37,11 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (InvalidHttpRequestException e) {
-            setErrorResponse(response, e, 405);
         } catch (CustomException e) {
             setErrorResponse(response, e);
         } catch (Exception e) {
             setErrorResponse(response, e);
         }
-    }
-
-    private void setErrorResponse(HttpServletResponse response, CustomException e, int httpStatus)
-        throws IOException {
-        setErrorResponse(response, e);
-        response.setStatus(httpStatus);
     }
 
     // CustomException 예외 응답
