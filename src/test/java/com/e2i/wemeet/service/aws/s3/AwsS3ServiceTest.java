@@ -53,7 +53,7 @@ class AwsS3ServiceTest {
         String result = awsS3Service.putObject(multipartFile, "test-directory");
 
         verify(s3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
-        String regexPattern = "test-directory/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}_test-file.txt";
+        String regexPattern = "test-directory/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}";
         MatcherAssert.assertThat(result, Matchers.matchesPattern(regexPattern));
     }
 
