@@ -27,5 +27,12 @@ jobs:
           java-version: 17
           distribution: 'temurin'
           cache: 'gradle'
+      - name: Change Gradle version
+        run: ./gradlew incrementVersion --versionIncrementType=PATCH
       - name: Build and push image to Amazon ECR
         run: ./gradlew clean jib -x test
+      - name: Push Github
+        run: |
+          git add .
+          git commit -m "deploy: push container image to ecr"
+          git push

@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.dipien:semantic-version-gradle-plugin:2.0.0")
+    }
+}
+
 plugins {
     id 'java'
     id 'jacoco'
@@ -9,12 +18,12 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.3.2'
 }
 
-group = 'com.e2i'
-version = '0.0.1-TEST'
+version = "0.0.1"
+apply plugin: "com.dipien.semantic-version"
 
-java {
-    sourceCompatibility = '17'
-}
+group = 'com.e2i'
+
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -89,7 +98,7 @@ jib {
     }
     to {
         image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
-        tags = ['latest', "${project.version}".toString()]
+        tags = ['wemeet-dev-image', "${project.version}".toString()]
         credHelper = 'ecr-login'
     }
     container {
