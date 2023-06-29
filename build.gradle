@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.dipien:semantic-version-gradle-plugin:2.0.0")
+    }
+}
+
 plugins {
     id 'java'
     id 'jacoco'
@@ -6,14 +15,15 @@ plugins {
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.google.cloud.tools.jib' version '3.3.2'
 }
+
+version = "0.0.1"
+apply plugin: "com.dipien.semantic-version"
 
 group = 'com.e2i'
-version = '0.0.1-SNAPSHOT'
 
-java {
-    sourceCompatibility = '17'
-}
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -48,7 +58,7 @@ dependencies {
     implementation 'software.amazon.awssdk:sns:2.20.90'
     implementation 'software.amazon.awssdk:ses:2.20.86'
     implementation 'software.amazon.awssdk:s3:2.20.82'
-    
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -80,4 +90,21 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+jib {
+    from {
+        image = 'eclipse-temurin:17-jdk-alpine'
+    }
+    to {
+        image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
+        tags = ['wemeet-dev-image', "${project.version}".toString()]
+        credHelper = 'ecr-login'
+    }
+    container {
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        jvmFlags = ['-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8']
+        ports = ['8080']
+        user = 'nobody:nogroup'
+    }
 }
