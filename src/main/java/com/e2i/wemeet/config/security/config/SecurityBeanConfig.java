@@ -126,6 +126,6 @@ public class SecurityBeanConfig {
     // Credit 개수를 확인하는 AuthorizationManager
     @Bean
     public CreditAuthorizationManager authorizationManager(MemberRepository memberRepository) {
-        return new CreditAuthorizationManager(memberRepository);
+        return new CreditAuthorizationManager(memberRepository, roleHierarchy());
     }
 }
