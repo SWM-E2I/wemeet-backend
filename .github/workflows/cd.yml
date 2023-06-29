@@ -33,6 +33,8 @@ jobs:
         run: ./gradlew clean jib -x test
       - name: Push Github
         run: |
+          git config --global user.email "qkrdbsk28@naver.com"
+          git config --global user.name "Chaerim1001"
           git add .
           git commit -m "deploy: push container image to ecr"
           git push
