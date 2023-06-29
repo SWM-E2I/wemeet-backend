@@ -4,9 +4,27 @@ on:
     branches:
       - develop
 jobs:
-  deploy:
-    name: Deploy to AWS
+  check-changes:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check for Changes
+        id: git-diff
+        run: |
+          changed_files=$(git diff --name-only)
+          if [ -n "$changed_files" ]; then
+            echo "::set-output name=changes::true"
+          else
+            echo "::set-output name=changes::false"
+          fi
+
+  deploy:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    if: needs.check-changes.outputs.changes == 'true'
     steps:
       - uses: actions/checkout@v3
         with:
