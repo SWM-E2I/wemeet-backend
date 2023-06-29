@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
 jobs:
   deploy:
     name: Deploy to AWS
@@ -37,4 +36,4 @@ jobs:
           git config --global user.name "Chaerim1001"
           git add .
           git commit -m "deploy: push container image to ecr"
-          git push origin HEAD:E2I-44-rim/build-cd-pipeline
+          git push origin develop
