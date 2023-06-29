@@ -4,27 +4,8 @@ on:
     branches:
       - develop
 jobs:
-  check-changes:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Check for Changes
-        id: git-diff
-        run: |
-          changed_files=$(git diff --name-only)
-          if [ -n "$changed_files" ]; then
-            echo "::set-output name=changes::true"
-          else
-            echo "::set-output name=changes::false"
-          fi
-
   deploy:
-    needs: check-changes
     runs-on: ubuntu-latest
-    if: needs.check-changes.outputs.changes == 'true'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -53,5 +34,5 @@ jobs:
           git config --global user.email "qkrdbsk28@naver.com"
           git config --global user.name "Chaerim1001"
           git add .
-          git commit -m "deploy: push container image to ecr"
+          git commit -m "[skip actions] deploy: push container image to ecr"
           git push origin develop
