@@ -1,0 +1,79 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:075584359222:task-definition/wemeet-ecs-task:6",
+  "containerDefinitions": [
+    {
+      "name": "application",
+      "image": "075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "application-8080-tcp",
+          "containerPort": 8080,
+          "hostPort": 80,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/wemeet-ecs-task",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "family": "wemeet-ecs-task",
+  "executionRoleArn": "arn:aws:iam::075584359222:role/ecsTaskExecutionRole",
+  "networkMode": "bridge",
+  "revision": 6,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2"
+  ],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2023-06-30T05:37:35.499Z",
+  "registeredBy": "arn:aws:iam::075584359222:user/wemeet-chaerim",
+  "tags": []
+}
