@@ -36,3 +36,10 @@ jobs:
           git add build.gradle
           git commit -m "[skip actions] build(gradle): change project version"
           git push origin develop
+      - name: Deploy to AWS ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          cluster: ${{ secrets.AWS_ECS_CLUSTER }}
+          service: ${{ secrets.AWS_ECS_SERVICE }}
+          wait-for-service-stability: true
