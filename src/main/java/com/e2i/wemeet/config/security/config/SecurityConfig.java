@@ -1,5 +1,6 @@
 package com.e2i.wemeet.config.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
@@ -10,6 +11,7 @@ import com.e2i.wemeet.domain.member.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -19,6 +21,7 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @RequiredArgsConstructor
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -44,9 +47,12 @@ public class SecurityConfig {
                 .sessionManagement(
                     sessionConfigurer -> sessionConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .sessionFixation().none()
                         .disable());
 
+        // Custom filter 로 예외처리하기 위해 ExceptionTranslationFilter 비활성화
+        http
+                .exceptionHandling(
+                    AbstractHttpConfigurer::disable);
 
         /* URL 인가 정책 적용
         * 허용 목록
@@ -58,9 +64,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh",
-                                    "/test**").permitAll()
-                                .requestMatchers("/v1/member/**").hasRole(Role.USER.name())
+                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh").permitAll()
+                                .requestMatchers(GET, "/test**", "/health").permitAll()
+                                .requestMatchers("/**").hasRole(Role.USER.name())
                                 .anyRequest().authenticated());
 
 

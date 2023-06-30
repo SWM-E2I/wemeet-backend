@@ -46,8 +46,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
      * */
     private void writeResponse(HttpServletResponse response, MemberPrincipal principal)
         throws IOException {
-        log.info("Login Request Success - memberId : {}, registered : {}",
-            principal.getMemberId(), principal.isRegistered());
+        log.info("Login Request Success - {}", principal.toString());
 
         SmsCredentialResponse data = new SmsCredentialResponse(
             principal.isRegistered(), principal.getMemberId(), principal.getAuthorities());

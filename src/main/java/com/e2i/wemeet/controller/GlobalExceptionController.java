@@ -1,7 +1,9 @@
 package com.e2i.wemeet.controller;
 
+import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
+import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
@@ -10,7 +12,9 @@ import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,7 +24,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionController {
 
     private static final String ERROR_LOG_FORMAT = "Error Class : {}, Error Code : {}, Message : {}";
+
+    private static final String UNAUTHORIZED_LOG_FORMAT = "UnAuthorized Error Class : {}, Error Code : {}, Message : {}";
     private final MessageSourceAccessor messageSourceAccessor;
+
+    // @PreAuthorize 예외 핸들링
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(final AccessDeniedException e) {
+        final ErrorCode errorCode = UNAUTHORIZED_ROLE;
+        final int code = errorCode.getCode();
+        final String message = messageSourceAccessor.getMessage(errorCode.getMessageKey());
+
+        log.info(UNAUTHORIZED_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return new ResponseEntity<>(
+            new ErrorResponse(code, message), HttpStatus.UNAUTHORIZED
+        );
+    }
 
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<ErrorResponse> handleInvalidValueException(final InvalidValueException e) {

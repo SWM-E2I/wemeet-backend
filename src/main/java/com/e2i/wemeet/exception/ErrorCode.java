@@ -16,6 +16,8 @@ public enum ErrorCode {
     INVALID_CREDENTIAL_FORMAT(40007, "invalid.credential.format"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
+    MEMBER_NOT_FOUND(40101, "member.not.found"),
+    MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
@@ -25,8 +27,14 @@ public enum ErrorCode {
     REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
     REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
 
+    UNAUTHORIZED(40300, "unauthorized"),
+    UNAUTHORIZED_ROLE(40301, "unauthorized.role"),
+    UNAUTHORIZED_ROLE_MANAGER(40302, "unauthorized.role.manager"),
+    UNAUTHORIZED_ROLE_ADMIN(40303, "unauthorized.role.admin"),
+    UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
+
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
-    AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error");
+    AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
     ;
 
     private final int code;

@@ -1,8 +1,9 @@
 package com.e2i.wemeet.config.security.filter;
 
+import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED;
+
 import com.e2i.wemeet.exception.CustomException;
 import com.e2i.wemeet.exception.ErrorResponse;
-import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /*
@@ -37,19 +39,13 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (InvalidHttpRequestException e) {
-            setErrorResponse(response, e, 405);
         } catch (CustomException e) {
+            setErrorResponse(response, e);
+        } catch (AccessDeniedException e) {
             setErrorResponse(response, e);
         } catch (Exception e) {
             setErrorResponse(response, e);
         }
-    }
-
-    private void setErrorResponse(HttpServletResponse response, CustomException e, int httpStatus)
-        throws IOException {
-        setErrorResponse(response, e);
-        response.setStatus(httpStatus);
     }
 
     // CustomException 예외 응답
@@ -57,6 +53,17 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         throws IOException {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+
+        setErrorResponseBody(response, code, message);
+    }
+
+    // AuthorizationManager 에서 발생한 인가 예외 발생 시
+    private void setErrorResponse(HttpServletResponse response, AccessDeniedException e)
+        throws IOException {
+        final int code = UNAUTHORIZED.getCode();
+        final String message = messageSourceAccessor.getMessage(UNAUTHORIZED.getMessageKey());
 
         log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
 
