@@ -6,7 +6,7 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
-import com.e2i.wemeet.exception.unauthorized.UnAuthorizedCreditException;
+import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class CreditAuthorizationManager {
     public void verify(final Authentication authentication, final CreditAuthorize object) {
         AuthorizationDecision decision = check(authentication, object);
         if (!decision.hasCredit) {
-            throw new UnAuthorizedCreditException();
+            throw new CreditNotEnoughException();
         }
         if (!decision.hasRole) {
             throw new UnAuthorizedRoleException();

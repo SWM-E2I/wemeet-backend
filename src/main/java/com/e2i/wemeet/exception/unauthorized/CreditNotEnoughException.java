@@ -5,13 +5,13 @@ import com.e2i.wemeet.exception.ErrorCode;
 /*
 * 요청에 필요한 Credit이 없을 때 발생
 * */
-public class UnAuthorizedCreditException extends UnAuthorizedException {
+public class CreditNotEnoughException extends UnAuthorizedException {
 
-    public UnAuthorizedCreditException() {
+    public CreditNotEnoughException() {
         super(ErrorCode.UNAUTHORIZED_CREDIT);
     }
 
-    public UnAuthorizedCreditException(ErrorCode errorCode) {
+    public CreditNotEnoughException(ErrorCode errorCode) {
         super(errorCode);
     }
 }
