@@ -1,5 +1,6 @@
 package com.e2i.wemeet.config.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
@@ -63,7 +64,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh", "/test**").permitAll()
+                                .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh").permitAll()
+                                .requestMatchers(GET, "/test**", "/health").permitAll()
                                 .requestMatchers("/**").hasRole(Role.USER.name())
                                 .anyRequest().authenticated());
 
