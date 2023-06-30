@@ -34,5 +34,5 @@ jobs:
           git config --global user.email "qkrdbsk28@naver.com"
           git config --global user.name "Chaerim1001"
           git add build.gradle
-          git commit -m "[skip actions] deploy: push container image to ecr"
+          git commit -m "[skip actions] build(gradle): change project version"
           git push origin develop
