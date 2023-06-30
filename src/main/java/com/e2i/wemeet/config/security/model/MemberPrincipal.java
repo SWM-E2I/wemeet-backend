@@ -41,6 +41,12 @@ public class MemberPrincipal implements UserDetails {
         this.registered = true;
     }
 
+    public MemberPrincipal(final Long memberId, final String role) {
+        this.memberId = memberId;
+        this.authorities = getAuthorities(role);
+        this.registered = true;
+    }
+
     private List<? extends GrantedAuthority> getAuthorities(final String authority) {
         String attachedPrefixRole = Role.getRoleAttachedPrefix(authority);
         return List.of(() -> attachedPrefixRole);
