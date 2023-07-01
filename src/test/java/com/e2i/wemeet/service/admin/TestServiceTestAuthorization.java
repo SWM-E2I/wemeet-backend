@@ -20,10 +20,10 @@ import org.springframework.security.access.AccessDeniedException;
 @DisplayName("Authorization Test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-class TestServiceTest {
+class TestServiceTestAuthorization {
 
     @Autowired
-    private TestService testService;
+    private TestAuthorizationService testAuthorizationService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -40,14 +40,14 @@ class TestServiceTest {
     @WithCustomMockUser(role = "MANAGER")
     @Test
     void requireManagerRole() {
-        assertDoesNotThrow(() -> testService.requireManagerRole());
+        assertDoesNotThrow(() -> testAuthorizationService.requireManagerRole());
     }
 
     @DisplayName("매니저 권한이 필요한 메소드를 User 권한을 가진 사용자가 호출하면 실패한다")
     @WithCustomMockUser
     @Test
     void requireManagerRoleFail() {
-        assertThatThrownBy(() -> testService.requireManagerRole())
+        assertThatThrownBy(() -> testAuthorizationService.requireManagerRole())
             .isExactlyInstanceOf(AccessDeniedException.class);
     }
 
@@ -62,7 +62,7 @@ class TestServiceTest {
         memberRepository.save(member);
 
         //when & then
-        assertDoesNotThrow(() -> testService.requireCredit());
+        assertDoesNotThrow(() -> testAuthorizationService.requireCredit());
     }
 
     @DisplayName("요청에 필요한 크레딧보다 적은 양의 크레딧을 보유하고 있으면 실패한다.")
@@ -77,7 +77,7 @@ class TestServiceTest {
         memberRepository.save(member);
 
         //when & then
-        assertThatThrownBy(() -> testService.requireCredit())
+        assertThatThrownBy(() -> testAuthorizationService.requireCredit())
             .isExactlyInstanceOf(CreditNotEnoughException.class);
     }
 
@@ -92,7 +92,7 @@ class TestServiceTest {
         memberRepository.save(member);
 
         //when & then
-        assertDoesNotThrow(() -> testService.requireCreditAndAdmin());
+        assertDoesNotThrow(() -> testAuthorizationService.requireCreditAndAdmin());
     }
 
 
@@ -107,7 +107,7 @@ class TestServiceTest {
         memberRepository.save(member);
 
         //when & then
-        assertThatThrownBy(() -> testService.requireCreditAndAdmin())
+        assertThatThrownBy(() -> testAuthorizationService.requireCreditAndAdmin())
             .isExactlyInstanceOf(UnAuthorizedRoleException.class);
     }
 
@@ -123,7 +123,7 @@ class TestServiceTest {
         memberRepository.save(member);
 
         //when & then
-        assertThatThrownBy(() -> testService.requireCreditAndAdmin())
+        assertThatThrownBy(() -> testAuthorizationService.requireCreditAndAdmin())
             .isExactlyInstanceOf(CreditNotEnoughException.class);
     }
 }
