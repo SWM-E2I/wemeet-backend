@@ -8,7 +8,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MariaDBDialect
     open-in-view: false
   h2:
     console:
@@ -20,7 +20,13 @@ spring:
   config:
     import: sub/application-jwt.yml, sub/application-aws.yml
   profiles:
-    active: dev
+    active: local
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: sub/local/application-db.yml
 ---
 spring:
   config:
