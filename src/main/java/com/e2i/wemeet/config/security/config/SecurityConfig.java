@@ -4,7 +4,7 @@ import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
-import com.e2i.wemeet.config.security.filter.LoginProcessingFilter;
+import com.e2i.wemeet.config.security.filter.SMSLoginProcessingFilter;
 import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final AuthenticationExceptionFilter authenticationExceptionFilter;
-    private final LoginProcessingFilter loginProcessingFilter;
+    private final SMSLoginProcessingFilter SMSLoginProcessingFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RefreshTokenProcessingFilter refreshTokenProcessingFilter;
 
@@ -75,8 +75,8 @@ public class SecurityConfig {
          */
         http
                 .addFilterAfter(authenticationExceptionFilter, LogoutFilter.class)
-                .addFilterAfter(loginProcessingFilter, AuthenticationExceptionFilter.class)
-                .addFilterAfter(refreshTokenProcessingFilter, LoginProcessingFilter.class)
+                .addFilterAfter(SMSLoginProcessingFilter, AuthenticationExceptionFilter.class)
+                .addFilterAfter(refreshTokenProcessingFilter, SMSLoginProcessingFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 
         return http.build();
