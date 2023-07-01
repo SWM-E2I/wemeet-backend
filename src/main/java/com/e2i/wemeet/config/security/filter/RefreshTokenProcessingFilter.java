@@ -95,7 +95,14 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         // get Key from payload (Ex) "memberId-1-USER"
         String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
         String savedRefresh = operations.get(redisKey);
-        return refreshToken.equals(savedRefresh);
+
+        boolean tokenEquals = refreshToken.equals(savedRefresh);
+        if (tokenEquals) {
+            // Redis 에서 RefreshToken 삭제
+            redisTemplate.delete(redisKey);
+        }
+
+        return tokenEquals;
     }
 
     // Cookie 에서 Refresh Token 을 가져옴
