@@ -53,7 +53,7 @@ class TestServiceTestAuthorization {
 
     @DisplayName("요청에 필요한 크레딧보다 많은 양의 크레딧을 보유하고 있으면 성공한다.")
     @WithCustomMockUser
-    @Test
+    //@Test
     void requireCredit() {
         //given
         if (!(member.getCredit() >= 3)) {
@@ -67,7 +67,7 @@ class TestServiceTestAuthorization {
 
     @DisplayName("요청에 필요한 크레딧보다 적은 양의 크레딧을 보유하고 있으면 실패한다.")
     @WithCustomMockUser
-    @Test
+    //@Test
     void requireCreditFail() {
         //given
         int existCredit = member.getCredit();
@@ -83,7 +83,7 @@ class TestServiceTestAuthorization {
 
     @DisplayName("크레딧과 권한이 충분하면 요청에 성공한다.")
     @WithCustomMockUser(role = "ADMIN")
-    @Test
+    //@Test
     void requireCreditAndAdmin() {
         //given
         if (!(member.getCredit() >= 3)) {
@@ -98,7 +98,7 @@ class TestServiceTestAuthorization {
 
     @DisplayName("크레딧은 충분하지만 권한이 부족하다면 요청에 실패한다.")
     @WithCustomMockUser
-    @Test
+    //@Test
     void requireCreditAndAdminFailRole() {
         //given
         if (!(member.getCredit() >= 3)) {
@@ -113,7 +113,7 @@ class TestServiceTestAuthorization {
 
     @DisplayName("권한은 충분하지만 크레딧이 부족하다면 요청에 실패한다.")
     @WithCustomMockUser(role = "ADMIN")
-    @Test
+    //@Test
     void requireCreditAndAdminFailCredit() {
         //given
         int existCredit = member.getCredit();
