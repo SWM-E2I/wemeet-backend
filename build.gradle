@@ -44,14 +44,16 @@ checkstyle {
 }
 
 dependencies {
-	  implementation 'org.springframework.boot:spring-boot-starter-web'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-	  implementation 'org.springframework.boot:spring-boot-starter-validation'
-	  implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
-	  implementation 'com.auth0:java-jwt:4.4.0'
-	  implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
+    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'org.flywaydb:flyway-core'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -63,12 +65,12 @@ dependencies {
     implementation 'software.amazon.awssdk:ses:2.20.86'
     implementation 'software.amazon.awssdk:s3:2.20.82'
 
-	  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	  testImplementation 'io.projectreactor:reactor-test'
-	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	  testImplementation 'io.projectreactor:reactor-test'
-	  testImplementation 'org.springframework.security:spring-security-test'
-	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
