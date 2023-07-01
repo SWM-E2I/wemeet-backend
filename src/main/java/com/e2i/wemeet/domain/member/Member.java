@@ -2,6 +2,7 @@ package com.e2i.wemeet.domain.member;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -62,10 +63,14 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "teamId")
     private Team team;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Builder
     public Member(Long memberId, String memberCode, String nickname, Gender gender,
         String phoneNumber, CollegeInfo collegeInfo, Preference preference, Mbti mbti,
-        String introduction, int credit, Team team) {
+        String introduction, int credit, Team team, Role role) {
         this.memberId = memberId;
         this.memberCode = memberCode;
         this.nickname = nickname;
@@ -74,9 +79,24 @@ public class Member extends BaseTimeEntity {
         this.collegeInfo = collegeInfo;
         this.preference = preference;
         this.mbti = mbti;
-
         this.introduction = introduction;
         this.credit = credit;
         this.team = team;
+        this.role = role;
+    }
+
+    public void addCredit(int amount) {
+        this.credit += amount;
+    }
+
+    public void minusCredit(int amount) {
+        if (this.credit - amount < 0) {
+            throw new CreditNotEnoughException();
+        }
+        this.credit = this.credit - amount;
+    }
+
+    public void setRole(final Role role) {
+        this.role = role;
     }
 }
