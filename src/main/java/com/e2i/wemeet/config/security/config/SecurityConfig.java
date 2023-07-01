@@ -1,13 +1,11 @@
 package com.e2i.wemeet.config.security.config;
 
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.config.security.filter.LoginProcessingFilter;
 import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
-import com.e2i.wemeet.domain.member.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,8 +63,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh").permitAll()
-                                .requestMatchers(GET, "/test**", "/health").permitAll()
-                                .requestMatchers("/**").hasRole(Role.USER.name())
+                                .requestMatchers("/test/**", "/health**", "/h2-console").permitAll()
                                 .anyRequest().authenticated());
 
 

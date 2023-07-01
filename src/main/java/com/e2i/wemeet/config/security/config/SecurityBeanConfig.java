@@ -16,6 +16,7 @@ import com.e2i.wemeet.service.credential.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -27,11 +28,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityBeanConfig {
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web -> {
+            web.ignoring().requestMatchers(PathRequest.toH2Console());
+            web.ignoring().requestMatchers("/test", "/health");
+            web.ignoring().requestMatchers("/css/**", "/js/**", "/favicon.ico");
+        });
+    }
+
 
     // 인증 과정에서 발생하는 예외를 처리하는 필터
     @Bean
