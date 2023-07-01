@@ -1,4 +1,4 @@
-package com.e2i.wemeet.service.aws;
+package com.e2i.wemeet.service.aws.sns;
 
 import static com.e2i.wemeet.exception.ErrorCode.AWS_SNS_MESSAGE_TRANSFER_ERROR;
 
@@ -16,10 +16,10 @@ import software.amazon.awssdk.services.sns.model.SnsException;
 @Service
 public class AwsSnsService {
 
-    private final AwsCredentialService awsCredentialService;
+    private final AwsSnsCredentialService awsSnsCredentialService;
 
     public void sendSms(String phoneNumber, String message) {
-        SnsClient snsClient = awsCredentialService.getSnsClient();
+        SnsClient snsClient = awsSnsCredentialService.getSnsClient();
         try {
             PublishRequest request = PublishRequest.builder()
                 .message(message)

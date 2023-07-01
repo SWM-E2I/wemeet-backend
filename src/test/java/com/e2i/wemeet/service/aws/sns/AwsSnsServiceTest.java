@@ -1,4 +1,4 @@
-package com.e2i.wemeet.service.aws;
+package com.e2i.wemeet.service.aws.sns;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
@@ -23,7 +23,7 @@ class AwsSnsServiceTest {
     private AwsSnsService awsSnsService;
 
     @Mock
-    private AwsCredentialService awsCredentialService;
+    private AwsSnsCredentialService awsSnsCredentialService;
 
     @Mock
     private SnsClient snsClient;
@@ -33,7 +33,7 @@ class AwsSnsServiceTest {
 
     @Test
     void testSendSms() {
-        when(awsCredentialService.getSnsClient()).thenReturn(snsClient);
+        when(awsSnsCredentialService.getSnsClient()).thenReturn(snsClient);
         PublishResponse publishResponse = PublishResponse.builder().build();
         when(snsClient.publish(any(PublishRequest.class))).thenReturn(publishResponse);
 
@@ -47,7 +47,7 @@ class AwsSnsServiceTest {
 
     @Test
     void testSendSms_Failure() {
-        when(awsCredentialService.getSnsClient()).thenReturn(snsClient);
+        when(awsSnsCredentialService.getSnsClient()).thenReturn(snsClient);
         when(snsClient.publish(any(PublishRequest.class))).thenThrow(SnsException.class);
 
         assertThatThrownBy(() -> awsSnsService.sendSms(phoneNumber, message))

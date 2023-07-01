@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @RequiredArgsConstructor
-@ConfigurationProperties("aws.sns")
-public class AwsSnsConfig {
+@ConfigurationProperties("aws.ses")
+public class AwsSesConfig {
 
     private final String accessKey;
 

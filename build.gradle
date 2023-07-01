@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.dipien:semantic-version-gradle-plugin:2.0.0")
+    }
+}
+
 plugins {
     id 'java'
     id 'jacoco'
@@ -6,14 +15,15 @@ plugins {
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.google.cloud.tools.jib' version '3.3.2'
 }
+
+version = "0.0.5"
+apply plugin: "com.dipien.semantic-version"
 
 group = 'com.e2i'
-version = '0.0.1-SNAPSHOT'
 
-java {
-    sourceCompatibility = '17'
-}
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -34,28 +44,31 @@ checkstyle {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
-	implementation 'com.auth0:java-jwt:4.4.0'
-	implementation 'org.flywaydb:flyway-core'
+	  implementation 'org.springframework.boot:spring-boot-starter-web'
+	  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	  implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+	  implementation 'org.springframework.boot:spring-boot-starter-validation'
+	  implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
+	  implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
+	  implementation 'com.auth0:java-jwt:4.4.0'
+	  implementation 'org.flywaydb:flyway-core'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation platform('software.amazon.awssdk:bom:2.20.26')
-	implementation 'software.amazon.awssdk:sns:2.20.90'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    implementation 'software.amazon.awssdk:sns:2.20.90'
+    implementation 'software.amazon.awssdk:ses:2.20.86'
+    implementation 'software.amazon.awssdk:s3:2.20.82'
+
+	  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	  testImplementation 'io.projectreactor:reactor-test'
+	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	  testImplementation 'io.projectreactor:reactor-test'
+	  testImplementation 'org.springframework.security:spring-security-test'
+	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
@@ -84,4 +97,21 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+jib {
+    from {
+        image = 'eclipse-temurin:17-jdk-alpine'
+    }
+    to {
+        image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
+        tags = ['wemeet-dev-image', "${project.version}".toString()]
+        credHelper = 'ecr-login'
+    }
+    container {
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        jvmFlags = ['-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8']
+        ports = ['8080']
+        user = 'nobody:nogroup'
+    }
 }
