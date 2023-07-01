@@ -57,7 +57,9 @@ public class TokenInjector {
 
         // get Key from payload (Ex) "memberId-1-USER"
         String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
-        operations.set(redisKey, refreshToken);
+        Duration refreshTokenDuration = Duration.ofMillis(JwtEnv.REFRESH.getExpirationTimeToMillis());
+
+        operations.set(redisKey, refreshToken, refreshTokenDuration);
     }
 
     private Cookie createRefreshTokenCookie(String refreshToken) {

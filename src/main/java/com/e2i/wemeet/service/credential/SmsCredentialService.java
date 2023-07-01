@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.credential;
 
 import com.e2i.wemeet.exception.notfound.SmsCredentialNotFoundException;
+import java.time.Duration;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,7 +27,7 @@ public class SmsCredentialService implements CredentialService {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String credential = generateCredential();
 
-        operations.set(receiveTarget, credential);
+        operations.set(receiveTarget, credential, Duration.ofMinutes(10));
     }
 
     /*
@@ -48,9 +49,7 @@ public class SmsCredentialService implements CredentialService {
 
     // 100000 ~ 999999
     private String generateCredential() {
-        Random random = new Random();
-
-        int credential = random.nextInt(900_000) + 100_000;
+        int credential = new Random().nextInt(900_000) + 100_000;
         return String.valueOf(credential);
     }
 }
