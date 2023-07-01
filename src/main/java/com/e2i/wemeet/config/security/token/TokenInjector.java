@@ -35,13 +35,20 @@ public class TokenInjector {
     * AccessToken, RefreshToken 을 응답에 삽입
     * */
     public void injectToken(HttpServletResponse response, final Payload payload) {
-        String accessToken = accessTokenHandler.createToken(payload);
+        injectRefreshToken(response, payload);
+        injectAccessToken(response, payload);
+    }
+
+    private void injectRefreshToken(HttpServletResponse response, Payload payload) {
         String refreshToken = refreshTokenHandler.createToken(payload);
         Cookie refreshTokenCookie = createRefreshTokenCookie(refreshToken);
-
         saveRefreshTokenInRedis(payload, refreshToken);
-        response.setHeader(JwtEnv.ACCESS.getKey(), accessToken);
         response.addCookie(refreshTokenCookie);
+    }
+
+    public void injectAccessToken(HttpServletResponse response, Payload payload) {
+        String accessToken = accessTokenHandler.createToken(payload);
+        response.setHeader(JwtEnv.ACCESS.getKey(), accessToken);
     }
 
     // Redis 에 RefreshToken 저장
