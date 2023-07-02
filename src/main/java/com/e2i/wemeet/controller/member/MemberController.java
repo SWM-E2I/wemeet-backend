@@ -7,6 +7,7 @@ import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
@@ -136,7 +137,7 @@ public class MemberController {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
 
-        List<Code> modifyCode = findMemberInterestCode(requestDto.memberInterestList());
+        List<Code> modifyCode = findCode(requestDto.memberInterestList(), "G003");
         memberService.modifyMember(memberId, requestDto, modifyCode);
 
         return ResponseEntity.ok(
@@ -144,10 +145,27 @@ public class MemberController {
         );
     }
 
-    private List<Code> findMemberInterestCode(List<String> memberInterestList) {
+    @PutMapping("/{memberId}/prefer")
+    public ResponseEntity<ResponseDto> modifyMemberPreference(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("memberId") Long memberId,
+        @RequestBody ModifyMemberPreferenceRequestDto requestDto) {
+        if (!memberId.equals(memberPrincipal.getMemberId())) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
+        }
+
+        List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList(), "G002");
+        memberService.modifyPreference(memberId, requestDto, modifyCode);
+
+        return ResponseEntity.ok(
+            new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Preference Success", null)
+        );
+    }
+
+    private List<Code> findCode(List<String> codeList, String groupCodeId) {
         List<Code> findCodeList = new ArrayList<>();
-        for (String code : memberInterestList) {
-            findCodeList.add(codeService.findCode(code, "G003"));
+        for (String code : codeList) {
+            findCodeList.add(codeService.findCode(code, groupCodeId));
         }
 
         return findCodeList;

@@ -111,4 +111,8 @@ public class Member extends BaseTimeEntity {
     public void modifyIntroduction(String introduction) {
         this.introduction = introduction;
     }
+
+    public void modifyPreference(Preference preference) {
+        this.preference = preference;
+    }
 }

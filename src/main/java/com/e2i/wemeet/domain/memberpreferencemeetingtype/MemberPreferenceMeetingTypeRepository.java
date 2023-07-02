@@ -8,4 +8,6 @@ public interface MemberPreferenceMeetingTypeRepository extends
 
     List<MemberPreferenceMeetingType> findByMemberMemberId(Long memberId);
 
+    void deleteAllByMemberMemberId(Long memberId);
+
 }
