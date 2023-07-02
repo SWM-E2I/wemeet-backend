@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS `member` (
     `member_id` bigint NOT NULL AUTO_INCREMENT,
+    `team_id` bigint,
     `member_code` char(4) NOT NULL,
     `nickname` varchar(20) NOT NULL,
     `gender` varchar(6) NOT NULL,
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `member` (
     `modified_at` datetime(6),
     `role` varchar(8),
     PRIMARY KEY (`member_id`),
+    FOREIGN KEY (`team_id`) REFERENCES team (`team_id`),
     UNIQUE KEY `member_mail` (`mail`),
     UNIQUE KEY `member_phone_number` (`phone_number`))
     ENGINE = InnoDB
