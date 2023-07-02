@@ -12,6 +12,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +48,21 @@ public class ProfileImageController {
 
         return ResponseEntity.ok(
             new ResponseDto(ResponseStatus.SUCCESS, "Profile Image Upload Success", null)
+        );
+    }
+
+
+    @DeleteMapping("/{profileImageId}")
+    public ResponseEntity<ResponseDto> withdrawProfileImage(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("profileImageId") Long profileImageId) {
+        ProfileImage profileImage = profileImageService.findProfileImageById(profileImageId);
+
+        awsS3Service.deleteObject(profileImage.getBasicUrl());
+        profileImageService.deleteProfileImage(profileImageId);
+
+        return ResponseEntity.ok(
+            new ResponseDto(ResponseStatus.SUCCESS, "Profile Image Withdraw Success", null)
         );
     }
 }

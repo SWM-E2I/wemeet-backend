@@ -18,6 +18,7 @@ public enum ErrorCode {
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
     MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),
+    PROFILE_IMAGE_NOT_FOUND(40103, "profile.image.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
@@ -38,8 +39,7 @@ public enum ErrorCode {
     AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error"),
     AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error"),
     AWS_S3_OBJECT_DELETE_ERROR(50301, "aws.s3.object.delete.error"),
-    AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error")
-    ;
+    AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error");
 
 
     private final int code;

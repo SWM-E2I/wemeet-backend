@@ -3,6 +3,7 @@ package com.e2i.wemeet.service.profileimage;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.exception.notfound.ProfileImageNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,12 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     @Transactional
     public void deleteProfileImage(Long profileImageId) {
         profileImageRepository.deleteById(profileImageId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProfileImage findProfileImageById(Long profileImageId) {
+        return profileImageRepository.findById(profileImageId)
+            .orElseThrow(ProfileImageNotFoundException::new);
     }
 }

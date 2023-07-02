@@ -21,4 +21,9 @@ public interface ProfileImageService {
      * ProfileImage 삭제
      */
     void deleteProfileImage(Long profileImageId);
+
+    /*
+     * profileImageId를 통한 ProfileImage 검색
+     */
+    ProfileImage findProfileImageById(Long profileImageId);
 }
