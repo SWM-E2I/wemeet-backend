@@ -65,16 +65,8 @@ public class MemberController {
         List<MemberInterest> memberInterestList =
             memberInterestService.findMemberInterestByMemberId(memberId);
 
-        MemberDetailResponseDto result = MemberDetailResponseDto.builder()
-            .nickname(member.getNickname())
-            .gender(member.getGender())
-            .college(member.getCollegeInfo().getCollege())
-            .collegeType(member.getCollegeInfo().getCollegeType())
-            .admissionYear(member.getCollegeInfo().getAdmissionYear())
-            .introduction(member.getIntroduction())
-            .profileImageList(profileImageList)
-            .memberInterestList(memberInterestList)
-            .build();
+        MemberDetailResponseDto result = new MemberDetailResponseDto(member, profileImageList,
+            memberInterestList);
 
         return ResponseEntity.ok(
             new ResponseDto(ResponseStatus.SUCCESS, "Get Member-detail Success", result)

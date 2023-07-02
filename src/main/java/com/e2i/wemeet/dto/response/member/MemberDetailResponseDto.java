@@ -1,6 +1,7 @@
 package com.e2i.wemeet.dto.response.member;
 
 import com.e2i.wemeet.domain.member.Gender;
+import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import java.util.List;
@@ -18,4 +19,13 @@ public record MemberDetailResponseDto(
     List<MemberInterest> memberInterestList
 ) {
 
+    public MemberDetailResponseDto(Member member, List<ProfileImage> profileImageList,
+        List<MemberInterest> memberInterestList) {
+        this(
+            member.getNickname(), member.getGender(), member.getCollegeInfo().getCollege(),
+            member.getCollegeInfo().getCollegeType(),
+            member.getCollegeInfo().getAdmissionYear(), member.getIntroduction(), profileImageList,
+            memberInterestList
+        );
+    }
 }
