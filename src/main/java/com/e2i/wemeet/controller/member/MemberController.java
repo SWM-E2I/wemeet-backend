@@ -8,12 +8,14 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.memberinterest.MemberInterestService;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,7 +51,7 @@ public class MemberController {
     public ResponseEntity<ResponseDto> getMemberDetail(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId) {
-        if (memberId.equals(memberPrincipal.getMemberId())) {
+        if (!memberId.equals(memberPrincipal.getMemberId())) {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
 
@@ -74,4 +76,34 @@ public class MemberController {
             new ResponseDto(ResponseStatus.SUCCESS, "Get Member-detail Success", result)
         );
     }
+
+    @GetMapping("/{memberId}/info")
+    public ResponseEntity<ResponseDto> getMemberInfo(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("memberId") Long memberId) {
+        if (!memberId.equals(memberPrincipal.getMemberId())) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
+        }
+        Member member = memberService.findMemberById(memberId);
+        Optional<ProfileImage> mainProfileImage = profileImageService
+            .findProfileImageByMemberIdWithIsMain(memberId, true);
+
+        String profileImageUrl = mainProfileImage.map(ProfileImage::getLowResolutionBasicUrl)
+            .orElse(null);
+        boolean imageAuth = mainProfileImage.map(ProfileImage::isCertified).orElse(false);
+        boolean univAuth = member.getCollegeInfo().getMail() != null;
+
+        MemberInfoResponseDto result = MemberInfoResponseDto.builder()
+            .nickname(member.getNickname())
+            .memberCode(member.getMemberCode())
+            .profileImage(profileImageUrl)
+            .imageAuth(imageAuth)
+            .univAuth(univAuth)
+            .build();
+
+        return ResponseEntity.ok(
+            new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success", result)
+        );
+    }
+
 }
