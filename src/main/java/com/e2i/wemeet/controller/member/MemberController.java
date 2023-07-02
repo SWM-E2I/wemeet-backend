@@ -3,16 +3,19 @@ package com.e2i.wemeet.controller.member;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.memberinterest.MemberInterest;
+import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.memberinterest.MemberInterestService;
+import com.e2i.wemeet.service.memberpreferencemeetingtype.MemberPreferenceMeetingTypeService;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +37,7 @@ public class MemberController {
     private final MemberService memberService;
     private final ProfileImageService profileImageService;
     private final MemberInterestService memberInterestService;
+    private final MemberPreferenceMeetingTypeService memberPreferenceMeetingTypeService;
 
 
     @PostMapping
@@ -102,8 +106,27 @@ public class MemberController {
             .build();
 
         return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success", result)
+            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Info Success", result)
         );
     }
 
+    @GetMapping("/{memberId}/prefer")
+    public ResponseEntity<ResponseDto> getMemberPrefernece(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("memberId") Long memberId) {
+        if (!memberId.equals(memberPrincipal.getMemberId())) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
+        }
+
+        Member member = memberService.findMemberById(memberId);
+        List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList
+            = memberPreferenceMeetingTypeService.findMemberPreferenceMeetingType(memberId);
+
+        MemberPreferenceResponseDto result = new MemberPreferenceResponseDto(member,
+            memberPreferenceMeetingTypeList);
+
+        return ResponseEntity.ok(
+            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Prefer Success", result)
+        );
+    }
 }
