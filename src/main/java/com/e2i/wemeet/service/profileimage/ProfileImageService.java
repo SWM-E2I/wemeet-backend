@@ -14,7 +14,7 @@ public interface ProfileImageService {
     /*
      * 특정 member에 등록된 ProfileImage 검색
      */
-    Optional<ProfileImage> findProfileImageByMemberId(Long memberId, boolean isMain);
+    Optional<ProfileImage> findProfileImageByMemberIdWithIsMain(Long memberId, boolean isMain);
 
 
     /*

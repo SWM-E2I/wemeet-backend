@@ -34,7 +34,8 @@ public class ProfileImageServiceImpl implements ProfileImageService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<ProfileImage> findProfileImageByMemberId(Long memberId, boolean isMain) {
+    public Optional<ProfileImage> findProfileImageByMemberIdWithIsMain(Long memberId,
+        boolean isMain) {
         return profileImageRepository.findByMemberMemberIdAndIsMain(memberId, isMain);
     }
 
