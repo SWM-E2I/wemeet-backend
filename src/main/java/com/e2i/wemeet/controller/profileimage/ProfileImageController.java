@@ -35,8 +35,8 @@ public class ProfileImageController {
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestParam("main") boolean isMain, @RequestPart("file") MultipartFile file) {
         Member member = memberService.findMemberById(memberPrincipal.getMemberId());
-        Optional<ProfileImage> profileImage = profileImageService.findProfileImageByMemberIdWithIsMain(
-            member.getMemberId(), isMain);
+        Optional<ProfileImage> profileImage =
+            profileImageService.findProfileImageByMemberIdWithIsMain(member.getMemberId(), isMain);
 
         if (profileImage.isPresent()) {
             awsS3Service.deleteObject(profileImage.get().getBasicUrl());
