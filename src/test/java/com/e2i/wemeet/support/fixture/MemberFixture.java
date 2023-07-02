@@ -72,6 +72,7 @@ public enum MemberFixture {
             .gender(this.gender)
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo)
+            .preference(this.preference)
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
