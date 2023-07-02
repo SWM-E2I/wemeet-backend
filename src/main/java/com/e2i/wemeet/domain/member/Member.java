@@ -99,4 +99,16 @@ public class Member extends BaseTimeEntity {
     public void setRole(final Role role) {
         this.role = role;
     }
+
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void modifyMbti(Mbti mbti) {
+        this.mbti = mbti;
+    }
+
+    public void modifyIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 }

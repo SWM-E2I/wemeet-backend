@@ -21,6 +21,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(40101, "member.not.found"),
     MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),
     PROFILE_IMAGE_NOT_FOUND(40103, "profile.image.not.found"),
+    CODE_NOT_FOUND(40104, "code.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),

@@ -1,11 +1,13 @@
 package com.e2i.wemeet.controller.member;
 
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
@@ -13,10 +15,12 @@ import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
+import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.memberinterest.MemberInterestService;
 import com.e2i.wemeet.service.memberpreferencemeetingtype.MemberPreferenceMeetingTypeService;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +43,7 @@ public class MemberController {
     private final ProfileImageService profileImageService;
     private final MemberInterestService memberInterestService;
     private final MemberPreferenceMeetingTypeService memberPreferenceMeetingTypeService;
+    private final CodeService codeService;
 
 
     @PostMapping
@@ -103,7 +109,7 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}/prefer")
-    public ResponseEntity<ResponseDto> getMemberPrefernece(
+    public ResponseEntity<ResponseDto> getMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId) {
         if (!memberId.equals(memberPrincipal.getMemberId())) {
@@ -120,5 +126,30 @@ public class MemberController {
         return ResponseEntity.ok(
             new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Prefer Success", result)
         );
+    }
+
+    @PutMapping("/{memberId}")
+    public ResponseEntity<ResponseDto> modifyMember(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("memberId") Long memberId, @RequestBody ModifyMemberRequestDto requestDto) {
+        if (!memberId.equals(memberPrincipal.getMemberId())) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
+        }
+
+        List<Code> modifyCode = findMemberInterestCode(requestDto.memberInterestList());
+        memberService.modifyMember(memberId, requestDto, modifyCode);
+
+        return ResponseEntity.ok(
+            new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Success", null)
+        );
+    }
+
+    private List<Code> findMemberInterestCode(List<String> memberInterestList) {
+        List<Code> findCodeList = new ArrayList<>();
+        for (String code : memberInterestList) {
+            findCodeList.add(codeService.findCode(code, "G003"));
+        }
+
+        return findCodeList;
     }
 }

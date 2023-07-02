@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MemberInterestRepository extends JpaRepository<MemberInterest, Long> {
 
     List<MemberInterest> findByMemberMemberId(Long memberId);
+
+    void deleteAllByMemberMemberId(Long memberId);
 }
