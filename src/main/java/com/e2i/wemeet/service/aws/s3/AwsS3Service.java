@@ -37,10 +37,10 @@ public class AwsS3Service {
 
     private final AwsS3CredentialService awsS3CredentialService;
 
-    public String putObject(MultipartFile multipartFile, String directory) {
+    public String putObject(MultipartFile multipartFile) {
         S3Client s3Client = awsS3CredentialService.getS3Client();
 
-        String objectKey = createObjectKey(directory);
+        String objectKey = createObjectKey();
 
         File file = convertMultipartFileToFile(multipartFile);
 
@@ -88,11 +88,9 @@ public class AwsS3Service {
         return objectKey;
     }
 
-    private String createObjectKey(String directory) {
-        String pathDelimiter = "/";
+    private String createObjectKey() {
         String uuid = UUID.randomUUID().toString();
-
-        return directory + pathDelimiter + uuid;
+        return uuid + ".jpg";
     }
 
     private File convertMultipartFileToFile(MultipartFile multipartFile) {

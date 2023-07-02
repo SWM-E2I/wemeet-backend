@@ -50,10 +50,11 @@ class AwsS3ServiceTest {
 
     @Test
     void testPutObject() {
-        String result = awsS3Service.putObject(multipartFile, "test-directory");
+        String result = awsS3Service.putObject(multipartFile);
 
         verify(s3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
-        String regexPattern = "test-directory/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}";
+        String regexPattern =
+            "[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}" + ".jpg";
         MatcherAssert.assertThat(result, Matchers.matchesPattern(regexPattern));
     }
 
@@ -62,7 +63,7 @@ class AwsS3ServiceTest {
         when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class))).thenThrow(
             S3Exception.class);
 
-        assertThatThrownBy(() -> awsS3Service.putObject(multipartFile, "test-directory"))
+        assertThatThrownBy(() -> awsS3Service.putObject(multipartFile))
             .isExactlyInstanceOf((InternalServerException.class));
     }
 
