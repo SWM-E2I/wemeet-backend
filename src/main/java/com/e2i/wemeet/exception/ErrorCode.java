@@ -14,6 +14,8 @@ public enum ErrorCode {
     INVALID_PHONE_FORMAT(40005, "invalid.phone.format"),
     INVALID_EMAIL_FORMAT(40006, "invalid.email.format"),
     INVALID_CREDENTIAL_FORMAT(40007, "invalid.credential.format"),
+    DUPLICATED_PHONE_NUMBER(40008, "duplicated.phone.number"),
+    DUPLICATED_MAIL(40009, "duplicated.mail"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
