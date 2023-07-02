@@ -54,6 +54,7 @@ dependencies {
 
     implementation 'com.auth0:java-jwt:4.4.0'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
