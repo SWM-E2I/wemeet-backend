@@ -8,19 +8,18 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 
 @DisplayName("Authorization Test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-class TestServiceTestAuthorization {
+class TestServiceTestAuthorization extends AbstractIntegrationTest {
 
     @Autowired
     private TestAuthorizationService testAuthorizationService;
