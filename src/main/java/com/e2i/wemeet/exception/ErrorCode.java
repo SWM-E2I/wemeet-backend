@@ -35,6 +35,7 @@ public enum ErrorCode {
     UNAUTHORIZED_ROLE_MANAGER(40302, "unauthorized.role.manager"),
     UNAUTHORIZED_ROLE_ADMIN(40303, "unauthorized.role.admin"),
     UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
+    UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),

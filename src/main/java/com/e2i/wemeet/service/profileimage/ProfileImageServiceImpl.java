@@ -4,6 +4,7 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
 import com.e2i.wemeet.exception.notfound.ProfileImageNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,5 +52,11 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     public ProfileImage findProfileImageById(Long profileImageId) {
         return profileImageRepository.findById(profileImageId)
             .orElseThrow(ProfileImageNotFoundException::new);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProfileImage> findProfileImageByMemberId(Long memberId) {
+        return profileImageRepository.findByMemberMemberId(memberId);
     }
 }
