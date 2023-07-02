@@ -14,11 +14,14 @@ import com.e2i.wemeet.domain.member.Role;
 import java.util.Arrays;
 
 public enum AdminMemberFixture {
-    KAI("4100", "kai", Gender.MALE, "01012341234", ANYANG.create(), GENERAL_PREFERENCE.create(), Mbti.INFJ,
+    KAI("4100", "kai", Gender.MALE, "01012341234",
+        ANYANG.create(), GENERAL_PREFERENCE.create(), Mbti.INFJ,
         "hi", 100, Role.USER),
-    RIM("4101", "rim", Gender.FEMALE, "01088990011", SEOUL_WOMAN.create(), GENERAL_PREFERENCE.create(), Mbti.ISTP,
+    RIM("4101", "rim", Gender.FEMALE, "01088990011",
+        SEOUL_WOMAN.create(), GENERAL_PREFERENCE.create(), Mbti.ISTP,
         "hello", 100, Role.MANAGER),
-    SEYUN("4102", "seyun", Gender.MALE, "01033445566", KU.create(), GENERAL_PREFERENCE.create(), Mbti.ESFJ,
+    SEYUN("4102", "seyun", Gender.MALE, "01033445566",
+        KU.create(), GENERAL_PREFERENCE.create(), Mbti.ESFJ,
         "hey", 100, Role.USER)
 
     ;
@@ -79,6 +82,7 @@ public enum AdminMemberFixture {
             .gender(this.gender)
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo)
+            .preference(this.preference)
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
