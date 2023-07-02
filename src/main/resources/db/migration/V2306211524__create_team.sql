@@ -13,3 +13,6 @@ CREATE TABLE IF NOT EXISTS `team` (
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`) ON DELETE CASCADE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET=utf8mb4;
+
+ALTER TABLE `member` ADD `team_id` bigint;
+ALTER TABLE `member` ADD FOREIGN KEY (`team_id`) REFERENCES team (`team_id`);
