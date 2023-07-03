@@ -30,4 +30,9 @@ public interface MemberService {
     void modifyPreference(Long memberId, ModifyMemberPreferenceRequestDto requestDto,
         List<Code> modifyCode);
 
+    /*
+     * 메일 저장
+     */
+    void saveMail(Long memberId, String mail);
+
 }

@@ -100,6 +100,15 @@ public class MemberServiceImpl implements MemberService {
         memberPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
     }
 
+    @Override
+    @Transactional
+    public void saveMail(Long memberId, String mail) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.getCollegeInfo().saveMail(mail);
+    }
+
     private String createMemberCode() {
         int code = new Random().nextInt(9000) + 1000;
         return String.valueOf(code);

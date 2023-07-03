@@ -31,4 +31,8 @@ public class CollegeInfo {
         this.admissionYear = admissionYear;
         this.mail = mail;
     }
+
+    public void saveMail(String mail) {
+        this.mail = mail;
+    }
 }
