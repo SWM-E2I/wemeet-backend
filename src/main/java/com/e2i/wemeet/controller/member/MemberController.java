@@ -21,6 +21,7 @@ import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.memberinterest.MemberInterestService;
 import com.e2i.wemeet.service.memberpreferencemeetingtype.MemberPreferenceMeetingTypeService;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +50,13 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<ResponseDto> createMember(
-        @RequestBody CreateMemberRequestDto requestDto) {
-        Member savedMember = memberService.createMember(requestDto);
+        @RequestBody @Valid CreateMemberRequestDto requestDto) {
+        List<Code> interestCode = new ArrayList<>();
+        if (requestDto.memberInterestList() != null) {
+            interestCode = findCode(requestDto.memberInterestList(), "G003");
+        }
+
+        Member savedMember = memberService.createMember(requestDto, interestCode);
 
         return ResponseEntity.ok(
             new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success",
@@ -80,7 +86,7 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/{memberId}/info")
+    @GetMapping("/{memberId}/i nfo")
     public ResponseEntity<ResponseDto> getMemberInfo(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId) {

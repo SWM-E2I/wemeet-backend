@@ -6,17 +6,41 @@ import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
+import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import java.util.List;
 
 public record CreateMemberRequestDto(
+    @NotBlank(message = "{not.blank.nickname}")
     String nickname,
+
+    @NotNull(message = "{not.null.gender}")
     Gender gender,
+
+    @NotBlank(message = "{not.blank.phone.number}")
+    @Pattern(regexp = "^\\+8210\\d{8}$", message = "{invalid.format.phone.number}")
     String phoneNumber,
+
+    @Valid
     CollegeInfoRequestDto collegeInfo,
+
+    @Valid
     PreferenceRequestDto preference,
-    Mbti mbti
+
+    @NotNull(message = "{not.null.mbti}")
+    Mbti mbti,
+
+    @Nullable
+    String introduction,
+
+    @Nullable
+    List<String> memberInterestList
 ) {
 
-    public Member toEntity(String memberCode) {
+    public Member toMemberEntity(String memberCode) {
         return Member.builder()
             .memberCode(memberCode)
             .nickname(nickname)
@@ -26,7 +50,6 @@ public record CreateMemberRequestDto(
                 .college(collegeInfo.college())
                 .collegeType(collegeInfo.collegeType())
                 .admissionYear(collegeInfo().admissionYear())
-                .mail(collegeInfo.mail())
                 .build())
             .preference(Preference.builder()
                 .startPreferenceAdmissionYear(preference.startPreferenceAdmissionYear())
@@ -37,6 +60,7 @@ public record CreateMemberRequestDto(
                 .preferenceMbti(preference.preferenceMbti())
                 .build())
             .mbti(mbti)
+            .introduction(introduction)
             .role(Role.USER)
             .build();
     }

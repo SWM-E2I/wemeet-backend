@@ -16,6 +16,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -91,6 +92,17 @@ public class GlobalExceptionController {
         final DuplicatedValueException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity.ok()
+            .body(new ErrorResponse(code, message));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldError().getDefaultMessage();
+        int code = 40050;
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()

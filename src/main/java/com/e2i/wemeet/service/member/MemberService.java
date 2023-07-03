@@ -17,7 +17,7 @@ public interface MemberService {
     /*
      * Member 생성
      */
-    Member createMember(CreateMemberRequestDto requestDto);
+    Member createMember(CreateMemberRequestDto requestDto, List<Code> interestCode);
 
     /*
      * Member 수정

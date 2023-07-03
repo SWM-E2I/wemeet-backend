@@ -11,7 +11,6 @@ import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeeting
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
-import com.e2i.wemeet.exception.badrequest.DuplicatedMailException;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.util.List;
@@ -36,19 +35,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member createMember(CreateMemberRequestDto requestDto) {
+    public Member createMember(CreateMemberRequestDto requestDto, List<Code> interestCode) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();
             });
 
-        memberRepository.findByCollegeInfoMail(requestDto.collegeInfo().mail())
-            .ifPresent(member -> {
-                throw new DuplicatedMailException();
-            });
-
         String memberCode = createMemberCode();
-        return memberRepository.save(requestDto.toEntity(memberCode));
+        Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
+
+        saveMemberInterest(member, interestCode);
+
+        return member;
     }
 
     @Override
@@ -62,7 +60,11 @@ public class MemberServiceImpl implements MemberService {
         member.modifyIntroduction(requestDto.introduction());
         member.modifyMbti(requestDto.mbti());
 
-        List<MemberInterest> memberInterests = modifyCode.stream()
+        saveMemberInterest(member, modifyCode);
+    }
+
+    private void saveMemberInterest(Member member, List<Code> codeList) {
+        List<MemberInterest> memberInterests = codeList.stream()
             .map(memberInterestCode -> MemberInterest.builder()
                 .member(member)
                 .code(memberInterestCode)
