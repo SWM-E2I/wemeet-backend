@@ -13,7 +13,7 @@ public record MemberDetailResponseDto(
     Gender gender,
     String college,
     String collegeType,
-    int admissionYear,
+    String admissionYear,
     String introduction,
     List<ProfileImage> profileImageList,
     List<MemberInterest> memberInterestList

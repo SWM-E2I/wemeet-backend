@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `member` (
     `gender` varchar(6) NOT NULL,
     `college` varchar(30) NOT NULL,
     `college_type` varchar(20) NOT NULL,
-    `admission_year` int NOT NULL,
+    `admission_year` char(2) NOT NULL,
     `mail`  varchar(50),
     `phone_number` char(13) NOT NULL,
     `mbti` varchar(7) NOT NULL,
