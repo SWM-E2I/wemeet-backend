@@ -160,7 +160,7 @@ public class MemberController {
     public ResponseEntity<ResponseDto> modifyMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId,
-        @RequestBody ModifyMemberPreferenceRequestDto requestDto) {
+        @RequestBody @Valid ModifyMemberPreferenceRequestDto requestDto) {
         if (!memberId.equals(memberPrincipal.getMemberId())) {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
