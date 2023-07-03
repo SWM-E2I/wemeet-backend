@@ -33,7 +33,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
     @Test
     void smsLoginProcess() throws Exception {
         // given - 인증 번호 발급
-        final String phone = "01088990011";
+        final String phone = "+821088990011";
         CredentialRequestDto credentialRequestDto = new CredentialRequestDto(phone);
 
         mvc.perform(
@@ -102,7 +102,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
     @Test
     void smsLoginFail() throws Exception {
         // given - 인증 번호 발급
-        final String phone = "01088990011";
+        final String phone = "+821088990011";
         CredentialRequestDto credentialRequestDto = new CredentialRequestDto(phone);
 
         mvc.perform(

@@ -22,7 +22,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
     @DisplayName("인증 번호 발급에 성공한다")
     @Test
     void issueSmsCredential() throws Exception {
-        final String phone = "01088990011";
+        final String phone = "+821088990011";
         CredentialRequestDto requestDto = new CredentialRequestDto(phone);
 
         ResultActions perform = mvc.perform(
@@ -34,7 +34,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
         perform.andExpectAll(
             status().isOk(),
             jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("인증 번호 발급 성공"),
+            jsonPath("$.message").value("휴대폰 인증 번호 발급 성공"),
             jsonPath("$.data").isEmpty()
         );
 

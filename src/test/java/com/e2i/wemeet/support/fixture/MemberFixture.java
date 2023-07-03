@@ -11,10 +11,9 @@ import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
 
 public enum MemberFixture {
-    KAI("4100", "kai", Gender.MALE, "01012341234",
+    KAI("4100", "kai", Gender.MALE, "+821012341234",
         ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER)
-    ;
+        Mbti.INFJ, "안녕하세요", 100, Role.USER);
 
     private final String memberCode;
     private final String nickname;
@@ -28,7 +27,8 @@ public enum MemberFixture {
     private final Role role;
 
     MemberFixture(String memberCode, String nickname, Gender gender, String phoneNumber,
-        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit, Role role) {
+        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit,
+        Role role) {
         this.memberCode = memberCode;
         this.nickname = nickname;
         this.gender = gender;
