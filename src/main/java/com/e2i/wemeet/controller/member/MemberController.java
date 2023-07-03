@@ -56,7 +56,11 @@ public class MemberController {
             interestCode = findCode(requestDto.memberInterestList(), "G003");
         }
 
-        Member savedMember = memberService.createMember(requestDto, interestCode);
+        List<Code> preferenceMeetingTypeCode
+            = findCode(requestDto.preferenceMeetingTypeList(), "G004");
+
+        Member savedMember = memberService.createMember(requestDto, interestCode,
+            preferenceMeetingTypeCode);
 
         return ResponseEntity.ok(
             new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success",

@@ -30,6 +30,9 @@ public record CreateMemberRequestDto(
     @Valid
     PreferenceRequestDto preference,
 
+    @NotNull(message = "{not.null.preference.meeting.type}")
+    List<String> preferenceMeetingTypeList,
+
     @NotNull(message = "{not.null.mbti}")
     Mbti mbti,
 
