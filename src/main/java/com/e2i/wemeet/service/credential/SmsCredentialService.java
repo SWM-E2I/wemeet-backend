@@ -10,30 +10,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /*
-* SMS 인증 기능
-* */
+ * SMS 인증 기능
+ * */
 @RequiredArgsConstructor
 @Service
 public class SmsCredentialService implements CredentialService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    /*
-    * TODO
-    * SMS 발송 로직 추가 필요
-    * */
     @Override
-    public void issue(String receiveTarget) {
+    public String issue(String receiveTarget) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String credential = generateCredential();
 
         operations.set(receiveTarget, credential, Duration.ofMinutes(10));
+        return credential;
     }
 
     /*
-    * 사용자가 입력한 인증 번호 검증
-    * target = phone, email
-    * input = user input credential
+     * 사용자가 입력한 인증 번호 검증
+     * target = phone, email
+     * input = user input credential
      */
     @Override
     public boolean matches(String target, String input) {
