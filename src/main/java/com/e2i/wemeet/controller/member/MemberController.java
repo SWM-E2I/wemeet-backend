@@ -86,7 +86,7 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/{memberId}/i nfo")
+    @GetMapping("/{memberId}/info")
     public ResponseEntity<ResponseDto> getMemberInfo(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId) {
@@ -138,7 +138,8 @@ public class MemberController {
     @PutMapping("/{memberId}")
     public ResponseEntity<ResponseDto> modifyMember(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId, @RequestBody ModifyMemberRequestDto requestDto) {
+        @PathVariable("memberId") Long memberId,
+        @RequestBody @Valid ModifyMemberRequestDto requestDto) {
         if (!memberId.equals(memberPrincipal.getMemberId())) {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
