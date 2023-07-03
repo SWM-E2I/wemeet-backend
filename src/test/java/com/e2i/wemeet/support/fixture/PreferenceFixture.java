@@ -4,23 +4,22 @@ import com.e2i.wemeet.domain.member.Preference;
 
 public enum PreferenceFixture {
 
-    GENERAL_PREFERENCE(2019, 2022, true, true, true, "ENTP")
-    ;
+    GENERAL_PREFERENCE("19", "22", "0", "0", true, "ENTP");
 
-    private final int startPreferenceAdmissionYear;
+    private final String startPreferenceAdmissionYear;
 
-    private final int endPreferenceAdmissionYear;
+    private final String endPreferenceAdmissionYear;
 
-    private final boolean sameCollegeState;
+    private final String sameCollegeState;
 
-    private final boolean drinkingOption;
+    private final String drinkingOption;
 
     private final boolean isAvoidedFriends;
 
     private final String preferenceMbti;
 
-    PreferenceFixture(int startPreferenceAdmissionYear, int endPreferenceAdmissionYear,
-        boolean sameCollegeState, boolean drinkingOption, boolean isAvoidedFriends,
+    PreferenceFixture(String startPreferenceAdmissionYear, String endPreferenceAdmissionYear,
+        String sameCollegeState, String drinkingOption, boolean isAvoidedFriends,
         String preferenceMbti) {
         this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
         this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
