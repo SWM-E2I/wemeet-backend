@@ -13,16 +13,13 @@ import com.e2i.wemeet.dto.request.LoginRequestDto;
 import com.e2i.wemeet.dto.request.credential.CredentialRequestDto;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.support.fixture.MemberFixture;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @DisplayName("SMS 인증 테스트")
 class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
 
