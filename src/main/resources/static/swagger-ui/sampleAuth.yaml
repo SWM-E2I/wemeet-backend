@@ -1,0 +1,14 @@
+paths:
+  /api/v1/samples/{sampleId}:
+    get:
+      # API 에 추가
+      security:
+       - AccessToken: []
+
+components:
+  # Response 아래에 추가
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
