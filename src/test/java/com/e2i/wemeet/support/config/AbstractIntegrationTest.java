@@ -29,7 +29,6 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class AbstractIntegrationTest {
 
@@ -54,7 +53,7 @@ public abstract class AbstractIntegrationTest {
     void setup(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .apply(documentationConfiguration(restDocumentation))
-            .addFilters(authenticationExceptionFilter, SMSLoginProcessingFilter, refreshTokenProcessingFilter, jwtAuthenticationFilter)
+            .addFilters(refreshTokenProcessingFilter, SMSLoginProcessingFilter, jwtAuthenticationFilter)
             .build();
     }
 
