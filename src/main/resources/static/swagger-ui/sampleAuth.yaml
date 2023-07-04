@@ -3,7 +3,17 @@ paths:
     get:
       # API 에 추가
       security:
-       - AccessToken: []
+        - AccessToken: [ ]
+
+      # parameter
+      parameters:
+        - name: fixture
+          in: query
+          description: ""
+          required: true
+          schema:
+            type: string
+
 
 components:
   # Response 아래에 추가
