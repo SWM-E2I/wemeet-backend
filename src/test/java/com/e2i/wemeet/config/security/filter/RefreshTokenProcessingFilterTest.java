@@ -1,15 +1,12 @@
 package com.e2i.wemeet.config.security.filter;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.config.security.token.JwtEnv;
@@ -20,11 +17,7 @@ import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.Cookie;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 @DisplayName("Token 재발급 테스트")
 class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
@@ -78,7 +69,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
 
     @DisplayName("refresh token 이 다를 경우 재발급에 실패한다.")
     //@Test
-    void refreshFail() throws Exception {
+    void refreshFail() {
         // set
         Payload payload = new Payload(100L, Role.USER.name());
         String refreshToken = refreshTokenHandler.createToken(payload);
@@ -109,7 +100,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
                         .description(
                             """
                                 RefreshToken 을 사용하여 Access, Refresh Token을 갱신합니다. \n
-                                현재 사용자의 memberId와 role, Cookie에 RefreshToken 값을 넘겨주어야합니다. \n 
+                                현재 사용자의 memberId와 role, Cookie에 RefreshToken 값을 넘겨주어야합니다.
                             """),
                     requestFields(
                         fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("사용자 ID"),
