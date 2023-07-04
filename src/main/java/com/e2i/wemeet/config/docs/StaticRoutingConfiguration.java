@@ -10,7 +10,10 @@ public class StaticRoutingConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/dist/**").addResourceLocations("classpath:/static/dist/");
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/static/dist/swagger-ui/");
+        registry.addResourceHandler("/static/dist/**")
+            .addResourceLocations("classpath:/static/dist/");
+
+        registry.addResourceHandler("swagger-ui.html")
+            .addResourceLocations("classpath:/static/dist/swagger-ui/");
     }
 }
