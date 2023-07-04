@@ -38,9 +38,8 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(errorCode.getMessageKey());
 
         log.info(UNAUTHORIZED_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return new ResponseEntity<>(
-            new ErrorResponse(code, message), HttpStatus.UNAUTHORIZED
-        );
+        return ResponseEntity.ok()
+            .body(new ErrorResponse(code, message));
     }
 
     @ExceptionHandler(InvalidValueException.class)
