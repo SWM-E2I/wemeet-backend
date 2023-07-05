@@ -17,8 +17,8 @@ public record CreateMemberRequestDto(
     @NotBlank(message = "{not.blank.nickname}")
     String nickname,
 
-    @NotNull(message = "{not.null.gender}")
-    Gender gender,
+    @NotBlank(message = "{not.blank.gender}")
+    String gender,
 
     @NotBlank(message = "{not.blank.phone.number}")
     @Pattern(regexp = "^\\+8210\\d{8}$", message = "{invalid.format.phone.number}")
@@ -47,7 +47,7 @@ public record CreateMemberRequestDto(
         return Member.builder()
             .memberCode(memberCode)
             .nickname(nickname)
-            .gender(gender)
+            .gender(Gender.findBy(gender))
             .phoneNumber(phoneNumber)
             .collegeInfo(CollegeInfo.builder()
                 .college(collegeInfo.college())
