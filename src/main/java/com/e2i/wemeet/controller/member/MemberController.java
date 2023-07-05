@@ -53,11 +53,11 @@ public class MemberController {
         @RequestBody @Valid CreateMemberRequestDto requestDto) {
         List<Code> interestCode = new ArrayList<>();
         if (requestDto.memberInterestList() != null) {
-            interestCode = findCode(requestDto.memberInterestList(), "G003");
+            interestCode = findCode(requestDto.memberInterestList());
         }
 
         List<Code> preferenceMeetingTypeCode
-            = findCode(requestDto.preferenceMeetingTypeList(), "G004");
+            = findCode(requestDto.preferenceMeetingTypeList());
 
         Member savedMember = memberService.createMember(requestDto, interestCode,
             preferenceMeetingTypeCode);
@@ -148,7 +148,7 @@ public class MemberController {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
 
-        List<Code> modifyCode = findCode(requestDto.memberInterestList(), "G003");
+        List<Code> modifyCode = findCode(requestDto.memberInterestList());
         memberService.modifyMember(memberId, requestDto, modifyCode);
 
         return ResponseEntity.ok(
@@ -165,7 +165,7 @@ public class MemberController {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
 
-        List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList(), "G002");
+        List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList());
         memberService.modifyPreference(memberId, requestDto, modifyCode);
 
         return ResponseEntity.ok(
@@ -173,10 +173,10 @@ public class MemberController {
         );
     }
 
-    private List<Code> findCode(List<String> codeList, String groupCodeId) {
+    private List<Code> findCode(List<String> codeList) {
         List<Code> findCodeList = new ArrayList<>();
         for (String code : codeList) {
-            findCodeList.add(codeService.findCode(code, groupCodeId));
+            findCodeList.add(codeService.findCode(code));
         }
 
         return findCodeList;

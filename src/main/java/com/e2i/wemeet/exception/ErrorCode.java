@@ -17,6 +17,7 @@ public enum ErrorCode {
     DUPLICATED_PHONE_NUMBER(40008, "duplicated.phone.number"),
     DUPLICATED_MAIL(40009, "duplicated.mail"),
     METHOD_ARGUMENT_NOT_VALID(40010, "method.argument.not.valid"),
+    INVALID_CODE_FORMAT(40011, "invalid.code.format"),
 
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
