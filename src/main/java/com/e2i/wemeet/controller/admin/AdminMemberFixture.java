@@ -3,20 +3,25 @@ package com.e2i.wemeet.controller.admin;
 import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.ANYANG;
 import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.KU;
 import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.SEOUL_WOMAN;
+import static com.e2i.wemeet.controller.admin.AdminPreferenceFixture.GENERAL_PREFERENCE;
 
 import com.e2i.wemeet.domain.member.CollegeInfo;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
 import java.util.Arrays;
 
 public enum AdminMemberFixture {
-    KAI("4100", "kai", Gender.MALE, "01012341234", ANYANG.create(), Mbti.INFJ,
+    KAI("4100", "kai", Gender.MALE, "01012341234",
+        ANYANG.create(), GENERAL_PREFERENCE.create(), Mbti.INFJ,
         "hi", 100, Role.USER),
-    RIM("4101", "rim", Gender.FEMALE, "01088990011", SEOUL_WOMAN.create(), Mbti.ISTP,
+    RIM("4101", "rim", Gender.FEMALE, "01088990011",
+        SEOUL_WOMAN.create(), GENERAL_PREFERENCE.create(), Mbti.ISTP,
         "hello", 100, Role.MANAGER),
-    SEYUN("4102", "seyun", Gender.MALE, "01033445566", KU.create(), Mbti.ESFJ,
+    SEYUN("4102", "seyun", Gender.MALE, "01033445566",
+        KU.create(), GENERAL_PREFERENCE.create(), Mbti.ESFJ,
         "hey", 100, Role.USER)
 
     ;
@@ -26,18 +31,20 @@ public enum AdminMemberFixture {
     private final Gender gender;
     private final String phoneNumber;
     private final CollegeInfo collegeInfo;
+    private final Preference preference;
     private final Mbti mbti;
     private final String introduction;
     private final int credit;
     private final Role role;
 
     AdminMemberFixture(String memberCode, String nickname, Gender gender, String phoneNumber,
-        CollegeInfo collegeInfo, Mbti mbti, String introduction, int credit, Role role) {
+        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit, Role role) {
         this.memberCode = memberCode;
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.collegeInfo = collegeInfo;
+        this.preference = preference;
         this.mbti = mbti;
         this.introduction = introduction;
         this.credit = credit;
@@ -75,6 +82,7 @@ public enum AdminMemberFixture {
             .gender(this.gender)
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo)
+            .preference(this.preference)
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)

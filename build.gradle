@@ -16,6 +16,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'com.google.cloud.tools.jib' version '3.3.2'
+
+    // restDocs & Swagger Plugin
+    id("com.epages.restdocs-api-spec") version "0.18.2"
 }
 
 version = "0.0.5"
@@ -35,23 +38,23 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 checkstyle {
     toolVersion = '10.4'
 }
 
 dependencies {
-	  implementation 'org.springframework.boot:spring-boot-starter-web'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-	  implementation 'org.springframework.boot:spring-boot-starter-validation'
-	  implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
-	  implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
-	  implementation 'com.auth0:java-jwt:4.4.0'
-	  implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
+    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -63,15 +66,52 @@ dependencies {
     implementation 'software.amazon.awssdk:ses:2.20.86'
     implementation 'software.amazon.awssdk:s3:2.20.82'
 
-	  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	  testImplementation 'io.projectreactor:reactor-test'
-	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	  testImplementation 'io.projectreactor:reactor-test'
-	  testImplementation 'org.springframework.security:spring-security-test'
-	  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    //
+    testImplementation 'it.ozimov:embedded-redis:0.7.2'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // Component that test code convert to Swagger file and include restDocs Api
+    testImplementation('com.epages:restdocs-api-spec-mockmvc:0.18.2') //2.2
 }
+
+// Set Swagger-ui description
+openapi3 {
+    setServers([
+            {
+                url = "http://localhost:8080"
+                description = "LOCAL server"
+            },
+            {
+                url = "http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com"
+                description = "Develop Server"
+            },
+            {
+                url = "http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com"
+                description = "Production Server"
+            }
+    ])
+    setTitle("We:meet")
+    setDescription("We:meet API Documentation")
+    setVersion("0.1.0")
+    setFormat("yaml") // or json
+}
+
+// Add Gradle Task for generate .yaml file for API Doc
+tasks.register('copyOasToSwagger', Copy) {
+    delete "src/main/resources/static/swagger-ui/openapi3.yaml" // Delete the existing OAS file
+    from "${buildDir}/api-spec/openapi3.yaml" // Specify the OAS file to be copied
+    into "src/main/resources/static/swagger-ui/" // Copy the file to the target directory
+    dependsOn "openapi3" // Set openapi3 task to be executed first
+}
+
 
 sonar {
     properties {
@@ -90,13 +130,7 @@ jacocoTestReport {
 }
 
 tasks.named('test') {
-    outputs.dir snippetsDir
     useJUnitPlatform()
-}
-
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
 }
 
 jib {

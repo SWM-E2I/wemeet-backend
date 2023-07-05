@@ -35,6 +35,7 @@ public enum ErrorCode {
     UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
+    MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
     AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error"),
     AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error"),
