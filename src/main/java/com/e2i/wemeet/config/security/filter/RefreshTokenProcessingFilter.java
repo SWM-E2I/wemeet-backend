@@ -1,11 +1,13 @@
 package com.e2i.wemeet.config.security.filter;
 
+import static com.e2i.wemeet.dto.response.ResponseStatus.SUCCESS;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
+import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
 import com.e2i.wemeet.exception.token.TokenNotFoundException;
@@ -52,9 +54,9 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
         if (filterRequestMatcher.matches(request)) {
             reIssueToken(request, response);
+        } else {
+            filterChain.doFilter(request, response);
         }
-
-        filterChain.doFilter(request, response);
     }
 
     /* Refresh Token 재발급 로직 수행
@@ -69,7 +71,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         validateRefreshToken(request, payload);
         tokenInjector.injectToken(response, payload);
 
-        log.info("RefreshToken has reIssued - memberId : {}", payload.getMemberId());
+        writeResponse(response, payload);
     }
 
     private Payload getPayload(HttpServletRequest request) throws IOException {
@@ -89,6 +91,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     }
 
     // Redis 에서 발급했던 SMS 인증 번호를 가져옴
+
     private boolean matchesRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
@@ -104,13 +107,24 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
 
         return tokenEquals;
     }
-
     // Cookie 에서 Refresh Token 을 가져옴
+
     private static String getRefreshTokenFromCookie(HttpServletRequest request) {
         return Arrays.stream(request.getCookies())
             .filter(cookie -> cookie.getName().equals(JwtEnv.REFRESH.getKey()))
             .map(Cookie::getValue)
             .findFirst()
             .orElseThrow(() -> new TokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+    }
+
+    private void writeResponse(HttpServletResponse response, Payload payload) throws IOException {
+        log.info("RefreshToken has reIssued - memberId : {}", payload.getMemberId());
+
+        ResponseDto result = new ResponseDto(SUCCESS, "RefreshToken 을 재발급하는데 성공했습니다.", null);
+
+        response.setStatus(200);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getOutputStream().write(objectMapper.writeValueAsString(result).getBytes());
     }
 }

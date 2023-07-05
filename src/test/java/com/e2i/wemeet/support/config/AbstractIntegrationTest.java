@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -29,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class AbstractIntegrationTest {
 
@@ -54,7 +52,7 @@ public abstract class AbstractIntegrationTest {
     void setup(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .apply(documentationConfiguration(restDocumentation))
-            .addFilters(authenticationExceptionFilter, SMSLoginProcessingFilter, refreshTokenProcessingFilter, jwtAuthenticationFilter)
+            .addFilters(refreshTokenProcessingFilter, SMSLoginProcessingFilter, jwtAuthenticationFilter)
             .build();
     }
 

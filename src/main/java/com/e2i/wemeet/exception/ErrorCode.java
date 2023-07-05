@@ -58,6 +58,8 @@ public enum ErrorCode {
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 
+    MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
+
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
 
     AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error"),

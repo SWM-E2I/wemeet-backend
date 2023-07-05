@@ -1,6 +1,7 @@
 package com.e2i.wemeet.controller;
 
 import static com.e2i.wemeet.exception.ErrorCode.METHOD_ARGUMENT_NOT_VALID;
+import static com.e2i.wemeet.exception.ErrorCode.MISSING_REQUEST_PARAMETER;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -115,6 +117,17 @@ public class GlobalExceptionController {
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
             .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(final MissingServletRequestParameterException e) {
+        final int code = MISSING_REQUEST_PARAMETER.getCode();
+        final String message = messageSourceAccessor.getMessage(
+            MISSING_REQUEST_PARAMETER.getMessageKey());
+
+        log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
+        return ResponseEntity.internalServerError()
+            .body(new ErrorResponse(code, message));
     }
 
     @ExceptionHandler(Exception.class)
