@@ -13,8 +13,8 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
+    private final SecureRandom random = new SecureRandom();
 
     @Override
     @Transactional(readOnly = true)
@@ -119,7 +120,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private String createMemberCode() {
-        int code = new Random().nextInt(9000) + 1000;
+        int code = random.nextInt(9000) + 1000;
         return String.valueOf(code);
     }
 }
