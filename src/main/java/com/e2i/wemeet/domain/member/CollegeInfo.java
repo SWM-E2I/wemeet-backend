@@ -21,7 +21,7 @@ public class CollegeInfo {
     @Column(length = 2, nullable = false)
     private String admissionYear;
 
-    @Column(length = 50, unique = true)
+    @Column(length = 60, unique = true)
     private String mail;
 
     @Builder

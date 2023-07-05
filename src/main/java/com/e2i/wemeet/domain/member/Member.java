@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @Column(length = 13, unique = true, nullable = false)
+    @Column(length = 60, unique = true, nullable = false)
     private String phoneNumber;
 
     @Embedded
