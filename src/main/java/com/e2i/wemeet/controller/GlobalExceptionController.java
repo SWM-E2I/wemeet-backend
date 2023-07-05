@@ -1,8 +1,10 @@
 package com.e2i.wemeet.controller;
 
+import static com.e2i.wemeet.exception.ErrorCode.METHOD_ARGUMENT_NOT_VALID;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
+import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.e2i.wemeet.exception.badrequest.DuplicatedValueException;
@@ -16,6 +18,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,7 +43,7 @@ public class GlobalExceptionController {
 
         log.info(UNAUTHORIZED_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return new ResponseEntity<>(
-            new ErrorResponse(code, message), HttpStatus.UNAUTHORIZED
+            new ErrorResponse(ResponseStatus.FAIL, code, message), HttpStatus.UNAUTHORIZED
         );
     }
 
@@ -52,7 +55,7 @@ public class GlobalExceptionController {
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -62,7 +65,7 @@ public class GlobalExceptionController {
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
@@ -73,7 +76,7 @@ public class GlobalExceptionController {
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(InternalServerException.class)
@@ -84,7 +87,7 @@ public class GlobalExceptionController {
 
         log.warn(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.ERROR, code, message));
     }
 
     @ExceptionHandler(DuplicatedValueException.class)
@@ -95,18 +98,23 @@ public class GlobalExceptionController {
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldError().getDefaultMessage();
-        int code = 40050;
+        String message = "";
+        int code = METHOD_ARGUMENT_NOT_VALID.getCode();
+
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        if (fieldError != null) {
+            message = fieldError.getDefaultMessage();
+        }
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
         return ResponseEntity.ok()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(Exception.class)
@@ -117,6 +125,6 @@ public class GlobalExceptionController {
 
         log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
         return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.ERROR, code, message));
     }
 }

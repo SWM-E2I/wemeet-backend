@@ -2,6 +2,7 @@ package com.e2i.wemeet.config.security.filter;
 
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED;
 
+import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.exception.CustomException;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +57,7 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
 
         log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
 
-        setErrorResponseBody(response, code, message);
+        setErrorResponseBody(response, ResponseStatus.FAIL, code, message);
     }
 
     // AuthorizationManager 에서 발생한 인가 예외 발생 시
@@ -67,7 +68,7 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
 
         log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
 
-        setErrorResponseBody(response, code, message);
+        setErrorResponseBody(response, ResponseStatus.FAIL, code, message);
     }
 
     // CustomException 으로 정의하지 않은, 예상치 못한 예외 발생시
@@ -75,7 +76,7 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         log.warn(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), 50000, AUTH_COMMON_ERROR_MESSAGE);
         e.printStackTrace();
 
-        setErrorResponseBody(response, 50000, AUTH_COMMON_ERROR_MESSAGE);
+        setErrorResponseBody(response, ResponseStatus.ERROR, 50000, AUTH_COMMON_ERROR_MESSAGE);
     }
 
     /*
@@ -83,14 +84,15 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
      * - 401 Unauthorized
      * - ErrorResponse
      */
-    private void setErrorResponseBody(HttpServletResponse response, int code, String message)
+    private void setErrorResponseBody(HttpServletResponse response, ResponseStatus status, int code,
+        String message)
         throws IOException {
         response.setStatus(401);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.getWriter()
             .println(objectMapper.writeValueAsString(
-                new ErrorResponse(code, message)));
+                new ErrorResponse(status, code, message)));
     }
 
 }
