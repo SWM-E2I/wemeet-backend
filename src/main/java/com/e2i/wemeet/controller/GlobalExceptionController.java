@@ -120,14 +120,15 @@ public class GlobalExceptionController {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(final MissingServletRequestParameterException e) {
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
+        final MissingServletRequestParameterException e) {
         final int code = MISSING_REQUEST_PARAMETER.getCode();
         final String message = messageSourceAccessor.getMessage(
             MISSING_REQUEST_PARAMETER.getMessageKey());
 
         log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
         return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(code, message));
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
     }
 
     @ExceptionHandler(Exception.class)

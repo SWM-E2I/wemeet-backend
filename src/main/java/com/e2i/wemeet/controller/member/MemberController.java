@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,10 +67,10 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping
     public ResponseEntity<ResponseDto> getMemberDetail(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId) {
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Long memberId = memberPrincipal.getMemberId();
         if (!memberId.equals(memberPrincipal.getMemberId())) {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
         }
@@ -90,13 +89,11 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/{memberId}/info")
+    @GetMapping("/info")
     public ResponseEntity<ResponseDto> getMemberInfo(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId) {
-        if (!memberId.equals(memberPrincipal.getMemberId())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
-        }
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Long memberId = memberPrincipal.getMemberId();
+
         Member member = memberService.findMemberById(memberId);
         Optional<ProfileImage> mainProfileImage = profileImageService
             .findProfileImageByMemberIdWithIsMain(memberId, true);
@@ -119,13 +116,10 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/{memberId}/prefer")
+    @GetMapping("/prefer")
     public ResponseEntity<ResponseDto> getMemberPreference(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId) {
-        if (!memberId.equals(memberPrincipal.getMemberId())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
-        }
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Long memberId = memberPrincipal.getMemberId();
 
         Member member = memberService.findMemberById(memberId);
         List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList
@@ -139,14 +133,11 @@ public class MemberController {
         );
     }
 
-    @PutMapping("/{memberId}")
+    @PutMapping
     public ResponseEntity<ResponseDto> modifyMember(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId,
         @RequestBody @Valid ModifyMemberRequestDto requestDto) {
-        if (!memberId.equals(memberPrincipal.getMemberId())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
-        }
+        Long memberId = memberPrincipal.getMemberId();
 
         List<Code> modifyCode = findCode(requestDto.memberInterestList());
         memberService.modifyMember(memberId, requestDto, modifyCode);
@@ -156,14 +147,11 @@ public class MemberController {
         );
     }
 
-    @PutMapping("/{memberId}/prefer")
+    @PutMapping("/prefer")
     public ResponseEntity<ResponseDto> modifyMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("memberId") Long memberId,
         @RequestBody @Valid ModifyMemberPreferenceRequestDto requestDto) {
-        if (!memberId.equals(memberPrincipal.getMemberId())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
-        }
+        Long memberId = memberPrincipal.getMemberId();
 
         List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList());
         memberService.modifyPreference(memberId, requestDto, modifyCode);
