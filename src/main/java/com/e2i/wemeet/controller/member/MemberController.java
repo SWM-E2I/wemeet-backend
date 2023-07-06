@@ -4,7 +4,6 @@ import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -20,7 +19,6 @@ import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,24 +72,7 @@ public class MemberController {
     public ResponseDto<MemberInfoResponseDto> getMemberInfo(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
-
-        Member member = memberService.findMemberById(memberId);
-        Optional<ProfileImage> mainProfileImage = profileImageService
-            .findProfileImageByMemberIdWithIsMain(memberId, true);
-
-        String profileImageUrl = mainProfileImage.map(ProfileImage::getLowResolutionBasicUrl)
-            .orElse(null);
-        boolean imageAuth = mainProfileImage.map(ProfileImage::isCertified).orElse(false);
-        boolean univAuth = member.getCollegeInfo().getMail() != null;
-
-        MemberInfoResponseDto result = MemberInfoResponseDto.builder()
-            .nickname(member.getNickname())
-            .memberCode(member.getMemberCode())
-            .profileImage(profileImageUrl)
-            .imageAuth(imageAuth)
-            .univAuth(univAuth)
-            .build();
-
+        MemberInfoResponseDto result = memberService.getMemberIndo(memberId);
         return new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Info Success", result);
     }
 

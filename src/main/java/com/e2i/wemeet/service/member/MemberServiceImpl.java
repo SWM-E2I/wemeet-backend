@@ -14,10 +14,12 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,6 +104,29 @@ public class MemberServiceImpl implements MemberService {
             memberId);
 
         return new MemberDetailResponseDto(member, profileImageList, memberInterestList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberInfoResponseDto getMemberIndo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        Optional<ProfileImage> mainProfileImage = profileImageRepository.findByMemberMemberIdAndIsMain(
+            memberId, true);
+        String profileImageUrl = mainProfileImage.map(ProfileImage::getLowResolutionBasicUrl)
+            .orElse(null);
+
+        boolean imageAuth = mainProfileImage.map(ProfileImage::isCertified).orElse(false);
+        boolean univAuth = member.getCollegeInfo().getMail() != null;
+
+        return MemberInfoResponseDto.builder()
+            .nickname(member.getNickname())
+            .memberCode(member.getMemberCode())
+            .profileImage(profileImageUrl)
+            .imageAuth(imageAuth)
+            .univAuth(univAuth)
+            .build();
     }
 
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {
