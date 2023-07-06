@@ -13,7 +13,7 @@ import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.request.LoginRequestDto;
-import com.e2i.wemeet.dto.request.credential.CredentialRequestDto;
+import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
@@ -41,7 +41,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
     void smsLoginProcess() throws Exception {
         // given - 인증 번호 발급
         final String phone = "+821088990011";
-        CredentialRequestDto credentialRequestDto = new CredentialRequestDto(phone);
+        SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
         mvc.perform(
             post("/v1/auth/phone/issue")
@@ -77,7 +77,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
         memberRepository.save(member);
 
         final String phone = member.getPhoneNumber();
-        CredentialRequestDto credentialRequestDto = new CredentialRequestDto(phone);
+        SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
         mvc.perform(
             post("/v1/auth/phone/issue")
@@ -107,11 +107,11 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
     }
 
     @DisplayName("인증번호가 일치하지 않으면 SMS 인증에 실패한다.")
-    //@Test
+        //@Test
     void smsLoginFail() throws Exception {
         // given - 인증 번호 발급
         final String phone = "+821088990011";
-        CredentialRequestDto credentialRequestDto = new CredentialRequestDto(phone);
+        SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
         mvc.perform(
             post("/v1/auth/phone/issue")
@@ -140,10 +140,10 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
                         .summary("휴대폰 인증번호가 일치하는지 검증하는 API 입니다.")
                         .description(
                             """
-                                SMS 인증 번호를 확인하는 API 입니다 \n
-                                인증 번호가 일치하면 AccessToken 과 RefreshToken을 반환합니다 \n
-                                인증 번호가 일치하지만 회원가입 되어있지 않은 사용자라면 Token을 반환하지 않습니다 
-                            """),
+                                    SMS 인증 번호를 확인하는 API 입니다 \n
+                                    인증 번호가 일치하면 AccessToken 과 RefreshToken을 반환합니다 \n
+                                    인증 번호가 일치하지만 회원가입 되어있지 않은 사용자라면 Token을 반환하지 않습니다 
+                                """),
                     requestFields(
                         fieldWithPath("phone").type(JsonFieldType.STRING).description("휴대폰 번호"),
                         fieldWithPath("credential").type(JsonFieldType.STRING).description("인증 번호")
@@ -151,10 +151,13 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨"),
-                        fieldWithPath("data.registered").type(JsonFieldType.BOOLEAN).description("회원 가입 여부"),
+                        fieldWithPath("data").type(JsonFieldType.OBJECT)
+                            .description("회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨"),
+                        fieldWithPath("data.registered").type(JsonFieldType.BOOLEAN)
+                            .description("회원 가입 여부"),
                         fieldWithPath("data.memberId").description("회원 아이디"),
-                        fieldWithPath("data.role[].authority").type(JsonFieldType.STRING).description("회원 권한")
+                        fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
+                            .description("회원 권한")
                     )
                 ));
     }
