@@ -14,7 +14,7 @@ public class SmsUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     /*
-    * username == phone
+     * username == phone
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

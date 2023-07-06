@@ -1,19 +1,19 @@
 package com.e2i.wemeet.util.validator;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 class CustomFormatValidatorTest {
 
     @DisplayName("주어진 입력 값이 핸드폰 형식에 맞으면 예외가 발생하지 않는다")
     @Test
     void validatePhoneFormat() {
-        final String phone = "01032452345";
+        final String phone = "+821032452345";
 
         CustomFormatValidator.validatePhoneFormat(phone);
     }

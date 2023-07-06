@@ -1,5 +1,7 @@
 package com.e2i.wemeet.exception;
 
-public record ErrorResponse(int code, String message) {
+import com.e2i.wemeet.dto.response.ResponseStatus;
+
+public record ErrorResponse(ResponseStatus status, int code, String message) {
 
 }

@@ -18,17 +18,21 @@ public class CollegeInfo {
     @Column(length = 20, nullable = false)
     private String collegeType;
 
-    @Column(nullable = false)
-    private int admissionYear;
+    @Column(length = 2, nullable = false)
+    private String admissionYear;
 
-    @Column(length = 50, unique = true)
+    @Column(length = 60, unique = true)
     private String mail;
 
     @Builder
-    public CollegeInfo(String college, String collegeType, int admissionYear, String mail) {
+    public CollegeInfo(String college, String collegeType, String admissionYear, String mail) {
         this.college = college;
         this.collegeType = collegeType;
         this.admissionYear = admissionYear;
+        this.mail = mail;
+    }
+
+    public void saveMail(String mail) {
         this.mail = mail;
     }
 }

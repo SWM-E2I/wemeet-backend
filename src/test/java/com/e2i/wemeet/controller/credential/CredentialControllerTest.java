@@ -7,7 +7,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.e2i.wemeet.dto.request.credential.CredentialRequestDto;
+import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -28,8 +28,8 @@ class CredentialControllerTest extends AbstractIntegrationTest {
     @DisplayName("인증 번호 발급에 성공한다")
     @Test
     void issueSmsCredential() throws Exception {
-        final String phone = "01088990011";
-        CredentialRequestDto requestDto = new CredentialRequestDto(phone);
+        final String phone = "+821088990011";
+        SmsCredentialRequestDto requestDto = new SmsCredentialRequestDto(phone);
 
         ResultActions perform = mvc.perform(
             RestDocumentationRequestBuilders.post("/v1/auth/phone/issue")
@@ -40,7 +40,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
         perform.andExpectAll(
             status().isOk(),
             jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("인증 번호 발급 성공"),
+            jsonPath("$.message").value("휴대폰 인증 번호 발급 성공"),
             jsonPath("$.data").isEmpty()
         );
 
@@ -59,15 +59,16 @@ class CredentialControllerTest extends AbstractIntegrationTest {
                         .summary("휴대폰 인증번호를 발급하는 API 입니다.")
                         .description(
                             """
-                                target 값으로 넘어온 휴대폰 번호에 SMS 인증 번호를 발송합니다.
-                            """),
+                                    target 값으로 넘어온 휴대폰 번호에 SMS 인증 번호를 발송합니다.
+                                """),
                     requestFields(
                         fieldWithPath("target").type(JsonFieldType.STRING).description("휴대폰 번호")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data").type(JsonFieldType.NULL).description("data에는 아무 값도 반환되지 않습니다")
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
                     )
                 ));
     }

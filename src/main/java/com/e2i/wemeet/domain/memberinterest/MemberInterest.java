@@ -32,7 +32,7 @@ public class MemberInterest extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "groupCodeId", referencedColumnName = "groupCodeId")
-    @JoinColumn(name = "codePk", referencedColumnName = "CodeId")
+    @JoinColumn(name = "codeId", referencedColumnName = "codeId")
     private Code code;
 
     @Builder

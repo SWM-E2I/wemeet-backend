@@ -35,7 +35,8 @@ class CreditAuthorizationManagerTest {
 
     @BeforeEach
     void setUp() {
-        creditAuthorizationManager = new CreditAuthorizationManager(new MemberRepositoryImpl(), new RoleHierarchyImpl());
+        creditAuthorizationManager = new CreditAuthorizationManager(new MemberRepositoryImpl(),
+            new RoleHierarchyImpl());
     }
 
     @DisplayName("사용자가 보유한 credit의 개수가 요청에 필요한 credit의 개수보다 많을 경우 성공한다.")
@@ -65,7 +66,8 @@ class CreditAuthorizationManagerTest {
         };
 
         //then
-        assertDoesNotThrow(() -> creditAuthorizationManager.verify(authentication, creditAuthorize));
+        assertDoesNotThrow(
+            () -> creditAuthorizationManager.verify(authentication, creditAuthorize));
     }
 
     @DisplayName("사용자가 보유한 credit의 개수가 요청에 필요한 credit의 개수보다 적을 경우 예외가 발생한다.")
@@ -149,6 +151,11 @@ class CreditAuthorizationManagerTest {
 
         @Override
         public Optional<Member> findByPhoneNumber(String phoneNumber) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Member> findByCollegeInfoMail(String mail) {
             return Optional.empty();
         }
 
