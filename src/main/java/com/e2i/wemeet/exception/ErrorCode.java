@@ -60,6 +60,7 @@ public enum ErrorCode {
 
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
     DATA_ENCRYPTION_ERROR(50002, "data.encryption.error"),
+    MAIL_JSON_PARSING_ERROR(50003, "mail.json.parsing.error"),
 
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
 
