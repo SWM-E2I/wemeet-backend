@@ -13,7 +13,6 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.security.SecureRandom;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -85,15 +84,6 @@ public class MemberServiceImpl implements MemberService {
             .build());
 
         savePreferenceMeetingType(member, modifyCode);
-    }
-
-    @Override
-    @Transactional
-    public void saveMail(Long memberId, String mail) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        member.getCollegeInfo().saveMail(EncryptionUtils.hashData(mail));
     }
 
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {

@@ -6,6 +6,7 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.SmsCredentialNotFoundException;
 import com.e2i.wemeet.service.credential.email.EmailCredentialService;
+import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
@@ -58,7 +59,7 @@ public class AwsSesService implements EmailCredentialService {
         boolean result = origin.equals(input);
         if (result) {
             memberRepository.findById(memberId).ifPresent(member ->
-                member.getCollegeInfo().saveMail(target));
+                member.getCollegeInfo().saveMail(EncryptionUtils.hashData(target)));
         }
 
         return result;
