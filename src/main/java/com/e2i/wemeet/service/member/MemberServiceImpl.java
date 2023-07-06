@@ -15,6 +15,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.security.SecureRandom;
@@ -127,6 +128,18 @@ public class MemberServiceImpl implements MemberService {
             .imageAuth(imageAuth)
             .univAuth(univAuth)
             .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberPreferenceResponseDto getMemberPrefer(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList
+            = memberPreferenceMeetingTypeRepository.findByMemberMemberId(memberId);
+
+        return new MemberPreferenceResponseDto(member, memberPreferenceMeetingTypeList);
     }
 
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {

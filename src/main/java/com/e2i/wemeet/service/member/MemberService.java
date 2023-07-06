@@ -7,6 +7,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import java.util.List;
 
 public interface MemberService {
@@ -43,5 +44,10 @@ public interface MemberService {
      * 사용자 정보 조회 (프로필 이미지, 인증 여부...)
      */
     MemberInfoResponseDto getMemberIndo(Long memberId);
+
+    /*
+     * 사용자 선호 상대 조회
+     */
+    MemberPreferenceResponseDto getMemberPrefer(Long memberId);
 
 }

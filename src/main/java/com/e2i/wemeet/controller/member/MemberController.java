@@ -3,7 +3,6 @@ package com.e2i.wemeet.controller.member;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -14,8 +13,6 @@ import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
-import com.e2i.wemeet.service.memberpreferencemeetingtype.MemberPreferenceMeetingTypeService;
-import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final ProfileImageService profileImageService;
-    private final MemberPreferenceMeetingTypeService memberPreferenceMeetingTypeService;
     private final CodeService codeService;
-
-
+    
     @PostMapping
     public ResponseDto<Long> createMember(
         @RequestBody @Valid CreateMemberRequestDto requestDto) {
@@ -80,13 +74,7 @@ public class MemberController {
     public ResponseDto<MemberPreferenceResponseDto> getMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
-
-        Member member = memberService.findMemberById(memberId);
-        List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList
-            = memberPreferenceMeetingTypeService.findMemberPreferenceMeetingType(memberId);
-
-        MemberPreferenceResponseDto result = new MemberPreferenceResponseDto(member,
-            memberPreferenceMeetingTypeList);
+        MemberPreferenceResponseDto result = memberService.getMemberPrefer(memberId);
 
         return new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Prefer Success", result);
     }
