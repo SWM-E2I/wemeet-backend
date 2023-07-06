@@ -6,13 +6,13 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.SmsCredentialNotFoundException;
 import com.e2i.wemeet.service.credential.email.EmailCredentialService;
+import com.e2i.wemeet.util.RandomCodeUtils;
 import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,11 +37,12 @@ public class AwsSesService implements EmailCredentialService {
 
     private static final String SOURCE_EMAIL = "qkrdbsk28@naver.com";
 
+
     @Override
     public void issue(String receiveTarget) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
-        String credential = generateCredential();
+        String credential = RandomCodeUtils.crateCredential();
         sendEmail(receiveTarget, credential);
 
         operations.set(receiveTarget, credential, Duration.ofMinutes(10));
@@ -99,11 +100,5 @@ public class AwsSesService implements EmailCredentialService {
         templateData.put("code", message);
 
         return mapper.writeValueAsString(templateData);
-    }
-
-    // 100000 ~ 999999
-    private String generateCredential() {
-        int credential = new Random().nextInt(900_000) + 100_000;
-        return String.valueOf(credential);
     }
 }

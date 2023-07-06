@@ -5,8 +5,8 @@ import static com.e2i.wemeet.exception.ErrorCode.AWS_SNS_MESSAGE_TRANSFER_ERROR;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.SmsCredentialNotFoundException;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
+import com.e2i.wemeet.util.RandomCodeUtils;
 import java.time.Duration;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,7 +30,7 @@ public class AwsSnsService implements SmsCredentialService {
     public void issue(String receiveTarget) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
-        String credential = generateCredential();
+        String credential = RandomCodeUtils.crateCredential();
         sendSms(receiveTarget, credential);
 
         operations.set(receiveTarget, credential, Duration.ofMinutes(10));
@@ -64,10 +64,5 @@ public class AwsSnsService implements SmsCredentialService {
             log.info(e.getMessage());
             throw new InternalServerException(AWS_SNS_MESSAGE_TRANSFER_ERROR);
         }
-    }
-
-    private String generateCredential() {
-        int credential = new Random().nextInt(900_000) + 100_000;
-        return String.valueOf(credential);
     }
 }
