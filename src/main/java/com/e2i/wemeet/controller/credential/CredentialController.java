@@ -12,7 +12,6 @@ import com.e2i.wemeet.service.credential.SmsCredentialService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +32,7 @@ public class CredentialController {
     private final MemberService memberService;
 
     @PostMapping("/phone/issue")
-    public ResponseEntity<ResponseDto> issueSmsCredential(
+    public ResponseDto<Void> issueSmsCredential(
         @RequestBody CredentialRequestDto requestDto) {
         requestDto.validatePhone();
 
@@ -41,13 +40,12 @@ public class CredentialController {
         String credential = smsCredentialService.issue(target);
         awsSnsService.sendSms(target, credential);
 
-        return ResponseEntity.ok()
-            .body(new ResponseDto(ResponseStatus.SUCCESS, "휴대폰 인증 번호 발급 성공", null));
+        return new ResponseDto(ResponseStatus.SUCCESS, "휴대폰 인증 번호 발급 성공", null);
     }
 
     // todo: 대학 - 메일 연동 작업 필요
     @PostMapping("/mail/request")
-    public ResponseEntity<ResponseDto> requestAuthMail(
+    public ResponseDto<Void> requestAuthMail(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody MailRequestDto requestDto) throws JsonProcessingException {
         requestDto.validateEmail();
@@ -56,12 +54,11 @@ public class CredentialController {
         String credential = smsCredentialService.issue(target);
         awsSesService.sendEmail(target, credential);
 
-        return ResponseEntity.ok()
-            .body(new ResponseDto(ResponseStatus.SUCCESS, "대학 메일 인증 번호 발급 성공", null));
+        return new ResponseDto(ResponseStatus.SUCCESS, "대학 메일 인증 번호 발급 성공", null);
     }
-
+    
     @PostMapping("/mail/validate")
-    public ResponseEntity<ResponseDto> validateAuthMail(
+    public ResponseDto<Boolean> validateAuthMail(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody MailAuthRequestDto requestDto) {
         boolean result = smsCredentialService.matches(requestDto.mail(), requestDto.authCode());
@@ -69,7 +66,6 @@ public class CredentialController {
             memberService.saveMail(memberPrincipal.getMemberId(), requestDto.mail());
         }
 
-        return ResponseEntity.ok()
-            .body(new ResponseDto(ResponseStatus.SUCCESS, "대학 메일 인증 번호 확인 요청 성공", result));
+        return new ResponseDto(ResponseStatus.SUCCESS, "대학 메일 인증 번호 확인 요청 성공", result);
     }
 }

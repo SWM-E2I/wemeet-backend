@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +47,7 @@ public class MemberController {
 
 
     @PostMapping
-    public ResponseEntity<ResponseDto> createMember(
+    public ResponseDto<Long> createMember(
         @RequestBody @Valid CreateMemberRequestDto requestDto) {
         List<Code> interestCode = new ArrayList<>();
         if (requestDto.memberInterestList() != null) {
@@ -61,14 +60,13 @@ public class MemberController {
         Member savedMember = memberService.createMember(requestDto, interestCode,
             preferenceMeetingTypeCode);
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success",
-                savedMember.getMemberId())
-        );
+        return new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success",
+            savedMember.getMemberId());
+
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto> getMemberDetail(
+    public ResponseDto<MemberDetailResponseDto> getMemberDetail(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
         if (!memberId.equals(memberPrincipal.getMemberId())) {
@@ -84,13 +82,12 @@ public class MemberController {
         MemberDetailResponseDto result = new MemberDetailResponseDto(member, profileImageList,
             memberInterestList);
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-detail Success", result)
-        );
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-detail Success", result);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<ResponseDto> getMemberInfo(
+    public ResponseDto<MemberInfoResponseDto> getMemberInfo(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
 
@@ -111,13 +108,11 @@ public class MemberController {
             .univAuth(univAuth)
             .build();
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Info Success", result)
-        );
+        return new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Info Success", result);
     }
 
     @GetMapping("/prefer")
-    public ResponseEntity<ResponseDto> getMemberPreference(
+    public ResponseDto<MemberPreferenceResponseDto> getMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
 
@@ -128,13 +123,11 @@ public class MemberController {
         MemberPreferenceResponseDto result = new MemberPreferenceResponseDto(member,
             memberPreferenceMeetingTypeList);
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Prefer Success", result)
-        );
+        return new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Prefer Success", result);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto> modifyMember(
+    public ResponseDto<Void> modifyMember(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid ModifyMemberRequestDto requestDto) {
         Long memberId = memberPrincipal.getMemberId();
@@ -142,13 +135,11 @@ public class MemberController {
         List<Code> modifyCode = findCode(requestDto.memberInterestList());
         memberService.modifyMember(memberId, requestDto, modifyCode);
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Success", null)
-        );
+        return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Success", null);
     }
 
     @PutMapping("/prefer")
-    public ResponseEntity<ResponseDto> modifyMemberPreference(
+    public ResponseDto<Void> modifyMemberPreference(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid ModifyMemberPreferenceRequestDto requestDto) {
         Long memberId = memberPrincipal.getMemberId();
@@ -156,9 +147,7 @@ public class MemberController {
         List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList());
         memberService.modifyPreference(memberId, requestDto, modifyCode);
 
-        return ResponseEntity.ok(
-            new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Preference Success", null)
-        );
+        return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Preference Success", null);
     }
 
     private List<Code> findCode(List<String> codeList) {
