@@ -9,9 +9,10 @@ import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.util.encryption.EncryptionUtils;
 
 public enum MemberFixture {
-    KAI("4100", "kai", Gender.MALE, "+821012341234",
+    KAI("4100", "kai", Gender.MALE, EncryptionUtils.hashData("+821012341234"),
         ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
         Mbti.INFJ, "안녕하세요", 100, Role.USER);
 

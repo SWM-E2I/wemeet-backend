@@ -75,8 +75,8 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
         // given - 가입 & 인증 번호 발급
         Member member = MemberFixture.KAI.create();
         memberRepository.save(member);
-
-        final String phone = member.getPhoneNumber();
+        
+        String phone = "+821012341234";
         SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
         mvc.perform(
