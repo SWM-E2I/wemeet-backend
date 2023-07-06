@@ -1,14 +1,25 @@
 package com.e2i.wemeet.util.encryption;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import static com.e2i.wemeet.exception.ErrorCode.DATA_ENCRYPTION_ERROR;
 
-public class EncryptionUtils {
+import com.e2i.wemeet.exception.internal.InternalServerException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+public abstract class EncryptionUtils {
 
     private EncryptionUtils() {
     }
 
     public static String hashData(String data) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.encode(data);
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encodedHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InternalServerException(DATA_ENCRYPTION_ERROR);
+        }
     }
 }

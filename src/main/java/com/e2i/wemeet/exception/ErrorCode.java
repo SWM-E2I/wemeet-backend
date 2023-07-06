@@ -59,6 +59,7 @@ public enum ErrorCode {
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
+    DATA_ENCRYPTION_ERROR(50002, "data.encryption.error"),
 
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
 
@@ -69,6 +70,7 @@ public enum ErrorCode {
     AWS_S3_OBJECT_DELETE_ERROR(50301, "aws.s3.object.delete.error"),
 
     AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error");
+
 
     private final int code;
     private final String messageKey;
