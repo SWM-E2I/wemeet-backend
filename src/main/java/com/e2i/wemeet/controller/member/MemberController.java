@@ -2,7 +2,6 @@ package com.e2i.wemeet.controller.member;
 
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
-import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -32,7 +31,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final CodeService codeService;
-    
+
     @PostMapping
     public ResponseDto<Long> createMember(
         @RequestBody @Valid CreateMemberRequestDto requestDto) {
@@ -44,11 +43,10 @@ public class MemberController {
         List<Code> preferenceMeetingTypeCode
             = findCode(requestDto.preferenceMeetingTypeList());
 
-        Member savedMember = memberService.createMember(requestDto, interestCode,
+        Long savedMemberId = memberService.createMember(requestDto, interestCode,
             preferenceMeetingTypeCode);
 
-        return new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success",
-            savedMember.getMemberId());
+        return new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success", savedMemberId);
 
     }
 

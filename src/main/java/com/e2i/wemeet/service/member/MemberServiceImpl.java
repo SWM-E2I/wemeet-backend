@@ -44,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
+    public Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
         List<Code> preferenceMeetingTypeCode) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
         saveMemberInterest(member, interestCode);
         savePreferenceMeetingType(member, preferenceMeetingTypeCode);
 
-        return member;
+        return member.getMemberId();
     }
 
     @Override
@@ -113,8 +113,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        Optional<ProfileImage> mainProfileImage = profileImageRepository.findByMemberMemberIdAndIsMain(
-            memberId, true);
+        Optional<ProfileImage> mainProfileImage =
+            profileImageRepository.findByMemberMemberIdAndIsMain(memberId, true);
         String profileImageUrl = mainProfileImage.map(ProfileImage::getLowResolutionBasicUrl)
             .orElse(null);
 

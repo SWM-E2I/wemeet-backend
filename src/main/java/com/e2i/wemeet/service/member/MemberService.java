@@ -20,7 +20,7 @@ public interface MemberService {
     /*
      * Member 생성
      */
-    Member createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
+    Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
         List<Code> preferenceMeetingTypeCode);
 
     /*
