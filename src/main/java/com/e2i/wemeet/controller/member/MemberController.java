@@ -3,7 +3,6 @@ package com.e2i.wemeet.controller.member;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
@@ -14,11 +13,8 @@ import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
-import com.e2i.wemeet.exception.ErrorCode;
-import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
-import com.e2i.wemeet.service.memberinterest.MemberInterestService;
 import com.e2i.wemeet.service.memberpreferencemeetingtype.MemberPreferenceMeetingTypeService;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import jakarta.validation.Valid;
@@ -41,7 +37,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ProfileImageService profileImageService;
-    private final MemberInterestService memberInterestService;
     private final MemberPreferenceMeetingTypeService memberPreferenceMeetingTypeService;
     private final CodeService codeService;
 
@@ -69,18 +64,7 @@ public class MemberController {
     public ResponseDto<MemberDetailResponseDto> getMemberDetail(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
-        if (!memberId.equals(memberPrincipal.getMemberId())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_MEMBER_PROFILE);
-        }
-
-        Member member = memberService.findMemberById(memberId);
-        List<ProfileImage> profileImageList = profileImageService.findProfileImageByMemberId(
-            memberId);
-        List<MemberInterest> memberInterestList =
-            memberInterestService.findMemberInterestByMemberId(memberId);
-
-        MemberDetailResponseDto result = new MemberDetailResponseDto(member, profileImageList,
-            memberInterestList);
+        MemberDetailResponseDto result = memberService.getMemberDetail(memberId);
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Get Member-detail Success", result);

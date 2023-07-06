@@ -8,9 +8,12 @@ import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.memberinterest.MemberInterestRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
+import com.e2i.wemeet.domain.profileimage.ProfileImage;
+import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
+import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.security.SecureRandom;
@@ -26,6 +29,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
+    private final ProfileImageRepository profileImageRepository;
+
     private final SecureRandom random = new SecureRandom();
 
     @Override
@@ -84,6 +89,19 @@ public class MemberServiceImpl implements MemberService {
             .build());
 
         savePreferenceMeetingType(member, modifyCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberDetailResponseDto getMemberDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        List<ProfileImage> profileImageList = profileImageRepository.findByMemberMemberId(memberId);
+        List<MemberInterest> memberInterestList = memberInterestRepository.findByMemberMemberId(
+            memberId);
+
+        return new MemberDetailResponseDto(member, profileImageList, memberInterestList);
     }
 
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {
