@@ -2,8 +2,8 @@ package com.e2i.wemeet.config.security.config;
 
 import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
-import com.e2i.wemeet.config.security.filter.SMSLoginProcessingFilter;
 import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
+import com.e2i.wemeet.config.security.filter.SMSLoginProcessingFilter;
 import com.e2i.wemeet.config.security.handler.CustomAuthenticationSuccessHandler;
 import com.e2i.wemeet.config.security.manager.CreditAuthorizationManager;
 import com.e2i.wemeet.config.security.provider.SmsCredentialAuthenticationProvider;
@@ -12,7 +12,7 @@ import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.service.credential.SmsCredentialService;
+import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,10 +119,10 @@ public class SecurityBeanConfig {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy(
             """
-               ROLE_ADMIN > ROLE_MANAGER
-               ROLE_MANAGER > ROLE_USER
-               ROLE_USER > ROLE_GUEST
-            """
+                   ROLE_ADMIN > ROLE_MANAGER
+                   ROLE_MANAGER > ROLE_USER
+                   ROLE_USER > ROLE_GUEST
+                """
         );
         return roleHierarchy;
     }

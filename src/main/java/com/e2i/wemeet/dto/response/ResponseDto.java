@@ -1,8 +1,9 @@
 package com.e2i.wemeet.dto.response;
 
-public record ResponseDto(
+public record ResponseDto<T>(
     ResponseStatus status,
     String message,
-    Object data
+    T data
 ) {
+
 }

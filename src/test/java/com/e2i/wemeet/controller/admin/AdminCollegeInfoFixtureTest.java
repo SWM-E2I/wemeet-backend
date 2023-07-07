@@ -17,7 +17,7 @@ class AdminCollegeInfoFixtureTest {
 
     @Test
     void getAdmissionYear() {
-        assertThat(KU.getAdmissionYear()).isGreaterThan(2000);
+        assertThat(KU.getAdmissionYear()).isExactlyInstanceOf(String.class);
     }
 
     @Test

@@ -1,17 +1,20 @@
 package com.e2i.wemeet.util.validator;
 
-import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
+import static com.e2i.wemeet.exception.ErrorCode.INVALID_CREDENTIAL_FORMAT;
+import static com.e2i.wemeet.exception.ErrorCode.INVALID_EMAIL_FORMAT;
+import static com.e2i.wemeet.exception.ErrorCode.INVALID_PHONE_FORMAT;
 
-import static com.e2i.wemeet.exception.ErrorCode.*;
+import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 
 /*
   사용자 입력 값 형식 검증 유틸 클래스
 */
 public abstract class CustomFormatValidator {
+
     private CustomFormatValidator() {
     }
 
-    private static final String PHONE_REG = "^01(?:0|1|[6-9])(\\d{3}|\\d{4})(\\d{4})$";
+    private static final String PHONE_REG = "^\\+8210\\d{8}$";
     private static final String EMAIL_REG = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:ac\\.kr)$";
     private static final String SMS_CREDENTIAL_REG = "^\\d{6}$";
     private static final String EMAIL_CREDENTIAL_REG = "^\\d{6}$";

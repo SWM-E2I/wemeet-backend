@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @Column(length = 13, unique = true, nullable = false)
+    @Column(length = 60, unique = true, nullable = false)
     private String phoneNumber;
 
     @Embedded
@@ -98,5 +98,21 @@ public class Member extends BaseTimeEntity {
 
     public void setRole(final Role role) {
         this.role = role;
+    }
+
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void modifyMbti(Mbti mbti) {
+        this.mbti = mbti;
+    }
+
+    public void modifyIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void modifyPreference(Preference preference) {
+        this.preference = preference;
     }
 }
