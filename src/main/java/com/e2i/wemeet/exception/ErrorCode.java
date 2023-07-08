@@ -56,6 +56,8 @@ public enum ErrorCode {
 
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
 
+    UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
+
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
