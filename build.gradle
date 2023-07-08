@@ -73,13 +73,32 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
-    //
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     testImplementation 'it.ozimov:embedded-redis:0.7.2'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // Component that test code convert to Swagger file and include restDocs Api
     testImplementation('com.epages:restdocs-api-spec-mockmvc:0.18.2') //2.2
+}
+
+// Querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [querydslDir]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean {
+    delete file(querydslDir)
 }
 
 // Set Swagger-ui description
