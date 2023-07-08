@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.aws.ses;
 
 import static com.e2i.wemeet.exception.ErrorCode.AWS_SES_EMAIL_TRANSFER_ERROR;
+import static com.e2i.wemeet.exception.ErrorCode.MAIL_JSON_PARSING_ERROR;
 
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.exception.internal.InternalServerException;
@@ -89,7 +90,7 @@ public class AwsSesService implements EmailCredentialService {
                 .templateData(this.toJson(message))
                 .build();
         } catch (JsonProcessingException e) {
-            throw new InternalServerException(null);
+            throw new InternalServerException(MAIL_JSON_PARSING_ERROR);
         }
     }
 

@@ -55,13 +55,13 @@ public enum ErrorCode {
     UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
 
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
-
     UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
     DATA_ENCRYPTION_ERROR(50002, "data.encryption.error"),
+    MAIL_JSON_PARSING_ERROR(50003, "mail.json.parsing.error"),
 
     AWS_SNS_MESSAGE_TRANSFER_ERROR(50100, "aws.sns.message.transfer.error"),
 
