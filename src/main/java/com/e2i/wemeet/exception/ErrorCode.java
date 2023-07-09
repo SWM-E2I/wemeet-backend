@@ -55,6 +55,7 @@ public enum ErrorCode {
     UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
 
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
+    UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 
