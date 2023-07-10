@@ -114,9 +114,9 @@ public enum MemberFixture {
 
     public ModifyMemberRequestDto createModifyMemberRequestDto() {
         return ModifyMemberRequestDto.builder()
-            .nickname(this.nickname)
-            .introduction(this.introduction)
-            .mbti(this.mbti.toString())
+            .nickname("modify nickname")
+            .introduction("modify introduction")
+            .mbti("ESTJ")
             .memberInterestList(List.of())
             .build();
     }

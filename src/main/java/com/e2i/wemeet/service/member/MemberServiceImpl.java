@@ -136,7 +136,7 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberPreferenceResponseDto(member, memberPreferenceMeetingTypeList);
     }
-
+    
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {
         List<MemberPreferenceMeetingType> preferenceMeetingTypeList = codeList.stream()
             .map(preferenceMeetingTypeCode -> MemberPreferenceMeetingType.builder()

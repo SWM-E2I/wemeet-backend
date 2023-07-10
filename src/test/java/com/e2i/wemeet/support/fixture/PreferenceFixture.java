@@ -56,12 +56,12 @@ public enum PreferenceFixture {
 
     public ModifyMemberPreferenceRequestDto createModifyMemberPreferenceDto() {
         return ModifyMemberPreferenceRequestDto.builder()
-            .startPreferenceAdmissionYear(startPreferenceAdmissionYear)
-            .endPreferenceAdmissionYear(endPreferenceAdmissionYear)
-            .sameCollegeState(sameCollegeState)
-            .drinkingOption(drinkingOption)
-            .isAvoidedFriends(isAvoidedFriends)
-            .preferenceMbti(preferenceMbti)
+            .startPreferenceAdmissionYear("21")
+            .endPreferenceAdmissionYear("23")
+            .sameCollegeState("1")
+            .drinkingOption("1")
+            .isAvoidedFriends(false)
+            .preferenceMbti("ISTJ")
             .preferenceMeetingTypeList(List.of())
             .build();
     }

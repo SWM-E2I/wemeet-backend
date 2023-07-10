@@ -17,5 +17,5 @@ public record ModifyMemberRequestDto(
     @NotNull(message = "{not.null.member.interest}")
     List<String> memberInterestList
 ) {
-
+    
 }
