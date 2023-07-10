@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Preference;
@@ -69,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.modifyNickname(requestDto.nickname());
         member.modifyIntroduction(requestDto.introduction());
-        member.modifyMbti(requestDto.mbti());
+        member.modifyMbti(Mbti.findBy(requestDto.mbti()));
 
         saveMemberInterest(member, modifyCode);
     }
@@ -109,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberInfoResponseDto getMemberIndo(Long memberId) {
+    public MemberInfoResponseDto getMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
