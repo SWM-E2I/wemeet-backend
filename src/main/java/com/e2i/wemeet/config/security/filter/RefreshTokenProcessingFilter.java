@@ -6,19 +6,16 @@ import static org.springframework.http.HttpMethod.POST;
 import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.config.security.token.TokenInjector;
+import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.dto.response.ResponseDto;
-import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
-import com.e2i.wemeet.exception.token.TokenNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -40,13 +37,18 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private final RefreshTokenHandler refreshTokenHandler;
     private final TokenInjector tokenInjector;
     private final ObjectMapper objectMapper;
+    private final AccessTokenHandler accessTokenHandler;
 
-    public RefreshTokenProcessingFilter(RedisTemplate<String, String> redisTemplate, RefreshTokenHandler refreshTokenHandler, TokenInjector tokenInjector,  ObjectMapper objectMapper) {
+    public RefreshTokenProcessingFilter(RedisTemplate<String, String> redisTemplate,
+        RefreshTokenHandler refreshTokenHandler,
+        TokenInjector tokenInjector,  ObjectMapper objectMapper,
+        AccessTokenHandler accessTokenHandler) {
         this.filterRequestMatcher = new AntPathRequestMatcher(REFRESH_REQUEST_URL, POST.name());
         this.redisTemplate = redisTemplate;
         this.refreshTokenHandler = refreshTokenHandler;
         this.tokenInjector = tokenInjector;
         this.objectMapper = objectMapper;
+        this.accessTokenHandler = accessTokenHandler;
     }
 
     @Override
@@ -74,12 +76,13 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         writeResponse(response, payload);
     }
 
-    private Payload getPayload(HttpServletRequest request) throws IOException {
-        return objectMapper.readValue(request.getInputStream(), Payload.class);
+    private Payload getPayload(HttpServletRequest request) {
+        String accessToken = request.getHeader(JwtEnv.ACCESS.getKey());
+        return accessTokenHandler.extractTokenWithNoVerify(accessToken);
     }
 
     private void validateRefreshToken(HttpServletRequest request, Payload payload) {
-        String refreshToken = getRefreshTokenFromCookie(request);
+        String refreshToken = request.getHeader(JwtEnv.REFRESH.getKey());
 
         // RefreshToken  유효성 검증
         refreshTokenHandler.decodeToken(refreshToken);
@@ -91,7 +94,6 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     }
 
     // Redis 에서 발급했던 SMS 인증 번호를 가져옴
-
     private boolean matchesRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
@@ -106,15 +108,6 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         }
 
         return tokenEquals;
-    }
-    // Cookie 에서 Refresh Token 을 가져옴
-
-    private static String getRefreshTokenFromCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals(JwtEnv.REFRESH.getKey()))
-            .map(Cookie::getValue)
-            .findFirst()
-            .orElseThrow(() -> new TokenNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }
 
     private void writeResponse(HttpServletResponse response, Payload payload) throws IOException {
