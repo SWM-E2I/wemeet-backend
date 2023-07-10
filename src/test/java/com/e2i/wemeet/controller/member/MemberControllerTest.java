@@ -18,13 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.domain.code.Code;
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
-import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.PreferenceRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
@@ -32,6 +28,8 @@ import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
+import com.e2i.wemeet.support.fixture.MemberFixture;
+import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.util.List;
@@ -57,27 +55,7 @@ class MemberControllerTest extends AbstractUnitTest {
     @Test
     void createMember_Success() throws Exception {
         // given
-        CreateMemberRequestDto request = CreateMemberRequestDto.builder()
-            .nickname("nickname")
-            .gender("MALE")
-            .phoneNumber("+821012341234")
-            .collegeInfo(CollegeInfoRequestDto.builder()
-                .college("collegeName")
-                .collegeType("majorName")
-                .admissionYear("18")
-                .build())
-            .preference(PreferenceRequestDto.builder()
-                .startPreferenceAdmissionYear("21")
-                .endPreferenceAdmissionYear("23")
-                .sameCollegeState("0")
-                .drinkingOption("1")
-                .isAvoidedFriends(true)
-                .preferenceMbti("XXXX")
-                .build())
-            .preferenceMeetingTypeList(List.of())
-            .memberInterestList(List.of())
-            .mbti("ESTJ")
-            .build();
+        CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
         when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
         when(memberService.createMember(any(CreateMemberRequestDto.class), anyList(), anyList()))
@@ -106,17 +84,7 @@ class MemberControllerTest extends AbstractUnitTest {
     @Test
     void getMemberDetail_Success() throws Exception {
         // given
-        MemberDetailResponseDto response = MemberDetailResponseDto.builder()
-            .nickname("nickname")
-            .gender(Gender.FEMALE)
-            .mbti(Mbti.ENFP)
-            .college("college")
-            .collegeType("collegeType")
-            .admissionYear("18")
-            .introduction("hi")
-            .profileImageList(List.of())
-            .memberInterestList(List.of())
-            .build();
+        MemberDetailResponseDto response = MemberFixture.KAI.createMemberDetailResponseDto();
         when(memberService.getMemberDetail(anyLong())).thenReturn(response);
 
         // when
@@ -139,13 +107,7 @@ class MemberControllerTest extends AbstractUnitTest {
     @Test
     void getMemberInfo_Success() throws Exception {
         // given
-        MemberInfoResponseDto response = MemberInfoResponseDto.builder()
-            .nickname("nickname")
-            .memberCode("#1234")
-            .profileImage("profileImage-key")
-            .univAuth(true)
-            .imageAuth(false)
-            .build();
+        MemberInfoResponseDto response = MemberFixture.KAI.createMemberInfoResponseDto();
         when(memberService.getMemberInfo(anyLong())).thenReturn(response);
 
         // when
@@ -199,13 +161,7 @@ class MemberControllerTest extends AbstractUnitTest {
     @Test
     void modifyMember_Success() throws Exception {
         // given
-        ModifyMemberRequestDto request = ModifyMemberRequestDto.builder()
-            .nickname("test_nickname")
-            .introduction("hi")
-            .mbti("ESTJ")
-            .memberInterestList(List.of())
-            .build();
-
+        ModifyMemberRequestDto request = MemberFixture.KAI.createModifyMemberRequestDto();
         when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
 
         // when
@@ -230,16 +186,8 @@ class MemberControllerTest extends AbstractUnitTest {
     @Test
     void modifyMemberPrefer_Success() throws Exception {
         // given
-        ModifyMemberPreferenceRequestDto request = ModifyMemberPreferenceRequestDto
-            .builder()
-            .drinkingOption("0")
-            .startPreferenceAdmissionYear("21")
-            .endPreferenceAdmissionYear("23")
-            .sameCollegeState("0")
-            .isAvoidedFriends(true)
-            .preferenceMbti("XXXX")
-            .preferenceMeetingTypeList(List.of())
-            .build();
+        ModifyMemberPreferenceRequestDto request
+            = PreferenceFixture.GENERAL_PREFERENCE.createModifyMemberPreferenceDto();
 
         when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
 

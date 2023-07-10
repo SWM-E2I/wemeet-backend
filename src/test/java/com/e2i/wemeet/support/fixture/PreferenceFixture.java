@@ -1,6 +1,9 @@
 package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.member.Preference;
+import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
+import com.e2i.wemeet.dto.request.member.PreferenceRequestDto;
+import java.util.List;
 
 public enum PreferenceFixture {
 
@@ -40,4 +43,26 @@ public enum PreferenceFixture {
             .build();
     }
 
+    public PreferenceRequestDto createPreferenceDto() {
+        return PreferenceRequestDto.builder()
+            .startPreferenceAdmissionYear(startPreferenceAdmissionYear)
+            .endPreferenceAdmissionYear(endPreferenceAdmissionYear)
+            .sameCollegeState(sameCollegeState)
+            .drinkingOption(drinkingOption)
+            .isAvoidedFriends(isAvoidedFriends)
+            .preferenceMbti(preferenceMbti)
+            .build();
+    }
+
+    public ModifyMemberPreferenceRequestDto createModifyMemberPreferenceDto() {
+        return ModifyMemberPreferenceRequestDto.builder()
+            .startPreferenceAdmissionYear(startPreferenceAdmissionYear)
+            .endPreferenceAdmissionYear(endPreferenceAdmissionYear)
+            .sameCollegeState(sameCollegeState)
+            .drinkingOption(drinkingOption)
+            .isAvoidedFriends(isAvoidedFriends)
+            .preferenceMbti(preferenceMbti)
+            .preferenceMeetingTypeList(List.of())
+            .build();
+    }
 }

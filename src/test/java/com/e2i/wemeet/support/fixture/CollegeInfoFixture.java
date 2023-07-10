@@ -1,6 +1,7 @@
 package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.member.CollegeInfo;
+import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 
 public enum CollegeInfoFixture {
     ANYANG_COLLEGE("22", "공대", "안양대학교", "pppp1234@anyang.ac.kr");
@@ -19,6 +20,14 @@ public enum CollegeInfoFixture {
 
     public CollegeInfo create() {
         return new CollegeInfo(college, collegeType, admissionYear, mail);
+    }
+
+    public CollegeInfoRequestDto createCollegeInfoDto() {
+        return CollegeInfoRequestDto.builder()
+            .admissionYear(this.admissionYear)
+            .college(this.college)
+            .collegeType(this.collegeType)
+            .build();
     }
 
     public String getAdmissionYear() {
