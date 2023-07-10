@@ -64,7 +64,7 @@ public class MemberController {
     public ResponseDto<MemberInfoResponseDto> getMemberInfo(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
-        MemberInfoResponseDto result = memberService.getMemberIndo(memberId);
+        MemberInfoResponseDto result = memberService.getMemberInfo(memberId);
         return new ResponseDto(ResponseStatus.SUCCESS, "Get Member-Info Success", result);
     }
 

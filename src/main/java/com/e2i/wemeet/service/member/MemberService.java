@@ -43,7 +43,7 @@ public interface MemberService {
     /*
      * 사용자 정보 조회 (프로필 이미지, 인증 여부...)
      */
-    MemberInfoResponseDto getMemberIndo(Long memberId);
+    MemberInfoResponseDto getMemberInfo(Long memberId);
 
     /*
      * 사용자 선호 상대 조회
