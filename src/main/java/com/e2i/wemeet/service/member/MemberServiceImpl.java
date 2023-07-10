@@ -38,12 +38,6 @@ public class MemberServiceImpl implements MemberService {
     private final SecureRandom random = new SecureRandom();
 
     @Override
-    @Transactional(readOnly = true)
-    public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    }
-
-    @Override
     @Transactional
     public Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
         List<Code> preferenceMeetingTypeCode) {
