@@ -29,6 +29,9 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
+    @Column(length = 6, nullable = false)
+    private String teamCode;
+
     @Column(nullable = false)
     private int memberCount;
 
@@ -36,8 +39,11 @@ public class Team extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @Column(length = 20, nullable = false)
+    private String region;
+
     @Column(nullable = false)
-    private boolean drinkingOption;
+    private String drinkingOption;
 
     @Column(length = 100)
     private String introduction;
@@ -47,13 +53,17 @@ public class Team extends BaseTimeEntity {
     private Member member;
 
     @Builder
-    public Team(Long teamId, int memberCount, Gender gender, boolean drinkingOption,
+    public Team(Long teamId, String teamCode, int memberCount, Gender gender,
+        String drinkingOption, String region,
         String introduction, Member member) {
         this.teamId = teamId;
+        this.teamCode = teamCode;
         this.memberCount = memberCount;
         this.gender = gender;
+        this.region = region;
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.member = member;
     }
 }
+
