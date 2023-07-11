@@ -45,6 +45,10 @@ public class Team extends BaseTimeEntity {
     @Column(nullable = false)
     private String drinkingOption;
 
+    @Column(length = 20)
+    @Enumerated(value = EnumType.STRING)
+    private AdditionalActivity additionalActivity;
+
     @Column(length = 100)
     private String introduction;
 

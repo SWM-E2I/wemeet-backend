@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `team` (
     `gender` char(6) NOT NULL,
     `region` varchar(20) NOT NULL,
     `drinking_option` char(2) NOT NULL,
+    `additional_activity` varchar(20),
     `introduction` varchar(100),
     `created_at` datetime(6),
     `modified_at` datetime(6),
