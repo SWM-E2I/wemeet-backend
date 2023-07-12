@@ -99,7 +99,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
         perform.andExpectAll(
             status().isOk(),
             header().exists(JwtEnv.ACCESS.getKey()),
-            cookie().exists(JwtEnv.REFRESH.getKey()),
+            header().exists(JwtEnv.REFRESH.getKey()),
             jsonPath("$.status").value("SUCCESS"),
             jsonPath("$.message").value("인증에 성공하였습니다."),
             jsonPath("$.data").isNotEmpty()
