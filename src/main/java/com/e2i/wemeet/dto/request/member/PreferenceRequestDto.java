@@ -2,7 +2,9 @@ package com.e2i.wemeet.dto.request.member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
+@Builder
 public record PreferenceRequestDto(
     @NotBlank(message = "{not.blank.start.preference.admission.year}")
     String startPreferenceAdmissionYear,

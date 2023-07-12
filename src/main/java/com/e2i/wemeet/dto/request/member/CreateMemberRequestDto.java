@@ -13,7 +13,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import lombok.Builder;
 
+@Builder
 public record CreateMemberRequestDto(
     @NotBlank(message = "{not.blank.nickname}")
     String nickname,
@@ -35,7 +37,7 @@ public record CreateMemberRequestDto(
     List<String> preferenceMeetingTypeList,
 
     @NotNull(message = "{not.null.mbti}")
-    Mbti mbti,
+    String mbti,
 
     @Nullable
     String introduction,
@@ -63,7 +65,7 @@ public record CreateMemberRequestDto(
                 .isAvoidedFriends(preference().isAvoidedFriends())
                 .preferenceMbti(preference.preferenceMbti())
                 .build())
-            .mbti(mbti)
+            .mbti(Mbti.findBy(mbti))
             .introduction(introduction)
             .role(Role.USER)
             .build();
