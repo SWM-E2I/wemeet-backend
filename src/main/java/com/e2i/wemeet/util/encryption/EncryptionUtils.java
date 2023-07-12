@@ -23,14 +23,4 @@ public abstract class EncryptionUtils {
             throw new InternalServerException(DATA_ENCRYPTION_ERROR);
         }
     }
-
-    public static String decodeHashData(String data) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
-            return Arrays.toString(Base64.getDecoder().decode(encodedHash));
-        } catch (NoSuchAlgorithmException e) {
-            throw new InternalServerException(DATA_ENCRYPTION_ERROR);
-        }
-    }
 }
