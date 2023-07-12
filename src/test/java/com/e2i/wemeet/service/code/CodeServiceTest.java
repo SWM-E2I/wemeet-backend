@@ -1,11 +1,13 @@
 package com.e2i.wemeet.service.code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.code.CodeRepository;
+import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +42,8 @@ class CodeServiceTest {
             .build();
 
         List<String> dataList = List.of("G001_C001");
-        when(codeRepository.findById(new CodePk("C001", "G001"))).thenReturn(Optional.of(testCode));
+        when(codeRepository.findById(new CodePk(codeId, groupCodeId))).thenReturn(
+            Optional.of(testCode));
 
         // when
         List<Code> result = codeService.findCodeList(dataList);
@@ -49,5 +52,17 @@ class CodeServiceTest {
         assertEquals(1, result.size());
         assertEquals(result.get(0).getCodeName(), codeName);
         assertEquals(result.get(0).getDescription(), description);
+    }
+
+    @DisplayName("잘못된 형식의 코드를 입력하면 InvalidDataFormatException이 발생한다.")
+    @Test
+    void findCodeList_InvalidDataFormatException() {
+        // given
+        List<String> dataList = List.of("G001");
+
+        // when & then
+        assertThrows(InvalidDataFormatException.class, () ->
+            codeService.findCodeList(dataList)
+        );
     }
 }
