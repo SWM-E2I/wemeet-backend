@@ -19,7 +19,7 @@ public class SmsUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        String hashPhoneNumber = EncryptionUtils.hashData(username.replace("+82", "0"));
+        String hashPhoneNumber = EncryptionUtils.hashData(username);
 
         Member member = memberRepository.findByPhoneNumber(hashPhoneNumber).orElse(null);
 

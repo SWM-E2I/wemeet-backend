@@ -15,13 +15,13 @@ import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.util.Arrays;
 
 public enum AdminMemberFixture {
-    KAI("4100", "kai", Gender.MALE, "01012341234",
+    KAI("4100", "kai", Gender.MALE, "+821012341234",
         ANYANG.create(), GENERAL_PREFERENCE.create(), Mbti.INFJ,
         "hi", 100, Role.USER),
-    RIM("4101", "rim", Gender.FEMALE, "01088990011",
+    RIM("4101", "rim", Gender.FEMALE, "+821088990011",
         SEOUL_WOMAN.create(), GENERAL_PREFERENCE.create(), Mbti.ISTP,
         "hello", 100, Role.MANAGER),
-    SEYUN("4102", "seyun", Gender.MALE, "01033445566",
+    SEYUN("4102", "seyun", Gender.MALE, "+821033445566",
         KU.create(), GENERAL_PREFERENCE.create(), Mbti.ESFJ,
         "hey", 100, Role.USER)
 
