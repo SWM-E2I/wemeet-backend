@@ -8,6 +8,7 @@ import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
+import com.e2i.wemeet.exception.badrequest.BadRequestException;
 import com.e2i.wemeet.exception.badrequest.DuplicatedValueException;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
@@ -62,6 +63,16 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException e) {
+        final int code = e.getErrorCode().getCode();
+        final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity.ok()
+            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException e) {
         final int code = e.getErrorCode().getCode();
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
