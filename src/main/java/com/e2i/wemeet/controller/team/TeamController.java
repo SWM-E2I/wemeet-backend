@@ -1,8 +1,11 @@
 package com.e2i.wemeet.controller.team;
 
+
+import com.e2i.wemeet.config.security.manager.IsManager;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.service.code.CodeService;
@@ -12,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,5 +38,18 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Create Team Success", teamId);
+    }
+
+    @IsManager
+    @PutMapping
+    public ResponseDto<Void> modifyTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @RequestBody @Valid ModifyTeamRequestDto modifyTeamRequestDto) {
+        List<Code> teamPreferenceMeetingList = codeService.findCodeList(
+            modifyTeamRequestDto.preferenceMeetingTypeList());
+        teamService.modifyTeam(memberPrincipal.getMemberId(), modifyTeamRequestDto,
+            teamPreferenceMeetingList);
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Modify Team Success", null);
     }
 }

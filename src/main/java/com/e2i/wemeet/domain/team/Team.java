@@ -3,6 +3,7 @@ package com.e2i.wemeet.domain.team;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -70,5 +71,13 @@ public class Team extends BaseTimeEntity {
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
         this.member = member;
+    }
+
+    public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
+        this.region = modifyTeamRequestDto.region();
+        this.drinkingOption = modifyTeamRequestDto.drinkingOption();
+        this.additionalActivity = AdditionalActivity.findBy(
+            modifyTeamRequestDto.additionalActivity());
+        this.introduction = modifyTeamRequestDto.introduction();
     }
 }

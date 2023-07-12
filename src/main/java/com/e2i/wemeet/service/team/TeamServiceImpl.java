@@ -8,6 +8,7 @@ import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
@@ -50,6 +51,18 @@ public class TeamServiceImpl implements TeamService {
         return team.getTeamId();
     }
 
+    @Override
+    @Transactional
+    public void modifyTeam(Long memberId, ModifyTeamRequestDto modifyTeamRequestDto,
+        List<Code> teamPreferenceMeetingTypeList) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+        Team team = member.getTeam();
+
+        savePreferenceMeetingType(team, teamPreferenceMeetingTypeList);
+        team.updateTeam(modifyTeamRequestDto);
+    }
+
     /*
      * 팀 생성 가능한 사용자인지 확인
      */
@@ -69,6 +82,18 @@ public class TeamServiceImpl implements TeamService {
 
     private boolean isUnivAuth(Member member) {
         return member.getCollegeInfo().getMail() == null;
+    }
+
+    private void savePreferenceMeetingType(Team team, List<Code> codeList) {
+        List<TeamPreferenceMeetingType> preferenceMeetingTypeList = codeList.stream()
+            .map(preferenceMeetingTypeCode -> TeamPreferenceMeetingType.builder()
+                .team(team)
+                .code(preferenceMeetingTypeCode)
+                .build())
+            .toList();
+
+        teamPreferenceMeetingTypeRepository.deleteAllByTeamTeamId(team.getTeamId());
+        teamPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
     }
 
     private String createTeamCode(int length) {
