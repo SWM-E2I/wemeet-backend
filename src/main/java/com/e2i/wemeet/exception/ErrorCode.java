@@ -19,6 +19,8 @@ public enum ErrorCode {
     METHOD_ARGUMENT_NOT_VALID(40010, "method.argument.not.valid"),
     INVALID_CODE_FORMAT(40011, "invalid.code.format"),
     INVALID_ADDITIONAL_ACTIVITY_VALUE(40012, "invalid.additional.activity.value"),
+    INVALID_PREFERENCE_MEETING_TYPE_VALUE(40013, "invalid.preference.meeting.type.value"),
+    TEAM_ALREADY_EXISTS(40014, "team.already.exist"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
 
@@ -56,6 +58,7 @@ public enum ErrorCode {
 
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
     UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
+    UNAUTHORIZED_UNIV(40307, "unauthorized.univ"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
 

@@ -115,4 +115,8 @@ public class Member extends BaseTimeEntity {
     public void modifyPreference(Preference preference) {
         this.preference = preference;
     }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }
