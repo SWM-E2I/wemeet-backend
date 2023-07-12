@@ -10,7 +10,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -84,10 +83,10 @@ class MemberServiceTest {
             preferenceMeetingTypeCode);
 
         // then
-        verify(memberRepository, times(1)).findByPhoneNumber(anyString());
-        verify(memberRepository, times(1)).save(any(Member.class));
-        verify(memberInterestRepository, times(1)).saveAll(anyList());
-        verify(memberPreferenceMeetingTypeRepository, times(1)).saveAll(anyList());
+        verify(memberRepository).findByPhoneNumber(anyString());
+        verify(memberRepository).save(any(Member.class));
+        verify(memberInterestRepository).saveAll(anyList());
+        verify(memberPreferenceMeetingTypeRepository).saveAll(anyList());
     }
 
     @DisplayName("중복된 휴대폰 번호를 가진 회원이 있을 경우 DuplicatedPhoneNumberException이 발생한다.")
@@ -104,7 +103,7 @@ class MemberServiceTest {
         assertThrows(DuplicatedPhoneNumberException.class, () -> {
             memberService.createMember(requestDto, interestCode, preferenceMeetingTypeCode);
         });
-        verify(memberRepository, times(1)).findByPhoneNumber(anyString());
+        verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));
         verify(memberInterestRepository, never()).saveAll(anyList());
         verify(memberPreferenceMeetingTypeRepository, never()).saveAll(anyList());
@@ -123,8 +122,8 @@ class MemberServiceTest {
         memberService.modifyMember(memberId, requestDto, interestCode);
 
         // then
-        verify(memberRepository, times(1)).findById(anyLong());
-        verify(memberInterestRepository, times(1)).saveAll(anyList());
+        verify(memberRepository).findById(anyLong());
+        verify(memberInterestRepository).saveAll(anyList());
 
         assertEquals(requestDto.nickname(), member.getNickname());
         assertEquals(requestDto.mbti(), member.getMbti().toString());
@@ -144,7 +143,7 @@ class MemberServiceTest {
             memberService.modifyMember(1L, requestDto, interestCode);
         });
 
-        verify(memberRepository, times(1)).findById(anyLong());
+        verify(memberRepository).findById(anyLong());
         verify(memberInterestRepository, never()).saveAll(anyList());
 
         assertNotEquals(requestDto.nickname(), member.getNickname());
@@ -166,8 +165,8 @@ class MemberServiceTest {
         memberService.modifyPreference(1L, requestDto, preferenceMeetingTypeCode);
 
         // then
-        verify(memberRepository, times(1)).findById(anyLong());
-        verify(memberPreferenceMeetingTypeRepository, times(1)).saveAll(anyList());
+        verify(memberRepository).findById(anyLong());
+        verify(memberPreferenceMeetingTypeRepository).saveAll(anyList());
 
         assertEquals(requestDto.preferenceMbti(), member.getPreference().getPreferenceMbti());
         assertEquals(requestDto.startPreferenceAdmissionYear(),
@@ -192,7 +191,7 @@ class MemberServiceTest {
         assertThrows(MemberNotFoundException.class, () -> {
             memberService.modifyPreference(memberId, requestDto, preferenceMeetingTypeCode);
         });
-        verify(memberRepository, times(1)).findById(anyLong());
+        verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository, never()).saveAll(anyList());
 
         assertNotEquals(requestDto.preferenceMbti(), member.getPreference().getPreferenceMbti());
@@ -238,7 +237,7 @@ class MemberServiceTest {
             memberService.getMemberInfo(memberId);
         });
 
-        verify(memberRepository, times(1)).findById(anyLong());
+        verify(memberRepository).findById(anyLong());
         verify(profileImageRepository, never()).findByMemberMemberIdAndIsMain(anyLong(),
             anyBoolean());
     }
@@ -280,7 +279,7 @@ class MemberServiceTest {
             memberService.getMemberDetail(memberId);
         });
 
-        verify(memberRepository, times(1)).findById(anyLong());
+        verify(memberRepository).findById(anyLong());
         verify(profileImageRepository, never()).findByMemberMemberId(anyLong());
         verify(memberInterestRepository, never()).findByMemberMemberId(anyLong());
     }
@@ -320,7 +319,7 @@ class MemberServiceTest {
             memberService.getMemberPrefer(memberId);
         });
 
-        verify(memberRepository, times(1)).findById(anyLong());
+        verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository, never()).findByMemberMemberId(anyLong());
     }
 }

@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -74,7 +73,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService, times(1)).createMember(request, List.of(), List.of());
+        verify(memberService).createMember(request, List.of(), List.of());
 
         createMemberWriteRestDocs(perform);
     }
@@ -97,7 +96,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService, times(1)).getMemberDetail(1L);
+        verify(memberService).getMemberDetail(1L);
 
         getMemberDetailWriteRestDocs(perform);
     }
@@ -120,7 +119,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService, times(1)).getMemberInfo(1L);
+        verify(memberService).getMemberInfo(1L);
 
         getMemberInfoWriteRestDocs(perform);
     }
@@ -151,7 +150,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService, times(1)).getMemberPrefer(1L);
+        verify(memberService).getMemberPrefer(1L);
 
         getMemberPreferWriteRestDocs(perform);
     }
@@ -177,7 +176,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService, times(1)).modifyMember(1L, request, List.of());
+        verify(memberService).modifyMember(1L, request, List.of());
         modifyMemberWriteRestDocs(perform);
     }
 
@@ -204,7 +203,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService, times(1)).modifyPreference(1L, request, List.of());
+        verify(memberService).modifyPreference(1L, request, List.of());
 
         modifyMemberPreferWriteRestDocs(perform);
     }
