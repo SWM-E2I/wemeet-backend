@@ -3,7 +3,6 @@ package com.e2i.wemeet.controller.member;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -16,7 +15,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -56,7 +54,7 @@ class MemberControllerTest extends AbstractUnitTest {
         // given
         CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
-        when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
+        when(codeService.findCodeList(anyList())).thenReturn(List.of());
         when(memberService.createMember(any(CreateMemberRequestDto.class), anyList(), anyList()))
             .thenReturn(1L);
 
@@ -161,7 +159,7 @@ class MemberControllerTest extends AbstractUnitTest {
     void modifyMember_Success() throws Exception {
         // given
         ModifyMemberRequestDto request = MemberFixture.KAI.createModifyMemberRequestDto();
-        when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
+        when(codeService.findCodeList(anyList())).thenReturn(List.of());
 
         // when
         ResultActions perform = mockMvc.perform(put("/v1/member")
@@ -188,7 +186,7 @@ class MemberControllerTest extends AbstractUnitTest {
         ModifyMemberPreferenceRequestDto request
             = PreferenceFixture.GENERAL_PREFERENCE.createModifyMemberPreferenceDto();
 
-        when(codeService.findCode(anyString())).thenReturn(Code.builder().build());
+        when(codeService.findCodeList(anyList())).thenReturn(List.of());
 
         // when
         ResultActions perform = mockMvc.perform(put("/v1/member/prefer")
