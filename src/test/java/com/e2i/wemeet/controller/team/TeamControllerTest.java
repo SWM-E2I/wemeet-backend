@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
@@ -69,6 +71,32 @@ class TeamControllerTest extends AbstractUnitTest {
         createTeamWriteRestDocs(perform);
     }
 
+    @DisplayName("팀 생성 성공")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void modifyTeam_Success() throws Exception {
+        // given
+        ModifyTeamRequestDto request = TeamFixture.TEST_TEAM.modifyTeamRequestDto();
+        when(codeService.findCodeList(anyList())).thenReturn(List.of());
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/v1/team")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(toJson(request)));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Modify Team Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).modifyTeam(1L, request, List.of());
+
+        modifyTeamWriteRestDocs(perform);
+    }
+
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
@@ -101,4 +129,34 @@ class TeamControllerTest extends AbstractUnitTest {
                 ));
     }
 
+    private void modifyTeamWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀 수정",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 수정")
+                        .summary("팀 수정 API 입니다.")
+                        .description(
+                            """
+                                    팀 정보 수정을 진행합니다.
+                                """),
+                    requestFields(
+                        fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
+                        fieldWithPath("drinkingOption").type(JsonFieldType.STRING)
+                            .description("술자리 여부"),
+                        fieldWithPath("preferenceMeetingTypeList").type(JsonFieldType.ARRAY)
+                            .description("선호 미팅 유형"),
+                        fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
+                            .description("추가 활동"),
+                        fieldWithPath("introduction").type(JsonFieldType.STRING)
+                            .description("팀 소개")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )
+                ));
+    }
 }
