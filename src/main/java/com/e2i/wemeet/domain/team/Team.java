@@ -59,6 +59,7 @@ public class Team extends BaseTimeEntity {
     @Builder
     public Team(Long teamId, String teamCode, int memberCount, Gender gender,
         String drinkingOption, String region,
+        AdditionalActivity additionalActivity,
         String introduction, Member member) {
         this.teamId = teamId;
         this.teamCode = teamCode;
@@ -67,7 +68,7 @@ public class Team extends BaseTimeEntity {
         this.region = region;
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
+        this.additionalActivity = additionalActivity;
         this.member = member;
     }
 }
-

@@ -11,6 +11,9 @@ public enum AdditionalActivity {
 
     @JsonCreator
     public static AdditionalActivity findBy(String value) {
+        if (value == null) {
+            return null;
+        }
 
         return Arrays.stream(AdditionalActivity.values())
             .filter(additionalActivity -> additionalActivity.name().equals(value.toUpperCase()))
