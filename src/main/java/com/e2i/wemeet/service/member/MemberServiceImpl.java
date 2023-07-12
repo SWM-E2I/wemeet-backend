@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Preference;
@@ -37,12 +38,6 @@ public class MemberServiceImpl implements MemberService {
     private final SecureRandom random = new SecureRandom();
 
     @Override
-    @Transactional(readOnly = true)
-    public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    }
-
-    @Override
     @Transactional
     public Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
         List<Code> preferenceMeetingTypeCode) {
@@ -69,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.modifyNickname(requestDto.nickname());
         member.modifyIntroduction(requestDto.introduction());
-        member.modifyMbti(requestDto.mbti());
+        member.modifyMbti(Mbti.findBy(requestDto.mbti()));
 
         saveMemberInterest(member, modifyCode);
     }
@@ -109,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberInfoResponseDto getMemberIndo(Long memberId) {
+    public MemberInfoResponseDto getMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -141,7 +136,7 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberPreferenceResponseDto(member, memberPreferenceMeetingTypeList);
     }
-
+    
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {
         List<MemberPreferenceMeetingType> preferenceMeetingTypeList = codeList.stream()
             .map(preferenceMeetingTypeCode -> MemberPreferenceMeetingType.builder()

@@ -35,8 +35,7 @@ public class SmsCredentialAuthenticationProvider implements AuthenticationProvid
             throw new InvalidSmsCredentialException(ErrorCode.INVALID_SMS_CREDENTIAL);
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(
-            EncryptionUtils.hashData(phone));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(phone);
 
         // 인증된 객체 반환 authenticated == true
         return new UsernamePasswordAuthenticationToken(userDetails, null,

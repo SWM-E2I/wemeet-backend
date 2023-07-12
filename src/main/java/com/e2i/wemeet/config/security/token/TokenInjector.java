@@ -4,7 +4,6 @@ package com.e2i.wemeet.config.security.token;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +40,8 @@ public class TokenInjector {
 
     private void injectRefreshToken(HttpServletResponse response, Payload payload) {
         String refreshToken = refreshTokenHandler.createToken(payload);
-        Cookie refreshTokenCookie = createRefreshTokenCookie(refreshToken);
         saveRefreshTokenInRedis(payload, refreshToken);
-        response.addCookie(refreshTokenCookie);
+        response.setHeader(JwtEnv.REFRESH.getKey(), refreshToken);
     }
 
     public void injectAccessToken(HttpServletResponse response, Payload payload) {
@@ -62,11 +60,4 @@ public class TokenInjector {
         operations.set(redisKey, refreshToken, refreshTokenDuration);
     }
 
-    private Cookie createRefreshTokenCookie(String refreshToken) {
-        Cookie refreshTokenCookie = new Cookie(JwtEnv.REFRESH.getKey(), refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setMaxAge((int) Duration.ofMinutes(10).toSeconds());
-        return refreshTokenCookie;
-    }
 }
