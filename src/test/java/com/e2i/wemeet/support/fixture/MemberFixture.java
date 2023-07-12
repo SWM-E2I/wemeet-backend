@@ -13,6 +13,7 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.util.List;
 
 public enum MemberFixture {
@@ -75,7 +76,7 @@ public enum MemberFixture {
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
-            .phoneNumber(this.phoneNumber)
+            .phoneNumber(EncryptionUtils.hashData(this.phoneNumber))
             .collegeInfo(this.collegeInfo)
             .preference(this.preference)
             .mbti(this.mbti)
