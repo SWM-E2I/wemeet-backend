@@ -13,11 +13,10 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.util.List;
 
 public enum MemberFixture {
-    KAI("4100", "kai", Gender.MALE, EncryptionUtils.hashData("+821012341234"),
+    KAI("4100", "kai", Gender.MALE, "+821012341234",
         ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
         Mbti.INFJ, "안녕하세요", 100, Role.USER);
 
@@ -89,7 +88,7 @@ public enum MemberFixture {
         return CreateMemberRequestDto.builder()
             .nickname(this.nickname)
             .gender(this.gender.toString())
-            .phoneNumber("+821012341234")
+            .phoneNumber(this.phoneNumber)
             .collegeInfo(ANYANG_COLLEGE.createCollegeInfoDto())
             .preference(GENERAL_PREFERENCE.createPreferenceDto())
             .preferenceMeetingTypeList(List.of())
