@@ -102,7 +102,7 @@ class TeamControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("팀 생성",
                     ResourceSnippetParameters.builder()
-                        .tag("팀 생성")
+                        .tag("팀 관련 API")
                         .summary("팀 생성 API 입니다.")
                         .description(
                             """
@@ -134,7 +134,7 @@ class TeamControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("팀 수정",
                     ResourceSnippetParameters.builder()
-                        .tag("팀 수정")
+                        .tag("팀 관련 API")
                         .summary("팀 수정 API 입니다.")
                         .description(
                             """
