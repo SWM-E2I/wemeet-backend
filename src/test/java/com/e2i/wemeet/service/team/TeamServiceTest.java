@@ -105,6 +105,9 @@ class TeamServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
+
+        // after
+        member.setTeam(null);
     }
 
     @DisplayName("대학 미인증 사용자인 경우 팀 생성을 요청하면 UnAuthorizedUnivException이 발생한다.")
@@ -147,6 +150,9 @@ class TeamServiceTest {
         assertEquals(requestDto.drinkingOption(), team.getDrinkingOption());
         assertEquals(requestDto.additionalActivity(), team.getAdditionalActivity().toString());
         assertEquals(requestDto.introduction(), team.getIntroduction());
+
+        // after
+        member.setTeam(null);
     }
 
     @DisplayName("회원이 존재하지 않는 경우 팀 정보 수정을 요청하면 MemberNotFoundException이 발생한다.")
