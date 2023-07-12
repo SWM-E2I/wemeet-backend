@@ -3,6 +3,7 @@ package com.e2i.wemeet.service.team;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
@@ -39,7 +40,8 @@ public class TeamServiceImpl implements TeamService {
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH), member));
         member.setTeam(team);
-
+        member.setRole(Role.MANAGER);
+        
         teamPreferenceMeetingTypeRepository.saveAll(
             teamPreferenceMeetingTypeList.stream()
                 .map(
