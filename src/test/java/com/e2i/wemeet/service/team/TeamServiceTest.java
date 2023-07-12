@@ -17,6 +17,7 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
@@ -122,5 +123,45 @@ class TeamServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
+    }
+
+    @DisplayName("팀 수정에 성공한다.")
+    @Test
+    void modifyTeam_Success() {
+        // given
+        ModifyTeamRequestDto requestDto = TeamFixture.TEST_TEAM.modifyTeamRequestDto();
+        member.setTeam(team);
+
+        when(memberRepository.findById(anyLong())).thenReturn(
+            Optional.ofNullable(member));
+        when(teamPreferenceMeetingTypeRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
+
+        // when
+        teamService.modifyTeam(1L, requestDto, preferenceMeetingTypeCode);
+
+        // then
+        verify(memberRepository).findById(anyLong());
+        verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
+
+        assertEquals(requestDto.region(), team.getRegion());
+        assertEquals(requestDto.drinkingOption(), team.getDrinkingOption());
+        assertEquals(requestDto.additionalActivity(), team.getAdditionalActivity().toString());
+        assertEquals(requestDto.introduction(), team.getIntroduction());
+    }
+
+    @DisplayName("회원이 존재하지 않는 경우 팀 정보 수정을 요청하면 MemberNotFoundException이 발생한다.")
+    @Test
+    void modifyTeam_NotFoundMember() {
+        // given
+        ModifyTeamRequestDto requestDto = TeamFixture.TEST_TEAM.modifyTeamRequestDto();
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(MemberNotFoundException.class, () -> {
+            teamService.modifyTeam(1L, requestDto, preferenceMeetingTypeCode);
+        });
+
+        verify(memberRepository).findById(anyLong());
+        verify(teamPreferenceMeetingTypeRepository, never()).saveAll(anyList());
     }
 }
