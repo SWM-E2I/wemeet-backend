@@ -47,8 +47,8 @@ class TeamServiceTest {
     @InjectMocks
     private TeamServiceImpl teamService;
 
-    private final Member member = MemberFixture.KAI.create();
-    private final Team team = TeamFixture.TEST_TEAM.create();
+    private static final Member member = MemberFixture.KAI.create();
+    private static final Team team = TeamFixture.TEST_TEAM.create();
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
     @DisplayName("팀 생성에 성공한다.")
@@ -126,6 +126,9 @@ class TeamServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
+
+        // after
+        member.getCollegeInfo().saveMail("test@test.ac.kr");
     }
 
     @DisplayName("팀 수정에 성공한다.")
