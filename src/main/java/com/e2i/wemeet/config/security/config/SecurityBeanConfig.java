@@ -63,9 +63,9 @@ public class SecurityBeanConfig {
     @Bean
     public RefreshTokenProcessingFilter refreshTokenProcessingFilter(
         RedisTemplate<String, String> redisTemplate, RefreshTokenHandler refreshTokenHandler,
-        TokenInjector tokenInjector, ObjectMapper objectMapper) {
+        TokenInjector tokenInjector, ObjectMapper objectMapper, AccessTokenHandler accessTokenHandler) {
         return new RefreshTokenProcessingFilter(redisTemplate, refreshTokenHandler, tokenInjector,
-            objectMapper);
+            objectMapper, accessTokenHandler);
     }
 
     // AccessToken 유효성 검증 필터

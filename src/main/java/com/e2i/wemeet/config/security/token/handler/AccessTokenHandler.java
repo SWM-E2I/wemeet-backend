@@ -44,6 +44,17 @@ public class AccessTokenHandler extends TokenHandler {
         return new Payload(decodedJWT.getClaims());
     }
 
+    public Payload extractTokenWithNoVerify(String accessTokenWithPrefix) {
+        String accessToken = separatePrefix(accessTokenWithPrefix);
+        if (!StringUtils.hasText(accessToken)) {
+            return null;
+        }
+
+        // AccessToken 검증 & 파싱
+        DecodedJWT decodedJWT = JWT.decode(accessToken);
+        return new Payload(decodedJWT.getClaims());
+    }
+
     private String separatePrefix(String accessTokenWithPrefix) {
         if (accessTokenWithPrefix != null && accessTokenWithPrefix.startsWith(ACCESS_PREFIX)) {
             return accessTokenWithPrefix.replace(ACCESS_PREFIX, "");
