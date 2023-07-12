@@ -37,11 +37,11 @@ public class MemberController {
         @RequestBody @Valid CreateMemberRequestDto requestDto) {
         List<Code> interestCode = new ArrayList<>();
         if (requestDto.memberInterestList() != null) {
-            interestCode = findCode(requestDto.memberInterestList());
+            interestCode = codeService.findCodeList(requestDto.memberInterestList());
         }
 
         List<Code> preferenceMeetingTypeCode
-            = findCode(requestDto.preferenceMeetingTypeList());
+            = codeService.findCodeList(requestDto.preferenceMeetingTypeList());
 
         Long savedMemberId = memberService.createMember(requestDto, interestCode,
             preferenceMeetingTypeCode);
@@ -83,7 +83,7 @@ public class MemberController {
         @RequestBody @Valid ModifyMemberRequestDto requestDto) {
         Long memberId = memberPrincipal.getMemberId();
 
-        List<Code> modifyCode = findCode(requestDto.memberInterestList());
+        List<Code> modifyCode = codeService.findCodeList(requestDto.memberInterestList());
         memberService.modifyMember(memberId, requestDto, modifyCode);
 
         return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Success", null);
@@ -95,18 +95,9 @@ public class MemberController {
         @RequestBody @Valid ModifyMemberPreferenceRequestDto requestDto) {
         Long memberId = memberPrincipal.getMemberId();
 
-        List<Code> modifyCode = findCode(requestDto.preferenceMeetingTypeList());
+        List<Code> modifyCode = codeService.findCodeList(requestDto.preferenceMeetingTypeList());
         memberService.modifyPreference(memberId, requestDto, modifyCode);
 
         return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Preference Success", null);
-    }
-
-    private List<Code> findCode(List<String> codeList) {
-        List<Code> findCodeList = new ArrayList<>();
-        for (String code : codeList) {
-            findCodeList.add(codeService.findCode(code));
-        }
-
-        return findCodeList;
     }
 }
