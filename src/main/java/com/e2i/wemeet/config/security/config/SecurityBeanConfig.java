@@ -98,8 +98,8 @@ public class SecurityBeanConfig {
 
     // UserDetailService - 유저가 입력한 값에 대한 인증 정보를 가져옴
     @Bean
-    public UserDetailsService userDetailsService(MemberRepository memberRepository, TwoWayEncryption twoWayEncryption) {
-        return new SmsUserDetailsService(memberRepository, twoWayEncryption);
+    public UserDetailsService userDetailsService(MemberRepository memberRepository) {
+        return new SmsUserDetailsService(memberRepository);
     }
 
     // 사용자 로그인 요청 성공시 수행
