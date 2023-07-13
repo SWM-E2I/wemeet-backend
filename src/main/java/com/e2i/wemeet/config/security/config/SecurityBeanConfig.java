@@ -13,6 +13,7 @@ import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
+import com.e2i.wemeet.util.encryption.TwoWayEncryption;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;

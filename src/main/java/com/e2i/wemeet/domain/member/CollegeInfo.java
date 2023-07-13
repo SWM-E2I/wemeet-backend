@@ -1,6 +1,8 @@
 package com.e2i.wemeet.domain.member;
 
+import com.e2i.wemeet.domain.base.CryptoConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,6 +23,7 @@ public class CollegeInfo {
     @Column(length = 2, nullable = false)
     private String admissionYear;
 
+    @Convert(converter = CryptoConverter.class)
     @Column(length = 60, unique = true)
     private String mail;
 

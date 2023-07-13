@@ -11,7 +11,6 @@ import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.util.Arrays;
 
 public enum AdminMemberFixture {
@@ -77,13 +76,11 @@ public enum AdminMemberFixture {
     }
 
     private Member.MemberBuilder createBuilder() {
-        String hashPhoneNumber = EncryptionUtils.hashData(this.phoneNumber);
-
         return Member.builder()
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
-            .phoneNumber(hashPhoneNumber)
+            .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo)
             .preference(this.preference)
             .mbti(this.mbti)

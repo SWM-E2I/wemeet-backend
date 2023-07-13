@@ -211,7 +211,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원가입",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 가입")
+                        .tag("회원 관련 API")
                         .summary("회원가입 API 입니다.")
                         .description(
                             """
@@ -264,7 +264,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 상세 정보 조회",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 상세 정보 조회")
+                        .tag("회원 관련 API")
                         .summary("회원 상세 정보 조회 API 입니다.")
                         .description(
                             """
@@ -299,7 +299,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 정보 조회",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 정보 조회")
+                        .tag("회원 관련 API")
                         .summary("회원 정보 조회 API 입니다.")
                         .description(
                             """
@@ -328,7 +328,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 선호 정보 조회",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 선호 정보 조회")
+                        .tag("회원 관련 API")
                         .summary("회원 선호 정보 조회 API 입니다.")
                         .description(
                             """
@@ -361,7 +361,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 상세 정보 수정",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 상세 정보 수정")
+                        .tag("회원 관련 API")
                         .summary("회원 상세 정보 수정 API 입니다.")
                         .description(
                             """
@@ -391,7 +391,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 선호 정보 수정",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 선호 정보 수정")
+                        .tag("회원 관련 API")
                         .summary("회원 선호 정보 수정 API 입니다.")
                         .description(
                             """

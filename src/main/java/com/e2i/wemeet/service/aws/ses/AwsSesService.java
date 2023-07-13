@@ -61,7 +61,7 @@ public class AwsSesService implements EmailCredentialService {
         boolean result = origin.equals(input);
         if (result) {
             memberRepository.findById(memberId).ifPresent(member ->
-                member.getCollegeInfo().saveMail(EncryptionUtils.hashData(target)));
+                member.getCollegeInfo().saveMail(target));
         }
 
         return result;

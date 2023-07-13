@@ -76,7 +76,7 @@ public enum MemberFixture {
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
-            .phoneNumber(EncryptionUtils.hashData(this.phoneNumber))
+            .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo)
             .preference(this.preference)
             .mbti(this.mbti)
