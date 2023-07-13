@@ -1,9 +1,11 @@
 package com.e2i.wemeet.domain.member;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,6 +42,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @Convert(converter = CryptoConverter.class)
     @Column(length = 60, unique = true, nullable = false)
     private String phoneNumber;
 

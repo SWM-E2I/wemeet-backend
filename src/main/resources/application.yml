@@ -19,7 +19,7 @@ spring:
     baseline-on-migrate: true
 
   config:
-    import: sub/application-jwt.yml, sub/application-aws.yml
+    import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml
   profiles:
     active: local
 
