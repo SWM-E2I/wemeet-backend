@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.team;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -18,6 +19,7 @@ import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
@@ -172,5 +174,64 @@ class TeamServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(teamPreferenceMeetingTypeRepository, never()).saveAll(anyList());
+    }
+
+    @DisplayName("소속 팀이 있는 경우 마이 팀 조회에 성공한다.")
+    @Test
+    void getMyTeamWithExistTeam_Success() {
+        // given
+        member.setTeam(team);
+
+        when(memberRepository.findById(anyLong())).thenReturn(
+            Optional.ofNullable(member));
+        when(teamPreferenceMeetingTypeRepository.findByTeamTeamId(anyLong())).thenReturn(
+            new ArrayList<>());
+
+        // when
+        MyTeamDetailResponseDto result = teamService.getMyTeamDetail(1L);
+
+        // then
+        assertEquals(result.memberCount(), team.getMemberCount());
+        assertEquals(result.region(), team.getRegion());
+        assertEquals(result.drinkingOption(), team.getDrinkingOption());
+        assertEquals(result.additionalActivity(), team.getAdditionalActivity());
+        assertEquals(result.introduction(), team.getIntroduction());
+        assertEquals(result.managerImageAuth(), team.getMember().isImageAuth());
+
+        // after
+        member.setTeam(null);
+    }
+
+    @DisplayName("소속 팀이 없는 경우 마이 팀을 조회하면 null이 반환된다.")
+    @Test
+    void getMyTeamWithNotExistTeam_Success() {
+        // given
+        member.setTeam(null);
+        when(memberRepository.findById(anyLong())).thenReturn(
+            Optional.ofNullable(member));
+
+        // when
+        MyTeamDetailResponseDto teamDetailResponseDto = teamService.getMyTeamDetail(1L);
+
+        // then
+        verify(memberRepository).findById(anyLong());
+        verify(teamPreferenceMeetingTypeRepository, never()).findByTeamTeamId(anyLong());
+        assertNull(member.getTeam());
+        assertNull(teamDetailResponseDto);
+    }
+
+    @DisplayName("회원이 존재하지 않는 경우 팀 정보 수정을 요청하면 MemberNotFoundException이 발생한다.")
+    @Test
+    void getMyTeam_NotFoundMember() {
+        // given
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(MemberNotFoundException.class, () -> {
+            teamService.getMyTeamDetail(1L);
+        });
+
+        verify(memberRepository).findById(anyLong());
+        verify(teamPreferenceMeetingTypeRepository, never()).findByTeamTeamId(anyLong());
     }
 }

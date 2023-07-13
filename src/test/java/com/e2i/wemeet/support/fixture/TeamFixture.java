@@ -11,9 +11,10 @@ import java.util.List;
 
 public enum TeamFixture {
 
-    TEST_TEAM("df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
+    TEST_TEAM(1L, "df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
         "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create());
 
+    private final Long teamId;
     private final String teamCode;
 
     private final int memberCount;
@@ -30,9 +31,10 @@ public enum TeamFixture {
 
     private final Member member;
 
-    TeamFixture(String teamCode, int memberCount, Gender gender, String region,
+    TeamFixture(Long teamId, String teamCode, int memberCount, Gender gender, String region,
         String drinkingOption, AdditionalActivity additionalActivity, String introduction,
         Member member) {
+        this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
         this.gender = gender;
@@ -83,6 +85,7 @@ public enum TeamFixture {
 
     private Team.TeamBuilder createBuilder() {
         return Team.builder()
+            .teamId(this.teamId)
             .teamCode(this.teamCode)
             .memberCount(this.memberCount)
             .gender(this.gender)
