@@ -122,7 +122,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("휴대폰 인증번호 발급",
                     ResourceSnippetParameters.builder()
-                        .tag("휴대폰 인증번호 발급")
+                        .tag("인증 관련 API")
                         .summary("휴대폰 인증번호를 발급하는 API 입니다.")
                         .description(
                             """
@@ -145,7 +145,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("이메일 인증번호 발급",
                     ResourceSnippetParameters.builder()
-                        .tag("이메일 인증번호 발급")
+                        .tag("인증 관련 API")
                         .summary("이메일 인증번호를 발급하는 API 입니다.")
                         .description(
                             """
@@ -169,7 +169,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("이메일 인증번호 검증",
                     ResourceSnippetParameters.builder()
-                        .tag("이메일 인증번호 검증")
+                        .tag("인증 관련 API")
                         .summary("이메일 인증번호가 일치하는지 검증하는 API 입니다.")
                         .description(
                             """

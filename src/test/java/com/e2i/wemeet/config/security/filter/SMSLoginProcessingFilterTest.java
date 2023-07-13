@@ -4,7 +4,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,7 +74,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
         // given - 가입 & 인증 번호 발급
         Member member = MemberFixture.KAI.create();
         memberRepository.save(member);
-        
+
         String phone = "+821012341234";
         SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
@@ -136,7 +135,7 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("휴대폰 인증번호 검증",
                     ResourceSnippetParameters.builder()
-                        .tag("휴대폰 인증번호 검증")
+                        .tag("인증 관련 API")
                         .summary("휴대폰 인증번호가 일치하는지 검증하는 API 입니다.")
                         .description(
                             """
