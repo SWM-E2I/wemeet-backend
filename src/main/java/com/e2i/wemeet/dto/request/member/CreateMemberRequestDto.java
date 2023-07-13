@@ -6,7 +6,6 @@ import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -51,7 +50,7 @@ public record CreateMemberRequestDto(
             .memberCode(memberCode)
             .nickname(nickname)
             .gender(Gender.findBy(gender))
-            .phoneNumber(EncryptionUtils.hashData(phoneNumber))
+            .phoneNumber(phoneNumber)
             .collegeInfo(CollegeInfo.builder()
                 .college(collegeInfo.college())
                 .collegeType(collegeInfo.collegeType())
