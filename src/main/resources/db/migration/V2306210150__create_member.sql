@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `member` (
     `drinking_option` char(2),
     `is_avoided_friends` tinyint,
     `preference_mbti` char(4),
+    `image_auth` tinyint DEFAULT 0,
     `created_at` datetime(6),
     `modified_at` datetime(6),
     `role` varchar(8),
