@@ -34,15 +34,14 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public Long createTeam(Long memberId, CreateTeamRequestDto createTeamRequestDto,
         List<Code> teamPreferenceMeetingTypeList) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        Member member = findMember(memberId);
         validateMember(member);
 
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH), member));
         member.setTeam(team);
         member.setRole(Role.MANAGER);
-        
+
         teamPreferenceMeetingTypeRepository.saveAll(
             teamPreferenceMeetingTypeList.stream()
                 .map(
@@ -58,8 +57,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public void modifyTeam(Long memberId, ModifyTeamRequestDto modifyTeamRequestDto,
         List<Code> teamPreferenceMeetingTypeList) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        Member member = findMember(memberId);
         Team team = member.getTeam();
 
         savePreferenceMeetingType(team, teamPreferenceMeetingTypeList);
@@ -69,9 +67,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @Transactional(readOnly = true)
     public MyTeamDetailResponseDto getMyTeamDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
+        Member member = findMember(memberId);
         Team team = member.getTeam();
         if (team == null) {
             return null;
@@ -112,6 +108,11 @@ public class TeamServiceImpl implements TeamService {
                     + preferenceMeetingType.getCode()
                     .getCodePk().getCodeId())
             .toList();
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     private boolean isTeamExist(Member member) {
