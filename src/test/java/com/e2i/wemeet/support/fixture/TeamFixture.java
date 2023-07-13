@@ -6,6 +6,7 @@ import com.e2i.wemeet.domain.team.AdditionalActivity;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import java.util.List;
 
 public enum TeamFixture {
@@ -65,6 +66,18 @@ public enum TeamFixture {
             .additionalActivity("CAFE")
             .preferenceMeetingTypeList(List.of("G001_C002"))
             .introduction("멋쟁이팀 인사드립니다.")
+            .build();
+    }
+
+    public MyTeamDetailResponseDto myTeamDetailResponseDto() {
+        return MyTeamDetailResponseDto.builder()
+            .memberCount(this.memberCount)
+            .region(this.region)
+            .drinkingOption(this.drinkingOption)
+            .additionalActivity(this.additionalActivity)
+            .preferenceMeetingTypeList(List.of("G001_C002"))
+            .introduction(this.introduction)
+            .managerImageAuth(member.isImageAuth())
             .build();
     }
 

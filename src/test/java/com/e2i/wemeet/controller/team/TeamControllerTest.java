@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
@@ -71,7 +73,7 @@ class TeamControllerTest extends AbstractUnitTest {
         createTeamWriteRestDocs(perform);
     }
 
-    @DisplayName("팀 생성 성공")
+    @DisplayName("팀 수정 성공")
     @WithCustomMockUser(role = "MANAGER")
     @Test
     void modifyTeam_Success() throws Exception {
@@ -95,6 +97,46 @@ class TeamControllerTest extends AbstractUnitTest {
         verify(teamService).modifyTeam(1L, request, List.of());
 
         modifyTeamWriteRestDocs(perform);
+    }
+
+    @DisplayName("소속 팀이 있는 경우 팀 정보 조회 성공")
+    @WithCustomMockUser
+    @Test
+    void getMyTeamDetailWithExistTeam_Success() throws Exception {
+        // given
+        MyTeamDetailResponseDto response = TeamFixture.TEST_TEAM.myTeamDetailResponseDto();
+        when(teamService.getMyTeamDetail(anyLong())).thenReturn(response);
+
+        // when
+        ResultActions perform = mockMvc.perform(get("/v1/team"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Get  My Team Detail Success"))
+            .andExpect(jsonPath("$.data").exists());
+
+        // then
+        verify(teamService).getMyTeamDetail(1L);
+
+        getMyTeamDetailWriteRestDocs(perform);
+    }
+
+    @DisplayName("소속 팀이 없는 경우 null이 반환된다.")
+    @WithCustomMockUser
+    @Test
+    void getMyTeamDetailWithNotExistTeam_Success() throws Exception {
+        // when
+        ResultActions perform = mockMvc.perform(get("/v1/team"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Get  My Team Detail Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).getMyTeamDetail(1L);
     }
 
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
@@ -159,4 +201,40 @@ class TeamControllerTest extends AbstractUnitTest {
                     )
                 ));
     }
+
+    private void getMyTeamDetailWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("마이 팀 조회",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀 조회 API 입니다.")
+                        .description(
+                            """
+                                    팀 정보 조회 진행합니다.
+                                    소속 팀이 없는 경우 data에는 아무 값도 반환되지 않습니다.
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.memberCount").type(JsonFieldType.NUMBER)
+                            .description("인원수"),
+                        fieldWithPath("data.region").type(JsonFieldType.STRING)
+                            .description("선호 지역"),
+                        fieldWithPath("data.drinkingOption").type(JsonFieldType.STRING)
+                            .description("술자리 선호 여부"),
+                        fieldWithPath("data.preferenceMeetingTypeList").type(
+                                JsonFieldType.ARRAY)
+                            .description("선호 미팅 유형"),
+                        fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING)
+                            .description("추가 활동 (Nullable)"),
+                        fieldWithPath("data.introduction").type(JsonFieldType.STRING)
+                            .description("팀 소개"),
+                        fieldWithPath("data.managerImageAuth").type(JsonFieldType.BOOLEAN)
+                            .description("팀 대표자 프로필 인증 여부")
+                    )
+                ));
+    }
+
+
 }
