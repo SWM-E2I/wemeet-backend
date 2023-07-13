@@ -8,12 +8,14 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,5 +53,14 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Modify Team Success", null);
+    }
+
+    @GetMapping
+    public ResponseDto<MyTeamDetailResponseDto> getMyTeamDetail(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        MyTeamDetailResponseDto result = teamService.getMyTeamDetail(memberPrincipal.getMemberId());
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Get  My Team Detail Success", result);
     }
 }

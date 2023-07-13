@@ -10,6 +10,7 @@ import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
@@ -65,6 +66,31 @@ public class TeamServiceImpl implements TeamService {
         team.updateTeam(modifyTeamRequestDto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public MyTeamDetailResponseDto getMyTeamDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        Team team = member.getTeam();
+        if (team == null) {
+            return null;
+        }
+
+        List<TeamPreferenceMeetingType> preferenceMeetingTypeList
+            = teamPreferenceMeetingTypeRepository.findByTeamTeamId(team.getTeamId());
+
+        return MyTeamDetailResponseDto.builder()
+            .memberCount(team.getMemberCount())
+            .drinkingOption(team.getDrinkingOption())
+            .region(team.getRegion())
+            .introduction(team.getIntroduction())
+            .additionalActivity(team.getAdditionalActivity())
+            .managerImageAuth(team.getMember().isImageAuth())
+            .preferenceMeetingTypeList(preferenceMeetingTypeToCodeString(preferenceMeetingTypeList))
+            .build();
+    }
+
     /*
      * 팀 생성 가능한 사용자인지 확인
      */
@@ -76,6 +102,16 @@ public class TeamServiceImpl implements TeamService {
         if (isUnivAuth(member)) {
             throw new UnAuthorizedUnivException();
         }
+    }
+
+    private List<String> preferenceMeetingTypeToCodeString(
+        List<TeamPreferenceMeetingType> preferenceMeetingTypeList) {
+        return preferenceMeetingTypeList.stream()
+            .map(preferenceMeetingType ->
+                preferenceMeetingType.getCode().getCodePk().getGroupCodeId() + "_"
+                    + preferenceMeetingType.getCode()
+                    .getCodePk().getCodeId())
+            .toList();
     }
 
     private boolean isTeamExist(Member member) {
