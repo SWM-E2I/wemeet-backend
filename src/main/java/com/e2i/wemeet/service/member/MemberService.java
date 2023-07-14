@@ -7,6 +7,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
+import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import java.util.List;
 
 public interface MemberService {
@@ -44,4 +45,8 @@ public interface MemberService {
      */
     MemberPreferenceResponseDto getMemberPrefer(Long memberId);
 
+    /*
+     * 사용자 Role + Team 여부 조회
+     */
+    RoleResponseDto getMemberRole(Long memberId);
 }

@@ -21,6 +21,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
+import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
@@ -204,6 +205,33 @@ class MemberControllerTest extends AbstractUnitTest {
         verify(memberService).modifyPreference(1L, request, List.of());
 
         modifyMemberPreferWriteRestDocs(perform);
+    }
+
+    @DisplayName("회원 Role 정보 조회 성공")
+    @WithCustomMockUser
+    @Test
+    void getMemberRole_Success() throws Exception {
+        // given
+        RoleResponseDto response = RoleResponseDto.builder()
+            .isManager(false)
+            .hasTeam(false)
+            .build();
+
+        when(memberService.getMemberRole(anyLong())).thenReturn(response);
+
+        // when
+        ResultActions perform = mockMvc.perform(get("/v1/member/role"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Get Member Role Success"))
+            .andExpect(jsonPath("$.data").exists());
+
+        // then
+        verify(memberService).getMemberRole(1L);
+
+        getMemberRoleWriteRestDocs(perform);
     }
 
     private void createMemberWriteRestDocs(ResultActions perform) throws Exception {
@@ -420,5 +448,28 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("data").type(JsonFieldType.NULL)
                             .description("data에는 아무 값도 반환되지 않습니다")
                     )));
+    }
+
+    private void getMemberRoleWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 Role 조회",
+                    ResourceSnippetParameters.builder()
+                        .tag("회원 관련 API")
+                        .summary("회원 Role 정보 조회 API 입니다.")
+                        .description(
+                            """
+                                    회원의 Role 정보를 조회합니다.
+                                    팀장 여부와 팀 소속 여부를 조회할 수 있습니다.
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.isManager").type(JsonFieldType.BOOLEAN)
+                            .description("팀장 여부"),
+                        fieldWithPath("data.hasTeam").type(JsonFieldType.BOOLEAN)
+                            .description("팀 소속 여부")
+                    )
+                ));
     }
 }
