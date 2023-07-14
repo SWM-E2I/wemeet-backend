@@ -1,11 +1,12 @@
 CREATE TABLE IF NOT EXISTS `team` (
-   `team_id` bigint NOT NULL AUTO_INCREMENT,
-   `basic_url` varchar(255) NOT NULL,
-    `low_resolution_basic_url` varchar(255) NOT NULL,
-    `blur_url` varchar(255) NOT NULL,
-    `low_resolution_blur_url` varchar(255) NOT NULL,
-    `is_main` tinyint NOT NULL,
-    `is_certified` tinyint NOT NULL,
+    `team_id` bigint NOT NULL AUTO_INCREMENT,
+    `team_code` char(6) NOT NULL,
+    `member_count` int NOT NULL,
+    `gender` char(6) NOT NULL,
+    `region` varchar(20) NOT NULL,
+    `drinking_option` char(2) NOT NULL,
+    `additional_activity` varchar(20),
+    `introduction` varchar(100),
     `created_at` datetime(6),
     `modified_at` datetime(6),
     `member_id` bigint NOT NULL,
@@ -16,3 +17,4 @@ CREATE TABLE IF NOT EXISTS `team` (
 
 ALTER TABLE `member` ADD `team_id` bigint;
 ALTER TABLE `member` ADD FOREIGN KEY (`team_id`) REFERENCES team (`team_id`);
+

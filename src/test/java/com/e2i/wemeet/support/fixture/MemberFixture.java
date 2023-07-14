@@ -13,13 +13,12 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import java.util.List;
 
 public enum MemberFixture {
     KAI("4100", "kai", Gender.MALE, "+821012341234",
         ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER);
+        Mbti.INFJ, "안녕하세요", 100, Role.USER, false);
 
     private final String memberCode;
     private final String nickname;
@@ -32,9 +31,11 @@ public enum MemberFixture {
     private final int credit;
     private final Role role;
 
+    private final boolean imageAuth;
+
     MemberFixture(String memberCode, String nickname, Gender gender, String phoneNumber,
         CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit,
-        Role role) {
+        Role role, boolean imageAuth) {
         this.memberCode = memberCode;
         this.nickname = nickname;
         this.gender = gender;
@@ -45,6 +46,7 @@ public enum MemberFixture {
         this.introduction = introduction;
         this.credit = credit;
         this.role = role;
+        this.imageAuth = imageAuth;
     }
 
     public Member create() {

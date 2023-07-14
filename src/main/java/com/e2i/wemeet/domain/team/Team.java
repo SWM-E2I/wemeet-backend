@@ -3,6 +3,7 @@ package com.e2i.wemeet.domain.team;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,6 +30,9 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
+    @Column(length = 6, nullable = false)
+    private String teamCode;
+
     @Column(nullable = false)
     private int memberCount;
 
@@ -36,8 +40,15 @@ public class Team extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @Column(length = 20, nullable = false)
+    private String region;
+
     @Column(nullable = false)
-    private boolean drinkingOption;
+    private String drinkingOption;
+
+    @Column(length = 20)
+    @Enumerated(value = EnumType.STRING)
+    private AdditionalActivity additionalActivity;
 
     @Column(length = 100)
     private String introduction;
@@ -47,13 +58,26 @@ public class Team extends BaseTimeEntity {
     private Member member;
 
     @Builder
-    public Team(Long teamId, int memberCount, Gender gender, boolean drinkingOption,
+    public Team(Long teamId, String teamCode, int memberCount, Gender gender,
+        String drinkingOption, String region,
+        AdditionalActivity additionalActivity,
         String introduction, Member member) {
         this.teamId = teamId;
+        this.teamCode = teamCode;
         this.memberCount = memberCount;
         this.gender = gender;
+        this.region = region;
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
+        this.additionalActivity = additionalActivity;
         this.member = member;
+    }
+
+    public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
+        this.region = modifyTeamRequestDto.region();
+        this.drinkingOption = modifyTeamRequestDto.drinkingOption();
+        this.additionalActivity = AdditionalActivity.findBy(
+            modifyTeamRequestDto.additionalActivity());
+        this.introduction = modifyTeamRequestDto.introduction();
     }
 }
