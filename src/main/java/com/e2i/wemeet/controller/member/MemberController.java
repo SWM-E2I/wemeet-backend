@@ -10,6 +10,7 @@ import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
+import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import jakarta.validation.Valid;
@@ -99,5 +100,13 @@ public class MemberController {
         memberService.modifyPreference(memberId, requestDto, modifyCode);
 
         return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Preference Success", null);
+    }
+
+    @GetMapping("/role")
+    public ResponseDto<String> getMemberRole(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        RoleResponseDto result = memberService.getMemberRole(memberPrincipal.getMemberId());
+
+        return new ResponseDto(ResponseStatus.SUCCESS, "Get Member Role Success", result);
     }
 }

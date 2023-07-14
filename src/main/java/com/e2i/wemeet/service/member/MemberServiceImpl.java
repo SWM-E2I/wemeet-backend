@@ -5,6 +5,7 @@ import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Preference;
+import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.domain.memberinterest.MemberInterest;
 import com.e2i.wemeet.domain.memberinterest.MemberInterestRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
@@ -17,6 +18,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
+import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.security.SecureRandom;
@@ -136,7 +138,19 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberPreferenceResponseDto(member, memberPreferenceMeetingTypeList);
     }
-    
+
+    @Override
+    @Transactional(readOnly = true)
+    public RoleResponseDto getMemberRole(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        return RoleResponseDto.builder()
+            .hasTeam(member.getTeam() != null)
+            .isManager(member.getRole() == Role.MANAGER)
+            .build();
+    }
+
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {
         List<MemberPreferenceMeetingType> preferenceMeetingTypeList = codeList.stream()
             .map(preferenceMeetingTypeCode -> MemberPreferenceMeetingType.builder()
