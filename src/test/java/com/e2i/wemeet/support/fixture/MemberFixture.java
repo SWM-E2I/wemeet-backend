@@ -27,9 +27,13 @@ public enum MemberFixture {
         KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
         Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
 
-    SEYUN(3L, "4102", "seyun", Gender.MALE, "+821056785678",
+    SEYUN(3L, "4102", "seyun", Gender.MALE, "+821056785628",
         SEOULWOMEN_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true);
+        Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true),
+
+    JEONGYEOL(4L, "4103", "10cm", Gender.MALE, "+821056783678",
+        KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
+        Mbti.INFJ, "안녕하세요", 100, Role.USER, true);
 
     private final Long memberId;
     private final String memberCode;

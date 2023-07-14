@@ -31,6 +31,7 @@ import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.notfound.InvitationNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
@@ -70,9 +71,16 @@ class TeamServiceTest {
 
     private static final Member member = MemberFixture.KAI.create();
     private static final Member manager = MemberFixture.SEYUN.create();
+    private static final Member inviteMember = MemberFixture.JEONGYEOL.create();
     private static final Team team = TeamFixture.TEST_TEAM.create();
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
+    private static final TeamInvitation invitation = TeamInvitation.builder()
+        .teamInvitationId(1L)
+        .team(team)
+        .member(inviteMember)
+        .acceptStatus(InvitationAcceptStatus.WAITING)
+        .build();
 
     @DisplayName("팀 생성에 성공한다.")
     @Test
@@ -267,7 +275,7 @@ class TeamServiceTest {
         InviteTeamRequestDto requestDto = MemberFixture.KAI.inviteTeamRequestDto();
         manager.setTeam(team);
         member.setTeam(null);
-        
+
         when(memberRepository.findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode())).thenReturn(
             Optional.of(member));
@@ -445,5 +453,104 @@ class TeamServiceTest {
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
             member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
+    }
+
+    @DisplayName("팀 초대 신청 수락에 성공한다.")
+    @Test
+    void invitationAccept_Success() {
+        // given
+        when(memberRepository.findById(inviteMember.getMemberId())).thenReturn(
+            Optional.of(inviteMember));
+        when(teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId())).thenReturn(
+            Optional.of(invitation));
+
+        // when
+        teamService.takeAcceptStatus(inviteMember.getMemberId(), invitation.getTeamInvitationId(),
+            true);
+
+        // then
+        verify(memberRepository).findById(inviteMember.getMemberId());
+        verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId());
+        assertEquals(InvitationAcceptStatus.ACCEPT, invitation.getAcceptStatus());
+        assertEquals(team, inviteMember.getTeam());
+
+        // after
+        inviteMember.setTeam(null);
+        invitation.updateAcceptStatus(InvitationAcceptStatus.WAITING);
+    }
+
+    @DisplayName("팀 초대 신청 거절에 성공한다.")
+    @Test
+    void invitationReject_Success() {
+        // given
+        when(memberRepository.findById(inviteMember.getMemberId())).thenReturn(
+            Optional.of(inviteMember));
+        when(teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId())).thenReturn(
+            Optional.of(invitation));
+
+        // when
+        teamService.takeAcceptStatus(inviteMember.getMemberId(), invitation.getTeamInvitationId(),
+            false);
+
+        // then
+        verify(memberRepository).findById(inviteMember.getMemberId());
+        verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId());
+        assertEquals(InvitationAcceptStatus.REJECT, invitation.getAcceptStatus());
+
+        // after
+        invitation.updateAcceptStatus(InvitationAcceptStatus.WAITING);
+    }
+
+    @DisplayName("팀 초대가 존재하지 않는 경우 InvitationNotFoundException이 발생한다.")
+    @Test
+    void takeAcceptStatus_InvitationNotFoundException() {
+        // given
+        when(memberRepository.findById(inviteMember.getMemberId())).thenReturn(
+            Optional.of(inviteMember));
+        when(teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId())).thenReturn(
+            Optional.empty());
+
+        // when & then
+        assertThrows(InvitationNotFoundException.class, () -> {
+            teamService.takeAcceptStatus(inviteMember.getMemberId(),
+                invitation.getTeamInvitationId(),
+                true);
+        });
+
+        verify(memberRepository).findById(inviteMember.getMemberId());
+        verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId());
+    }
+
+    @DisplayName("이미 활성화된 팀일 경우 초대 신청을 수락 하면 TeamAlreadyActiveException이 발생한다..")
+    @Test
+    void takeAcceptStatus_TeamAlreadyActiveException() {
+        // given
+        team.setActive(true);
+        when(memberRepository.findById(inviteMember.getMemberId())).thenReturn(
+            Optional.of(inviteMember));
+        when(teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId())).thenReturn(
+            Optional.of(invitation));
+
+        // when & then
+        assertThrows(TeamAlreadyActiveException.class, () -> {
+            teamService.takeAcceptStatus(inviteMember.getMemberId(),
+                invitation.getTeamInvitationId(),
+                true);
+        });
+
+        verify(memberRepository).findById(inviteMember.getMemberId());
+        verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
+            invitation.getTeamInvitationId(), inviteMember.getMemberId());
+        assertEquals(InvitationAcceptStatus.WAITING, invitation.getAcceptStatus());
+
+        // after
+        team.setActive(false);
     }
 }
