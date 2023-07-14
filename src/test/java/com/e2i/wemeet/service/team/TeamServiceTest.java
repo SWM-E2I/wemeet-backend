@@ -10,6 +10,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
@@ -25,6 +27,7 @@ import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +45,11 @@ class TeamServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private TeamRepository teamRepository;
+    @Mock
+    private TokenInjector tokenInjector;
 
+    @Mock
+    private HttpServletResponse response;
     @Mock
     private TeamPreferenceMeetingTypeRepository teamPreferenceMeetingTypeRepository;
 
@@ -65,12 +72,15 @@ class TeamServiceTest {
         when(teamPreferenceMeetingTypeRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
 
         // when
-        teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode);
+        teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
 
         // then
         verify(memberRepository).findById(anyLong());
         verify(teamRepository).save(any(Team.class));
         verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
+
+        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
+            any(MemberPrincipal.class));
 
         assertEquals(Role.MANAGER, member.getRole());
     }
@@ -84,7 +94,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(MemberNotFoundException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode);
+            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
         });
 
         verify(memberRepository).findById(anyLong());
@@ -102,7 +112,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(TeamAlreadyExistsException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode);
+            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
         });
 
         verify(memberRepository).findById(anyLong());
@@ -123,7 +133,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(UnAuthorizedUnivException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode);
+            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
         });
 
         verify(memberRepository).findById(anyLong());

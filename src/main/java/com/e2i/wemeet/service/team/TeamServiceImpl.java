@@ -1,5 +1,7 @@
 package com.e2i.wemeet.service.team;
 
+import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
@@ -14,6 +16,7 @@ import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +30,25 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final TeamPreferenceMeetingTypeRepository teamPreferenceMeetingTypeRepository;
     private final MemberRepository memberRepository;
+    private final TokenInjector tokenInjector;
     private final SecureRandom random = new SecureRandom();
     private static final int TEAM_CODE_LENGTH = 6;
 
     @Override
     @Transactional
     public Long createTeam(Long memberId, CreateTeamRequestDto createTeamRequestDto,
-        List<Code> teamPreferenceMeetingTypeList) {
+        List<Code> teamPreferenceMeetingTypeList, HttpServletResponse response) {
         Member member = findMember(memberId);
         validateMember(member);
 
+        // team 생성
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH), member));
         member.setTeam(team);
         member.setRole(Role.MANAGER);
+
+        // 바뀐 Role을 적용한 token 재발급
+        tokenInjector.injectToken(response, new MemberPrincipal(member));
 
         teamPreferenceMeetingTypeRepository.saveAll(
             teamPreferenceMeetingTypeList.stream()

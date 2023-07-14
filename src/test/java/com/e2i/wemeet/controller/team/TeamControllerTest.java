@@ -25,6 +25,7 @@ import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.TeamFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,8 @@ class TeamControllerTest extends AbstractUnitTest {
         CreateTeamRequestDto request = TeamFixture.TEST_TEAM.createTeamRequestDto();
 
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
-        when(teamService.createTeam(anyLong(), any(CreateTeamRequestDto.class), anyList()))
+        when(teamService.createTeam(anyLong(), any(CreateTeamRequestDto.class), anyList(),
+            any(HttpServletResponse.class)))
             .thenReturn(1L);
 
         // when
@@ -68,8 +70,8 @@ class TeamControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(teamService).createTeam(1L, request, List.of());
-
+        verify(teamService).createTeam(anyLong(), any(CreateTeamRequestDto.class), anyList(),
+            any(HttpServletResponse.class));
         createTeamWriteRestDocs(perform);
     }
 

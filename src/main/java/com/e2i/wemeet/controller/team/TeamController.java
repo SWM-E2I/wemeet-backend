@@ -11,6 +11,7 @@ import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +33,12 @@ public class TeamController {
 
     @PostMapping
     public ResponseDto<Long> createTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto) {
+        @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto,
+        HttpServletResponse response) {
         List<Code> teamPreferenceMeetingList = codeService.findCodeList(
             createTeamRequestDto.preferenceMeetingTypeList());
         Long teamId = teamService.createTeam(memberPrincipal.getMemberId(), createTeamRequestDto,
-            teamPreferenceMeetingList);
+            teamPreferenceMeetingList, response);
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Create Team Success", teamId);
