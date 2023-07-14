@@ -25,6 +25,7 @@ public enum ErrorCode {
     TEAM_ALREADY_ACTIVE(40016, "team.already.active"),
     GENDER_NOT_MATCH(40017, "gender.not.match"),
     INVITATION_ALREADY_SET(40018, "invitation.already.set"),
+    NOT_BELONG_TO_TEAM(40019, "not.belong.to.team"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
 

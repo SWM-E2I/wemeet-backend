@@ -5,6 +5,7 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -37,4 +38,9 @@ public interface TeamService {
      * 초대 수락 or 거절
      */
     void takeAcceptStatus(Long memberId, Long invitationId, boolean accepted);
+
+    /*
+     * 팀원 목록 조회
+     */
+    TeamManagementResponseDto getTeamMemberList(Long memberId);
 }

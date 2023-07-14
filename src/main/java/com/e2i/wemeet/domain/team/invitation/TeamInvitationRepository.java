@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.team.invitation;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,7 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
 
     Optional<TeamInvitation> findByTeamInvitationIdAndMemberMemberId(
         Long invitationId, Long memberId);
+
+    List<TeamInvitation> findByTeamTeamIdAndAcceptStatus(Long teamId,
+        InvitationAcceptStatus acceptStatus);
 }

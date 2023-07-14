@@ -6,6 +6,8 @@ import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.profileimage.ProfileImage;
+import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.team.invitation.InvitationAcceptStatus;
@@ -17,9 +19,12 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadySetException;
+import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.InvitationNotFoundException;
@@ -27,7 +32,9 @@ import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +47,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamPreferenceMeetingTypeRepository teamPreferenceMeetingTypeRepository;
     private final MemberRepository memberRepository;
     private final TeamInvitationRepository teamInvitationRepository;
+    private final ProfileImageRepository profileImageRepository;
     private final TokenInjector tokenInjector;
     private final SecureRandom random = new SecureRandom();
     private static final int TEAM_CODE_LENGTH = 6;
@@ -140,12 +148,78 @@ public class TeamServiceImpl implements TeamService {
         if (teamInvitation.getAcceptStatus() != InvitationAcceptStatus.WAITING) {
             throw new InvitationAlreadySetException();
         }
-        
+
         if (accepted) {
             acceptInvitation(teamInvitation);
         } else {
             rejectInvitation(teamInvitation);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TeamManagementResponseDto getTeamMemberList(Long memberId) {
+        Member member = findMember(memberId);
+        if (!isTeamExist(member)) {
+            throw new NotBelongToTeamException();
+        }
+        Team team = member.getTeam();
+
+        List<TeamMemberResponseDto> members = new ArrayList<>();
+        members.addAll(findWaitingMembers(team));
+        members.addAll(findTeamMembers(memberId, team));
+
+        return TeamManagementResponseDto.builder()
+            .managerId(memberId)
+            .teamCode(team.getTeamCode())
+            .members(members)
+            .build();
+    }
+
+    /*
+     * 수락 대기 중인 사용자 목록 조회
+     */
+    private List<TeamMemberResponseDto> findWaitingMembers(Team team) {
+        return teamInvitationRepository.findByTeamTeamIdAndAcceptStatus(team.getTeamId(),
+                InvitationAcceptStatus.WAITING)
+            .stream()
+            .map(teamInvitation -> {
+                Member member = teamInvitation.getMember();
+                Optional<ProfileImage> profileImage = profileImageRepository
+                    .findByMemberMemberIdAndIsMain(member.getMemberId(), true);
+
+                return TeamMemberResponseDto.builder()
+                    .memberId(member.getMemberId())
+                    .nickname(member.getNickname())
+                    .memberCode(member.getMemberCode())
+                    .profileImage(
+                        profileImage.map(ProfileImage::getLowResolutionBasicUrl).orElse(null))
+                    .isAccepted(false)
+                    .build();
+            })
+            .toList();
+    }
+
+    /*
+     * 팀원 목록 조회
+     */
+    private List<TeamMemberResponseDto> findTeamMembers(Long memberId, Team team) {
+        return team.getMembers().stream()
+            .filter(teamMember -> !teamMember.getMemberId().equals(memberId))
+            .map(teamMember -> {
+                Optional<ProfileImage> profileImage = profileImageRepository.findByMemberMemberIdAndIsMain(
+                    teamMember.getMemberId(), true);
+
+                return TeamMemberResponseDto.builder()
+                    .memberId(teamMember.getMemberId())
+                    .nickname(teamMember.getNickname())
+                    .memberCode(teamMember.getMemberCode())
+                    .profileImage(
+                        profileImage.map(ProfileImage::getLowResolutionBasicUrl).orElse(null))
+                    .isAccepted(true)
+                    .build();
+            })
+            .toList();
     }
 
     private void acceptInvitation(TeamInvitation teamInvitation) {

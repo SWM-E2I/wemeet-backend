@@ -10,6 +10,7 @@ import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -89,5 +90,16 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Set Invitation Success", null);
+    }
+
+    @IsManager
+    @GetMapping("/member")
+    public ResponseDto<TeamManagementResponseDto> getTeamMemberList(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        TeamManagementResponseDto result = teamService.getTeamMemberList(
+            memberPrincipal.getMemberId());
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Get My Team Members Success", result);
     }
 }
