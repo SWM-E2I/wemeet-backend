@@ -207,7 +207,8 @@ public class TeamServiceImpl implements TeamService {
         return team.getMembers().stream()
             .filter(teamMember -> !teamMember.getMemberId().equals(memberId))
             .map(teamMember -> {
-                Optional<ProfileImage> profileImage = profileImageRepository.findByMemberMemberIdAndIsMain(
+                Optional<ProfileImage> profileImage
+                    = profileImageRepository.findByMemberMemberIdAndIsMain(
                     teamMember.getMemberId(), true);
 
                 return TeamMemberResponseDto.builder()
