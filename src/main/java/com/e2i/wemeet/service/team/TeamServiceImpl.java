@@ -19,8 +19,10 @@ import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.InvitationAlreadySetException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.notfound.InvitationNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -124,6 +126,45 @@ public class TeamServiceImpl implements TeamService {
                 .build());
     }
 
+    @Transactional
+    @Override
+    public void takeAcceptStatus(Long memberId, Long invitationId, boolean accepted) {
+        Member member = findMember(memberId);
+        validateMember(member);
+
+        TeamInvitation teamInvitation =
+            teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
+                    invitationId, memberId)
+                .orElseThrow(InvitationNotFoundException::new);
+
+        if (teamInvitation.getAcceptStatus() != InvitationAcceptStatus.WAITING) {
+            throw new InvitationAlreadySetException();
+        }
+        
+        if (accepted) {
+            acceptInvitation(teamInvitation);
+        } else {
+            rejectInvitation(teamInvitation);
+        }
+    }
+
+    private void acceptInvitation(TeamInvitation teamInvitation) {
+        Team team = teamInvitation.getTeam();
+        if (isActiveTeam(team)) {
+            throw new TeamAlreadyActiveException();
+        }
+
+        if (team.getMembers().size() + 1 == team.getMemberCount()) {
+            team.setActive(true);
+        }
+        teamInvitation.updateAcceptStatus(InvitationAcceptStatus.ACCEPT);
+        team.setMember(teamInvitation.getMember());
+    }
+
+    private void rejectInvitation(TeamInvitation teamInvitation) {
+        teamInvitation.updateAcceptStatus(InvitationAcceptStatus.REJECT);
+    }
+
     /*
      * 팀 생성 및 수락이 가능한 사용자인지 확인
      */
@@ -142,7 +183,7 @@ public class TeamServiceImpl implements TeamService {
      */
     private void validateInvitation(Member teamMember, Member manager, Team team) {
         // 이미 팀이 활성화된 경우
-        if (team.isActive()) {
+        if (isActiveTeam(team)) {
             throw new TeamAlreadyActiveException();
         }
 
@@ -195,6 +236,10 @@ public class TeamServiceImpl implements TeamService {
                 member.getMemberId(),
                 team.getTeamId(), InvitationAcceptStatus.WAITING)
             .isPresent();
+    }
+
+    private boolean isActiveTeam(Team team) {
+        return team.isActive();
     }
 
     private void savePreferenceMeetingType(Team team, List<Code> codeList) {

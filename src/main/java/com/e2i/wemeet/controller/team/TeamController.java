@@ -12,12 +12,14 @@ import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
+import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +33,7 @@ public class TeamController {
 
     private final TeamService teamService;
     private final CodeService codeService;
+
 
     @PostMapping
     public ResponseDto<Long> createTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
@@ -76,5 +79,15 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Invitation Team Success", null);
+    }
+
+    @PutMapping("/invitation/{invitationId}")
+    public ResponseDto<Void> setInvitationStatus(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("invitationId") Long invitationId, @Param("accepted") Boolean accepted) {
+        teamService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId, accepted);
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Set Invitation Success", null);
     }
 }

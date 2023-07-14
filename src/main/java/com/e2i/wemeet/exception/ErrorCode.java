@@ -24,6 +24,7 @@ public enum ErrorCode {
     INVITATION_ALREADY_EXISTS(40015, "invitation.already.exist"),
     TEAM_ALREADY_ACTIVE(40016, "team.already.active"),
     GENDER_NOT_MATCH(40017, "gender.not.match"),
+    INVITATION_ALREADY_SET(40018, "invitation.already.set"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
 
@@ -35,6 +36,7 @@ public enum ErrorCode {
 
     CODE_NOT_FOUND(40104, "code.not.found"),
     INVITED_MEMBER_NOT_FOUND(40105, "invited.member.not.found"),
+    INVITATION_NOT_FOUND(40106, "invitation.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
 

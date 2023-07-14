@@ -96,4 +96,8 @@ public class Team extends BaseTimeEntity {
             member.setTeam(this);
         }
     }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

@@ -7,4 +7,7 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
 
     Optional<TeamInvitation> findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(Long memberId,
         Long teamId, InvitationAcceptStatus acceptStatus);
+
+    Optional<TeamInvitation> findByTeamInvitationIdAndMemberMemberId(
+        Long invitationId, Long memberId);
 }
