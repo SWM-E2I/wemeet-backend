@@ -76,6 +76,8 @@ class TeamServiceTest {
     private static final Team team = TeamFixture.TEST_TEAM.create();
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
+    private static final Long managerId = manager.getMemberId();
+
     private static final TeamInvitation invitation = TeamInvitation.builder()
         .teamInvitationId(1L)
         .team(team)
@@ -309,7 +311,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(MemberNotFoundException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
@@ -334,7 +336,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(TeamAlreadyActiveException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
@@ -362,7 +364,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(TeamAlreadyExistsException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
@@ -390,7 +392,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(UnAuthorizedUnivException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
@@ -418,7 +420,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(GenderNotMatchException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(otherMember.getNickname(),
@@ -445,7 +447,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(InvitationAlreadyExistsException.class, () -> {
-            teamService.inviteTeam(manager.getMemberId(), requestDto);
+            teamService.inviteTeam(managerId, requestDto);
         });
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
@@ -517,10 +519,10 @@ class TeamServiceTest {
             Optional.empty());
 
         // when & then
+        Long inviteMemberId = inviteMember.getMemberId();
+        Long invitationId = invitation.getTeamInvitationId();
         assertThrows(InvitationNotFoundException.class, () -> {
-            teamService.takeAcceptStatus(inviteMember.getMemberId(),
-                invitation.getTeamInvitationId(),
-                true);
+            teamService.takeAcceptStatus(inviteMemberId, invitationId, true);
         });
 
         verify(memberRepository).findById(inviteMember.getMemberId());
@@ -540,10 +542,10 @@ class TeamServiceTest {
             Optional.of(invitation));
 
         // when & then
+        Long inviteMemberId = inviteMember.getMemberId();
+        Long invitationId = invitation.getTeamInvitationId();
         assertThrows(TeamAlreadyActiveException.class, () -> {
-            teamService.takeAcceptStatus(inviteMember.getMemberId(),
-                invitation.getTeamInvitationId(),
-                true);
+            teamService.takeAcceptStatus(inviteMemberId, invitationId, true);
         });
 
         verify(memberRepository).findById(inviteMember.getMemberId());
@@ -585,7 +587,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(NotBelongToTeamException.class, () -> {
-            teamService.getTeamMemberList(manager.getMemberId());
+            teamService.getTeamMemberList(managerId);
         });
 
         verify(memberRepository).findById(manager.getMemberId());
