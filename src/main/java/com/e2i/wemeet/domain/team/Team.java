@@ -13,8 +13,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,6 +63,9 @@ public class Team extends BaseTimeEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    @OneToMany(mappedBy = "team")
+    private List<Member> members = new ArrayList<>();
+
     @Builder
     public Team(Long teamId, String teamCode, int memberCount, Gender gender,
         String drinkingOption, String region,
@@ -82,5 +88,12 @@ public class Team extends BaseTimeEntity {
         this.additionalActivity = AdditionalActivity.findBy(
             modifyTeamRequestDto.additionalActivity());
         this.introduction = modifyTeamRequestDto.introduction();
+    }
+
+    public void setMember(Member member) {
+        if (!this.members.contains(member)) {
+            this.members.add(member);
+            member.setTeam(this);
+        }
     }
 }

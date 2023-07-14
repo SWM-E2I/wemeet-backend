@@ -4,6 +4,7 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -65,6 +66,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private boolean imageAuth;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private Team team;

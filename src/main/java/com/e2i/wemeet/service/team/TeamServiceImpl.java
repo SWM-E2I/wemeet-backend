@@ -52,7 +52,7 @@ public class TeamServiceImpl implements TeamService {
         // team 생성
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH), member));
-        member.setTeam(team);
+        team.setMember(member);
         member.setRole(Role.MANAGER);
 
         // 바뀐 Role을 적용한 token 재발급
@@ -125,7 +125,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     /*
-     * 팀 생성 가능한 사용자인지 확인
+     * 팀 생성 및 수락이 가능한 사용자인지 확인
      */
     private void validateMember(Member member) {
         if (isTeamExist(member)) {
