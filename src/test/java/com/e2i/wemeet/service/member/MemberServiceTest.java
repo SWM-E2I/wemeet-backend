@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,6 +29,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
+import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
@@ -321,5 +323,33 @@ class MemberServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository, never()).findByMemberMemberId(anyLong());
+    }
+
+    @DisplayName("회원 Role 정보 조회에 성공한다.")
+    @Test
+    void getMemberRole_Success() {
+        // given
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        // when
+        RoleResponseDto result = memberService.getMemberRole(memberId);
+
+        // then
+        assertFalse(result.isManager());
+        assertFalse(result.hasTeam());
+    }
+
+    @DisplayName("회원이 존재하지 않는 경우 회원 Role 정보 조회를 하면 MemberNotFoundException이 발생한다.")
+    @Test
+    void getMemberRole_NotFoundMember() {
+        // given
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(MemberNotFoundException.class, () -> {
+            memberService.getMemberRole(memberId);
+        });
+
+        verify(memberRepository).findById(anyLong());
     }
 }
