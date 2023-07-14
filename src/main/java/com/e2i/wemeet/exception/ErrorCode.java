@@ -21,6 +21,9 @@ public enum ErrorCode {
     INVALID_ADDITIONAL_ACTIVITY_VALUE(40012, "invalid.additional.activity.value"),
     INVALID_PREFERENCE_MEETING_TYPE_VALUE(40013, "invalid.preference.meeting.type.value"),
     TEAM_ALREADY_EXISTS(40014, "team.already.exist"),
+    INVITATION_ALREADY_EXISTS(40015, "invitation.already.exist"),
+    TEAM_ALREADY_ACTIVE(40016, "team.already.active"),
+    GENDER_NOT_MATCH(40017, "gender.not.match"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
 
@@ -31,6 +34,7 @@ public enum ErrorCode {
     PROFILE_IMAGE_NOT_FOUND(40103, "profile.image.not.found"),
 
     CODE_NOT_FOUND(40104, "code.not.found"),
+    INVITED_MEMBER_NOT_FOUND(40105, "invited.member.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
 

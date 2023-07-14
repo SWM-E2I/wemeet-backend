@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `team_invitation` (
   `team_invitation_id` bigint NOT NULL AUTO_INCREMENT,
-    `accept_status` varchar(7) NOT NULL DEFAULT 'WAITING',
+    `accept_status` varchar(7) NOT NULL,
     `created_at` datetime(6),
     `modified_at` datetime(6),
     `member_id` bigint NOT NULL,

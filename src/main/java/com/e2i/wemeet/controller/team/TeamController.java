@@ -5,6 +5,7 @@ import com.e2i.wemeet.config.security.manager.IsManager;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.ResponseStatus;
@@ -64,5 +65,16 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Get  My Team Detail Success", result);
+    }
+
+    @IsManager
+    @PostMapping("/invitation")
+    public ResponseDto<Void> inviteTeamMember(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @RequestBody @Valid InviteTeamRequestDto inviteTeamRequestDto) {
+        teamService.inviteTeam(memberPrincipal.getMemberId(), inviteTeamRequestDto);
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Invitation Team Success", null);
     }
 }

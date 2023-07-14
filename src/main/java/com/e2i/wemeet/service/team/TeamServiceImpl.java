@@ -8,11 +8,18 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
+import com.e2i.wemeet.domain.team.invitation.InvitationAcceptStatus;
+import com.e2i.wemeet.domain.team.invitation.TeamInvitation;
+import com.e2i.wemeet.domain.team.invitation.TeamInvitationRepository;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
+import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
@@ -30,6 +37,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final TeamPreferenceMeetingTypeRepository teamPreferenceMeetingTypeRepository;
     private final MemberRepository memberRepository;
+    private final TeamInvitationRepository teamInvitationRepository;
     private final TokenInjector tokenInjector;
     private final SecureRandom random = new SecureRandom();
     private static final int TEAM_CODE_LENGTH = 6;
@@ -95,6 +103,27 @@ public class TeamServiceImpl implements TeamService {
             .build();
     }
 
+    @Transactional
+    @Override
+    public void inviteTeam(Long memberId, InviteTeamRequestDto inviteTeamRequestDto) {
+        Member teamMember = memberRepository.findByNicknameAndMemberCode(
+                inviteTeamRequestDto.nickname(),
+                inviteTeamRequestDto.memberCode())
+            .orElseThrow(MemberNotFoundException::new);
+
+        Member manager = findMember(memberId);
+        Team team = manager.getTeam();
+
+        validateInvitation(teamMember, manager, team);
+
+        teamInvitationRepository.save(
+            TeamInvitation.builder()
+                .acceptStatus(InvitationAcceptStatus.WAITING)
+                .member(teamMember)
+                .team(team)
+                .build());
+    }
+
     /*
      * 팀 생성 가능한 사용자인지 확인
      */
@@ -105,6 +134,36 @@ public class TeamServiceImpl implements TeamService {
 
         if (isUnivAuth(member)) {
             throw new UnAuthorizedUnivException();
+        }
+    }
+
+    /*
+     * 초대 신청이 가능한지 확인
+     */
+    private void validateInvitation(Member teamMember, Member manager, Team team) {
+        // 이미 팀이 활성화된 경우
+        if (team.isActive()) {
+            throw new TeamAlreadyActiveException();
+        }
+
+        // 초대한 사용자에게 이미 소속 팀이 있는 경우
+        if (isTeamExist(teamMember)) {
+            throw new TeamAlreadyExistsException();
+        }
+
+        // 초대한 사용자가 대학 인증이 안되어 있는 경우
+        if (isUnivAuth(teamMember)) {
+            throw new UnAuthorizedUnivException();
+        }
+
+        // 초대한 사용자와 성별이 다른 경우
+        if (manager.getGender() != teamMember.getGender()) {
+            throw new GenderNotMatchException();
+        }
+
+        // 이미 초대한 사용자인 경우
+        if (isInvitationExist(teamMember, team)) {
+            throw new InvitationAlreadyExistsException();
         }
     }
 
@@ -129,6 +188,13 @@ public class TeamServiceImpl implements TeamService {
 
     private boolean isUnivAuth(Member member) {
         return member.getCollegeInfo().getMail() == null;
+    }
+
+    private boolean isInvitationExist(Member member, Team team) {
+        return teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+                member.getMemberId(),
+                team.getTeamId(), InvitationAcceptStatus.WAITING)
+            .isPresent();
     }
 
     private void savePreferenceMeetingType(Team team, List<Code> codeList) {

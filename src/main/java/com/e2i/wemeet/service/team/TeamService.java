@@ -2,6 +2,7 @@ package com.e2i.wemeet.service.team;
 
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,4 +27,9 @@ public interface TeamService {
      * 마이 팀 정보 조회
      */
     MyTeamDetailResponseDto getMyTeamDetail(Long memberId);
+
+    /*
+     * 팀원 초대
+     */
+    void inviteTeam(Long memberId, InviteTeamRequestDto inviteTeamRequestDto);
 }

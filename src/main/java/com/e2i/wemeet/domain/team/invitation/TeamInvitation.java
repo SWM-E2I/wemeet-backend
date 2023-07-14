@@ -31,7 +31,7 @@ public class TeamInvitation extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private InvitationAcceptStatus acceptStatus = InvitationAcceptStatus.WAITING;
+    private InvitationAcceptStatus acceptStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
