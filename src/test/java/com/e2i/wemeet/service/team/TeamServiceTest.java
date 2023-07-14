@@ -29,6 +29,7 @@ import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.notfound.InvitationNotFoundException;
@@ -552,5 +553,43 @@ class TeamServiceTest {
 
         // after
         team.setActive(false);
+    }
+
+    @DisplayName("팀원 조회에 성공한다.")
+    @Test
+    void getTeamMemberList_Success() {
+        // given
+        manager.setTeam(team);
+        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+            Optional.of(manager));
+
+        when(teamInvitationRepository.findByTeamTeamIdAndAcceptStatus(
+            team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(List.of());
+
+        // when
+        teamService.getTeamMemberList(manager.getMemberId());
+
+        // then
+        verify(memberRepository).findById(manager.getMemberId());
+        verify(teamInvitationRepository).findByTeamTeamIdAndAcceptStatus(
+            team.getTeamId(), InvitationAcceptStatus.WAITING);
+    }
+
+    @DisplayName("팀이 없는 경우 팀원 조회를 하면 NotBelongToTeamException이 발생한다.")
+    @Test
+    void getTeamMemberList_NotBelongToTeamException() {
+        // given
+        manager.setTeam(null);
+        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+            Optional.of(manager));
+
+        // when & then
+        assertThrows(NotBelongToTeamException.class, () -> {
+            teamService.getTeamMemberList(manager.getMemberId());
+        });
+
+        verify(memberRepository).findById(manager.getMemberId());
+        verify(teamInvitationRepository, never()).findByTeamTeamIdAndAcceptStatus(
+            team.getTeamId(), InvitationAcceptStatus.WAITING);
     }
 }

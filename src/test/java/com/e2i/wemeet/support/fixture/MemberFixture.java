@@ -93,6 +93,7 @@ public enum MemberFixture {
 
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
+            .memberId(this.memberId)
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
