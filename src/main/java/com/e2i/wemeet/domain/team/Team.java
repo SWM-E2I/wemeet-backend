@@ -36,6 +36,9 @@ public class Team extends BaseTimeEntity {
     @Column(nullable = false)
     private int memberCount;
 
+    @Column(nullable = false)
+    private boolean isActive;
+
     @Column(length = 6, nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
