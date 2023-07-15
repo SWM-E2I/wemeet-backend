@@ -36,6 +36,7 @@ import com.e2i.wemeet.exception.notfound.InvitationNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
+import com.e2i.wemeet.support.fixture.ProfileImageFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -566,7 +567,10 @@ class TeamServiceTest {
             Optional.of(manager));
 
         when(teamInvitationRepository.findByTeamTeamIdAndAcceptStatus(
-            team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(List.of());
+            team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            List.of(invitation));
+        when(profileImageRepository.findByMemberMemberIdAndIsMain(inviteMember.getMemberId(),
+            true)).thenReturn(Optional.of(ProfileImageFixture.MAIN_IMAGE.create()));
 
         // when
         teamService.getTeamMemberList(manager.getMemberId());
