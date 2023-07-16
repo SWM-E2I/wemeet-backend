@@ -332,6 +332,9 @@ class TeamServiceTest {
         when(memberRepository.findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode())).thenReturn(
             Optional.of(member));
+        when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         team.setActive(true);
 
@@ -343,7 +346,7 @@ class TeamServiceTest {
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
-        verify(teamInvitationRepository, never()).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+        verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
             member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
@@ -360,6 +363,9 @@ class TeamServiceTest {
         when(memberRepository.findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode())).thenReturn(
             Optional.of(member));
+        when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         member.setTeam(team);
 
@@ -371,7 +377,7 @@ class TeamServiceTest {
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
-        verify(teamInvitationRepository, never()).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+        verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
             member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
@@ -388,6 +394,9 @@ class TeamServiceTest {
         when(memberRepository.findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode())).thenReturn(
             Optional.of(member));
+        when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         member.getCollegeInfo().saveMail(null);
 
@@ -399,7 +408,7 @@ class TeamServiceTest {
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
-        verify(teamInvitationRepository, never()).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
+        verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
             member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
@@ -444,7 +453,10 @@ class TeamServiceTest {
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
             member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
-            Optional.of(TeamInvitation.builder().build()));
+            Optional.of(TeamInvitation.builder()
+                .member(member)
+                .team(team)
+                .build()));
 
         // when & then
         assertThrows(InvitationAlreadyExistsException.class, () -> {
