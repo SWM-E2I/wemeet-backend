@@ -43,4 +43,9 @@ public interface TeamService {
      * 팀원 목록 조회
      */
     TeamManagementResponseDto getTeamMemberList(Long memberId);
+
+    /*
+     * 팀 삭제
+     */
+    void deleteTeam(Long memberId, HttpServletResponse response);
 }

@@ -176,6 +176,21 @@ public class TeamServiceImpl implements TeamService {
             .build();
     }
 
+    @Transactional
+    @Override
+    public void deleteTeam(Long memberId, HttpServletResponse response) {
+        Member member = findMember(memberId);
+        if (!isTeamExist(member)) {
+            throw new NotBelongToTeamException();
+        }
+        Team team = member.getTeam();
+
+        teamRepository.delete(team);
+
+        member.setRole(Role.USER);
+        tokenInjector.injectToken(response, new MemberPrincipal(member));
+    }
+
     /*
      * 수락 대기 중인 사용자 목록 조회
      */
@@ -199,6 +214,7 @@ public class TeamServiceImpl implements TeamService {
             })
             .toList();
     }
+
 
     /*
      * 팀원 목록 조회

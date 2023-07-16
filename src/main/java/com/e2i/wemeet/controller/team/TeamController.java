@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -102,5 +103,15 @@ public class TeamController {
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Get My Team Members Success", result);
+    }
+
+    @IsManager
+    @DeleteMapping
+    public ResponseDto<Void> deleteTeam(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal, HttpServletResponse response) {
+        teamService.deleteTeam(memberPrincipal.getMemberId(), response);
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Delete Team Success", null);
     }
 }
