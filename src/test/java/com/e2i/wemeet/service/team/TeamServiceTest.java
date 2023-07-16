@@ -610,4 +610,43 @@ class TeamServiceTest {
         verify(teamInvitationRepository, never()).findByTeamTeamIdAndAcceptStatus(
             team.getTeamId(), InvitationAcceptStatus.WAITING);
     }
+
+    @DisplayName("팀 삭제에 성공한다.")
+    @Test
+    void deleteTeam_Success() {
+        // given
+        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+            Optional.of(manager));
+        manager.setTeam(team);
+
+        // when
+        teamService.deleteTeam(manager.getMemberId(), response);
+
+        // then
+        verify(memberRepository).findById(manager.getMemberId());
+        verify(teamRepository).delete(team);
+        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
+            any(MemberPrincipal.class));
+        assertEquals(Role.USER, manager.getRole());
+
+        // after
+        manager.setRole(Role.MANAGER);
+    }
+
+    @DisplayName("팀이 없는 경우 팀 삭제를 요청하면 NotBelongToTeamException이 발생한다.")
+    @Test
+    void deleteTeam_NotBelongToTeamException() {
+        // given
+        manager.setTeam(null);
+        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+            Optional.of(manager));
+
+        // when & then
+        assertThrows(NotBelongToTeamException.class, () -> {
+            teamService.deleteTeam(managerId, response);
+        });
+
+        verify(memberRepository).findById(manager.getMemberId());
+        verify(teamRepository, never()).delete(any(Team.class));
+    }
 }
