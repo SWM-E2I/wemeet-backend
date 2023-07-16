@@ -4,7 +4,9 @@ import com.e2i.wemeet.domain.member.CollegeInfo;
 import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 
 public enum CollegeInfoFixture {
-    ANYANG_COLLEGE("22", "공대", "안양대학교", "pppp1234@anyang.ac.kr");
+    ANYANG_COLLEGE("22", "공대", "안양대학교", "pppp1234@anyang.ac.kr"),
+    KOREA_COLLEGE("18", "공대", "고려대학교", "afgds234@korea.ac.kr"),
+    SEOULWOMEN_COLLEGE("19", "공대", "서울여자대학교", "fgafd1234@swu.ac.kr");
 
     private final String admissionYear;
     private final String collegeType;

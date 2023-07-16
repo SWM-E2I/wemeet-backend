@@ -82,7 +82,7 @@ public enum TeamFixture {
             .managerImageAuth(member.isImageAuth())
             .build();
     }
-
+    
     private Team.TeamBuilder createBuilder() {
         return Team.builder()
             .teamId(this.teamId)

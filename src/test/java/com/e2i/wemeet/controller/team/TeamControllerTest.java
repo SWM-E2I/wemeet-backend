@@ -1,8 +1,10 @@
 package com.e2i.wemeet.controller.team;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -11,17 +13,24 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
+import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -141,6 +150,87 @@ class TeamControllerTest extends AbstractUnitTest {
         verify(teamService).getMyTeamDetail(1L);
     }
 
+    @DisplayName("팀원 초대 요청 성공")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void inviteTeamMember_Success() throws Exception {
+        // given
+        InviteTeamRequestDto request = MemberFixture.JEONGYEOL.inviteTeamRequestDto();
+        doNothing().when(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(post("/v1/team/invitation")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(toJson(request)));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Invitation Team Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+        inviteTeamMemberWriteRestDocs(perform);
+    }
+
+    @DisplayName("팀 초대 요청 응답 성공")
+    @WithCustomMockUser
+    @Test
+    void setInvitationStatus_Success() throws Exception {
+        // given
+        doNothing().when(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+
+        // when
+        ResultActions perform = mockMvc.perform(
+            put("/v1/team/invitation/{invitationId}", 1).queryParam("accepted", "true"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Set Invitation Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+        setInvitationStatusWriteRestDocs(perform);
+    }
+
+    @DisplayName("팀원 조회 성공")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void getTeamMemberList_Success() throws Exception {
+        // given
+        TeamMemberResponseDto member = TeamMemberResponseDto.builder()
+            .memberId(1L)
+            .nickname("짱구")
+            .memberCode("5372")
+            .profileImage("profile")
+            .isAccepted(true)
+            .build();
+        TeamManagementResponseDto result = TeamManagementResponseDto.builder()
+            .managerId(1L)
+            .teamCode("ds739d")
+            .members(List.of(member))
+            .build();
+
+        when(teamService.getTeamMemberList(anyLong())).thenReturn(result);
+
+        // when
+        ResultActions perform = mockMvc.perform(get("/v1/team/member"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Get My Team Members Success"))
+            .andExpect(jsonPath("$.data").exists());
+
+        // then
+        verify(teamService).getTeamMemberList(anyLong());
+        getTeamMemberListWriteRestDocs(perform);
+    }
+
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
@@ -238,5 +328,91 @@ class TeamControllerTest extends AbstractUnitTest {
                 ));
     }
 
+    private void inviteTeamMemberWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀원 초대",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀원 초대 API 입니다.")
+                        .description(
+                            """
+                                    팀원에게 팀 초대 요청을 보냅니다.
+                                """),
+                    requestFields(
+                        fieldWithPath("nickname").type(JsonFieldType.STRING)
+                            .description("닉네임"),
+                        fieldWithPath("memberCode").type(JsonFieldType.STRING)
+                            .description("멤버 코드")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )
+                ));
+    }
 
+    private void setInvitationStatusWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀 초대에 대한 응답",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀 초대 신청에 대한 응답 API 입니다.")
+                        .description(
+                            """
+                                    팀 초대 신청에 대한 응답을 보냅니다.
+                                    accepted=true인 경우 팀원으로 가입됩니다.
+                                    accepted=false인 경우 팀원으로 가입되지 않습니다.                           
+                                """),
+                    pathParameters(
+                        parameterWithName("invitationId").description("팀 초대 신청 아이디")
+                    ),
+                    queryParameters(
+                        parameterWithName("accepted").description("초대 승낙 여부")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )
+                ));
+    }
+
+    private void getTeamMemberListWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀원 조회",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀원 조회 API 입니다.")
+                        .description(
+                            """
+                                    팀원에 대한 정보를 조회합니다.
+                                    현재 속해있는 팀원(isAccepted=true)의 정보와 수락 대기 중인 사용자(isAccepted=false)의 정보를 표시합니다.
+                                  
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.managerId").type(JsonFieldType.NUMBER)
+                            .description("팀장 아이디"),
+                        fieldWithPath("data.teamCode").type(JsonFieldType.STRING)
+                            .description("팀 코드"),
+                        fieldWithPath("data.members[].memberId").type(JsonFieldType.NUMBER)
+                            .description("팀원 아이디"),
+                        fieldWithPath("data.members[].nickname").type(JsonFieldType.STRING)
+                            .description("팀원 닉네임"),
+                        fieldWithPath("data.members[].memberCode").type(JsonFieldType.STRING)
+                            .description("팀원 코드"),
+                        fieldWithPath("data.members[].profileImage").type(JsonFieldType.STRING)
+                            .description("팀원 프로필 이미지"),
+                        fieldWithPath("data.members[].isAccepted").type(JsonFieldType.BOOLEAN)
+                            .description("팀 초대 수락 여부")
+                    )
+                ));
+    }
 }

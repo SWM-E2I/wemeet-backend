@@ -136,6 +136,14 @@ class CreditAuthorizationManagerTest {
     static class MemberRepositoryImpl implements MemberRepository {
 
         @Override
+        public Optional<Member> findByNicknameAndMemberCode(String nickname, String memberCode) {
+            return Optional.of(
+                Member.builder()
+                    .build()
+            );
+        }
+
+        @Override
         public Optional<Member> findById(Long id) {
             return Optional.of(
                 Member.builder()
