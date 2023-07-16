@@ -48,4 +48,9 @@ public interface TeamService {
      * 팀 삭제
      */
     void deleteTeam(Long memberId, HttpServletResponse response);
+
+    /*
+     * 팀원 삭제
+     */
+    void deleteTeamMember(Long managerId, Long memberId);
 }

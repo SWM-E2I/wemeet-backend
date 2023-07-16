@@ -24,6 +24,8 @@ import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadySetException;
+import com.e2i.wemeet.exception.badrequest.ManagerSelfDeletionException;
+import com.e2i.wemeet.exception.badrequest.NonTeamMemberException;
 import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
@@ -160,10 +162,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamManagementResponseDto getTeamMemberList(Long memberId) {
         Member member = findMember(memberId);
-        if (!isTeamExist(member)) {
-            throw new NotBelongToTeamException();
-        }
-        Team team = member.getTeam();
+        Team team = getMyTeam(member);
 
         List<TeamMemberResponseDto> members = new ArrayList<>();
         members.addAll(findWaitingMembers(team));
@@ -180,15 +179,38 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void deleteTeam(Long memberId, HttpServletResponse response) {
         Member member = findMember(memberId);
-        if (!isTeamExist(member)) {
-            throw new NotBelongToTeamException();
-        }
-        Team team = member.getTeam();
+        Team team = getMyTeam(member);
 
         teamRepository.delete(team);
 
         member.setRole(Role.USER);
         tokenInjector.injectToken(response, new MemberPrincipal(member));
+    }
+
+    @Transactional
+    @Override
+    public void deleteTeamMember(Long managerId, Long memberId) {
+        Member manager = findMember(managerId);
+        Member member = findMember(memberId);
+        Team team = getMyTeam(manager);
+
+        if (member.getTeam() != team) {
+            throw new NonTeamMemberException();
+        }
+
+        if (managerId.equals(memberId)) {
+            throw new ManagerSelfDeletionException();
+        }
+
+        member.setTeam(null);
+    }
+
+    private Team getMyTeam(Member member) {
+        if (!isTeamExist(member)) {
+            throw new NotBelongToTeamException();
+        }
+
+        return member.getTeam();
     }
 
     /*

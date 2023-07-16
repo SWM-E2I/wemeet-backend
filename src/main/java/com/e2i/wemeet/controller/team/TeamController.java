@@ -114,4 +114,15 @@ public class TeamController {
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Delete Team Success", null);
     }
+
+    @IsManager
+    @DeleteMapping("/member/{memberId}")
+    public ResponseDto<Void> deleteTeamMember(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        @PathVariable("memberId") Long memberId) {
+        teamService.deleteTeamMember(memberPrincipal.getMemberId(), memberId);
+
+        return
+            new ResponseDto(ResponseStatus.SUCCESS, "Delete TeamMember Success", null);
+    }
 }
