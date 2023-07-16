@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.teampreferencemeetingtype;
 
+import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.team.Team;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "TEAM_PREFERENCE_MEETING_TYPE")
 @Entity
-public class TeamPreferenceMeetingType {
+public class TeamPreferenceMeetingType extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
