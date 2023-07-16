@@ -13,7 +13,6 @@ import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
-import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -85,7 +85,8 @@ public class TeamController {
     @PutMapping("/invitation/{invitationId}")
     public ResponseDto<Void> setInvitationStatus(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @PathVariable("invitationId") Long invitationId, @Param("accepted") Boolean accepted) {
+        @PathVariable("invitationId") Long invitationId,
+        @RequestParam("accepted") Boolean accepted) {
         teamService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId, accepted);
 
         return
