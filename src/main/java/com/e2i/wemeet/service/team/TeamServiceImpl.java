@@ -190,16 +190,16 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void deleteTeamMember(Long managerId, Long memberId) {
+        if (managerId.equals(memberId)) {
+            throw new ManagerSelfDeletionException();
+        }
+
         Member manager = findMember(managerId);
         Member member = findMember(memberId);
         Team team = getMyTeam(manager);
 
         if (member.getTeam() != team) {
             throw new NonTeamMemberException();
-        }
-
-        if (managerId.equals(memberId)) {
-            throw new ManagerSelfDeletionException();
         }
 
         member.setTeam(null);

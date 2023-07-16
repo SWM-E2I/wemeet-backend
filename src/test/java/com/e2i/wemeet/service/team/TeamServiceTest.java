@@ -29,6 +29,8 @@ import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.badrequest.GenderNotMatchException;
 import com.e2i.wemeet.exception.badrequest.InvitationAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.ManagerSelfDeletionException;
+import com.e2i.wemeet.exception.badrequest.NonTeamMemberException;
 import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
@@ -78,6 +80,7 @@ class TeamServiceTest {
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
     private static final Long managerId = manager.getMemberId();
+    private static final Long memberId = member.getMemberId();
 
     private static final TeamInvitation invitation = TeamInvitation.builder()
         .teamInvitationId(1L)
@@ -285,7 +288,7 @@ class TeamServiceTest {
             Optional.of(member));
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.empty());
 
         // when
@@ -296,7 +299,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository).save(any(TeamInvitation.class));
     }
 
@@ -319,7 +322,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository, never()).findById(manager.getMemberId());
         verify(teamInvitationRepository, never()).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
     }
 
@@ -333,7 +336,7 @@ class TeamServiceTest {
             member.getMemberCode())).thenReturn(
             Optional.of(member));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         team.setActive(true);
@@ -347,7 +350,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
         // after
@@ -364,7 +367,7 @@ class TeamServiceTest {
             member.getMemberCode())).thenReturn(
             Optional.of(member));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         member.setTeam(team);
@@ -378,7 +381,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
         // after
@@ -395,7 +398,7 @@ class TeamServiceTest {
             member.getMemberCode())).thenReturn(
             Optional.of(member));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         member.getCollegeInfo().saveMail(null);
@@ -409,7 +412,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
 
         // after
@@ -452,7 +455,7 @@ class TeamServiceTest {
             Optional.of(member));
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
         when(teamInvitationRepository.findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.of(TeamInvitation.builder()
                 .member(member)
                 .team(team)
@@ -467,7 +470,7 @@ class TeamServiceTest {
             member.getMemberCode());
         verify(memberRepository).findById(manager.getMemberId());
         verify(teamInvitationRepository).findByMemberMemberIdAndTeamTeamIdAndAcceptStatus(
-            member.getMemberId(), team.getTeamId(), InvitationAcceptStatus.WAITING);
+            memberId, team.getTeamId(), InvitationAcceptStatus.WAITING);
         verify(teamInvitationRepository, never()).save(any(TeamInvitation.class));
     }
 
@@ -598,7 +601,7 @@ class TeamServiceTest {
     void getTeamMemberList_NotBelongToTeamException() {
         // given
         manager.setTeam(null);
-        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+        when(memberRepository.findById(managerId)).thenReturn(
             Optional.of(manager));
 
         // when & then
@@ -606,7 +609,7 @@ class TeamServiceTest {
             teamService.getTeamMemberList(managerId);
         });
 
-        verify(memberRepository).findById(manager.getMemberId());
+        verify(memberRepository).findById(managerId);
         verify(teamInvitationRepository, never()).findByTeamTeamIdAndAcceptStatus(
             team.getTeamId(), InvitationAcceptStatus.WAITING);
     }
@@ -615,15 +618,15 @@ class TeamServiceTest {
     @Test
     void deleteTeam_Success() {
         // given
-        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+        when(memberRepository.findById(managerId)).thenReturn(
             Optional.of(manager));
         manager.setTeam(team);
 
         // when
-        teamService.deleteTeam(manager.getMemberId(), response);
+        teamService.deleteTeam(managerId, response);
 
         // then
-        verify(memberRepository).findById(manager.getMemberId());
+        verify(memberRepository).findById(managerId);
         verify(teamRepository).delete(team);
         verify(tokenInjector).injectToken(any(HttpServletResponse.class),
             any(MemberPrincipal.class));
@@ -638,7 +641,7 @@ class TeamServiceTest {
     void deleteTeam_NotBelongToTeamException() {
         // given
         manager.setTeam(null);
-        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+        when(memberRepository.findById(managerId)).thenReturn(
             Optional.of(manager));
 
         // when & then
@@ -646,7 +649,83 @@ class TeamServiceTest {
             teamService.deleteTeam(managerId, response);
         });
 
-        verify(memberRepository).findById(manager.getMemberId());
+        verify(memberRepository).findById(managerId);
         verify(teamRepository, never()).delete(any(Team.class));
+    }
+
+    @DisplayName("팀원 삭제에 성공한다.")
+    @Test
+    void deleteTeamMember_Success() {
+        // given
+        when(memberRepository.findById(manager.getMemberId())).thenReturn(
+            Optional.of(manager));
+        when(memberRepository.findById(memberId)).thenReturn(
+            Optional.of(member));
+        manager.setTeam(team);
+        member.setTeam(team);
+
+        // when
+        teamService.deleteTeamMember(manager.getMemberId(), memberId);
+
+        // then
+        verify(memberRepository).findById(managerId);
+        verify(memberRepository).findById(memberId);
+        assertNull(member.getTeam());
+    }
+
+    @DisplayName("팀이 없는 경우 팀원 삭제를 요청하면 NotBelongToTeamException이 발생한다.")
+    @Test
+    void deleteTeamMember_NotBelongToTeamException() {
+        // given
+        when(memberRepository.findById(managerId)).thenReturn(
+            Optional.of(manager));
+        when(memberRepository.findById(memberId)).thenReturn(
+            Optional.of(member));
+        manager.setTeam(null);
+
+        // when
+        assertThrows(NotBelongToTeamException.class, () -> {
+            teamService.deleteTeamMember(managerId, memberId);
+        });
+
+        // then
+        verify(memberRepository).findById(managerId);
+        verify(memberRepository).findById(managerId);
+        assertNull(manager.getTeam());
+
+        // after
+        manager.setTeam(team);
+    }
+
+    @DisplayName("팀장 자신을 팀에서 삭제하려 하면 ManagerSelfDeletionException이 발생한다.")
+    @Test
+    void deleteTeamMember_ManagerSelfDeletionException() {
+        // given & when & then
+        assertThrows(ManagerSelfDeletionException.class, () -> {
+            teamService.deleteTeamMember(managerId, managerId);
+        });
+
+        verify(memberRepository, never()).findById(managerId);
+        verify(memberRepository, never()).findById(memberId);
+    }
+
+    @DisplayName("다른 팀의 팀원을 삭제하려 하면 NonTeamMemberException이 발생한다.")
+    @Test
+    void deleteTeamMember_NonTeamMemberException() {
+        // given
+        when(memberRepository.findById(managerId)).thenReturn(
+            Optional.of(manager));
+        when(memberRepository.findById(memberId)).thenReturn(
+            Optional.of(member));
+        manager.setTeam(team);
+        member.setTeam(null);
+
+        // when & then
+        assertThrows(NonTeamMemberException.class, () -> {
+            teamService.deleteTeamMember(managerId, memberId);
+        });
+
+        verify(memberRepository).findById(managerId);
+        verify(memberRepository).findById(memberId);
     }
 }
