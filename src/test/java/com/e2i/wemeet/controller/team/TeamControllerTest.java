@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -231,6 +232,27 @@ class TeamControllerTest extends AbstractUnitTest {
         getTeamMemberListWriteRestDocs(perform);
     }
 
+    @DisplayName("팀 삭제 성공")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void deleteTeam_Success() throws Exception {
+        // given
+        doNothing().when(teamService).deleteTeam(anyLong(), any(HttpServletResponse.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(delete("/v1/team"));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Delete Team Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).deleteTeam(anyLong(), any(HttpServletResponse.class));
+        deleteTeamWriteRestDocs(perform);
+    }
+
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
@@ -412,6 +434,28 @@ class TeamControllerTest extends AbstractUnitTest {
                             .description("팀원 프로필 이미지"),
                         fieldWithPath("data.members[].isAccepted").type(JsonFieldType.BOOLEAN)
                             .description("팀 초대 수락 여부")
+                    )
+                ));
+    }
+
+    private void deleteTeamWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀 삭제",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀 삭제 API 입니다.")
+                        .description(
+                            """
+                                    현재 속한 팀을 삭제합니다.
+                                    팀과 관련된 모든 정보가 삭제됩니다.
+                                  
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
                     )
                 ));
     }
