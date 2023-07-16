@@ -253,6 +253,27 @@ class TeamControllerTest extends AbstractUnitTest {
         deleteTeamWriteRestDocs(perform);
     }
 
+    @DisplayName("팀원 삭제 성공")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void deleteTeamMember_Success() throws Exception {
+        // given
+        doNothing().when(teamService).deleteTeamMember(anyLong(), anyLong());
+
+        // when
+        ResultActions perform = mockMvc.perform(delete("/v1/team/member/{memberId}", 2));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Delete TeamMember Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(teamService).deleteTeamMember(anyLong(), anyLong());
+        deleteTeamMemberWriteRestDocs(perform);
+    }
+
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
@@ -451,6 +472,30 @@ class TeamControllerTest extends AbstractUnitTest {
                                     팀과 관련된 모든 정보가 삭제됩니다.
                                   
                                 """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )
+                ));
+    }
+
+    private void deleteTeamMemberWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀원 삭제",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀원 삭제 API 입니다.")
+                        .description(
+                            """
+                                팀에 소속된 팀원을 삭제합니다.
+                                  
+                                """),
+                    pathParameters(
+                        parameterWithName("memberId").description("삭제할 팀원 아이디")
+                    ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
