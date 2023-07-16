@@ -257,21 +257,6 @@ public class TeamServiceImpl implements TeamService {
      * 초대 신청이 가능한지 확인
      */
     private void validateInvitation(Member teamMember, Member manager, Team team) {
-        // 이미 팀이 활성화된 경우
-        if (isActiveTeam(team)) {
-            throw new TeamAlreadyActiveException();
-        }
-
-        // 초대한 사용자에게 이미 소속 팀이 있는 경우
-        if (isTeamExist(teamMember)) {
-            throw new TeamAlreadyExistsException();
-        }
-
-        // 초대한 사용자가 대학 인증이 안되어 있는 경우
-        if (isUnivAuth(teamMember)) {
-            throw new UnAuthorizedUnivException();
-        }
-
         // 초대한 사용자와 성별이 다른 경우
         if (manager.getGender() != teamMember.getGender()) {
             throw new GenderNotMatchException();

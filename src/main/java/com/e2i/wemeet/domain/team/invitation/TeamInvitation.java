@@ -3,6 +3,9 @@ package com.e2i.wemeet.domain.team.invitation;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyActiveException;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,8 +49,37 @@ public class TeamInvitation extends BaseTimeEntity {
         Long teamInvitationId, InvitationAcceptStatus acceptStatus, Member member, Team team) {
         this.teamInvitationId = teamInvitationId;
         this.acceptStatus = acceptStatus;
-        this.member = member;
-        this.team = team;
+        this.member = validateMember(member);
+        this.team = validateTeam(team);
+    }
+
+    private Member validateMember(final Member member) {
+        isTeamExist(member);
+        isUnivAuth(member);
+        return member;
+    }
+
+    private Team validateTeam(final Team team) {
+        isActive(team);
+        return team;
+    }
+
+    private void isTeamExist(Member member) {
+        if (member.getTeam() != null) {
+            throw new TeamAlreadyExistsException();
+        }
+    }
+
+    private void isUnivAuth(Member member) {
+        if (member.getCollegeInfo().getMail() == null) {
+            throw new UnAuthorizedUnivException();
+        }
+    }
+
+    private void isActive(Team team) {
+        if (team.isActive()) {
+            throw new TeamAlreadyActiveException();
+        }
     }
 
     public void updateAcceptStatus(InvitationAcceptStatus acceptStatus) {
