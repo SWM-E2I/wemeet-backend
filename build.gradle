@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.dipien:semantic-version-gradle-plugin:2.0.0")
-    }
-}
-
 plugins {
     id 'java'
     id 'jacoco'
@@ -21,8 +12,7 @@ plugins {
     id("com.epages.restdocs-api-spec") version "0.18.2"
 }
 
-version = "0.0.5"
-apply plugin: "com.dipien.semantic-version"
+version = "0.0.1"
 
 group = 'com.e2i'
 
@@ -152,19 +142,20 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def inputTag = project.hasProperty('inputTag') ? project.property('inputTag') : '0.0.0'
+
 jib {
     from {
         image = 'eclipse-temurin:17-jdk-alpine'
     }
     to {
         image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
-        tags = ['wemeet-dev-image', "${project.version}".toString()]
+        tags = ["latest", inputTag]
         credHelper = 'ecr-login'
     }
     container {
         creationTime = 'USE_CURRENT_TIMESTAMP'
         jvmFlags = ['-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8']
         ports = ['8080']
-        user = 'nobody:nogroup'
     }
 }
