@@ -149,8 +149,8 @@ jib {
         image = 'eclipse-temurin:17-jdk-alpine'
     }
     to {
-        image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
-        tags = ['latest', inputTag]
+        image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr:latest'
+        tags = [inputTag]
         credHelper = 'ecr-login'
     }
     container {
