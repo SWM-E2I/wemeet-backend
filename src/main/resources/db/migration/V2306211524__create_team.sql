@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS `team` (
     DEFAULT CHARACTER SET=utf8mb4;
 
 ALTER TABLE `member` ADD `team_id` bigint;
-ALTER TABLE `member` ADD FOREIGN KEY (`team_id`) REFERENCES team (`team_id`);
+ALTER TABLE `member` ADD FOREIGN KEY (`team_id`) REFERENCES team (`team_id`) ON DELETE SET NULL;
 
