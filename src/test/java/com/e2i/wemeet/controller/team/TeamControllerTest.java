@@ -211,8 +211,7 @@ class TeamControllerTest extends AbstractUnitTest {
             .isAccepted(true)
             .build();
         TeamManagementResponseDto result = TeamManagementResponseDto.builder()
-            .managerId(1L)
-            .teamCode("ds739d")
+            .teamCode("1@ds739d")
             .members(List.of(member))
             .build();
 
@@ -441,8 +440,6 @@ class TeamControllerTest extends AbstractUnitTest {
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.managerId").type(JsonFieldType.NUMBER)
-                            .description("팀장 아이디"),
                         fieldWithPath("data.teamCode").type(JsonFieldType.STRING)
                             .description("팀 코드"),
                         fieldWithPath("data.members[].memberId").type(JsonFieldType.NUMBER)
