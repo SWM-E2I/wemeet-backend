@@ -54,6 +54,8 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     private static final String BLUR_SUFFIX = "-blur";
     private static final String LOW_BASIC_SUFFIX = "-basic-low";
     private static final String LOW_BLUR_SUFFIX = "-blur-low";
+    private static final String FILE_EXTENSION = ".jpg";
+
 
     @Override
     @Transactional
@@ -66,10 +68,10 @@ public class ProfileImageServiceImpl implements ProfileImageService {
         putObject(file, objectKey + BASIC_SUFFIX);
 
         profileImageRepository.save(ProfileImage.builder()
-            .basicUrl(objectKey + BASIC_SUFFIX)
-            .blurUrl(objectKey + BLUR_SUFFIX)
-            .lowResolutionBasicUrl(objectKey + LOW_BASIC_SUFFIX)
-            .lowResolutionBlurUrl(objectKey + LOW_BLUR_SUFFIX)
+            .basicUrl(objectKey + BASIC_SUFFIX + FILE_EXTENSION)
+            .blurUrl(objectKey + BLUR_SUFFIX + FILE_EXTENSION)
+            .lowResolutionBasicUrl(objectKey + LOW_BASIC_SUFFIX + FILE_EXTENSION)
+            .lowResolutionBlurUrl(objectKey + LOW_BLUR_SUFFIX + FILE_EXTENSION)
             .isMain(isMain)
             .isCertified(false)
             .member(member)
@@ -100,12 +102,13 @@ public class ProfileImageServiceImpl implements ProfileImageService {
         File file = convertMultipartFileToFile(multipartFile);
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("content-type", multipartFile.getContentType());
+        metadata.put("Content-Type", "image/jpg");
         metadata.put("content-length", String.valueOf(multipartFile.getSize()));
+
         try {
             PutObjectRequest putObj = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(objectKey)
+                .key(objectKey + FILE_EXTENSION)
                 .metadata(metadata)
                 .build();
 
