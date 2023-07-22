@@ -33,7 +33,7 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column(length = 6, nullable = false)
+    @Column(length = 15, nullable = false)
     private String teamCode;
 
     @Column(nullable = false)

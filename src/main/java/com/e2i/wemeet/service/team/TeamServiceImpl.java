@@ -63,7 +63,7 @@ public class TeamServiceImpl implements TeamService {
 
         // team 생성
         Team team = teamRepository.save(
-            createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH), member));
+            createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH, memberId), member));
         team.setMember(member);
         member.setRole(Role.MANAGER);
 
@@ -169,7 +169,6 @@ public class TeamServiceImpl implements TeamService {
         members.addAll(findTeamMembers(memberId, team));
 
         return TeamManagementResponseDto.builder()
-            .managerId(memberId)
             .teamCode(team.getTeamCode())
             .members(members)
             .build();
@@ -352,7 +351,7 @@ public class TeamServiceImpl implements TeamService {
         teamPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
     }
 
-    private String createTeamCode(int length) {
+    private String createTeamCode(int length, Long managerId) {
         String alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder sb = new StringBuilder(length);
 
@@ -361,6 +360,6 @@ public class TeamServiceImpl implements TeamService {
             sb.append(alphanumeric.charAt(index));
         }
 
-        return sb.toString();
+        return String.format("%d@%s", managerId, sb);
     }
 }
