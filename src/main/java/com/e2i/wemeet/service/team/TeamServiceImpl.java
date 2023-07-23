@@ -148,7 +148,11 @@ public class TeamServiceImpl implements TeamService {
             throw new NonTeamMemberException();
         }
 
-        member.setTeam(null);
+        team.deleteMember(member);
+
+        if (team.isActive()) {
+            team.deactivateTeam();
+        }
     }
 
     private Team getMyTeam(Member member) {

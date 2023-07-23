@@ -359,7 +359,7 @@ class TeamServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(
             Optional.of(member));
         manager.setTeam(team);
-        member.setTeam(team);
+        team.setMember(member);
 
         // when
         teamService.deleteTeamMember(manager.getMemberId(), memberId);

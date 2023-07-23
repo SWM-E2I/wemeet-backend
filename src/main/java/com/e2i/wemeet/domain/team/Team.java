@@ -93,15 +93,35 @@ public class Team extends BaseTimeEntity {
     }
 
     public void setMember(Member member) {
-        if (!this.members.contains(member)) {
+        if (!this.members.contains(member) && this.members.size() < this.memberCount) {
             this.members.add(member);
             member.setTeam(this);
         }
     }
 
-    public void setActive(boolean active) {
+    public void deleteMember(Member member) {
+        if (this.members.contains(member)) {
+            this.members.remove(member);
+            member.setTeam(null);
+        }
+    }
+
+    public void activateTeam() {
+        if (!this.isActive && this.memberCount == this.getMembers().size()) {
+            setActive(true);
+        }
+    }
+
+    public void deactivateTeam() {
+        if (this.isActive) {
+            setActive(false);
+        }
+    }
+
+    private void setActive(boolean active) {
         isActive = active;
     }
+
 
     private Member validateMember(final Member member) {
         isTeamExist(member);

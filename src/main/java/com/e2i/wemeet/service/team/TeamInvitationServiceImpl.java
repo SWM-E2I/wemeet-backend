@@ -87,12 +87,13 @@ public class TeamInvitationServiceImpl implements TeamInvitationService {
 
     private void acceptInvitation(TeamInvitation teamInvitation) {
         Team team = teamInvitation.getTeam();
-        
+
         teamInvitation.updateAcceptStatus(InvitationAcceptStatus.ACCEPT);
-        if (team.getMembers().size() + 1 == team.getMemberCount()) {
-            team.setActive(true);
-        }
         team.setMember(teamInvitation.getMember());
+
+        if (team.getMembers().size() == team.getMemberCount()) {
+            team.activateTeam();
+        }
     }
 
     private void rejectInvitation(TeamInvitation teamInvitation) {
