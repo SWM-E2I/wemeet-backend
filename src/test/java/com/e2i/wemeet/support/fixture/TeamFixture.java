@@ -11,7 +11,7 @@ import java.util.List;
 
 public enum TeamFixture {
 
-    TEST_TEAM(1L, "df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
+    TEST_TEAM(1L, "df42hg", 2, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
         "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create());
 
     private final Long teamId;
@@ -82,7 +82,7 @@ public enum TeamFixture {
             .managerImageAuth(member.isImageAuth())
             .build();
     }
-    
+
     private Team.TeamBuilder createBuilder() {
         return Team.builder()
             .teamId(this.teamId)
