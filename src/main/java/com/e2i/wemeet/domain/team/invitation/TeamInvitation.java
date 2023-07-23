@@ -60,7 +60,7 @@ public class TeamInvitation extends BaseTimeEntity {
     }
 
     private Team validateTeam(final Team team) {
-        isActive(team);
+        isActiveTeam(team);
         return team;
     }
 
@@ -76,13 +76,16 @@ public class TeamInvitation extends BaseTimeEntity {
         }
     }
 
-    private void isActive(Team team) {
-        if (team.isActive()) {
+    private void isActiveTeam(Team team) {
+        if (team.isActive() && team.getMembers().size() == team.getMemberCount()) {
             throw new TeamAlreadyActiveException();
         }
     }
 
     public void updateAcceptStatus(InvitationAcceptStatus acceptStatus) {
+        validateMember(this.member);
+        validateTeam(this.team);
+
         this.acceptStatus = acceptStatus;
     }
 }

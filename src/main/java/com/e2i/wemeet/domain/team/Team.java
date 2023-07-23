@@ -4,6 +4,8 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -79,7 +81,7 @@ public class Team extends BaseTimeEntity {
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
-        this.member = member;
+        this.member = validateMember(member);
     }
 
     public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
@@ -99,5 +101,23 @@ public class Team extends BaseTimeEntity {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    private Member validateMember(final Member member) {
+        isTeamExist(member);
+        isUnivAuth(member);
+        return member;
+    }
+
+    private void isTeamExist(Member member) {
+        if (member.getTeam() != null) {
+            throw new TeamAlreadyExistsException();
+        }
+    }
+
+    private void isUnivAuth(Member member) {
+        if (member.getCollegeInfo().getMail() == null) {
+            throw new UnAuthorizedUnivException();
+        }
     }
 }
