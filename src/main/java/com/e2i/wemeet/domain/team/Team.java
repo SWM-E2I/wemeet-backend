@@ -107,13 +107,13 @@ public class Team extends BaseTimeEntity {
     }
 
     public void activateTeam() {
-        if (!this.isActive && this.memberCount == this.getMembers().size()) {
+        if (!this.isActive && this.memberCount == this.members.size()) {
             setActive(true);
         }
     }
 
     public void deactivateTeam() {
-        if (this.isActive) {
+        if (this.isActive && this.memberCount > this.members.size()) {
             setActive(false);
         }
     }
@@ -121,7 +121,6 @@ public class Team extends BaseTimeEntity {
     private void setActive(boolean active) {
         isActive = active;
     }
-
 
     private Member validateMember(final Member member) {
         isTeamExist(member);
