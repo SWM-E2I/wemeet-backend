@@ -150,7 +150,7 @@ jib {
     }
     to {
         image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
-        tags = ['latest', inputTag]
+        tags = [inputTag]
         credHelper = 'ecr-login'
     }
     container {
