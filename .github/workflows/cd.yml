@@ -18,6 +18,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -25,14 +26,20 @@ jobs:
           java-version: 17
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Change Gradle version
-        run: ./gradlew incrementVersion --versionIncrementType=PATCH
-      - name: Build and push image to Amazon ECR
-        run: ./gradlew clean jib -x test
-      - name: Push Github
+      - name: Get image tag(version)
+        id: image
         run: |
-          git config --global user.email "qkrdbsk28@naver.com"
-          git config --global user.name "Chaerim1001"
-          git add build.gradle
-          git commit -m "[skip actions] build(gradle): change project version"
-          git push origin develop
+          VERSION=$(echo ${{ github.sha }} | cut -c1-8)
+          echo VERSION=$VERSION
+          echo "::set-output name=version::$VERSION"
+
+      - name: Build With Jib and push image to Amazon ECR with tag
+        id: image-info
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ steps.image.outputs.version }}
+        run: |
+          echo "::set-output name=ecr_repository::$ECR_REPOSITORY"
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+          ./gradlew -Djib.to.image=$ECR_REGISTRY/$ECR_REPOSITORY -PinputTag=$IMAGE_TAG clean jib -x test
