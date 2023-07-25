@@ -28,6 +28,7 @@ import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.service.team.TeamInvitationService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
@@ -50,6 +51,9 @@ class TeamControllerTest extends AbstractUnitTest {
 
     @MockBean
     private TeamService teamService;
+
+    @MockBean
+    private TeamInvitationService teamInvitationService;
 
     @MockBean
     private CodeService codeService;
@@ -157,7 +161,8 @@ class TeamControllerTest extends AbstractUnitTest {
     void inviteTeamMember_Success() throws Exception {
         // given
         InviteTeamRequestDto request = MemberFixture.JEONGYEOL.inviteTeamRequestDto();
-        doNothing().when(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+        doNothing().when(teamInvitationService)
+            .inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/team/invitation")
@@ -172,7 +177,7 @@ class TeamControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+        verify(teamInvitationService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
         inviteTeamMemberWriteRestDocs(perform);
     }
 
@@ -181,7 +186,8 @@ class TeamControllerTest extends AbstractUnitTest {
     @Test
     void setInvitationStatus_Success() throws Exception {
         // given
-        doNothing().when(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+        doNothing().when(teamInvitationService)
+            .takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
 
         // when
         ResultActions perform = mockMvc.perform(
@@ -194,7 +200,7 @@ class TeamControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+        verify(teamInvitationService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
         setInvitationStatusWriteRestDocs(perform);
     }
 

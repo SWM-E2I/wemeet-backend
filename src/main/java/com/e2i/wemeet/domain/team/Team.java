@@ -4,6 +4,8 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -71,6 +73,8 @@ public class Team extends BaseTimeEntity {
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member member) {
+        validateIsAbleManager(member);
+
         this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
@@ -91,13 +95,49 @@ public class Team extends BaseTimeEntity {
     }
 
     public void setMember(Member member) {
-        if (!this.members.contains(member)) {
+        if (!this.members.contains(member) && this.members.size() < this.memberCount) {
             this.members.add(member);
             member.setTeam(this);
         }
     }
 
-    public void setActive(boolean active) {
+    public void deleteMember(Member member) {
+        if (this.members.contains(member)) {
+            this.members.remove(member);
+            member.setTeam(null);
+        }
+    }
+
+    public void activateTeam() {
+        if (!this.isActive && this.memberCount == this.members.size()) {
+            setActive(true);
+        }
+    }
+
+    public void deactivateTeam() {
+        if (this.isActive && this.memberCount > this.members.size()) {
+            setActive(false);
+        }
+    }
+
+    private void setActive(boolean active) {
         isActive = active;
+    }
+
+    private void validateIsAbleManager(final Member manager) {
+        isTeamExist(manager);
+        isUnivAuth(manager);
+    }
+
+    private void isTeamExist(Member member) {
+        if (member.getTeam() != null) {
+            throw new TeamAlreadyExistsException();
+        }
+    }
+
+    private void isUnivAuth(Member member) {
+        if (member.getCollegeInfo().getMail() == null) {
+            throw new UnAuthorizedUnivException();
+        }
     }
 }
