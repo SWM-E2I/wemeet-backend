@@ -47,21 +47,22 @@ public class TeamInvitation extends BaseTimeEntity {
     @Builder
     public TeamInvitation(
         Long teamInvitationId, InvitationAcceptStatus acceptStatus, Member member, Team team) {
+        validateInvitationMember(member);
+        validateInvitationTeam(team);
+
         this.teamInvitationId = teamInvitationId;
         this.acceptStatus = acceptStatus;
-        this.member = validateMember(member);
-        this.team = validateTeam(team);
+        this.member = member;
+        this.team = team;
     }
 
-    private Member validateMember(final Member member) {
+    private void validateInvitationMember(final Member member) {
         isTeamExist(member);
         isUnivAuth(member);
-        return member;
     }
 
-    private Team validateTeam(final Team team) {
+    private void validateInvitationTeam(final Team team) {
         isActiveTeam(team);
-        return team;
     }
 
     private void isTeamExist(Member member) {
@@ -83,8 +84,8 @@ public class TeamInvitation extends BaseTimeEntity {
     }
 
     public void updateAcceptStatus(InvitationAcceptStatus acceptStatus) {
-        validateMember(this.member);
-        validateTeam(this.team);
+        validateInvitationMember(this.member);
+        validateInvitationTeam(this.team);
 
         this.acceptStatus = acceptStatus;
     }
