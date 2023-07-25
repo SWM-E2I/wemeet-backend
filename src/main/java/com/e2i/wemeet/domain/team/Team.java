@@ -73,6 +73,8 @@ public class Team extends BaseTimeEntity {
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member member) {
+        validateIsAbleManager(member);
+
         this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
@@ -81,7 +83,7 @@ public class Team extends BaseTimeEntity {
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
-        this.member = validateMember(member);
+        this.member = member;
     }
 
     public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
@@ -122,10 +124,9 @@ public class Team extends BaseTimeEntity {
         isActive = active;
     }
 
-    private Member validateMember(final Member member) {
-        isTeamExist(member);
-        isUnivAuth(member);
-        return member;
+    private void validateIsAbleManager(final Member manager) {
+        isTeamExist(manager);
+        isUnivAuth(manager);
     }
 
     private void isTeamExist(Member member) {
