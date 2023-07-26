@@ -4,10 +4,11 @@ import static com.e2i.wemeet.dto.response.ResponseStatus.SUCCESS;
 
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
+import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.credential.SmsCredentialResponse;
+import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final ObjectMapper objectMapper;
     private final TokenInjector tokenInjector;
+    private final MemberRepository memberRepository;
 
     /*
      * SmsCredentialAuthenticationProvider 에서 반환
@@ -31,7 +33,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-        Authentication authentication) throws IOException, ServletException {
+        Authentication authentication) throws IOException {
         MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
 
         // JWT 토큰 발급
@@ -48,13 +50,20 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         throws IOException {
         log.info("Login Request Success - {}", principal.toString());
 
-        SmsCredentialResponse data = new SmsCredentialResponse(
-            principal.isRegistered(), principal.getMemberId(), principal.getAuthorities());
+        SmsCredentialResponse data = getSmsCredentialResponse(principal);
         ResponseDto result = new ResponseDto(SUCCESS, "인증에 성공하였습니다.", data);
 
         response.setStatus(200);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getOutputStream().write(objectMapper.writeValueAsString(result).getBytes());
+    }
+
+    private SmsCredentialResponse getSmsCredentialResponse(MemberPrincipal principal) {
+        boolean emailAuthenticated = memberRepository.findById(principal.getMemberId())
+            .orElseThrow(MemberNotFoundException::new)
+            .isEmailAuthenticated();
+
+        return SmsCredentialResponse.of(principal, emailAuthenticated);
     }
 }
