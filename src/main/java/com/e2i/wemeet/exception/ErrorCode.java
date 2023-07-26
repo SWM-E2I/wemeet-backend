@@ -44,6 +44,7 @@ public enum ErrorCode {
     JWT_DECODE(40204, "jwt.decode"),
     REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
     REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
+    ACCESS_TOKEN_NOT_FOUND(40207, "access.token.not.found"),
 
     UNAUTHORIZED(40300, "unauthorized"),
     UNAUTHORIZED_ROLE(40301, "unauthorized.role"),
