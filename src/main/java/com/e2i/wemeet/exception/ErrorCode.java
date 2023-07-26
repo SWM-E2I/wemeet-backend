@@ -30,47 +30,31 @@ public enum ErrorCode {
     NON_TEAM_MEMBER(40021, "non.team.member"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
-
     MEMBER_NOT_FOUND(40101, "member.not.found"),
-
     MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),
-
     PROFILE_IMAGE_NOT_FOUND(40103, "profile.image.not.found"),
-
     CODE_NOT_FOUND(40104, "code.not.found"),
     INVITED_MEMBER_NOT_FOUND(40105, "invited.member.not.found"),
     INVITATION_NOT_FOUND(40106, "invitation.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
-
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
-
     JWT_SIGNATURE_MISMATCH(40202, "jwt.signature.mismatch"),
-
     JWT_CLAIM_INCORRECT(40203, "jwt.claim.incorrect"),
-
     JWT_DECODE(40204, "jwt.decode"),
-
     REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
-
     REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
 
     UNAUTHORIZED(40300, "unauthorized"),
-
     UNAUTHORIZED_ROLE(40301, "unauthorized.role"),
-
     UNAUTHORIZED_ROLE_MANAGER(40302, "unauthorized.role.manager"),
-
     UNAUTHORIZED_ROLE_ADMIN(40303, "unauthorized.role.admin"),
-
     UNAUTHORIZED_CREDIT(40304, "unauthorized.credit"),
-
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
     UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
     UNAUTHORIZED_UNIV(40307, "unauthorized.univ"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
-
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
     DATA_ENCRYPTION_ERROR(50002, "data.encryption.error"),
     MAIL_JSON_PARSING_ERROR(50003, "mail.json.parsing.error"),
@@ -81,9 +65,7 @@ public enum ErrorCode {
     AWS_SES_EMAIL_TRANSFER_ERROR(50200, "aws.ses.email.transfer.error"),
 
     AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error"),
-
     AWS_S3_OBJECT_DELETE_ERROR(50301, "aws.s3.object.delete.error"),
-
     AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error");
 
 
