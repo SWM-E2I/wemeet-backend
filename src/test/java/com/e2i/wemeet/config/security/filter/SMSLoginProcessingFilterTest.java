@@ -152,9 +152,13 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data").type(JsonFieldType.OBJECT)
                             .description("회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨"),
-                        fieldWithPath("data.registrationType").type(JsonFieldType.BOOLEAN)
-                            .description("회원 가입 여부"),
-                        fieldWithPath("data.memberId").description("회원 아이디"),
+                        fieldWithPath("data.registrationType").type(JsonFieldType.STRING)
+                            .description("사용자 회원 가입 종류를 반환 합니다. "
+                                + "(APP-앱, WEB-웹, NOT_REGISTERED-미가입)"),
+                        fieldWithPath("data.emailAuthenticated").type(JsonFieldType.BOOLEAN)
+                            .description("이메일 인증 여부"),
+                        fieldWithPath("data.memberId")
+                            .description("회원 아이디"),
                         fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
                             .description("회원 권한")
                     )

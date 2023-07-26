@@ -13,7 +13,6 @@ import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
-import com.e2i.wemeet.util.encryption.TwoWayEncryption;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,8 @@ public class SecurityBeanConfig {
     @Bean
     public RefreshTokenProcessingFilter refreshTokenProcessingFilter(
         RedisTemplate<String, String> redisTemplate, RefreshTokenHandler refreshTokenHandler,
-        TokenInjector tokenInjector, ObjectMapper objectMapper, AccessTokenHandler accessTokenHandler) {
+        TokenInjector tokenInjector, ObjectMapper objectMapper,
+        AccessTokenHandler accessTokenHandler) {
         return new RefreshTokenProcessingFilter(redisTemplate, refreshTokenHandler, tokenInjector,
             objectMapper, accessTokenHandler);
     }
@@ -105,8 +105,9 @@ public class SecurityBeanConfig {
     // 사용자 로그인 요청 성공시 수행
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(ObjectMapper objectMapper,
-        TokenInjector tokenInjector) {
-        return new CustomAuthenticationSuccessHandler(objectMapper, tokenInjector);
+        TokenInjector tokenInjector, MemberRepository memberRepository) {
+        return new CustomAuthenticationSuccessHandler(objectMapper, tokenInjector,
+            memberRepository);
     }
 
     /*

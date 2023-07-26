@@ -59,7 +59,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.getOutputStream().write(objectMapper.writeValueAsString(result).getBytes());
     }
 
-    private SmsCredentialResponse getSmsCredentialResponse(MemberPrincipal principal) {
+    private SmsCredentialResponse getSmsCredentialResponse(final MemberPrincipal principal) {
+        if (principal.getMemberId() == null) {
+            return SmsCredentialResponse.of(principal, false);
+        }
+
         boolean emailAuthenticated = memberRepository.findById(principal.getMemberId())
             .orElseThrow(MemberNotFoundException::new)
             .isEmailAuthenticated();
