@@ -22,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -133,5 +134,9 @@ public class Member extends BaseTimeEntity {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public boolean isEmailAuthenticated() {
+        return !StringUtils.hasText(this.collegeInfo.getMail());
     }
 }
