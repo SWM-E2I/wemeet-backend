@@ -13,8 +13,8 @@ import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,20 +35,10 @@ public class MemberController {
 
     @PostMapping
     public ResponseDto<Long> createMember(
-        @RequestBody @Valid CreateMemberRequestDto requestDto) {
-        List<Code> interestCode = new ArrayList<>();
-        if (requestDto.memberInterestList() != null) {
-            interestCode = codeService.findCodeList(requestDto.memberInterestList());
-        }
+        @RequestBody @Valid CreateMemberRequestDto requestDto, HttpServletResponse response) {
+        memberService.createMember(requestDto, response);
 
-        List<Code> preferenceMeetingTypeCode
-            = codeService.findCodeList(requestDto.preferenceMeetingTypeList());
-
-        Long savedMemberId = memberService.createMember(requestDto, interestCode,
-            preferenceMeetingTypeCode);
-
-        return new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success", savedMemberId);
-
+        return new ResponseDto(ResponseStatus.SUCCESS, "Create Member Success", null);
     }
 
     @GetMapping

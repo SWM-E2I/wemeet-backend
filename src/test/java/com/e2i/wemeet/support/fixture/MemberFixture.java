@@ -112,9 +112,6 @@ public enum MemberFixture {
             .gender(this.gender.toString())
             .phoneNumber(this.phoneNumber)
             .collegeInfo(ANYANG_COLLEGE.createCollegeInfoDto())
-            .preference(GENERAL_PREFERENCE.createPreferenceDto())
-            .preferenceMeetingTypeList(List.of())
-            .memberInterestList(List.of())
             .mbti("ESTJ")
             .introduction("hello!!").build();
     }

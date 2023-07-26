@@ -1,5 +1,7 @@
 package com.e2i.wemeet.service.member;
 
+import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
@@ -21,6 +23,7 @@ import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +39,13 @@ public class MemberServiceImpl implements MemberService {
     private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
     private final ProfileImageRepository profileImageRepository;
+    private final TokenInjector tokenInjector;
 
     private final SecureRandom random = new SecureRandom();
 
     @Override
     @Transactional
-    public Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
-        List<Code> preferenceMeetingTypeCode) {
+    public void createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();
@@ -51,10 +54,7 @@ public class MemberServiceImpl implements MemberService {
         String memberCode = createMemberCode();
         Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
 
-        saveMemberInterest(member, interestCode);
-        savePreferenceMeetingType(member, preferenceMeetingTypeCode);
-
-        return member.getMemberId();
+        tokenInjector.injectToken(response, new MemberPrincipal(member));
     }
 
     @Override
