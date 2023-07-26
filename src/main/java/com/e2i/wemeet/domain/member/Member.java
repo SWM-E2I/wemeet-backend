@@ -66,6 +66,10 @@ public class Member extends BaseTimeEntity {
     @Column
     private boolean imageAuth;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RegistrationType registrationType;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
@@ -78,7 +82,8 @@ public class Member extends BaseTimeEntity {
     @Builder
     public Member(Long memberId, String memberCode, String nickname, Gender gender,
         String phoneNumber, CollegeInfo collegeInfo, Preference preference, Mbti mbti,
-        String introduction, int credit, boolean imageAuth, Team team, Role role) {
+        String introduction, int credit, boolean imageAuth, Team team, Role role,
+        RegistrationType registrationType) {
         this.memberId = memberId;
         this.memberCode = memberCode;
         this.nickname = nickname;
@@ -92,6 +97,7 @@ public class Member extends BaseTimeEntity {
         this.imageAuth = imageAuth;
         this.team = team;
         this.role = role;
+        this.registrationType = registrationType;
     }
 
     public void addCredit(int amount) {
