@@ -16,9 +16,9 @@ import org.springframework.util.StringUtils;
 public class AccessTokenHandler extends TokenHandler {
 
     /*
-    * Bearer PREFIX 를 붙여 토큰 생성
-    * - memberId, role 정보 포함
-    * */
+     * Bearer PREFIX 를 붙여 토큰 생성
+     * - memberId, role 정보 포함
+     * */
     @Override
     public String createToken(final Payload payload) {
         Date expirationTime = generateExpirationTime(JwtEnv.ACCESS);
@@ -31,6 +31,13 @@ public class AccessTokenHandler extends TokenHandler {
             .withClaim(Payload.ROLE, payload.getRole())
             .sign(Algorithm.HMAC512(secretKey));
         return ACCESS_PREFIX.concat(token);
+    }
+
+    public Payload extractToken(String accessTokenWithPrefix, boolean verify) {
+        if (verify) {
+            return extractToken(accessTokenWithPrefix);
+        }
+        return extractTokenWithNoVerify(accessTokenWithPrefix);
     }
 
     public Payload extractToken(String accessTokenWithPrefix) {

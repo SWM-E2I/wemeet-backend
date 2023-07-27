@@ -13,6 +13,8 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /*
@@ -23,23 +25,33 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String PERSIST_LOGIN_URL = "/v1/auth/persist";
+
+    private final RequestMatcher filterRequestMatcher;
     private final AccessTokenHandler accessTokenHandler;
 
+    public JwtAuthenticationFilter(AccessTokenHandler accessTokenHandler) {
+        this.filterRequestMatcher = new AntPathRequestMatcher(PERSIST_LOGIN_URL);
+        this.accessTokenHandler = accessTokenHandler;
+    }
+
     /*
-    * AccessToken 이 없을 경우, 다음 필터로 요청을 넘김
-    * SecurityConfig 에서 정의한 일부 url 제외, 모든 요청은 인증 객체가 authenticated 인 상태여야합니다.
-    * 따라서 AccessToken 이 없을 경우 AuthorizationManager 에 의해 403 예외를 반환합니다.
-    * */
+     * AccessToken 이 없을 경우, 다음 필터로 요청을 넘김
+     * SecurityConfig 에서 정의한 일부 url 제외, 모든 요청은 인증 객체가 authenticated 인 상태여야합니다.
+     * 따라서 AccessToken 이 없을 경우 AuthorizationManager 에 의해 403 예외를 반환합니다.
+     * */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         String accessToken = request.getHeader(JwtEnv.ACCESS.getKey());
-        Payload payload = accessTokenHandler.extractToken(accessToken);
+
+        // Persist Login 요청은 AccessToken 검증을 수행하지 않음
+        boolean verify = !filterRequestMatcher.matches(request);
+        Payload payload = accessTokenHandler.extractToken(accessToken, verify);
 
         if (payload != null) {
             setAuthentication(payload);
         }
-
         filterChain.doFilter(request, response);
     }
 
