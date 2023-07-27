@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -16,7 +17,7 @@ public interface MemberService {
     /*
      * Member 생성
      */
-    void createMember(CreateMemberRequestDto requestDto, HttpServletResponse response);
+    Member createMember(CreateMemberRequestDto requestDto, HttpServletResponse response);
 
     /*
      * Member 수정

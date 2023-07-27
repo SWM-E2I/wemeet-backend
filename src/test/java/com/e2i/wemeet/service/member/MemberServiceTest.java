@@ -14,8 +14,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
@@ -64,9 +62,6 @@ class MemberServiceTest {
     private ProfileImageRepository profileImageRepository;
 
     @Mock
-    private TokenInjector tokenInjector;
-
-    @Mock
     private HttpServletResponse response;
 
     @InjectMocks
@@ -92,8 +87,6 @@ class MemberServiceTest {
         // then
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository).save(any(Member.class));
-        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
-            any(MemberPrincipal.class));
     }
 
     @DisplayName("중복된 휴대폰 번호를 가진 회원이 있을 경우 DuplicatedPhoneNumberException이 발생한다.")
@@ -112,8 +105,6 @@ class MemberServiceTest {
         });
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));
-        verify(tokenInjector, never()).injectToken(any(HttpServletResponse.class),
-            any(MemberPrincipal.class));
     }
 
     @DisplayName("회원 수정에 성공한다.")

@@ -3,7 +3,6 @@ package com.e2i.wemeet.controller.member;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -58,8 +57,9 @@ class MemberControllerTest extends AbstractUnitTest {
         CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
-        doNothing().when(memberService).createMember(any(CreateMemberRequestDto.class), any(
-            HttpServletResponse.class));
+        when(memberService.createMember(any(CreateMemberRequestDto.class), any(
+            HttpServletResponse.class))).thenReturn(
+            MemberFixture.KAI.create());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")

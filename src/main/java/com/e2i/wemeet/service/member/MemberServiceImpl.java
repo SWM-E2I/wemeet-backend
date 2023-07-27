@@ -1,7 +1,5 @@
 package com.e2i.wemeet.service.member;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
@@ -39,22 +37,19 @@ public class MemberServiceImpl implements MemberService {
     private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
     private final ProfileImageRepository profileImageRepository;
-    private final TokenInjector tokenInjector;
 
     private final SecureRandom random = new SecureRandom();
 
     @Override
     @Transactional
-    public void createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
+    public Member createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();
             });
 
         String memberCode = createMemberCode();
-        Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
-
-        tokenInjector.injectToken(response, new MemberPrincipal(member));
+        return memberRepository.save(requestDto.toMemberEntity(memberCode));
     }
 
     @Override
