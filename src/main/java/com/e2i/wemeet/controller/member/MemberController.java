@@ -74,8 +74,7 @@ public class MemberController {
         @RequestBody @Valid ModifyMemberRequestDto requestDto) {
         Long memberId = memberPrincipal.getMemberId();
 
-        List<Code> modifyCode = codeService.findCodeList(requestDto.memberInterestList());
-        memberService.modifyMember(memberId, requestDto, modifyCode);
+        memberService.modifyMember(memberId, requestDto);
 
         return new ResponseDto(ResponseStatus.SUCCESS, "Modify Member Success", null);
     }

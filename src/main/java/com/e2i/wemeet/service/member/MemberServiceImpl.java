@@ -6,8 +6,6 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.domain.memberinterest.MemberInterest;
-import com.e2i.wemeet.domain.memberinterest.MemberInterestRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
@@ -34,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
     private final ProfileImageRepository profileImageRepository;
 
@@ -54,16 +51,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto,
-        List<Code> modifyCode) {
+    public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         member.modifyNickname(requestDto.nickname());
         member.modifyIntroduction(requestDto.introduction());
         member.modifyMbti(Mbti.findBy(requestDto.mbti()));
-
-        saveMemberInterest(member, modifyCode);
     }
 
 
@@ -93,10 +87,8 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(MemberNotFoundException::new);
 
         List<ProfileImage> profileImageList = profileImageRepository.findByMemberMemberId(memberId);
-        List<MemberInterest> memberInterestList = memberInterestRepository.findByMemberMemberId(
-            memberId);
 
-        return new MemberDetailResponseDto(member, profileImageList, memberInterestList);
+        return new MemberDetailResponseDto(member, profileImageList);
     }
 
     @Override
@@ -156,18 +148,6 @@ public class MemberServiceImpl implements MemberService {
 
         memberPreferenceMeetingTypeRepository.deleteAllByMemberMemberId(member.getMemberId());
         memberPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
-    }
-
-    private void saveMemberInterest(Member member, List<Code> codeList) {
-        List<MemberInterest> memberInterests = codeList.stream()
-            .map(memberInterestCode -> MemberInterest.builder()
-                .member(member)
-                .code(memberInterestCode)
-                .build())
-            .toList();
-
-        memberInterestRepository.deleteAllByMemberMemberId(member.getMemberId());
-        memberInterestRepository.saveAll(memberInterests);
     }
 
     private String createMemberCode() {

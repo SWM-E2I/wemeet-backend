@@ -178,7 +178,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).modifyMember(1L, request, List.of());
+        verify(memberService).modifyMember(1L, request);
         modifyMemberWriteRestDocs(perform);
     }
 
@@ -300,9 +300,7 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("data.introduction").type(JsonFieldType.STRING)
                             .description("자기 소개"),
                         fieldWithPath("data.profileImageList").type(
-                            JsonFieldType.ARRAY).description("프로필 사진 리스트"),
-                        fieldWithPath("data.memberInterestList").type(JsonFieldType.ARRAY)
-                            .description("취미 및 관심사")
+                            JsonFieldType.ARRAY).description("프로필 사진 리스트")
                     )
                 ));
     }
@@ -386,10 +384,7 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("mbti").type(JsonFieldType.STRING)
                             .description("본인 MBTI"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("자기 소개"),
-                        fieldWithPath("memberInterestList").type(
-                                JsonFieldType.ARRAY)
-                            .description("취미 및 관심사 (없으면 빈 값)")
+                            .description("자기 소개")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),

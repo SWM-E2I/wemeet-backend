@@ -22,7 +22,7 @@ public interface MemberService {
     /*
      * Member 수정
      */
-    void modifyMember(Long memberId, ModifyMemberRequestDto requestDto, List<Code> modifyCode);
+    void modifyMember(Long memberId, ModifyMemberRequestDto requestDto);
 
     /*
      * 선호 상대 정보 수정

@@ -126,7 +126,6 @@ public enum MemberFixture {
             .admissionYear(this.collegeInfo.getAdmissionYear())
             .introduction(this.introduction)
             .profileImageList(List.of())
-            .memberInterestList(List.of())
             .build();
     }
 
@@ -135,7 +134,6 @@ public enum MemberFixture {
             .nickname("modify nickname")
             .introduction("modify introduction")
             .mbti("ESTJ")
-            .memberInterestList(List.of())
             .build();
     }
 

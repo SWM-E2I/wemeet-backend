@@ -17,8 +17,6 @@ import static org.mockito.Mockito.when;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.memberinterest.MemberInterest;
-import com.e2i.wemeet.domain.memberinterest.MemberInterestRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
@@ -51,9 +49,6 @@ class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
-    @Mock
-    private MemberInterestRepository memberInterestRepository;
 
     @Mock
     private MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
@@ -117,11 +112,10 @@ class MemberServiceTest {
             Optional.ofNullable(member));
 
         // when
-        memberService.modifyMember(memberId, requestDto, interestCode);
+        memberService.modifyMember(memberId, requestDto);
 
         // then
         verify(memberRepository).findById(anyLong());
-        verify(memberInterestRepository).saveAll(anyList());
 
         assertEquals(requestDto.nickname(), member.getNickname());
         assertEquals(requestDto.mbti(), member.getMbti().toString());
@@ -138,11 +132,10 @@ class MemberServiceTest {
 
         // when & then
         assertThrows(MemberNotFoundException.class, () -> {
-            memberService.modifyMember(1L, requestDto, interestCode);
+            memberService.modifyMember(1L, requestDto);
         });
 
         verify(memberRepository).findById(anyLong());
-        verify(memberInterestRepository, never()).saveAll(anyList());
 
         assertNotEquals(requestDto.nickname(), member.getNickname());
         assertNotEquals(requestDto.mbti(), member.getMbti().toString());
@@ -245,13 +238,10 @@ class MemberServiceTest {
     void getMemberDetail_Success() {
         // given
         List<ProfileImage> profileImages = List.of(ProfileImageFixture.MAIN_IMAGE.create());
-        List<MemberInterest> memberInterests = new ArrayList<>();
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(profileImageRepository.findByMemberMemberId(memberId))
             .thenReturn(profileImages);
-        when(memberInterestRepository.findByMemberMemberId(memberId))
-            .thenReturn(memberInterests);
 
         // when
         MemberDetailResponseDto result = memberService.getMemberDetail(memberId);
@@ -279,7 +269,6 @@ class MemberServiceTest {
 
         verify(memberRepository).findById(anyLong());
         verify(profileImageRepository, never()).findByMemberMemberId(anyLong());
-        verify(memberInterestRepository, never()).findByMemberMemberId(anyLong());
     }
 
     @DisplayName("선호 상대 정보 조회에 성공한다.")
