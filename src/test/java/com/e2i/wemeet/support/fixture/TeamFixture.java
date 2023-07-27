@@ -12,7 +12,9 @@ import java.util.List;
 public enum TeamFixture {
 
     TEST_TEAM(1L, "df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
-        "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create());
+        "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create()),
+    HONGDAE_TEAM(null, "hongda", 3, null, "홍대 입구", "0", AdditionalActivity.SHOW,
+        "안녕하세요. 홍대 팀 인사올립니다.", null);;
 
     private final Long teamId;
     private final String teamCode;
@@ -50,6 +52,23 @@ public enum TeamFixture {
             .build();
     }
 
+    public Team create(Member teamLeader) {
+        return createTeamBuilder(teamLeader)
+            .build();
+    }
+
+    public Team.TeamBuilder createTeamBuilder(Member member) {
+        return Team.builder()
+            .teamCode(member.getMemberId() + "@" + this.teamCode)
+            .memberCount(this.memberCount)
+            .region(this.region)
+            .drinkingOption(this.drinkingOption)
+            .additionalActivity(this.additionalActivity)
+            .gender(member.getGender())
+            .introduction(this.introduction)
+            .teamLeader(member);
+    }
+
     public CreateTeamRequestDto createTeamRequestDto() {
         return CreateTeamRequestDto.builder()
             .memberCount(this.memberCount)
@@ -82,7 +101,7 @@ public enum TeamFixture {
             .managerImageAuth(member.isImageAuth())
             .build();
     }
-    
+
     private Team.TeamBuilder createBuilder() {
         return Team.builder()
             .teamId(this.teamId)
@@ -92,7 +111,7 @@ public enum TeamFixture {
             .region(region)
             .drinkingOption(this.drinkingOption)
             .additionalActivity(this.additionalActivity)
-            .member(this.member)
+            .teamLeader(this.member)
             .introduction(this.introduction);
     }
 }
