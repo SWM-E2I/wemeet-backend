@@ -21,7 +21,7 @@ spring:
   config:
     import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml
   profiles:
-    active: local
+    active: dev
 
   mvc:
     static-path-pattern: /static/**
