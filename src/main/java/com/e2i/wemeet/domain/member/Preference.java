@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,5 +36,14 @@ public class Preference {
         this.drinkingOption = drinkingOption;
         this.isAvoidedFriends = isAvoidedFriends;
         this.preferenceMbti = preferenceMbti;
+    }
+
+    public boolean isComplete() {
+        return
+            StringUtils.hasText(this.startPreferenceAdmissionYear) &&
+                StringUtils.hasText(this.endPreferenceAdmissionYear) &&
+                StringUtils.hasText(this.sameCollegeState) &&
+                StringUtils.hasText(this.drinkingOption) &&
+                StringUtils.hasText(this.preferenceMbti);
     }
 }
