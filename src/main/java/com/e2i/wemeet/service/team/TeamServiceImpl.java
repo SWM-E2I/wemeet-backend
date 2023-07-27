@@ -110,7 +110,7 @@ public class TeamServiceImpl implements TeamService {
             .region(team.getRegion())
             .introduction(team.getIntroduction())
             .additionalActivity(team.getAdditionalActivity())
-            .managerImageAuth(team.getMember().isImageAuth())
+            .managerImageAuth(team.getTeamLeader().isImageAuth())
             .preferenceMeetingTypeList(preferenceMeetingTypeToCodeString(preferenceMeetingTypeList))
             .build();
     }

@@ -61,7 +61,7 @@ public class Team extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
-    private Member member;
+    private Member teamLeader;
 
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
@@ -70,7 +70,7 @@ public class Team extends BaseTimeEntity {
     public Team(Long teamId, String teamCode, int memberCount, Gender gender,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
-        String introduction, Member member) {
+        String introduction, Member teamLeader) {
         this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
@@ -79,7 +79,7 @@ public class Team extends BaseTimeEntity {
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
-        this.member = member;
+        setTeamLeader(teamLeader);
     }
 
     public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
@@ -88,6 +88,12 @@ public class Team extends BaseTimeEntity {
         this.additionalActivity = AdditionalActivity.findBy(
             modifyTeamRequestDto.additionalActivity());
         this.introduction = modifyTeamRequestDto.introduction();
+    }
+
+    public void setTeamLeader(Member teamLeader) {
+        this.teamLeader = teamLeader;
+        this.members.add(teamLeader);
+        teamLeader.setTeam(this);
     }
 
     public void setMember(Member member) {
