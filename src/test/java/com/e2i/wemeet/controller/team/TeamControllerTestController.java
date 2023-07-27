@@ -29,7 +29,7 @@ import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
-import com.e2i.wemeet.support.config.AbstractUnitTest;
+import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
@@ -46,7 +46,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(TeamController.class)
-class TeamControllerTest extends AbstractUnitTest {
+class TeamControllerTestController extends AbstractControllerUnitTest {
 
     @MockBean
     private TeamService teamService;

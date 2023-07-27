@@ -24,7 +24,7 @@ import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
-import com.e2i.wemeet.support.config.AbstractUnitTest;
+import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.PreferenceFixture;
@@ -40,7 +40,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(MemberController.class)
-class MemberControllerTest extends AbstractUnitTest {
+class MemberControllerTestController extends AbstractControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
