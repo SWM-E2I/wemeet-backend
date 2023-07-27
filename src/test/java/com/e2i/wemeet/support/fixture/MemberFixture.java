@@ -112,9 +112,6 @@ public enum MemberFixture {
             .gender(this.gender.toString())
             .phoneNumber(this.phoneNumber)
             .collegeInfo(ANYANG_COLLEGE.createCollegeInfoDto())
-            .preference(GENERAL_PREFERENCE.createPreferenceDto())
-            .preferenceMeetingTypeList(List.of())
-            .memberInterestList(List.of())
             .mbti("ESTJ")
             .introduction("hello!!").build();
     }
@@ -129,7 +126,6 @@ public enum MemberFixture {
             .admissionYear(this.collegeInfo.getAdmissionYear())
             .introduction(this.introduction)
             .profileImageList(List.of())
-            .memberInterestList(List.of())
             .build();
     }
 
@@ -138,7 +134,6 @@ public enum MemberFixture {
             .nickname("modify nickname")
             .introduction("modify introduction")
             .mbti("ESTJ")
-            .memberInterestList(List.of())
             .build();
     }
 

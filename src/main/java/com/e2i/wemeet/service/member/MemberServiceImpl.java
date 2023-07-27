@@ -6,8 +6,6 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.domain.memberinterest.MemberInterest;
-import com.e2i.wemeet.domain.memberinterest.MemberInterestRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
@@ -21,6 +19,7 @@ import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberInterestRepository memberInterestRepository;
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
     private final ProfileImageRepository profileImageRepository;
 
@@ -41,34 +39,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
-        List<Code> preferenceMeetingTypeCode) {
+    public Member createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();
             });
 
         String memberCode = createMemberCode();
-        Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
-
-        saveMemberInterest(member, interestCode);
-        savePreferenceMeetingType(member, preferenceMeetingTypeCode);
-
-        return member.getMemberId();
+        return memberRepository.save(requestDto.toMemberEntity(memberCode));
     }
 
     @Override
     @Transactional
-    public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto,
-        List<Code> modifyCode) {
+    public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         member.modifyNickname(requestDto.nickname());
         member.modifyIntroduction(requestDto.introduction());
         member.modifyMbti(Mbti.findBy(requestDto.mbti()));
-
-        saveMemberInterest(member, modifyCode);
     }
 
 
@@ -98,10 +87,8 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(MemberNotFoundException::new);
 
         List<ProfileImage> profileImageList = profileImageRepository.findByMemberMemberId(memberId);
-        List<MemberInterest> memberInterestList = memberInterestRepository.findByMemberMemberId(
-            memberId);
 
-        return new MemberDetailResponseDto(member, profileImageList, memberInterestList);
+        return new MemberDetailResponseDto(member, profileImageList);
     }
 
     @Override
@@ -161,18 +148,6 @@ public class MemberServiceImpl implements MemberService {
 
         memberPreferenceMeetingTypeRepository.deleteAllByMemberMemberId(member.getMemberId());
         memberPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
-    }
-
-    private void saveMemberInterest(Member member, List<Code> codeList) {
-        List<MemberInterest> memberInterests = codeList.stream()
-            .map(memberInterestCode -> MemberInterest.builder()
-                .member(member)
-                .code(memberInterestCode)
-                .build())
-            .toList();
-
-        memberInterestRepository.deleteAllByMemberMemberId(member.getMemberId());
-        memberInterestRepository.saveAll(memberInterests);
     }
 
     private String createMemberCode() {

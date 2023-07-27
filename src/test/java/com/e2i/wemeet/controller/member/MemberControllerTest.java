@@ -30,6 +30,7 @@ import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,8 +57,9 @@ class MemberControllerTest extends AbstractUnitTest {
         CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
-        when(memberService.createMember(any(CreateMemberRequestDto.class), anyList(), anyList()))
-            .thenReturn(1L);
+        when(memberService.createMember(any(CreateMemberRequestDto.class), any(
+            HttpServletResponse.class))).thenReturn(
+            MemberFixture.KAI.create());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")
@@ -69,10 +71,11 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("SUCCESS"))
             .andExpect(jsonPath("$.message").value("Create Member Success"))
-            .andExpect(jsonPath("$.data").exists());
+            .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).createMember(request, List.of(), List.of());
+        verify(memberService).createMember(any(CreateMemberRequestDto.class),
+            any(HttpServletResponse.class));
 
         createMemberWriteRestDocs(perform);
     }
@@ -175,7 +178,7 @@ class MemberControllerTest extends AbstractUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).modifyMember(1L, request, List.of());
+        verify(memberService).modifyMember(1L, request);
         modifyMemberWriteRestDocs(perform);
     }
 
@@ -257,32 +260,14 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("collegeInfo.admissionYear").type(JsonFieldType.STRING)
                             .description("학번"),
                         fieldWithPath("mbti").type(JsonFieldType.STRING).description("본인 MBTI"),
-                        fieldWithPath("preference.startPreferenceAdmissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("선호 시작 학번"),
-                        fieldWithPath("preference.endPreferenceAdmissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("선호 마지막 학번"),
-                        fieldWithPath("preference.sameCollegeState").type(JsonFieldType.STRING)
-                            .description("같은 학교 선호 여부"),
-                        fieldWithPath("preference.drinkingOption").type(JsonFieldType.STRING)
-                            .description("술자리 여부"),
-                        fieldWithPath("preference.isAvoidedFriends").type(JsonFieldType.BOOLEAN)
-                            .description("아는 사람 피하기 여부"),
-                        fieldWithPath("preference.preferenceMbti").type(JsonFieldType.STRING)
-                            .description("선호 MBTI"),
-                        fieldWithPath("preferenceMeetingTypeList").type(
-                            JsonFieldType.ARRAY).description("선호 미팅 유형"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING).optional()
-                            .description("자기 소개"),
-                        fieldWithPath("memberInterestList").type(JsonFieldType.ARRAY).optional()
-                            .description("취미 및 관심사")
+                            .description("자기 소개")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data").type(JsonFieldType.NUMBER)
-                            .description("생성된 회원의 memberId")
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
                     )
                 ));
     }
@@ -315,9 +300,7 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("data.introduction").type(JsonFieldType.STRING)
                             .description("자기 소개"),
                         fieldWithPath("data.profileImageList").type(
-                            JsonFieldType.ARRAY).description("프로필 사진 리스트"),
-                        fieldWithPath("data.memberInterestList").type(JsonFieldType.ARRAY)
-                            .description("취미 및 관심사")
+                            JsonFieldType.ARRAY).description("프로필 사진 리스트")
                     )
                 ));
     }
@@ -401,10 +384,7 @@ class MemberControllerTest extends AbstractUnitTest {
                         fieldWithPath("mbti").type(JsonFieldType.STRING)
                             .description("본인 MBTI"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("자기 소개"),
-                        fieldWithPath("memberInterestList").type(
-                                JsonFieldType.ARRAY)
-                            .description("취미 및 관심사 (없으면 빈 값)")
+                            .description("자기 소개")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),

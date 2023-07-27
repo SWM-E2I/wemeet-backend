@@ -1,6 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -8,6 +9,7 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface MemberService {
@@ -15,13 +17,12 @@ public interface MemberService {
     /*
      * Member 생성
      */
-    Long createMember(CreateMemberRequestDto requestDto, List<Code> interestCode,
-        List<Code> preferenceMeetingTypeCode);
+    Member createMember(CreateMemberRequestDto requestDto, HttpServletResponse response);
 
     /*
      * Member 수정
      */
-    void modifyMember(Long memberId, ModifyMemberRequestDto requestDto, List<Code> modifyCode);
+    void modifyMember(Long memberId, ModifyMemberRequestDto requestDto);
 
     /*
      * 선호 상대 정보 수정
