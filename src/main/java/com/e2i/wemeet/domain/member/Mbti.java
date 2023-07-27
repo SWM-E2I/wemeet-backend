@@ -9,7 +9,7 @@ public enum Mbti {
 
     ESTJ, ESTP, ESFJ, ESFP, ENTJ, ENTP, ENFJ, ENFP,
     ISTJ, ISTP, ISFJ, ISFP, INTJ, INTP, INFJ, INFP,
-    NOTHING;
+    XXXX;
 
     @JsonCreator
     public static Mbti findBy(String value) {
