@@ -12,6 +12,9 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           submodules: true
+      - name: Replace application.yml with application-dev.yml
+        run: |
+          sed -i 's/local/dev/' application.yml
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -33,7 +36,6 @@ jobs:
           VERSION=$(echo ${{ github.sha }} | cut -c1-8)
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
-
       - name: Build With Jib and push image to Amazon ECR with tag
         id: image-info
         env:
