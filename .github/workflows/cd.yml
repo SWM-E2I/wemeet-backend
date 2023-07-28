@@ -14,7 +14,7 @@ jobs:
           submodules: true
       - name: Replace application.yml with application-dev.yml
         run: |
-          sed -i 's/local/dev/' application.yml
+          sed -i 's/local/dev/' src/main/resources/application.yml
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
