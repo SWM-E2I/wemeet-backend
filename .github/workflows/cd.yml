@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: ssh connect & production
-        uses: appleboy/ssh-action@master
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
