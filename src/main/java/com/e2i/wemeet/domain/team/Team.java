@@ -1,5 +1,8 @@
 package com.e2i.wemeet.domain.team;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
@@ -39,10 +42,10 @@ public class Team extends BaseTimeEntity {
     private String teamCode;
 
     @Column(nullable = false)
-    private int memberCount;
+    private Integer memberCount;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     @Column(length = 6, nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -69,7 +72,7 @@ public class Team extends BaseTimeEntity {
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public Team(Long teamId, String teamCode, int memberCount, Gender gender,
+    public Team(Long teamId, String teamCode, Integer memberCount, Gender gender,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member member) {
@@ -84,6 +87,7 @@ public class Team extends BaseTimeEntity {
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
         this.member = member;
+        setActive(false);
     }
 
     public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
@@ -109,13 +113,13 @@ public class Team extends BaseTimeEntity {
     }
 
     public void activateTeam() {
-        if (!this.isActive && this.memberCount == this.members.size()) {
+        if (FALSE.equals(this.isActive) && this.memberCount == this.members.size()) {
             setActive(true);
         }
     }
 
     public void deactivateTeam() {
-        if (this.isActive && this.memberCount > this.members.size()) {
+        if (TRUE.equals(this.isActive) && this.memberCount > this.members.size()) {
             setActive(false);
         }
     }

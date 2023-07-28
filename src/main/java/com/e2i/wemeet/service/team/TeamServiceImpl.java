@@ -1,5 +1,7 @@
 package com.e2i.wemeet.service.team;
 
+import static java.lang.Boolean.TRUE;
+
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
@@ -100,7 +102,7 @@ public class TeamServiceImpl implements TeamService {
             .region(team.getRegion())
             .introduction(team.getIntroduction())
             .additionalActivity(team.getAdditionalActivity())
-            .managerImageAuth(team.getMember().isImageAuth())
+            .managerImageAuth(team.getMember().getImageAuth())
             .preferenceMeetingTypeList(preferenceMeetingTypeToCodeString(preferenceMeetingTypeList))
             .build();
     }
@@ -150,7 +152,7 @@ public class TeamServiceImpl implements TeamService {
 
         team.deleteMember(member);
 
-        if (team.isActive()) {
+        if (TRUE.equals(team.getIsActive())) {
             team.deactivateTeam();
         }
     }

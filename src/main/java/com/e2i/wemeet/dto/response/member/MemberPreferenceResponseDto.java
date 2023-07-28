@@ -9,7 +9,7 @@ import lombok.Builder;
 public record MemberPreferenceResponseDto(
     String drinkingOption,
     String sameCollegeState,
-    boolean isAvoidedFriends,
+    Boolean isAvoidedFriends,
     List<MemberPreferenceMeetingType> preferenceMeetingTypeList,
     String startPreferenceAdmissionYear,
     String endPreferenceAdmissionYear,
@@ -19,7 +19,8 @@ public record MemberPreferenceResponseDto(
     public MemberPreferenceResponseDto(Member member,
         List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList) {
         this(member.getPreference().getDrinkingOption(),
-            member.getPreference().getSameCollegeState(), member.getPreference().isAvoidedFriends(),
+            member.getPreference().getSameCollegeState(),
+            member.getPreference().getIsAvoidedFriends(),
             memberPreferenceMeetingTypeList,
             member.getPreference().getStartPreferenceAdmissionYear(),
             member.getPreference().getEndPreferenceAdmissionYear(),

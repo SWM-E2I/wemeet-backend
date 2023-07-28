@@ -102,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
         String profileImageUrl = mainProfileImage.map(ProfileImage::getLowResolutionBasicUrl)
             .orElse(null);
 
-        boolean imageAuth = mainProfileImage.map(ProfileImage::isCertified).orElse(false);
+        boolean imageAuth = mainProfileImage.map(ProfileImage::getIsCertified).orElse(false);
         boolean univAuth = member.getCollegeInfo().getMail() != null;
 
         return MemberInfoResponseDto.builder()

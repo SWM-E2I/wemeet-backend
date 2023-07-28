@@ -79,7 +79,7 @@ public enum TeamFixture {
             .additionalActivity(this.additionalActivity)
             .preferenceMeetingTypeList(List.of("G001_C002"))
             .introduction(this.introduction)
-            .managerImageAuth(member.isImageAuth())
+            .managerImageAuth(member.getImageAuth())
             .build();
     }
 

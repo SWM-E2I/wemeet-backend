@@ -230,7 +230,7 @@ class TeamServiceTest {
         assertEquals(result.drinkingOption(), team.getDrinkingOption());
         assertEquals(result.additionalActivity(), team.getAdditionalActivity());
         assertEquals(result.introduction(), team.getIntroduction());
-        assertEquals(result.managerImageAuth(), team.getMember().isImageAuth());
+        assertEquals(result.managerImageAuth(), team.getMember().getImageAuth());
 
         // after
         member.setTeam(null);
