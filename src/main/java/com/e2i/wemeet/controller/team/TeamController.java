@@ -8,7 +8,6 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
-import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
@@ -38,7 +37,6 @@ public class TeamController {
     private final TeamInvitationService teamInvitationService;
     private final CodeService codeService;
 
-
     @PostMapping
     public ResponseDto<Long> createTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto,
@@ -48,84 +46,67 @@ public class TeamController {
         Long teamId = teamService.createTeam(memberPrincipal.getMemberId(), createTeamRequestDto,
             teamPreferenceMeetingList, response);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Create Team Success", teamId);
+        return ResponseDto.success("Create Team Success", teamId);
     }
 
     @IsManager
     @PutMapping
     public ResponseDto<Void> modifyTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid ModifyTeamRequestDto modifyTeamRequestDto) {
-        List<Code> teamPreferenceMeetingList = codeService.findCodeList(
-            modifyTeamRequestDto.preferenceMeetingTypeList());
-        teamService.modifyTeam(memberPrincipal.getMemberId(), modifyTeamRequestDto,
-            teamPreferenceMeetingList);
+        List<Code> teamPreferenceMeetingList = codeService.findCodeList(modifyTeamRequestDto.preferenceMeetingTypeList());
+        teamService.modifyTeam(memberPrincipal.getMemberId(), modifyTeamRequestDto, teamPreferenceMeetingList);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Modify Team Success", null);
+        return ResponseDto.success("Modify Team Success");
     }
 
     @GetMapping
-    public ResponseDto<MyTeamDetailResponseDto> getMyTeamDetail(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ResponseDto<MyTeamDetailResponseDto> getMyTeamDetail(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         MyTeamDetailResponseDto result = teamService.getMyTeamDetail(memberPrincipal.getMemberId());
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Get  My Team Detail Success", result);
+        return ResponseDto.success("Get My Team Detail Success", result);
     }
 
     @IsManager
     @PostMapping("/invitation")
-    public ResponseDto<Void> inviteTeamMember(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+    public ResponseDto<Void> inviteTeamMember(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid InviteTeamRequestDto inviteTeamRequestDto) {
         teamInvitationService.inviteTeam(memberPrincipal.getMemberId(), inviteTeamRequestDto);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Invitation Team Success", null);
+        return ResponseDto.success("Invite Team Member Success");
     }
 
     @PutMapping("/invitation/{invitationId}")
-    public ResponseDto<Void> setInvitationStatus(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+    public ResponseDto<Void> setInvitationStatus(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("invitationId") Long invitationId,
         @RequestParam("accepted") Boolean accepted) {
-        teamInvitationService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId,
-            accepted);
+        teamInvitationService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId, accepted);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Set Invitation Success", null);
+        return ResponseDto.success("Set Invitation Success");
     }
 
     @IsManager
     @GetMapping("/member")
-    public ResponseDto<TeamManagementResponseDto> getTeamMemberList(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        TeamManagementResponseDto result = teamService.getTeamMemberList(
-            memberPrincipal.getMemberId());
+    public ResponseDto<TeamManagementResponseDto> getTeamMemberList(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        TeamManagementResponseDto result = teamService.getTeamMemberList(memberPrincipal.getMemberId());
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Get My Team Members Success", result);
+        return ResponseDto.success("Get Team Member List Success", result);
     }
 
     @IsManager
     @DeleteMapping
-    public ResponseDto<Void> deleteTeam(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal, HttpServletResponse response) {
+    public ResponseDto<Void> deleteTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
+        HttpServletResponse response) {
         teamService.deleteTeam(memberPrincipal.getMemberId(), response);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Delete Team Success", null);
+        return ResponseDto.success("Delete Team Success");
     }
 
     @IsManager
     @DeleteMapping("/member/{memberId}")
-    public ResponseDto<Void> deleteTeamMember(
-        @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+    public ResponseDto<Void> deleteTeamMember(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("memberId") Long memberId) {
         teamService.deleteTeamMember(memberPrincipal.getMemberId(), memberId);
 
-        return
-            new ResponseDto(ResponseStatus.SUCCESS, "Delete TeamMember Success", null);
+        return ResponseDto.success("Delete TeamMember Success");
     }
 }
