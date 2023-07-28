@@ -6,9 +6,11 @@ import static java.lang.Boolean.TRUE;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +23,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -68,8 +71,13 @@ public class Team extends BaseTimeEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private List<TeamPreferenceMeetingType> preferenceMeetingTypes = new ArrayList<>();
+
+    private LocalDateTime deleteAt;
 
     @Builder
     public Team(Long teamId, String teamCode, Integer memberCount, Gender gender,
@@ -143,5 +151,9 @@ public class Team extends BaseTimeEntity {
         if (member.getCollegeInfo().getMail() == null) {
             throw new UnAuthorizedUnivException();
         }
+    }
+
+    public void delete() {
+        this.deleteAt = LocalDateTime.now();
     }
 }

@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -74,6 +75,8 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+    
+    private LocalDateTime deleteAt;
 
     @Builder
     public Member(Long memberId, String memberCode, String nickname, Gender gender,
@@ -127,5 +130,9 @@ public class Member extends BaseTimeEntity {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public void delete() {
+        this.deleteAt = LocalDateTime.now();
     }
 }
