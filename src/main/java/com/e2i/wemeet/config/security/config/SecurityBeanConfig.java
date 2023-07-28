@@ -105,9 +105,8 @@ public class SecurityBeanConfig {
     // 사용자 로그인 요청 성공시 수행
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(ObjectMapper objectMapper,
-        TokenInjector tokenInjector, MemberRepository memberRepository) {
-        return new CustomAuthenticationSuccessHandler(objectMapper, tokenInjector,
-            memberRepository);
+        TokenInjector tokenInjector) {
+        return new CustomAuthenticationSuccessHandler(objectMapper, tokenInjector);
     }
 
     /*

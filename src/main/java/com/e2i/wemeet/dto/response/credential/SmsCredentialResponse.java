@@ -8,16 +8,13 @@ import org.springframework.security.core.GrantedAuthority;
 // SMS 인증 응답
 public record SmsCredentialResponse(
     RegistrationType registrationType,
-    boolean emailAuthenticated,
     Long memberId,
     Collection<? extends GrantedAuthority> role
 ) {
 
-    public static SmsCredentialResponse of(final MemberPrincipal principal,
-        final boolean emailAuthenticated) {
+    public static SmsCredentialResponse of(final MemberPrincipal principal) {
         return new SmsCredentialResponse(
             principal.getRegistrationType(),
-            emailAuthenticated,
             principal.getMemberId(),
             principal.getAuthorities()
         );

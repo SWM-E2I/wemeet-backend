@@ -155,8 +155,6 @@ class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
                         fieldWithPath("data.registrationType").type(JsonFieldType.STRING)
                             .description("사용자 회원 가입 종류를 반환 합니다. "
                                 + "(APP-앱, WEB-웹, NOT_REGISTERED-미가입)"),
-                        fieldWithPath("data.emailAuthenticated").type(JsonFieldType.BOOLEAN)
-                            .description("이메일 인증 여부"),
                         fieldWithPath("data.memberId")
                             .description("회원 아이디"),
                         fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
