@@ -1,7 +1,5 @@
 package com.e2i.wemeet.service.team;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
@@ -41,7 +39,6 @@ public class TeamServiceImpl implements TeamService {
     private final MemberRepository memberRepository;
     private final TeamInvitationRepository teamInvitationRepository;
     private final ProfileImageRepository profileImageRepository;
-    private final TokenInjector tokenInjector;
     private final SecureRandom random = new SecureRandom();
     private static final int TEAM_CODE_LENGTH = 6;
 
@@ -56,9 +53,6 @@ public class TeamServiceImpl implements TeamService {
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH, memberId), member));
         team.addMember(member);
         member.setRole(Role.MANAGER);
-
-        // 바뀐 Role을 적용한 token 재발급
-        tokenInjector.injectToken(response, new MemberPrincipal(member));
 
         teamPreferenceMeetingTypeRepository.saveAll(
             teamPreferenceMeetingTypeList.stream()
@@ -150,8 +144,8 @@ public class TeamServiceImpl implements TeamService {
         if (!isTeamExist(member)) {
             throw new NotBelongToTeamException();
         }
-
-        return member.getTeam();
+        return member.getTeam()
+            .checkTeamValid();
     }
 
     /*
@@ -213,7 +207,8 @@ public class TeamServiceImpl implements TeamService {
 
     private Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
     }
 
     private boolean isTeamExist(Member member) {

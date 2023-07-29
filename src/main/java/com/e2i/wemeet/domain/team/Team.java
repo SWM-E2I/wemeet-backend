@@ -9,6 +9,7 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -165,5 +166,12 @@ public class Team extends BaseTimeEntity {
         this.deactivateTeam();
 
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public Team checkTeamValid() {
+        if (this.getDeletedAt() != null) {
+            throw new TeamHasBeenDeletedException();
+        }
+        return this;
     }
 }
