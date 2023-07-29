@@ -44,7 +44,6 @@ class PersistLoginRepositoryImplTest {
         // when
         PersistResponseDto persistResponseDto = memberRepository.findPersistResponseById(
             kai.getMemberId());
-        System.out.println("persistResponseDto = " + persistResponseDto);
 
         // then
         assertAll(

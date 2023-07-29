@@ -60,7 +60,7 @@ public class MemberPrincipal implements UserDetails {
 
     public boolean isRegistered() {
         return this.registrationType != null
-            & this.registrationType != RegistrationType.NOT_REGISTERED;
+            && this.registrationType != RegistrationType.NOT_REGISTERED;
     }
 
     public RegistrationType getRegistrationType() {

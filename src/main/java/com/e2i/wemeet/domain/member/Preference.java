@@ -40,10 +40,10 @@ public class Preference {
 
     public boolean isComplete() {
         return
-            StringUtils.hasText(this.startPreferenceAdmissionYear) &&
-                StringUtils.hasText(this.endPreferenceAdmissionYear) &&
-                StringUtils.hasText(this.sameCollegeState) &&
-                StringUtils.hasText(this.drinkingOption) &&
-                StringUtils.hasText(this.preferenceMbti);
+            StringUtils.hasText(this.startPreferenceAdmissionYear)
+                && StringUtils.hasText(this.endPreferenceAdmissionYear)
+                && StringUtils.hasText(this.sameCollegeState)
+                && StringUtils.hasText(this.drinkingOption)
+                && StringUtils.hasText(this.preferenceMbti);
     }
 }
