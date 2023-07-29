@@ -23,7 +23,7 @@ import software.amazon.awssdk.services.sns.model.SnsException;
 @Service
 public class AwsSnsService implements SmsCredentialService {
 
-    private final AwsSnsCredentialService awsSnsCredentialService;
+    private final SnsClient snsClient;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
@@ -50,7 +50,6 @@ public class AwsSnsService implements SmsCredentialService {
 
 
     private void sendSms(String phoneNumber, String message) {
-        SnsClient snsClient = awsSnsCredentialService.getSnsClient();
         try {
             PublishRequest request = PublishRequest.builder()
                 .message(message)
