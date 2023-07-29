@@ -76,6 +76,7 @@ jobs:
           script_stop: true
           script: |
             cd test
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 075584359222.dkr.ecr.ap-northeast-2.amazonaws.com
             docker-compose pull -q
             docker-compose up --force-recreate --build -d --quiet-pull 2>log.out
             cat log.out
