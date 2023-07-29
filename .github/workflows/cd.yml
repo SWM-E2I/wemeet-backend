@@ -4,13 +4,16 @@ on:
     branches:
       - develop
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           submodules: true
+      - name: Replace application.yml with application-dev.yml
+        run: |
+          sed -i 's/local/dev/' src/main/resources/application.yml
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -32,7 +35,6 @@ jobs:
           VERSION=$(echo ${{ github.sha }} | cut -c1-8)
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
-
       - name: Build With Jib and push image to Amazon ECR with tag
         id: image-info
         env:
@@ -43,3 +45,42 @@ jobs:
           echo "::set-output name=ecr_repository::$ECR_REPOSITORY"
           echo "::set-output name=image_tag::$IMAGE_TAG"
           ./gradlew -Djib.to.image=$ECR_REGISTRY/$ECR_REPOSITORY -PinputTag=$IMAGE_TAG clean jib -x test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Github Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: SSH Commands
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.AWS_SSH_HOST }}
+          username: ${{ secrets.AWS_SSH_USERNAME }}
+          password: ${{ secrets.AWS_SSH_PASSWORD }}
+          port: ${{ secrets.AWS_SSH_PORT }}
+          script_stop: true
+          script: |
+            cd test
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 075584359222.dkr.ecr.ap-northeast-2.amazonaws.com
+            docker system prune -a --volumes -f
+            docker-compose pull -q
+            docker-compose up --force-recreate --build -d --quiet-pull 2>log.out
+            cat log.out
+
+      - name: Remove Github Actions IP From Security Group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
