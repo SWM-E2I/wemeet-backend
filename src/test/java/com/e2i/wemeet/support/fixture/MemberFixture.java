@@ -10,6 +10,7 @@ import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
+import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -91,6 +92,18 @@ public enum MemberFixture {
             .build();
     }
 
+    public Member create_preference(final Preference preference) {
+        return createBuilder()
+            .preference(preference)
+            .build();
+    }
+
+    public Member create_college(final CollegeInfo collegeInfo) {
+        return createBuilder()
+            .collegeInfo(collegeInfo)
+            .build();
+    }
+
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
             .memberId(this.memberId)
@@ -103,6 +116,7 @@ public enum MemberFixture {
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
+            .registrationType(RegistrationType.APP)
             .role(this.role);
     }
 

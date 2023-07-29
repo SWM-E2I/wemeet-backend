@@ -8,6 +8,7 @@ import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import java.lang.annotation.Annotation;
@@ -304,6 +305,11 @@ class CreditAuthorizationManagerTest {
 
         @Override
         public Page<Member> findAll(Pageable pageable) {
+            return null;
+        }
+
+        @Override
+        public PersistResponseDto findPersistResponseById(Long memberId) {
             return null;
         }
     }

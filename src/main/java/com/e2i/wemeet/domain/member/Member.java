@@ -4,7 +4,6 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -22,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -66,7 +66,10 @@ public class Member extends BaseTimeEntity {
     @Column
     private boolean imageAuth;
 
-    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RegistrationType registrationType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private Team team;
@@ -78,7 +81,8 @@ public class Member extends BaseTimeEntity {
     @Builder
     public Member(Long memberId, String memberCode, String nickname, Gender gender,
         String phoneNumber, CollegeInfo collegeInfo, Preference preference, Mbti mbti,
-        String introduction, int credit, boolean imageAuth, Team team, Role role) {
+        String introduction, int credit, boolean imageAuth, Team team, Role role,
+        RegistrationType registrationType) {
         this.memberId = memberId;
         this.memberCode = memberCode;
         this.nickname = nickname;
@@ -92,6 +96,7 @@ public class Member extends BaseTimeEntity {
         this.imageAuth = imageAuth;
         this.team = team;
         this.role = role;
+        this.registrationType = registrationType;
     }
 
     public void addCredit(int amount) {
@@ -127,5 +132,14 @@ public class Member extends BaseTimeEntity {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public void setManager(Team team) {
+        setTeam(team);
+        this.role = Role.MANAGER;
+    }
+
+    public boolean isEmailAuthenticated() {
+        return !StringUtils.hasText(this.collegeInfo.getMail());
     }
 }

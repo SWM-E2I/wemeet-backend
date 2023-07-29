@@ -39,6 +39,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,21 +69,34 @@ class TeamServiceTest {
     @InjectMocks
     private TeamServiceImpl teamService;
 
-    private static final Member member = MemberFixture.KAI.create();
-    private static final Member manager = MemberFixture.SEYUN.create();
-    private static final Member inviteMember = MemberFixture.JEONGYEOL.create();
-    private static final Team team = TeamFixture.TEST_TEAM.create();
-    private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
+    private Member member;
+    private Member manager;
+    private Member inviteMember;
+    private Team team;
+    private List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
-    private static final Long managerId = manager.getMemberId();
-    private static final Long memberId = member.getMemberId();
+    private Long managerId;
+    private Long memberId;
 
-    private static final TeamInvitation invitation = TeamInvitation.builder()
-        .teamInvitationId(1L)
-        .team(team)
-        .member(inviteMember)
-        .acceptStatus(InvitationAcceptStatus.WAITING)
-        .build();
+    private TeamInvitation invitation;
+
+    @BeforeEach
+    void setUp() {
+        member = MemberFixture.KAI.create();
+        manager = MemberFixture.SEYUN.create();
+        inviteMember = MemberFixture.JEONGYEOL.create();
+        team = TeamFixture.TEST_TEAM.create_with_id(MemberFixture.KAI.create(), 1L);
+        preferenceMeetingTypeCode = new ArrayList<>();
+        managerId = manager.getMemberId();
+        memberId = member.getMemberId();
+        invitation = TeamInvitation.builder()
+            .teamInvitationId(1L)
+            .team(team)
+            .member(inviteMember)
+            .acceptStatus(InvitationAcceptStatus.WAITING)
+            .build();
+
+    }
 
     @DisplayName("팀 생성에 성공한다.")
     @Test
@@ -218,8 +232,8 @@ class TeamServiceTest {
 
         when(memberRepository.findById(anyLong())).thenReturn(
             Optional.ofNullable(member));
-        when(teamPreferenceMeetingTypeRepository.findByTeamTeamId(anyLong())).thenReturn(
-            new ArrayList<>());
+        when(teamPreferenceMeetingTypeRepository.findByTeamTeamId(anyLong()))
+            .thenReturn(new ArrayList<>());
 
         // when
         MyTeamDetailResponseDto result = teamService.getMyTeamDetail(1L);
@@ -230,7 +244,7 @@ class TeamServiceTest {
         assertEquals(result.drinkingOption(), team.getDrinkingOption());
         assertEquals(result.additionalActivity(), team.getAdditionalActivity());
         assertEquals(result.introduction(), team.getIntroduction());
-        assertEquals(result.managerImageAuth(), team.getMember().isImageAuth());
+        assertEquals(result.managerImageAuth(), team.getTeamLeader().isImageAuth());
 
         // after
         member.setTeam(null);
@@ -359,7 +373,7 @@ class TeamServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(
             Optional.of(member));
         manager.setTeam(team);
-        team.setMember(member);
+        team.addMember(member);
 
         // when
         teamService.deleteTeamMember(manager.getMemberId(), memberId);

@@ -13,7 +13,6 @@ import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.notfound.ProfileImageNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
-import com.e2i.wemeet.service.aws.s3.AwsS3CredentialService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +45,7 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     @Value("${aws.s3.bucket}")
     private String bucket;
 
-    private final AwsS3CredentialService awsS3CredentialService;
+    private final S3Client s3Client;
     private final ProfileImageRepository profileImageRepository;
     private final MemberRepository memberRepository;
 
@@ -97,8 +96,6 @@ public class ProfileImageServiceImpl implements ProfileImageService {
 
 
     private void putObject(MultipartFile multipartFile, String objectKey) {
-        S3Client s3Client = awsS3CredentialService.getS3Client();
-
         File file = convertMultipartFileToFile(multipartFile);
 
         Map<String, String> metadata = new HashMap<>();
@@ -121,8 +118,6 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     }
 
     private void deleteObject(String objectKey) {
-        S3Client s3Client = awsS3CredentialService.getS3Client();
-
         List<ObjectIdentifier> toDelete = new ArrayList<>();
         toDelete.add(ObjectIdentifier.builder()
             .key(objectKey)

@@ -10,6 +10,7 @@ import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
+import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
 import java.util.Arrays;
 
@@ -22,9 +23,7 @@ public enum AdminMemberFixture {
         "hello", 100, Role.MANAGER),
     SEYUN("4102", "seyun", Gender.MALE, "+821033445566",
         KU.create(), GENERAL_PREFERENCE.create(), Mbti.ESFJ,
-        "hey", 100, Role.USER)
-
-    ;
+        "hey", 100, Role.USER);
 
     private final String memberCode;
     private final String nickname;
@@ -38,7 +37,8 @@ public enum AdminMemberFixture {
     private final Role role;
 
     AdminMemberFixture(String memberCode, String nickname, Gender gender, String phoneNumber,
-        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit, Role role) {
+        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit,
+        Role role) {
         this.memberCode = memberCode;
         this.nickname = nickname;
         this.gender = gender;
@@ -86,6 +86,7 @@ public enum AdminMemberFixture {
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
+            .registrationType(RegistrationType.APP)
             .role(this.role);
     }
 

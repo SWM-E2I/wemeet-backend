@@ -54,7 +54,7 @@ public class TeamServiceImpl implements TeamService {
         // team 생성
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH, memberId), member));
-        team.setMember(member);
+        team.addMember(member);
         member.setRole(Role.MANAGER);
 
         // 바뀐 Role을 적용한 token 재발급
@@ -100,7 +100,7 @@ public class TeamServiceImpl implements TeamService {
             .region(team.getRegion())
             .introduction(team.getIntroduction())
             .additionalActivity(team.getAdditionalActivity())
-            .managerImageAuth(team.getMember().isImageAuth())
+            .managerImageAuth(team.getTeamLeader().isImageAuth())
             .preferenceMeetingTypeList(preferenceMeetingTypeToCodeString(preferenceMeetingTypeList))
             .build();
     }

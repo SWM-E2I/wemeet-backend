@@ -18,11 +18,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 
 @ExtendWith(RestDocumentationExtension.class)
-public abstract class AbstractUnitTest {
+public abstract class AbstractControllerUnitTest {
 
     @Autowired
     protected ObjectMapper mapper;
-    
+
     protected MockMvc mockMvc;
 
     @BeforeEach

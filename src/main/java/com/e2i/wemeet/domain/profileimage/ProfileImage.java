@@ -39,10 +39,10 @@ public class ProfileImage extends BaseTimeEntity {
     private String lowResolutionBlurUrl;
 
     @Column(nullable = false)
-    private boolean isMain;
+    private Boolean isMain;
 
     @Column(nullable = false)
-    private boolean isCertified;
+    private Boolean isCertified;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId", nullable = false)

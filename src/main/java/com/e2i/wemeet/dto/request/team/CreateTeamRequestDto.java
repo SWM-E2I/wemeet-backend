@@ -43,7 +43,7 @@ public record CreateTeamRequestDto(
             .additionalActivity(AdditionalActivity.findBy(additionalActivity))
             .drinkingOption(drinkingOption)
             .introduction(introduction)
-            .member(member)
+            .teamLeader(member)
             .build();
     }
 
