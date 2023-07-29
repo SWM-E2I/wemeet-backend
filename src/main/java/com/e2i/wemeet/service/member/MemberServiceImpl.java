@@ -20,7 +20,6 @@ import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
     private final ProfileImageRepository profileImageRepository;
 
-    private final SecureRandom random = new SecureRandom();
 
     @Override
     @Transactional
@@ -45,8 +43,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new DuplicatedPhoneNumberException();
             });
 
-        String memberCode = createMemberCode();
-        Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
+        Member member = memberRepository.save(requestDto.toMemberEntity());
         return member.getMemberId();
     }
 
@@ -149,10 +146,5 @@ public class MemberServiceImpl implements MemberService {
 
         memberPreferenceMeetingTypeRepository.deleteAllByMemberMemberId(member.getMemberId());
         memberPreferenceMeetingTypeRepository.saveAll(preferenceMeetingTypeList);
-    }
-
-    private String createMemberCode() {
-        int code = random.nextInt(9000) + 1000;
-        return String.valueOf(code);
     }
 }
