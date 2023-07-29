@@ -1,5 +1,6 @@
 package com.e2i.wemeet.service.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -337,5 +338,22 @@ class MemberServiceTest {
         });
 
         verify(memberRepository).findById(anyLong());
+    }
+
+    @DisplayName("회원 삭제에 성공한다.")
+    @Test
+    void delete() {
+        // given
+        Member kai = MemberFixture.KAI.create();
+        when(memberRepository.findById(memberId))
+            .thenReturn(Optional.of(kai));
+
+        // when
+        memberService.deleteMember(memberId);
+
+        // then
+        assertThat(kai.getDeletedAt())
+            .isNotNull()
+            .isExactlyInstanceOf(java.time.LocalDateTime.class);
     }
 }

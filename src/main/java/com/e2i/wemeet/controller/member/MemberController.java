@@ -1,5 +1,6 @@
 package com.e2i.wemeet.controller.member;
 
+import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
@@ -17,6 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -89,5 +91,12 @@ public class MemberController {
         RoleResponseDto result = memberService.getMemberRole(memberPrincipal.getMemberId());
 
         return ResponseDto.success("Get Member Role Success", result);
+    }
+
+    @DeleteMapping
+    public ResponseDto<Void> deleteMember(@MemberId Long memberId) {
+        memberService.deleteMember(memberId);
+
+        return ResponseDto.success("Delete Member Success");
     }
 }

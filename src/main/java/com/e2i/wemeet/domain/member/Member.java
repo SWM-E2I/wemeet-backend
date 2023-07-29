@@ -3,6 +3,7 @@ package com.e2i.wemeet.domain.member;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
@@ -154,6 +155,9 @@ public class Member extends BaseTimeEntity {
     }
 
     public void delete() {
+        if (this.team != null) {
+            withdrawalFromTeam();
+        }
         this.deletedAt = LocalDateTime.now();
     }
 
@@ -177,6 +181,13 @@ public class Member extends BaseTimeEntity {
         this.team.getMembers().remove(this);
         this.team.deactivateTeam();
         this.team = null;
+    }
+
+    public Member checkMemberValid() {
+        if (this.getDeletedAt() != null) {
+            throw new MemberHasBeenDeletedException();
+        }
+        return this;
     }
 
     private void validateTeamLeader() {
