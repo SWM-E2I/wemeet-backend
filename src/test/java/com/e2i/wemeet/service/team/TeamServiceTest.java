@@ -1,5 +1,6 @@
 package com.e2i.wemeet.service.team;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,7 +11,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
@@ -116,9 +116,6 @@ class TeamServiceTest {
         verify(memberRepository).findById(anyLong());
         verify(teamRepository).save(any(Team.class));
         verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
-
-        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
-            any(MemberPrincipal.class));
 
         assertEquals(Role.MANAGER, member.getRole());
     }
@@ -230,8 +227,8 @@ class TeamServiceTest {
         // given
         member.setTeam(team);
 
-        when(memberRepository.findById(anyLong())).thenReturn(
-            Optional.ofNullable(member));
+        when(memberRepository.findById(anyLong()))
+            .thenReturn(Optional.ofNullable(member));
         when(teamPreferenceMeetingTypeRepository.findByTeamTeamId(anyLong()))
             .thenReturn(new ArrayList<>());
 
@@ -244,7 +241,7 @@ class TeamServiceTest {
         assertEquals(result.drinkingOption(), team.getDrinkingOption());
         assertEquals(result.additionalActivity(), team.getAdditionalActivity());
         assertEquals(result.introduction(), team.getIntroduction());
-        assertEquals(result.managerImageAuth(), team.getTeamLeader().isImageAuth());
+        assertEquals(result.managerImageAuth(), team.getTeamLeader().getImageAuth());
 
         // after
         member.setTeam(null);
@@ -334,17 +331,37 @@ class TeamServiceTest {
         manager.setTeam(team);
 
         // when
-        teamService.deleteTeam(managerId, response);
+        teamService.deleteTeam(managerId);
 
         // then
         verify(memberRepository).findById(managerId);
-        verify(teamRepository).delete(team);
-        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
-            any(MemberPrincipal.class));
         assertEquals(Role.USER, manager.getRole());
 
         // after
         manager.setRole(Role.MANAGER);
+    }
+
+    @DisplayName("팀을 삭제하면 팀원들의 팀 정보가 null 로 초기화되며 deleteAt에 삭제 시간이 기록된다.")
+    @Test
+    void deleteTeam_mark() {
+        // given
+        Team team = TeamFixture.HONGDAE_TEAM.create(manager);
+        Member member = MemberFixture.JEONGYEOL.create();
+        member.joinTeam(team);
+
+        when(memberRepository.findById(managerId))
+            .thenReturn(Optional.of(manager));
+
+        // when
+        teamService.deleteTeam(managerId);
+
+        // then
+        verify(memberRepository).findById(managerId);
+        assertThat(member.getTeam()).isNull();
+        assertThat(team.getMembers()).isEmpty();
+        assertThat(team.getDeletedAt())
+            .isNotNull()
+            .isExactlyInstanceOf(java.time.LocalDateTime.class);
     }
 
     @DisplayName("팀이 없는 경우 팀 삭제를 요청하면 NotBelongToTeamException이 발생한다.")
@@ -357,7 +374,7 @@ class TeamServiceTest {
 
         // when & then
         assertThrows(NotBelongToTeamException.class, () -> {
-            teamService.deleteTeam(managerId, response);
+            teamService.deleteTeam(managerId);
         });
 
         verify(memberRepository).findById(managerId);

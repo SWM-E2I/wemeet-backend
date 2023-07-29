@@ -111,7 +111,7 @@ class CredentialControllerTest extends AbstractIntegrationTest {
         perform.andExpectAll(
             status().isOk(),
             jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("대학 메일 인증 번호 확인 요청 성공"),
+            jsonPath("$.message").value("대학 메일 인증 번호 확인 성공"),
             jsonPath("$.data").isNotEmpty());
 
         mailCredentialCheckWriteRestDocs(perform);

@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `member`
     `image_auth`                      tinyint DEFAULT 0,
     `created_at`                      datetime(6),
     `modified_at`                     datetime(6),
+    `deleted_at`                      datetime(6),
     `role`                            varchar(8),
     PRIMARY KEY (`member_id`),
     UNIQUE KEY `member_mail` (`mail`),

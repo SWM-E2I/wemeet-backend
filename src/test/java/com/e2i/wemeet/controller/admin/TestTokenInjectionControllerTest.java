@@ -61,7 +61,7 @@ class TestTokenInjectionControllerTest extends AbstractIntegrationTest {
         perform.andExpectAll(
             status().isOk(),
             jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("Access Token Injection Success"),
+            jsonPath("$.message").value("Access token injection success"),
             jsonPath("$.data").isEmpty());
 
         writeRestDocsGetAccessToken(perform);

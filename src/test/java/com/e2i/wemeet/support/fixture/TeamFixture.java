@@ -76,7 +76,6 @@ public enum TeamFixture {
             .region(this.region)
             .drinkingOption(this.drinkingOption)
             .additionalActivity(this.additionalActivity)
-            .gender(member.getGender())
             .introduction(this.introduction)
             .teamLeader(member);
     }
@@ -110,7 +109,7 @@ public enum TeamFixture {
             .additionalActivity(this.additionalActivity)
             .preferenceMeetingTypeList(List.of("G001_C002"))
             .introduction(this.introduction)
-            .managerImageAuth(member.isImageAuth())
+            .managerImageAuth(member.getImageAuth())
             .build();
     }
 
@@ -118,7 +117,6 @@ public enum TeamFixture {
         return Team.builder()
             .teamCode(this.teamCode)
             .memberCount(this.memberCount)
-            .gender(this.gender)
             .region(region)
             .drinkingOption(this.drinkingOption)
             .additionalActivity(this.additionalActivity)

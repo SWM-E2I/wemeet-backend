@@ -3,7 +3,10 @@ package com.e2i.wemeet.domain.member;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
+import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -17,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,10 +65,10 @@ public class Member extends BaseTimeEntity {
     private String introduction;
 
     @Column(nullable = false)
-    private int credit;
+    private Integer credit;
 
     @Column
-    private boolean imageAuth;
+    private Boolean imageAuth;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -78,12 +82,13 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "DELETED_AT")
+    private LocalDateTime deletedAt;
+
     @Builder
-    public Member(Long memberId, String memberCode, String nickname, Gender gender,
+    public Member(String memberCode, String nickname, Gender gender,
         String phoneNumber, CollegeInfo collegeInfo, Preference preference, Mbti mbti,
-        String introduction, int credit, boolean imageAuth, Team team, Role role,
-        RegistrationType registrationType) {
-        this.memberId = memberId;
+        String introduction, Integer credit, Boolean imageAuth, Team team, Role role) {
         this.memberCode = memberCode;
         this.nickname = nickname;
         this.gender = gender;
@@ -96,7 +101,7 @@ public class Member extends BaseTimeEntity {
         this.imageAuth = imageAuth;
         this.team = team;
         this.role = role;
-        this.registrationType = registrationType;
+        this.registrationType = RegistrationType.APP;
     }
 
     public void addCredit(int amount) {
@@ -134,6 +139,11 @@ public class Member extends BaseTimeEntity {
         this.team = team;
     }
 
+    public void joinTeam(Team team) {
+        setTeam(team);
+        team.getMembers().add(this);
+    }
+
     public void setManager(Team team) {
         setTeam(team);
         this.role = Role.MANAGER;
@@ -141,5 +151,58 @@ public class Member extends BaseTimeEntity {
 
     public boolean isEmailAuthenticated() {
         return !StringUtils.hasText(this.collegeInfo.getMail());
+    }
+
+    public void delete() {
+        if (this.team != null) {
+            withdrawalFromTeam();
+        }
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    /*
+     * 팀 삭제
+     * */
+    public void deleteTeam() {
+        validateTeamLeader();
+
+        this.team.delete();
+        if (this.role == Role.MANAGER) {
+            this.role = Role.USER;
+        }
+    }
+
+    /*
+     * 팀 탈퇴 - 팀원
+     * */
+    public void withdrawalFromTeam() {
+        validateBelongToTeam();
+        this.team.getMembers().remove(this);
+        this.team.deactivateTeam();
+        this.team = null;
+    }
+
+    public Member checkMemberValid() {
+        if (this.getDeletedAt() != null) {
+            throw new MemberHasBeenDeletedException();
+        }
+        return this;
+    }
+
+    private void validateTeamLeader() {
+        validateManager();
+        validateBelongToTeam();
+    }
+
+    private void validateBelongToTeam() {
+        if (this.team == null) {
+            throw new NotBelongToTeamException();
+        }
+    }
+
+    private void validateManager() {
+        if (this.role != Role.MANAGER && this.role != Role.ADMIN) {
+            throw new UnAuthorizedRoleException();
+        }
     }
 }

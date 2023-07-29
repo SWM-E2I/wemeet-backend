@@ -1,5 +1,6 @@
 package com.e2i.wemeet.service.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -166,7 +167,7 @@ class MemberServiceTest {
             member.getPreference().getEndPreferenceAdmissionYear());
         assertEquals(requestDto.sameCollegeState(), member.getPreference().getSameCollegeState());
         assertEquals(requestDto.drinkingOption(), member.getPreference().getDrinkingOption());
-        assertEquals(requestDto.isAvoidedFriends(), member.getPreference().isAvoidedFriends());
+        assertEquals(requestDto.isAvoidedFriends(), member.getPreference().getIsAvoidedFriends());
     }
 
     @DisplayName("회원이 존재하지 않는 경우 선호 정보를 수정하면 MemberNotFoundException이 발생한다.")
@@ -193,7 +194,8 @@ class MemberServiceTest {
         assertNotEquals(requestDto.sameCollegeState(),
             member.getPreference().getSameCollegeState());
         assertNotEquals(requestDto.drinkingOption(), member.getPreference().getDrinkingOption());
-        assertNotEquals(requestDto.isAvoidedFriends(), member.getPreference().isAvoidedFriends());
+        assertNotEquals(requestDto.isAvoidedFriends(),
+            member.getPreference().getIsAvoidedFriends());
     }
 
     @DisplayName("회원 정보 조회에 성공한다.")
@@ -287,7 +289,7 @@ class MemberServiceTest {
         // then
         assertEquals(member.getPreference().getDrinkingOption(), result.drinkingOption());
         assertEquals(member.getPreference().getSameCollegeState(), result.sameCollegeState());
-        assertEquals(member.getPreference().isAvoidedFriends(), result.isAvoidedFriends());
+        assertEquals(member.getPreference().getIsAvoidedFriends(), result.isAvoidedFriends());
         assertEquals(member.getPreference().getStartPreferenceAdmissionYear(),
             result.startPreferenceAdmissionYear());
         assertEquals(member.getPreference().getEndPreferenceAdmissionYear(),
@@ -336,5 +338,22 @@ class MemberServiceTest {
         });
 
         verify(memberRepository).findById(anyLong());
+    }
+
+    @DisplayName("회원 삭제에 성공한다.")
+    @Test
+    void delete() {
+        // given
+        Member kai = MemberFixture.KAI.create();
+        when(memberRepository.findById(memberId))
+            .thenReturn(Optional.of(kai));
+
+        // when
+        memberService.deleteMember(memberId);
+
+        // then
+        assertThat(kai.getDeletedAt())
+            .isNotNull()
+            .isExactlyInstanceOf(java.time.LocalDateTime.class);
     }
 }

@@ -129,7 +129,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         perform
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get  My Team Detail Success"))
+            .andExpect(jsonPath("$.message").value("Get My Team Detail Success"))
             .andExpect(jsonPath("$.data").exists());
 
         // then
@@ -148,7 +148,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         perform
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get  My Team Detail Success"))
+            .andExpect(jsonPath("$.message").value("Get My Team Detail Success"))
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
@@ -173,7 +173,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         perform
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Invitation Team Success"))
+            .andExpect(jsonPath("$.message").value("Invite Team Member Success"))
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
@@ -229,7 +229,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         perform
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get My Team Members Success"))
+            .andExpect(jsonPath("$.message").value("Get Team Member List Success"))
             .andExpect(jsonPath("$.data").exists());
 
         // then
@@ -242,7 +242,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     @Test
     void deleteTeam_Success() throws Exception {
         // given
-        doNothing().when(teamService).deleteTeam(anyLong(), any(HttpServletResponse.class));
+        doNothing().when(teamService).deleteTeam(anyLong());
 
         // when
         ResultActions perform = mockMvc.perform(delete("/v1/team"));
@@ -254,7 +254,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(teamService).deleteTeam(anyLong(), any(HttpServletResponse.class));
+        verify(teamService).deleteTeam(anyLong());
         deleteTeamWriteRestDocs(perform);
     }
 
