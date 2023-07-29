@@ -4,6 +4,8 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,7 +35,7 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column(length = 6, nullable = false)
+    @Column(length = 15, nullable = false)
     private String teamCode;
 
     @Column(nullable = false)
@@ -67,11 +69,12 @@ public class Team extends BaseTimeEntity {
     private List<Member> members = new ArrayList<>();
 
     @Builder
-    public Team(Long teamId, String teamCode, int memberCount, Gender gender,
+    public Team(String teamCode, int memberCount, Gender gender,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member teamLeader) {
-        this.teamId = teamId;
+        validateIsAbleManager(teamLeader);
+
         this.teamCode = teamCode;
         this.memberCount = memberCount;
         this.gender = gender;
@@ -93,17 +96,53 @@ public class Team extends BaseTimeEntity {
     public void setTeamLeader(Member teamLeader) {
         this.teamLeader = teamLeader;
         this.members.add(teamLeader);
-        teamLeader.setTeam(this);
+        teamLeader.setManager(this);
     }
 
-    public void setMember(Member member) {
-        if (!this.members.contains(member)) {
+    public void addMember(Member member) {
+        if (!this.members.contains(member) && this.members.size() < this.memberCount) {
             this.members.add(member);
             member.setTeam(this);
         }
     }
 
-    public void setActive(boolean active) {
+    public void deleteMember(Member member) {
+        if (this.members.contains(member)) {
+            this.members.remove(member);
+            member.setTeam(null);
+        }
+    }
+
+    public void activateTeam() {
+        if (!this.isActive && this.memberCount == this.members.size()) {
+            setActive(true);
+        }
+    }
+
+    public void deactivateTeam() {
+        if (this.isActive && this.memberCount > this.members.size()) {
+            setActive(false);
+        }
+    }
+
+    private void setActive(boolean active) {
         isActive = active;
+    }
+
+    private void validateIsAbleManager(final Member manager) {
+        isTeamExist(manager);
+        isUnivAuth(manager);
+    }
+
+    private void isTeamExist(Member member) {
+        if (member.getTeam() != null) {
+            throw new TeamAlreadyExistsException();
+        }
+    }
+
+    private void isUnivAuth(Member member) {
+        if (member.getCollegeInfo().getMail() == null) {
+            throw new UnAuthorizedUnivException();
+        }
     }
 }

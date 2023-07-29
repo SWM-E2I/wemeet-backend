@@ -12,6 +12,7 @@ import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.service.team.TeamInvitationService;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
 
     private final TeamService teamService;
+    private final TeamInvitationService teamInvitationService;
     private final CodeService codeService;
 
 
@@ -77,7 +79,7 @@ public class TeamController {
     public ResponseDto<Void> inviteTeamMember(
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestBody @Valid InviteTeamRequestDto inviteTeamRequestDto) {
-        teamService.inviteTeam(memberPrincipal.getMemberId(), inviteTeamRequestDto);
+        teamInvitationService.inviteTeam(memberPrincipal.getMemberId(), inviteTeamRequestDto);
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Invitation Team Success", null);
@@ -88,7 +90,8 @@ public class TeamController {
         @AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("invitationId") Long invitationId,
         @RequestParam("accepted") Boolean accepted) {
-        teamService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId, accepted);
+        teamInvitationService.takeAcceptStatus(memberPrincipal.getMemberId(), invitationId,
+            accepted);
 
         return
             new ResponseDto(ResponseStatus.SUCCESS, "Set Invitation Success", null);

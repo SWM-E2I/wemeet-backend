@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `team`
 (
     `team_id`             bigint      NOT NULL AUTO_INCREMENT,
-    `team_code`           char(8)     NOT NULL,
+    `team_code`           char(15)    NOT NULL,
     `member_count`        int         NOT NULL,
     `is_active`           tinyint     NOT NULL DEFAULT 0,
     `gender`              char(6)     NOT NULL,

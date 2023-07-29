@@ -4,11 +4,11 @@ import static com.e2i.wemeet.exception.ErrorCode.AWS_SES_EMAIL_TRANSFER_ERROR;
 import static com.e2i.wemeet.exception.ErrorCode.MAIL_JSON_PARSING_ERROR;
 
 import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.exception.badrequest.DuplicatedMailException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.SmsCredentialNotFoundException;
 import com.e2i.wemeet.service.credential.email.EmailCredentialService;
 import com.e2i.wemeet.util.RandomCodeUtils;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
@@ -41,6 +41,8 @@ public class AwsSesService implements EmailCredentialService {
 
     @Override
     public void issue(String receiveTarget) {
+        validateIsExistMail(receiveTarget);
+
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
         String credential = RandomCodeUtils.crateCredential();
@@ -52,6 +54,8 @@ public class AwsSesService implements EmailCredentialService {
     @Override
     @Transactional
     public boolean matches(String target, String input, Long memberId) {
+        validateIsExistMail(target);
+
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String origin = operations.get(target);
         if (!StringUtils.hasText(origin)) {
@@ -79,6 +83,13 @@ public class AwsSesService implements EmailCredentialService {
             log.info(e.getMessage());
             throw new InternalServerException(AWS_SES_EMAIL_TRANSFER_ERROR);
         }
+    }
+
+    private void validateIsExistMail(String mail) {
+        memberRepository.findByCollegeInfoMail(mail)
+            .ifPresent(member -> {
+                throw new DuplicatedMailException();
+            });
     }
 
     private SendTemplatedEmailRequest createEmailRequest(String email, String message) {

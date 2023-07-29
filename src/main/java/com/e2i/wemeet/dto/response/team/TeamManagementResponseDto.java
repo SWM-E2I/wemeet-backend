@@ -5,7 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record TeamManagementResponseDto(
-    Long managerId,
     String teamCode,
     List<TeamMemberResponseDto> members
 ) {

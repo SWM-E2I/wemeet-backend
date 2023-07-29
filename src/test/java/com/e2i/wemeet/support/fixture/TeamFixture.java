@@ -7,14 +7,17 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import java.lang.reflect.Field;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public enum TeamFixture {
 
     TEST_TEAM(1L, "df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
         "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create()),
     HONGDAE_TEAM(null, "hongda", 3, null, "홍대 입구", "0", AdditionalActivity.SHOW,
-        "안녕하세요. 홍대 팀 인사올립니다.", null);;
+        "안녕하세요. 홍대 팀 인사올립니다.", null);
 
     private final Long teamId;
     private final String teamCode;
@@ -48,13 +51,22 @@ public enum TeamFixture {
     }
 
     public Team create() {
-        return createBuilder()
+        Team team = createBuilder()
             .build();
+        setTeamId(team, this.teamId);
+        return team;
     }
 
     public Team create(Member teamLeader) {
         return createTeamBuilder(teamLeader)
             .build();
+    }
+
+    public Team create_with_id(Member teamLeader, Long teamId) {
+        Team team = createTeamBuilder(teamLeader)
+            .build();
+        setTeamId(team, teamId);
+        return team;
     }
 
     public Team.TeamBuilder createTeamBuilder(Member member) {
@@ -104,7 +116,6 @@ public enum TeamFixture {
 
     private Team.TeamBuilder createBuilder() {
         return Team.builder()
-            .teamId(this.teamId)
             .teamCode(this.teamCode)
             .memberCount(this.memberCount)
             .gender(this.gender)
@@ -113,5 +124,16 @@ public enum TeamFixture {
             .additionalActivity(this.additionalActivity)
             .teamLeader(this.member)
             .introduction(this.introduction);
+    }
+
+    private void setTeamId(Team team, Long teamId) {
+        Field field;
+        try {
+            field = team.getClass().getDeclaredField("teamId");
+            field.setAccessible(true);
+            field.set(team, teamId);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

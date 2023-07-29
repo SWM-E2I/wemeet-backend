@@ -134,6 +134,11 @@ public class Member extends BaseTimeEntity {
         this.team = team;
     }
 
+    public void setManager(Team team) {
+        setTeam(team);
+        this.role = Role.MANAGER;
+    }
+
     public boolean isEmailAuthenticated() {
         return !StringUtils.hasText(this.collegeInfo.getMail());
     }

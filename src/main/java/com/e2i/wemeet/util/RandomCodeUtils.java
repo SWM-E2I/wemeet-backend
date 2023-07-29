@@ -13,4 +13,6 @@ public abstract class RandomCodeUtils {
         int code = random.nextInt(900_000) + 100_000;
         return String.valueOf(code);
     }
+
+
 }

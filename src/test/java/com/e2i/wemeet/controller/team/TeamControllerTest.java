@@ -28,6 +28,7 @@ import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.service.team.TeamInvitationService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
@@ -46,10 +47,13 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(TeamController.class)
-class TeamControllerTestController extends AbstractControllerUnitTest {
+class TeamControllerTest extends AbstractControllerUnitTest {
 
     @MockBean
     private TeamService teamService;
+
+    @MockBean
+    private TeamInvitationService teamInvitationService;
 
     @MockBean
     private CodeService codeService;
@@ -157,7 +161,8 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
     void inviteTeamMember_Success() throws Exception {
         // given
         InviteTeamRequestDto request = MemberFixture.JEONGYEOL.inviteTeamRequestDto();
-        doNothing().when(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+        doNothing().when(teamInvitationService)
+            .inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/team/invitation")
@@ -172,7 +177,7 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(teamService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
+        verify(teamInvitationService).inviteTeam(anyLong(), any(InviteTeamRequestDto.class));
         inviteTeamMemberWriteRestDocs(perform);
     }
 
@@ -181,7 +186,8 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
     @Test
     void setInvitationStatus_Success() throws Exception {
         // given
-        doNothing().when(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+        doNothing().when(teamInvitationService)
+            .takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
 
         // when
         ResultActions perform = mockMvc.perform(
@@ -194,7 +200,7 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(teamService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
+        verify(teamInvitationService).takeAcceptStatus(anyLong(), anyLong(), anyBoolean());
         setInvitationStatusWriteRestDocs(perform);
     }
 
@@ -211,8 +217,7 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
             .isAccepted(true)
             .build();
         TeamManagementResponseDto result = TeamManagementResponseDto.builder()
-            .managerId(1L)
-            .teamCode("ds739d")
+            .teamCode("1@ds739d")
             .members(List.of(member))
             .build();
 
@@ -441,8 +446,6 @@ class TeamControllerTestController extends AbstractControllerUnitTest {
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.managerId").type(JsonFieldType.NUMBER)
-                            .description("팀장 아이디"),
                         fieldWithPath("data.teamCode").type(JsonFieldType.STRING)
                             .description("팀 코드"),
                         fieldWithPath("data.members[].memberId").type(JsonFieldType.NUMBER)

@@ -12,4 +12,9 @@ public record PersistResponseDto(
     boolean hasTeam
 ) {
 
+    public String toString() {
+        return "PersistResponseDto(nickname=" + this.nickname() + ", emailAuthenticated=" + this.emailAuthenticated() + ", preferenceCompleted="
+            + this.preferenceCompleted() + ", hasMainProfileImage=" + this.hasMainProfileImage() + ", profileImageAuthenticated="
+            + this.profileImageAuthenticated() + ", hasTeam=" + this.hasTeam() + ")";
+    }
 }

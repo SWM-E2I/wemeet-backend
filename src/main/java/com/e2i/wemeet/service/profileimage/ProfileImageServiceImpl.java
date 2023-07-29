@@ -13,7 +13,6 @@ import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.notfound.ProfileImageNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
-import com.e2i.wemeet.service.aws.s3.AwsS3CredentialService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +45,7 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     @Value("${aws.s3.bucket}")
     private String bucket;
 
-    private final AwsS3CredentialService awsS3CredentialService;
+    private final S3Client s3Client;
     private final ProfileImageRepository profileImageRepository;
     private final MemberRepository memberRepository;
 
@@ -54,6 +53,8 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     private static final String BLUR_SUFFIX = "-blur";
     private static final String LOW_BASIC_SUFFIX = "-basic-low";
     private static final String LOW_BLUR_SUFFIX = "-blur-low";
+    private static final String FILE_EXTENSION = ".jpg";
+
 
     @Override
     @Transactional
@@ -66,10 +67,10 @@ public class ProfileImageServiceImpl implements ProfileImageService {
         putObject(file, objectKey + BASIC_SUFFIX);
 
         profileImageRepository.save(ProfileImage.builder()
-            .basicUrl(objectKey + BASIC_SUFFIX)
-            .blurUrl(objectKey + BLUR_SUFFIX)
-            .lowResolutionBasicUrl(objectKey + LOW_BASIC_SUFFIX)
-            .lowResolutionBlurUrl(objectKey + LOW_BLUR_SUFFIX)
+            .basicUrl(objectKey + BASIC_SUFFIX + FILE_EXTENSION)
+            .blurUrl(objectKey + BLUR_SUFFIX + FILE_EXTENSION)
+            .lowResolutionBasicUrl(objectKey + LOW_BASIC_SUFFIX + FILE_EXTENSION)
+            .lowResolutionBlurUrl(objectKey + LOW_BLUR_SUFFIX + FILE_EXTENSION)
             .isMain(isMain)
             .isCertified(false)
             .member(member)
@@ -95,17 +96,16 @@ public class ProfileImageServiceImpl implements ProfileImageService {
 
 
     private void putObject(MultipartFile multipartFile, String objectKey) {
-        S3Client s3Client = awsS3CredentialService.getS3Client();
-
         File file = convertMultipartFileToFile(multipartFile);
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("content-type", multipartFile.getContentType());
+        metadata.put("Content-Type", "image/jpg");
         metadata.put("content-length", String.valueOf(multipartFile.getSize()));
+
         try {
             PutObjectRequest putObj = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(objectKey)
+                .key(objectKey + FILE_EXTENSION)
                 .metadata(metadata)
                 .build();
 
@@ -118,8 +118,6 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     }
 
     private void deleteObject(String objectKey) {
-        S3Client s3Client = awsS3CredentialService.getS3Client();
-
         List<ObjectIdentifier> toDelete = new ArrayList<>();
         toDelete.add(ObjectIdentifier.builder()
             .key(objectKey)
