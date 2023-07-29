@@ -15,7 +15,7 @@ public interface TeamService {
      */
     Long createTeam(Long memberId, CreateTeamRequestDto createTeamRequestDto,
         List<Code> teamPreferenceMeetingTypeList, HttpServletResponse response);
-    
+
     /*
      * 팀 정보 수정
      */
@@ -35,7 +35,7 @@ public interface TeamService {
     /*
      * 팀 삭제
      */
-    void deleteTeam(Long memberId, HttpServletResponse response);
+    void deleteTeam(Long memberId);
 
     /*
      * 팀원 삭제

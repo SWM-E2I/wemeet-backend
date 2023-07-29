@@ -91,6 +91,18 @@ public enum MemberFixture {
             .build();
     }
 
+    public Member create_preference(final Preference preference) {
+        return createBuilder()
+            .preference(preference)
+            .build();
+    }
+
+    public Member create_college(final CollegeInfo collegeInfo) {
+        return createBuilder()
+            .collegeInfo(collegeInfo)
+            .build();
+    }
+
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
             .memberId(this.memberId)
@@ -103,7 +115,8 @@ public enum MemberFixture {
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
-            .role(this.role);
+            .role(this.role)
+            .imageAuth(this.imageAuth);
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {

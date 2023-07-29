@@ -69,32 +69,31 @@ public class Team extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
-    private Member member;
+    private Member teamLeader;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
     private List<Member> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
     private List<TeamPreferenceMeetingType> preferenceMeetingTypes = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(Long teamId, String teamCode, Integer memberCount, Gender gender,
+    public Team(Long teamId, String teamCode, int memberCount,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
-        String introduction, Member member) {
-        validateIsAbleManager(member);
+        String introduction, Member teamLeader) {
+        validateIsAbleManager(teamLeader);
 
         this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
-        this.gender = gender;
         this.region = region;
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
-        this.member = member;
+        setTeamLeader(teamLeader);
         setActive(false);
     }
 
@@ -106,7 +105,14 @@ public class Team extends BaseTimeEntity {
         this.introduction = modifyTeamRequestDto.introduction();
     }
 
-    public void setMember(Member member) {
+    public void setTeamLeader(Member teamLeader) {
+        this.gender = teamLeader.getGender();
+        this.teamLeader = teamLeader;
+        this.members.add(teamLeader);
+        teamLeader.setManager(this);
+    }
+
+    public void addMember(Member member) {
         if (!this.members.contains(member) && this.members.size() < this.memberCount) {
             this.members.add(member);
             member.setTeam(this);
@@ -154,6 +160,10 @@ public class Team extends BaseTimeEntity {
     }
 
     public void delete() {
+        this.members.forEach(member -> member.setTeam(null));
+        this.members.clear();
+        this.deactivateTeam();
+
         this.deletedAt = LocalDateTime.now();
     }
 }

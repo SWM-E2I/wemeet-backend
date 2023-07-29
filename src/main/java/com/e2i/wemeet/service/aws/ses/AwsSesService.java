@@ -31,7 +31,7 @@ import software.amazon.awssdk.services.ses.model.SesException;
 @Service
 public class AwsSesService implements EmailCredentialService {
 
-    private final AwsSesCredentialService awsSesCredentialService;
+    private final SesClient sesClient;
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberRepository memberRepository;
     private static final String TEMPLATE_NAME = "certifyEmailTemplate";
@@ -73,7 +73,6 @@ public class AwsSesService implements EmailCredentialService {
 
 
     private void sendEmail(String email, String message) {
-        SesClient sesClient = awsSesCredentialService.getSesClient();
         SendTemplatedEmailRequest emailRequest = createEmailRequest(email, message);
 
         try {

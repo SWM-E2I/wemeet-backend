@@ -122,8 +122,8 @@ class TeamInvitationServiceTest {
             memberId, team.getTeamId(), InvitationAcceptStatus.WAITING)).thenReturn(
             Optional.empty());
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
-        team.setMember(manager);
-        team.setMember(inviteMember);
+        team.addMember(manager);
+        team.addMember(inviteMember);
         team.activateTeam();
 
         // when & then
@@ -329,8 +329,8 @@ class TeamInvitationServiceTest {
     @Test
     void takeAcceptStatus_TeamAlreadyActiveException() {
         // given
-        team.setMember(manager);
-        team.setMember(member);
+        team.addMember(manager);
+        team.addMember(member);
         team.activateTeam();
         when(teamInvitationRepository.findByTeamInvitationIdAndMemberMemberId(
             invitation.getTeamInvitationId(), inviteMember.getMemberId())).thenReturn(

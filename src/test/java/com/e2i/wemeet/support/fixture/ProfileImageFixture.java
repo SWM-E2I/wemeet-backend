@@ -4,7 +4,7 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.profileimage.ProfileImage;
 
 public enum ProfileImageFixture {
-    
+
     MAIN_IMAGE("basic", "blur", "lowBasic", "lowBlur", true, true, MemberFixture.KAI.create()),
     ADDITIONAL_IMAGE("basic", "blur", "lowBasic", "lowBlur", false, false,
         MemberFixture.KAI.create());
@@ -39,14 +39,24 @@ public enum ProfileImageFixture {
     }
 
     public ProfileImage create() {
+        return createBuilder()
+            .member(member)
+            .build();
+    }
+
+    public ProfileImage create(Member member) {
+        return createBuilder()
+            .member(member)
+            .build();
+    }
+
+    private ProfileImage.ProfileImageBuilder createBuilder() {
         return ProfileImage.builder()
             .basicUrl(basicUrl)
             .blurUrl(blurUrl)
             .lowResolutionBasicUrl(lowResolutionBasicUrl)
             .lowResolutionBlurUrl(lowResolutionBlurUrl)
             .isMain(isMain)
-            .isCertified(isCertified)
-            .member(member)
-            .build();
+            .isCertified(isCertified);
     }
 }

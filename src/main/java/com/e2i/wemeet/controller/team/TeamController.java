@@ -1,6 +1,7 @@
 package com.e2i.wemeet.controller.team;
 
 
+import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.config.security.manager.IsManager;
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
@@ -94,9 +95,8 @@ public class TeamController {
 
     @IsManager
     @DeleteMapping
-    public ResponseDto<Void> deleteTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        HttpServletResponse response) {
-        teamService.deleteTeam(memberPrincipal.getMemberId(), response);
+    public ResponseDto<Void> deleteTeam(@MemberId Long memberId) {
+        teamService.deleteTeam(memberId);
 
         return ResponseDto.success("Delete Team Success");
     }

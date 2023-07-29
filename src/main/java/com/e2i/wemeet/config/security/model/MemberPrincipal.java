@@ -2,6 +2,7 @@ package com.e2i.wemeet.config.security.model;
 
 import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
 import java.util.Collection;
 import java.util.List;
@@ -10,41 +11,42 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 /*
-* SecurityContext 에 저장되는 인증 객체
-* */
+ * SecurityContext 에 저장되는 인증 객체
+ * */
 public class MemberPrincipal implements UserDetails {
+
     private final Long memberId;
 
     /*
-    * Authority 는 인가 정책을 적용할 때 필요함
-    * Authentication 객체에 "ROLE_" Prefix 가 붙은 권한 이름을 넘겨줘야 정상 작동하므로 Prefix 를 붙여 저장
-    * RoleHierarchy 적용 -> 각 사용자 당 권한 정보는 한개만 갖도록 구현
-    * */
+     * Authority 는 인가 정책을 적용할 때 필요함
+     * Authentication 객체에 "ROLE_" Prefix 가 붙은 권한 이름을 넘겨줘야 정상 작동하므로 Prefix 를 붙여 저장
+     * RoleHierarchy 적용 -> 각 사용자 당 권한 정보는 한개만 갖도록 구현
+     * */
     private final List<? extends GrantedAuthority> authorities;
-    private final boolean registered;
+    private final RegistrationType registrationType;
 
     public MemberPrincipal() {
         this.memberId = null;
         this.authorities = List.of(Role.GUEST::getRoleAttachedPrefix);
-        this.registered = false;
+        this.registrationType = RegistrationType.NOT_REGISTERED;
     }
 
     public MemberPrincipal(final Member member) {
         this.memberId = member.getMemberId();
         this.authorities = getAuthorities(member.getRole().name());
-        this.registered = true;
+        this.registrationType = RegistrationType.APP;
     }
 
     public MemberPrincipal(final Payload payload) {
         this.memberId = payload.getMemberId();
         this.authorities = getAuthorities(payload.getRole());
-        this.registered = true;
+        this.registrationType = RegistrationType.APP;
     }
 
     public MemberPrincipal(final Long memberId, final String role) {
         this.memberId = memberId;
         this.authorities = getAuthorities(role);
-        this.registered = true;
+        this.registrationType = RegistrationType.APP;
     }
 
     private List<? extends GrantedAuthority> getAuthorities(final String authority) {
@@ -57,7 +59,12 @@ public class MemberPrincipal implements UserDetails {
     }
 
     public boolean isRegistered() {
-        return registered;
+        return this.registrationType != null
+            && this.registrationType != RegistrationType.NOT_REGISTERED;
+    }
+
+    public RegistrationType getRegistrationType() {
+        return registrationType;
     }
 
     @Override
@@ -102,8 +109,8 @@ public class MemberPrincipal implements UserDetails {
                 .map(GrantedAuthority::getAuthority)
                 .toList()
         );
-        final String format = "MemberPrincipal(memberId=%d, role=%s, registered=%s)";
+        final String format = "MemberPrincipal(memberId=%d, role=%s, registrationType=%s)";
 
-        return String.format(format, memberId, role, registered);
+        return String.format(format, memberId, role, registrationType);
     }
 }

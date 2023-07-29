@@ -29,3 +29,6 @@ CREATE TABLE IF NOT EXISTS `member`
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
+
+ALTER TABLE `member`
+    ADD `registration_type` varchar(15) NOT NULL AFTER `credit`;

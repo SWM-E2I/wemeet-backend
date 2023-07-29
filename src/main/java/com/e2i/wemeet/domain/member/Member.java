@@ -3,8 +3,9 @@ package com.e2i.wemeet.domain.member;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.CryptoConverter;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -23,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -67,7 +69,10 @@ public class Member extends BaseTimeEntity {
     @Column
     private Boolean imageAuth;
 
-    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RegistrationType registrationType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private Team team;
@@ -96,6 +101,7 @@ public class Member extends BaseTimeEntity {
         this.imageAuth = imageAuth;
         this.team = team;
         this.role = role;
+        this.registrationType = RegistrationType.APP;
     }
 
     public void addCredit(int amount) {
@@ -133,7 +139,60 @@ public class Member extends BaseTimeEntity {
         this.team = team;
     }
 
+    public void joinTeam(Team team) {
+        setTeam(team);
+        team.getMembers().add(this);
+    }
+
+    public void setManager(Team team) {
+        setTeam(team);
+        this.role = Role.MANAGER;
+    }
+
+    public boolean isEmailAuthenticated() {
+        return !StringUtils.hasText(this.collegeInfo.getMail());
+    }
+
     public void delete() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    /*
+     * 팀 삭제
+     * */
+    public void deleteTeam() {
+        validateTeamLeader();
+
+        this.team.delete();
+        if (this.role == Role.MANAGER) {
+            this.role = Role.USER;
+        }
+    }
+
+    /*
+     * 팀 탈퇴 - 팀원
+     * */
+    public void withdrawalFromTeam() {
+        validateBelongToTeam();
+        this.team.getMembers().remove(this);
+        this.team.deactivateTeam();
+        this.team = null;
+    }
+
+    private void validateTeamLeader() {
+        validateManager();
+        validateBelongToTeam();
+    }
+
+    private void validateBelongToTeam() {
+        if (this.team == null) {
+            throw new NotBelongToTeamException();
+        }
+    }
+
+    private void validateManager() {
+        if (this.role != Role.MANAGER && this.role != Role.ADMIN) {
+            throw new UnAuthorizedRoleException();
+        }
     }
 }

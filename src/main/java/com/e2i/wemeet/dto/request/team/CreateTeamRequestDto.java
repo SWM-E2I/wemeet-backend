@@ -38,12 +38,11 @@ public record CreateTeamRequestDto(
         return Team.builder()
             .teamCode(teamCode)
             .memberCount(memberCount)
-            .gender(member.getGender())
             .region(region)
             .additionalActivity(AdditionalActivity.findBy(additionalActivity))
             .drinkingOption(drinkingOption)
             .introduction(introduction)
-            .member(member)
+            .teamLeader(member)
             .build();
     }
 
