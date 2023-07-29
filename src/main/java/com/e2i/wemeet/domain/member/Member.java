@@ -75,8 +75,9 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-    
-    private LocalDateTime deleteAt;
+
+    @Column(name = "DELETED_AT")
+    private LocalDateTime deletedAt;
 
     @Builder
     public Member(Long memberId, String memberCode, String nickname, Gender gender,
@@ -133,6 +134,6 @@ public class Member extends BaseTimeEntity {
     }
 
     public void delete() {
-        this.deleteAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
 }

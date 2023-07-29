@@ -77,7 +77,7 @@ public class Team extends BaseTimeEntity {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamPreferenceMeetingType> preferenceMeetingTypes = new ArrayList<>();
 
-    private LocalDateTime deleteAt;
+    private LocalDateTime deletedAt;
 
     @Builder
     public Team(Long teamId, String teamCode, Integer memberCount, Gender gender,
@@ -154,6 +154,6 @@ public class Team extends BaseTimeEntity {
     }
 
     public void delete() {
-        this.deleteAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
 }
