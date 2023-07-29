@@ -11,7 +11,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
@@ -117,9 +116,6 @@ class TeamServiceTest {
         verify(memberRepository).findById(anyLong());
         verify(teamRepository).save(any(Team.class));
         verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
-
-        verify(tokenInjector).injectToken(any(HttpServletResponse.class),
-            any(MemberPrincipal.class));
 
         assertEquals(Role.MANAGER, member.getRole());
     }
