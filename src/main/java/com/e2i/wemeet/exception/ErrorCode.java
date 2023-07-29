@@ -28,6 +28,9 @@ public enum ErrorCode {
     NOT_BELONG_TO_TEAM(40019, "not.belong.to.team"),
     MANAGER_SELF_DELETION(40020, "manager.self.deletion"),
     NON_TEAM_MEMBER(40021, "non.team.member"),
+    MEMBER_HAS_BEEN_DELETED(40022, "member.has.been.deleted"),
+    TEAM_HAS_BEEN_DELETED(40023, "team.has.been.deleted"),
+
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
