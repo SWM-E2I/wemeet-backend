@@ -16,6 +16,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public enum MemberFixture {
@@ -70,6 +71,24 @@ public enum MemberFixture {
     public Member create() {
         return createBuilder()
             .build();
+    }
+
+    public Member create_with_id(final Long memberId) {
+        Member member = createBuilder()
+            .build();
+        setMemberId(memberId, member);
+        return member;
+    }
+
+    private static void setMemberId(Long memberId, Member member) {
+        Field memberIdField;
+        try {
+            memberIdField = member.getClass().getDeclaredField("memberId");
+            memberIdField.setAccessible(true);
+            memberIdField.set(member, memberId);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Member create_credit(final int credit) {
