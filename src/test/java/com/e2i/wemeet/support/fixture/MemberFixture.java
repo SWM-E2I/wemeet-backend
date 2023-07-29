@@ -69,8 +69,10 @@ public enum MemberFixture {
     }
 
     public Member create() {
-        return createBuilder()
+        Member member = createBuilder()
             .build();
+        setMemberId(this.memberId, member);
+        return member;
     }
 
     public Member create_with_id(final Long memberId) {
@@ -78,17 +80,6 @@ public enum MemberFixture {
             .build();
         setMemberId(memberId, member);
         return member;
-    }
-
-    private static void setMemberId(Long memberId, Member member) {
-        Field memberIdField;
-        try {
-            memberIdField = member.getClass().getDeclaredField("memberId");
-            memberIdField.setAccessible(true);
-            memberIdField.set(member, memberId);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Member create_credit(final int credit) {
@@ -124,7 +115,6 @@ public enum MemberFixture {
 
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
-            .memberId(this.memberId)
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
@@ -224,5 +214,16 @@ public enum MemberFixture {
 
     public Role getRole() {
         return role;
+    }
+
+    private void setMemberId(Long memberId, Member member) {
+        Field memberIdField;
+        try {
+            memberIdField = member.getClass().getDeclaredField("memberId");
+            memberIdField.setAccessible(true);
+            memberIdField.set(member, memberId);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

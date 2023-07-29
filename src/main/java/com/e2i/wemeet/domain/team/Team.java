@@ -81,13 +81,12 @@ public class Team extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(Long teamId, String teamCode, int memberCount,
+    public Team(String teamCode, int memberCount,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member teamLeader) {
         validateIsAbleManager(teamLeader);
 
-        this.teamId = teamId;
         this.teamCode = teamCode;
         this.memberCount = memberCount;
         this.region = region;
