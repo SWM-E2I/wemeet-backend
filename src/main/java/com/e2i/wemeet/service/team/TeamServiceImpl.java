@@ -1,7 +1,5 @@
 package com.e2i.wemeet.service.team;
 
-import static java.lang.Boolean.TRUE;
-
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.code.Code;
@@ -56,7 +54,7 @@ public class TeamServiceImpl implements TeamService {
         // team 생성
         Team team = teamRepository.save(
             createTeamRequestDto.toTeamEntity(createTeamCode(TEAM_CODE_LENGTH, memberId), member));
-        team.setMember(member);
+        team.addMember(member);
         member.setRole(Role.MANAGER);
 
         // 바뀐 Role을 적용한 token 재발급
@@ -102,7 +100,7 @@ public class TeamServiceImpl implements TeamService {
             .region(team.getRegion())
             .introduction(team.getIntroduction())
             .additionalActivity(team.getAdditionalActivity())
-            .managerImageAuth(team.getMember().getImageAuth())
+            .managerImageAuth(team.getTeamLeader().getImageAuth())
             .preferenceMeetingTypeList(preferenceMeetingTypeToCodeString(preferenceMeetingTypeList))
             .build();
     }
@@ -125,14 +123,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional
     @Override
-    public void deleteTeam(Long memberId, HttpServletResponse response) {
-        Member member = findMember(memberId);
-        Team team = getMyTeam(member);
-
-        teamRepository.delete(team);
-
-        member.setRole(Role.USER);
-        tokenInjector.injectToken(response, new MemberPrincipal(member));
+    public void deleteTeam(Long teamLeaderId) {
+        Member teamLeader = findMember(teamLeaderId);
+        teamLeader.deleteTeam();
     }
 
     @Transactional
@@ -150,11 +143,7 @@ public class TeamServiceImpl implements TeamService {
             throw new NonTeamMemberException();
         }
 
-        team.deleteMember(member);
-
-        if (TRUE.equals(team.getIsActive())) {
-            team.deactivateTeam();
-        }
+        member.withdrawalFromTeam();
     }
 
     private Team getMyTeam(Member member) {
