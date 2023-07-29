@@ -39,14 +39,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
+    public Long createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();
             });
 
         String memberCode = createMemberCode();
-        return memberRepository.save(requestDto.toMemberEntity(memberCode));
+        Member member = memberRepository.save(requestDto.toMemberEntity(memberCode));
+        return member.getMemberId();
     }
 
     @Override

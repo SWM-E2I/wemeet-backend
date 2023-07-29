@@ -37,7 +37,7 @@ class TokenInjectionAspectTest {
         when(joinPoint.getArgs()).thenReturn(args);
 
         // when
-        tokenInjectionAspect.injectTokenAdvice(joinPoint, member);
+        tokenInjectionAspect.injectTokenAdvice(joinPoint, member.getMemberId());
 
         // then
         verify(tokenInjector).injectToken(any(HttpServletResponse.class),

@@ -64,7 +64,7 @@ class MemberServiceTest {
 
     private static final Long memberId = 1L;
     private static final Member member = MemberFixture.KAI.create();
-    private static final List<Code> interestCode = new ArrayList<>();
+
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
     @DisplayName("회원 생성에 성공한다.")
