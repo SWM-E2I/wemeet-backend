@@ -49,6 +49,7 @@ public record CreateMemberRequestDto(
             .mbti(Mbti.findBy(mbti))
             .introduction(introduction)
             .role(Role.USER)
+            .credit(5)
             .build();
     }
 }
