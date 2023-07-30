@@ -1,17 +1,20 @@
-package com.e2i.wemeet.config.security.config;
+package com.e2i.wemeet.security.config;
 
-import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
-import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
-import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
-import com.e2i.wemeet.config.security.filter.SMSLoginProcessingFilter;
-import com.e2i.wemeet.config.security.handler.CustomAuthenticationSuccessHandler;
-import com.e2i.wemeet.config.security.manager.CreditAuthorizationManager;
-import com.e2i.wemeet.config.security.provider.SmsCredentialAuthenticationProvider;
-import com.e2i.wemeet.config.security.provider.SmsUserDetailsService;
-import com.e2i.wemeet.config.security.token.TokenInjector;
-import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
-import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
+import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
+import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
+import com.e2i.wemeet.security.filter.RequestEndPointCheckFilter;
+import com.e2i.wemeet.security.filter.SMSLoginProcessingFilter;
+import com.e2i.wemeet.security.handler.CustomAuthenticationSuccessHandler;
+import com.e2i.wemeet.security.handler.DispatcherServletEndPointChecker;
+import com.e2i.wemeet.security.handler.HttpRequestEndPointChecker;
+import com.e2i.wemeet.security.manager.CreditAuthorizationManager;
+import com.e2i.wemeet.security.provider.SmsCredentialAuthenticationProvider;
+import com.e2i.wemeet.security.provider.SmsUserDetailsService;
+import com.e2i.wemeet.security.token.TokenInjector;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
+import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
 public class SecurityBeanConfig {
@@ -67,6 +71,11 @@ public class SecurityBeanConfig {
         AccessTokenHandler accessTokenHandler) {
         return new RefreshTokenProcessingFilter(redisTemplate, refreshTokenHandler, tokenInjector,
             objectMapper, accessTokenHandler);
+    }
+
+    @Bean
+    public RequestEndPointCheckFilter requestEndPointCheckFilter(HttpRequestEndPointChecker endPointChecker) {
+        return new RequestEndPointCheckFilter(endPointChecker);
     }
 
     // AccessToken 유효성 검증 필터
@@ -140,5 +149,11 @@ public class SecurityBeanConfig {
     @Bean
     public CreditAuthorizationManager authorizationManager(MemberRepository memberRepository) {
         return new CreditAuthorizationManager(memberRepository, roleHierarchy());
+    }
+
+    // 요청을 처리할 수 있는 핸들러가 있는지 판별하는 컴포넌트
+    @Bean
+    public HttpRequestEndPointChecker httpRequestEndPointChecker(DispatcherServlet dispatcherServlet) {
+        return new DispatcherServletEndPointChecker(dispatcherServlet);
     }
 }
