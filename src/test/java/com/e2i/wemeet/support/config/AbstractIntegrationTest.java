@@ -5,7 +5,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
-import com.e2i.wemeet.security.filter.SMSLoginProcessingFilter;
+import com.e2i.wemeet.security.filter.SmsLoginProcessingFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,7 +35,7 @@ public abstract class AbstractIntegrationTest {
     protected ObjectMapper mapper;
 
     @Autowired
-    private SMSLoginProcessingFilter SMSLoginProcessingFilter;
+    private SmsLoginProcessingFilter SMSLoginProcessingFilter;
 
     @Autowired
     private AuthenticationExceptionFilter authenticationExceptionFilter;
@@ -52,6 +52,7 @@ public abstract class AbstractIntegrationTest {
     void setup(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .apply(documentationConfiguration(restDocumentation))
+            .addFilter(authenticationExceptionFilter)
             .addFilters(refreshTokenProcessingFilter, SMSLoginProcessingFilter, jwtAuthenticationFilter)
             .build();
     }
