@@ -58,8 +58,8 @@ public class AccessTokenHandler extends TokenHandler {
         }
 
         // AccessToken 검증 & 파싱
-        DecodedJWT decodedJWT = JWT.decode(accessToken);
-        return new Payload(decodedJWT.getClaims());
+        DecodedJWT decodedJwt = JWT.decode(accessToken);
+        return new Payload(decodedJwt.getClaims());
     }
 
     private String separatePrefix(String accessTokenWithPrefix) {

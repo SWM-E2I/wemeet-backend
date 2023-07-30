@@ -1,6 +1,5 @@
 package com.e2i.wemeet.security.filter;
 
-import static com.e2i.wemeet.dto.response.ResponseStatus.SUCCESS;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.e2i.wemeet.dto.response.ResponseDto;
@@ -114,7 +113,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private void writeResponse(HttpServletResponse response, Payload payload) throws IOException {
         log.info("RefreshToken has reIssued - memberId : {}", payload.getMemberId());
 
-        ResponseDto result = new ResponseDto(SUCCESS, "RefreshToken 을 재발급하는데 성공했습니다.", null);
+        ResponseDto<Void> result = ResponseDto.success("RefreshToken 을 재발급하는데 성공했습니다.");
 
         response.setStatus(200);
         response.setContentType("application/json");

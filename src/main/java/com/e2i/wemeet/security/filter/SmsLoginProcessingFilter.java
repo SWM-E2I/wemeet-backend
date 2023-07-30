@@ -22,7 +22,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * FilterChainProxy - AuthenticationExceptionFilter 이후에 실행
  * 로그인 요청을 실행 -> 유효한 요청일 경우, AccessToken, RefreshToken 반환
  * */
-public class SMSLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class SmsLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String LOGIN_REQUEST_URL = "/v1/auth/phone/validate";
 
@@ -30,7 +30,7 @@ public class SMSLoginProcessingFilter extends AbstractAuthenticationProcessingFi
     private final ObjectMapper objectMapper;
     private final AuthenticationSuccessHandler successHandler;
 
-    public SMSLoginProcessingFilter(AuthenticationManager authenticationManager,
+    public SmsLoginProcessingFilter(AuthenticationManager authenticationManager,
         AuthenticationSuccessHandler successHandler, ObjectMapper objectMapper) {
         super(new AntPathRequestMatcher(LOGIN_REQUEST_URL, POST.name()), authenticationManager);
         this.authenticationManager = authenticationManager;

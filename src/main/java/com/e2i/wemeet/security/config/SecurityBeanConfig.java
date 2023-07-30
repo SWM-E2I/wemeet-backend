@@ -5,7 +5,7 @@ import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
 import com.e2i.wemeet.security.filter.RequestEndPointCheckFilter;
-import com.e2i.wemeet.security.filter.SMSLoginProcessingFilter;
+import com.e2i.wemeet.security.filter.SmsLoginProcessingFilter;
 import com.e2i.wemeet.security.handler.CustomAuthenticationSuccessHandler;
 import com.e2i.wemeet.security.handler.DispatcherServletEndPointChecker;
 import com.e2i.wemeet.security.handler.HttpRequestEndPointChecker;
@@ -58,9 +58,9 @@ public class SecurityBeanConfig {
 
     // 로그인 인증 처리 필터
     @Bean
-    public SMSLoginProcessingFilter loginAuthenticationFilter(AuthenticationManager manager,
+    public SmsLoginProcessingFilter loginAuthenticationFilter(AuthenticationManager manager,
         AuthenticationSuccessHandler successHandler, ObjectMapper objectMapper) {
-        return new SMSLoginProcessingFilter(manager, successHandler, objectMapper);
+        return new SmsLoginProcessingFilter(manager, successHandler, objectMapper);
     }
 
     // RefreshToken 재발급 요청 수행 필터

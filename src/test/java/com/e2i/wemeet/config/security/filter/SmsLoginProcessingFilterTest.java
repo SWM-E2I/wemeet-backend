@@ -27,7 +27,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("SMS 인증 테스트")
-class SMSLoginProcessingFilterTest extends AbstractIntegrationTest {
+class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;

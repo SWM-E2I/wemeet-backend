@@ -28,6 +28,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AuthenticationExceptionFilter extends OncePerRequestFilter {
 
     private static final String AUTH_LOG_FORMAT = "Auth Error Class : {}, Error Code : {}, Message : {}";
+    private static final String TOKEN_ERROR_LOG_FORMAT = "Token Error Class : {}, Message : {}";
+    private static final String TOKEN_ERROR_MESSAGE = "Token error has been occurred in Spring Security Filter";
     private static final String AUTH_COMMON_ERROR_MESSAGE = "Auth error has been occurred in Spring Security Filter";
 
     private final ObjectMapper objectMapper;
@@ -76,8 +78,7 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
 
     // CustomException 으로 정의하지 않은, 예상치 못한 예외 발생시
     private void setErrorResponse(HttpServletResponse response, Exception e) throws IOException {
-        log.warn(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), 50000, AUTH_COMMON_ERROR_MESSAGE);
-        e.printStackTrace();
+        log.warn(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), 50000, e.getMessage());
 
         setErrorResponseBody(response, ResponseStatus.ERROR, 50000, AUTH_COMMON_ERROR_MESSAGE);
     }
