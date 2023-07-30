@@ -4,7 +4,6 @@ import com.e2i.wemeet.domain.member.CollegeInfo;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.util.RandomCodeUtils;
 import jakarta.annotation.Nullable;
@@ -51,7 +50,7 @@ public record CreateMemberRequestDto(
             .mbti(Mbti.findBy(mbti))
             .introduction(introduction)
             .role(Role.USER)
-            .registrationType(RegistrationType.APP)
+            .credit(10)
             .build();
     }
 }
