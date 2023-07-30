@@ -14,5 +14,8 @@ public abstract class RandomCodeUtils {
         return String.valueOf(code);
     }
 
-
+    public static String createMemberCode() {
+        int code = random.nextInt(9000) + 1000;
+        return String.valueOf(code);
+    }
 }

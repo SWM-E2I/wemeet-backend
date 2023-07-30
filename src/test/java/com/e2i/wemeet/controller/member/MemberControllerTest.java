@@ -59,7 +59,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
         when(memberService.createMember(any(CreateMemberRequestDto.class), any(
             HttpServletResponse.class))).thenReturn(
-            MemberFixture.KAI.create());
+            MemberFixture.KAI.create().getMemberId());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")
