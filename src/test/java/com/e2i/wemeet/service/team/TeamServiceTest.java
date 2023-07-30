@@ -1,9 +1,7 @@
 package com.e2i.wemeet.service.team;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -117,7 +115,7 @@ class TeamServiceTest {
         verify(teamRepository).save(any(Team.class));
         verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
 
-        assertEquals(Role.MANAGER, member.getRole());
+        assertThat(member.getRole()).isEqualTo(Role.MANAGER);
     }
 
     @DisplayName("회원이 존재하지 않는 경우 팀 생성을 요청하면 MemberNotFoundException이 발생한다.")
@@ -128,9 +126,9 @@ class TeamServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
-        });
+        assertThatThrownBy(
+            () -> teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode,
+                response)).isInstanceOf(MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
@@ -146,9 +144,9 @@ class TeamServiceTest {
         member.setTeam(team);
 
         // when & then
-        assertThrows(TeamAlreadyExistsException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
-        });
+        assertThatThrownBy(
+            () -> teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response))
+            .isInstanceOf(TeamAlreadyExistsException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
@@ -167,9 +165,9 @@ class TeamServiceTest {
         member.getCollegeInfo().saveMail(null);
 
         // when & then
-        assertThrows(UnAuthorizedUnivException.class, () -> {
-            teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response);
-        });
+        assertThatThrownBy(
+            () -> teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response))
+            .isInstanceOf(UnAuthorizedUnivException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));
@@ -196,10 +194,11 @@ class TeamServiceTest {
         verify(memberRepository).findById(anyLong());
         verify(teamPreferenceMeetingTypeRepository).saveAll(anyList());
 
-        assertEquals(requestDto.region(), team.getRegion());
-        assertEquals(requestDto.drinkingOption(), team.getDrinkingOption());
-        assertEquals(requestDto.additionalActivity(), team.getAdditionalActivity().toString());
-        assertEquals(requestDto.introduction(), team.getIntroduction());
+        assertThat(team.getRegion()).isEqualTo(requestDto.region());
+        assertThat(team.getDrinkingOption()).isEqualTo(requestDto.drinkingOption());
+        assertThat(team.getAdditionalActivity()).hasToString(
+            requestDto.additionalActivity());
+        assertThat(team.getIntroduction()).isEqualTo(requestDto.introduction());
 
         // after
         member.setTeam(null);
@@ -213,9 +212,9 @@ class TeamServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            teamService.modifyTeam(1L, requestDto, preferenceMeetingTypeCode);
-        });
+        assertThatThrownBy(
+            () -> teamService.modifyTeam(1L, requestDto, preferenceMeetingTypeCode))
+            .isInstanceOf(MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamPreferenceMeetingTypeRepository, never()).saveAll(anyList());
@@ -236,12 +235,14 @@ class TeamServiceTest {
         MyTeamDetailResponseDto result = teamService.getMyTeamDetail(1L);
 
         // then
-        assertEquals(result.memberCount(), team.getMemberCount());
-        assertEquals(result.region(), team.getRegion());
-        assertEquals(result.drinkingOption(), team.getDrinkingOption());
-        assertEquals(result.additionalActivity(), team.getAdditionalActivity());
-        assertEquals(result.introduction(), team.getIntroduction());
-        assertEquals(result.managerImageAuth(), team.getTeamLeader().getImageAuth());
+        assertThat(team.getMemberCount()).isEqualTo(result.memberCount());
+        assertThat(team.getRegion()).isEqualTo(result.region());
+        assertThat(team.getDrinkingOption()).isEqualTo(result.drinkingOption());
+        assertThat(team.getAdditionalActivity()).isEqualTo(
+            result.additionalActivity());
+        assertThat(team.getIntroduction()).isEqualTo(result.introduction());
+        assertThat(team.getTeamLeader().getImageAuth()).isEqualTo(
+            result.managerImageAuth());
 
         // after
         member.setTeam(null);
@@ -261,8 +262,8 @@ class TeamServiceTest {
         // then
         verify(memberRepository).findById(anyLong());
         verify(teamPreferenceMeetingTypeRepository, never()).findByTeamTeamId(anyLong());
-        assertNull(member.getTeam());
-        assertNull(teamDetailResponseDto);
+        assertThat(member.getTeam()).isNull();
+        assertThat(teamDetailResponseDto).isNull();
     }
 
     @DisplayName("회원이 존재하지 않는 경우 팀 정보 수정을 요청하면 MemberNotFoundException이 발생한다.")
@@ -272,9 +273,9 @@ class TeamServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            teamService.getMyTeamDetail(1L);
-        });
+        assertThatThrownBy(
+            () -> teamService.getMyTeamDetail(1L))
+            .isInstanceOf(MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamPreferenceMeetingTypeRepository, never()).findByTeamTeamId(anyLong());
@@ -313,9 +314,9 @@ class TeamServiceTest {
             Optional.of(manager));
 
         // when & then
-        assertThrows(NotBelongToTeamException.class, () -> {
-            teamService.getTeamMemberList(managerId);
-        });
+        assertThatThrownBy(
+            () -> teamService.getTeamMemberList(managerId))
+            .isInstanceOf(NotBelongToTeamException.class);
 
         verify(memberRepository).findById(managerId);
         verify(teamInvitationRepository, never()).findByTeamTeamIdAndAcceptStatus(
@@ -335,7 +336,7 @@ class TeamServiceTest {
 
         // then
         verify(memberRepository).findById(managerId);
-        assertEquals(Role.USER, manager.getRole());
+        assertThat(manager.getRole()).isEqualTo(Role.USER);
 
         // after
         manager.setRole(Role.MANAGER);
@@ -373,9 +374,9 @@ class TeamServiceTest {
             Optional.of(manager));
 
         // when & then
-        assertThrows(NotBelongToTeamException.class, () -> {
-            teamService.deleteTeam(managerId);
-        });
+        assertThatThrownBy(
+            () -> teamService.deleteTeam(managerId))
+            .isInstanceOf(NotBelongToTeamException.class);
 
         verify(memberRepository).findById(managerId);
         verify(teamRepository, never()).delete(any(Team.class));
@@ -398,7 +399,7 @@ class TeamServiceTest {
         // then
         verify(memberRepository).findById(managerId);
         verify(memberRepository).findById(memberId);
-        assertNull(member.getTeam());
+        assertThat(member.getTeam()).isNull();
     }
 
     @DisplayName("팀이 없는 경우 팀원 삭제를 요청하면 NotBelongToTeamException이 발생한다.")
@@ -412,14 +413,14 @@ class TeamServiceTest {
         manager.setTeam(null);
 
         // when
-        assertThrows(NotBelongToTeamException.class, () -> {
-            teamService.deleteTeamMember(managerId, memberId);
-        });
+        assertThatThrownBy(
+            () -> teamService.deleteTeamMember(managerId, memberId))
+            .isInstanceOf(NotBelongToTeamException.class);
 
         // then
         verify(memberRepository).findById(managerId);
         verify(memberRepository).findById(managerId);
-        assertNull(manager.getTeam());
+        assertThat(manager.getTeam()).isNull();
 
         // after
         manager.setTeam(team);
@@ -429,9 +430,9 @@ class TeamServiceTest {
     @Test
     void deleteTeamMember_ManagerSelfDeletionException() {
         // given & when & then
-        assertThrows(ManagerSelfDeletionException.class, () -> {
-            teamService.deleteTeamMember(managerId, managerId);
-        });
+        assertThatThrownBy(
+            () -> teamService.deleteTeamMember(managerId, managerId))
+            .isInstanceOf(ManagerSelfDeletionException.class);
 
         verify(memberRepository, never()).findById(managerId);
         verify(memberRepository, never()).findById(memberId);
@@ -449,9 +450,9 @@ class TeamServiceTest {
         member.setTeam(null);
 
         // when & then
-        assertThrows(NonTeamMemberException.class, () -> {
-            teamService.deleteTeamMember(managerId, memberId);
-        });
+        assertThatThrownBy(
+            () -> teamService.deleteTeamMember(managerId, memberId))
+            .isInstanceOf(NonTeamMemberException.class);
 
         verify(memberRepository).findById(managerId);
         verify(memberRepository).findById(memberId);
