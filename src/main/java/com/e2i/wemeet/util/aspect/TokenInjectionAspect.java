@@ -1,10 +1,10 @@
 package com.e2i.wemeet.util.aspect;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.Payload;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.token.Payload;
+import com.e2i.wemeet.security.token.TokenInjector;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;

@@ -1,6 +1,5 @@
-package com.e2i.wemeet.config.security.manager;
+package com.e2i.wemeet.security.manager;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
@@ -8,6 +7,7 @@ import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,5 +73,6 @@ public class CreditAuthorizationManager {
     }
 
     private record AuthorizationDecision(boolean hasCredit, boolean hasRole) {
+
     }
 }

@@ -2,8 +2,6 @@ package com.e2i.wemeet.controller.team;
 
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
-import com.e2i.wemeet.config.security.manager.IsManager;
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
@@ -11,6 +9,8 @@ import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
+import com.e2i.wemeet.security.manager.IsManager;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamInvitationService;
 import com.e2i.wemeet.service.team.TeamService;

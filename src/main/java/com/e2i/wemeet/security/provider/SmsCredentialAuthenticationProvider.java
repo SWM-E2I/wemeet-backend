@@ -1,10 +1,9 @@
-package com.e2i.wemeet.config.security.provider;
+package com.e2i.wemeet.security.provider;
 
 import com.e2i.wemeet.dto.request.LoginRequestDto;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.badrequest.InvalidSmsCredentialException;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
-import com.e2i.wemeet.util.encryption.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

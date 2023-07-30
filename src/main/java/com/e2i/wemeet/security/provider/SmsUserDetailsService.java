@@ -1,8 +1,8 @@
-package com.e2i.wemeet.config.security.provider;
+package com.e2i.wemeet.security.provider;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

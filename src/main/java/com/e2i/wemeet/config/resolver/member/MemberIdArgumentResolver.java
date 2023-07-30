@@ -1,7 +1,7 @@
 package com.e2i.wemeet.config.resolver.member;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.exception.unauthorized.AccessTokenNotFoundException;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;

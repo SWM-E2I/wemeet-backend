@@ -1,9 +1,9 @@
-package com.e2i.wemeet.config.security.token;
+package com.e2i.wemeet.security.token;
 
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
-import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
+import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,8 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 /*
-* JWT 를 생성하고 응답에 넣어주는 역할
-* */
+ * JWT 를 생성하고 응답에 넣어주는 역할
+ * */
 @RequiredArgsConstructor
 @Component
 public class TokenInjector {
@@ -23,16 +23,16 @@ public class TokenInjector {
     private final RedisTemplate<String, String> redisTemplate;
 
     /*
-    * Token 발급 - 로그인, 회원가입
-    * */
+     * Token 발급 - 로그인, 회원가입
+     * */
     public void injectToken(HttpServletResponse response, final MemberPrincipal memberPrincipal) {
         Payload payload = new Payload(memberPrincipal);
         injectToken(response, payload);
     }
 
     /*
-    * AccessToken, RefreshToken 을 응답에 삽입
-    * */
+     * AccessToken, RefreshToken 을 응답에 삽입
+     * */
     public void injectToken(HttpServletResponse response, final Payload payload) {
         injectRefreshToken(response, payload);
         injectAccessToken(response, payload);

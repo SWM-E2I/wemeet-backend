@@ -1,4 +1,4 @@
-package com.e2i.wemeet.config.security.filter;
+package com.e2i.wemeet.security.filter;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -43,7 +43,8 @@ public class SMSLoginProcessingFilter extends AbstractAuthenticationProcessingFi
      * 인증에 성공하였다면 successfulAuthentication 실행
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+        throws AuthenticationException, IOException {
         LoginRequestDto loginRequest = objectMapper.readValue(request.getInputStream(),
             LoginRequestDto.class);
         loginRequest.validateDataFormat();
@@ -60,7 +61,8 @@ public class SMSLoginProcessingFilter extends AbstractAuthenticationProcessingFi
      * - SecurityContext 에 인증 객체 저장
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
+        throws IOException, ServletException {
         successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 }

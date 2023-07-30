@@ -1,16 +1,16 @@
-package com.e2i.wemeet.config.security.token;
+package com.e2i.wemeet.security.token;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.util.Collection;
 import java.util.Map;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 /*
-* Jwt - Payload 에 필요한 값을 저장하는 객체
-* */
+ * Jwt - Payload 에 필요한 값을 저장하는 객체
+ * */
 @Getter
 public class Payload {
 

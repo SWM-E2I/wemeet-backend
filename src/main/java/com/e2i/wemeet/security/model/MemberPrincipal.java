@@ -1,9 +1,9 @@
-package com.e2i.wemeet.config.security.model;
+package com.e2i.wemeet.security.model;
 
-import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.security.token.Payload;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;

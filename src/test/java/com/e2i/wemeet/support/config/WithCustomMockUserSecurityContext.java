@@ -1,6 +1,6 @@
 package com.e2i.wemeet.support.config;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

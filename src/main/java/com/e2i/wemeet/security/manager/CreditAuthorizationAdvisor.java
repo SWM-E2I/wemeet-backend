@@ -1,4 +1,4 @@
-package com.e2i.wemeet.config.security.manager;
+package com.e2i.wemeet.security.manager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class CreditAuthorizationAdvisor {
 
     private final CreditAuthorizationManager creditAuthorizationManager;
 
-    @Before("@annotation(com.e2i.wemeet.config.security.manager.CreditAuthorize)")
+    @Before("@annotation(com.e2i.wemeet.security.manager.CreditAuthorize)")
     public void verify(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         CreditAuthorize creditAuthorize = signature.getMethod().getAnnotation(CreditAuthorize.class);

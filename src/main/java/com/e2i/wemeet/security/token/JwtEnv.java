@@ -1,10 +1,10 @@
-package com.e2i.wemeet.config.security.token;
+package com.e2i.wemeet.security.token;
 
 import java.time.Duration;
 
 /*
-* JWT 를 Header, Cookie 에서 불러올 때의 key 값과 유효 시간
-* */
+ * JWT 를 Header, Cookie 에서 불러올 때의 key 값과 유효 시간
+ * */
 public enum JwtEnv {
     ACCESS("AccessToken", Duration.ofMinutes(30)),
     REFRESH("RefreshToken", Duration.ofDays(30));
@@ -27,6 +27,6 @@ public enum JwtEnv {
     }
 
     public static String getRedisKeyForRefresh(final Payload payload) {
-         return String.format(REDIS_KEY, payload.getMemberId(), payload.getRole());
+        return String.format(REDIS_KEY, payload.getMemberId(), payload.getRole());
     }
 }

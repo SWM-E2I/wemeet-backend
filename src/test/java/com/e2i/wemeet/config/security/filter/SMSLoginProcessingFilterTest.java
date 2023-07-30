@@ -8,11 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.e2i.wemeet.config.security.token.JwtEnv;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.request.LoginRequestDto;
 import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
+import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;

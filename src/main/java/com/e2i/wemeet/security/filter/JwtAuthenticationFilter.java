@@ -1,9 +1,9 @@
-package com.e2i.wemeet.config.security.filter;
+package com.e2i.wemeet.security.filter;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.JwtEnv;
-import com.e2i.wemeet.config.security.token.Payload;
-import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.token.JwtEnv;
+import com.e2i.wemeet.security.token.Payload;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

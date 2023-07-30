@@ -1,15 +1,15 @@
-package com.e2i.wemeet.config.security.filter;
+package com.e2i.wemeet.security.filter;
 
 import static com.e2i.wemeet.dto.response.ResponseStatus.SUCCESS;
 import static org.springframework.http.HttpMethod.POST;
 
-import com.e2i.wemeet.config.security.token.JwtEnv;
-import com.e2i.wemeet.config.security.token.Payload;
-import com.e2i.wemeet.config.security.token.TokenInjector;
-import com.e2i.wemeet.config.security.token.handler.AccessTokenHandler;
-import com.e2i.wemeet.config.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
+import com.e2i.wemeet.security.token.JwtEnv;
+import com.e2i.wemeet.security.token.Payload;
+import com.e2i.wemeet.security.token.TokenInjector;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
+import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +30,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * */
 @Slf4j
 public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
+
     private static final String REFRESH_REQUEST_URL = "/v1/auth/refresh";
 
     private final RequestMatcher filterRequestMatcher;
@@ -41,7 +42,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
 
     public RefreshTokenProcessingFilter(RedisTemplate<String, String> redisTemplate,
         RefreshTokenHandler refreshTokenHandler,
-        TokenInjector tokenInjector,  ObjectMapper objectMapper,
+        TokenInjector tokenInjector, ObjectMapper objectMapper,
         AccessTokenHandler accessTokenHandler) {
         this.filterRequestMatcher = new AntPathRequestMatcher(REFRESH_REQUEST_URL, POST.name());
         this.redisTemplate = redisTemplate;
@@ -62,10 +63,10 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     }
 
     /* Refresh Token 재발급 로직 수행
-    * - Request Body 에서 memberId, role 정보를 가져옴
-    * - Cookie 에 담긴 RefreshToken 의 유효성을 검증함
-    * -> 유효성 검증 이후 AccessToken, RefreshToken 재발급
-    * */
+     * - Request Body 에서 memberId, role 정보를 가져옴
+     * - Cookie 에 담긴 RefreshToken 의 유효성을 검증함
+     * -> 유효성 검증 이후 AccessToken, RefreshToken 재발급
+     * */
     private void reIssueToken(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
         Payload payload = getPayload(request);
