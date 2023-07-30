@@ -51,7 +51,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         member.modifyNickname(requestDto.nickname());
         member.modifyIntroduction(requestDto.introduction());
@@ -64,7 +65,8 @@ public class MemberServiceImpl implements MemberService {
     public void modifyPreference(Long memberId, ModifyMemberPreferenceRequestDto requestDto,
         List<Code> modifyCode) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         member.modifyPreference(Preference.builder()
             .drinkingOption(requestDto.drinkingOption())
@@ -82,7 +84,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberDetailResponseDto getMemberDetail(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         List<ProfileImage> profileImageList = profileImageRepository.findByMemberMemberId(memberId);
 
@@ -93,7 +96,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberInfoResponseDto getMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         Optional<ProfileImage> mainProfileImage =
             profileImageRepository.findByMemberMemberIdAndIsMain(memberId, true);
@@ -116,7 +120,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberPreferenceResponseDto getMemberPrefer(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         List<MemberPreferenceMeetingType> memberPreferenceMeetingTypeList
             = memberPreferenceMeetingTypeRepository.findByMemberMemberId(memberId);
@@ -128,12 +133,22 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public RoleResponseDto getMemberRole(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         return RoleResponseDto.builder()
             .hasTeam(member.getTeam() != null)
             .isManager(member.getRole() == Role.MANAGER)
             .build();
+    }
+
+    @Override
+    public void deleteMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
+
+        member.delete();
     }
 
     private void savePreferenceMeetingType(Member member, List<Code> codeList) {

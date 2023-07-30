@@ -5,7 +5,6 @@ import static com.e2i.wemeet.exception.ErrorCode.MISSING_REQUEST_PARAMETER;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 
-import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.ErrorResponse;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
@@ -45,9 +44,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(errorCode.getMessageKey());
 
         log.info(UNAUTHORIZED_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return new ResponseEntity<>(
-            new ErrorResponse(ResponseStatus.FAIL, code, message), HttpStatus.UNAUTHORIZED
-        );
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(InvalidValueException.class)
@@ -57,8 +56,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -67,8 +67,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -77,8 +78,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
@@ -88,19 +90,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
-    }
-
-    @ExceptionHandler(InternalServerException.class)
-    public ResponseEntity<ErrorResponse> handleInternalServerException(
-        final InternalServerException e) {
-        final int code = e.getErrorCode().getCode();
-        final String message = messageSourceAccessor.getMessage(e.getMessage());
-
-        log.warn(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(ResponseStatus.ERROR, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(DuplicatedValueException.class)
@@ -110,8 +102,9 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(e.getMessage());
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -126,8 +119,9 @@ public class GlobalExceptionController {
         }
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
-        return ResponseEntity.ok()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -138,8 +132,21 @@ public class GlobalExceptionController {
             MISSING_REQUEST_PARAMETER.getMessageKey());
 
         log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
-        return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(ResponseStatus.FAIL, code, message));
+        return ResponseEntity
+            .internalServerError()
+            .body(ErrorResponse.fail(code, message));
+    }
+
+    @ExceptionHandler(InternalServerException.class)
+    public ResponseEntity<ErrorResponse> handleInternalServerException(
+        final InternalServerException e) {
+        final int code = e.getErrorCode().getCode();
+        final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.warn(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity
+            .internalServerError()
+            .body(ErrorResponse.error(code, message));
     }
 
     @ExceptionHandler(Exception.class)
@@ -149,7 +156,8 @@ public class GlobalExceptionController {
             UNEXPECTED_INTERNAL.getMessageKey());
 
         log.error(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
-        return ResponseEntity.internalServerError()
-            .body(new ErrorResponse(ResponseStatus.ERROR, code, message));
+        return ResponseEntity
+            .internalServerError()
+            .body(ErrorResponse.error(code, message));
     }
 }

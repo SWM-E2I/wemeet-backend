@@ -1,11 +1,17 @@
 package com.e2i.wemeet.domain.team;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -39,10 +46,10 @@ public class Team extends BaseTimeEntity {
     private String teamCode;
 
     @Column(nullable = false)
-    private int memberCount;
+    private Integer memberCount;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     @Column(length = 6, nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -65,11 +72,16 @@ public class Team extends BaseTimeEntity {
     @JoinColumn(name = "memberId")
     private Member teamLeader;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
     private List<Member> members = new ArrayList<>();
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
+    private List<TeamPreferenceMeetingType> preferenceMeetingTypes = new ArrayList<>();
+
+    private LocalDateTime deletedAt;
+
     @Builder
-    public Team(String teamCode, int memberCount, Gender gender,
+    public Team(String teamCode, int memberCount,
         String drinkingOption, String region,
         AdditionalActivity additionalActivity,
         String introduction, Member teamLeader) {
@@ -77,12 +89,12 @@ public class Team extends BaseTimeEntity {
 
         this.teamCode = teamCode;
         this.memberCount = memberCount;
-        this.gender = gender;
         this.region = region;
         this.drinkingOption = drinkingOption;
         this.introduction = introduction;
         this.additionalActivity = additionalActivity;
         setTeamLeader(teamLeader);
+        setActive(false);
     }
 
     public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
@@ -94,6 +106,7 @@ public class Team extends BaseTimeEntity {
     }
 
     public void setTeamLeader(Member teamLeader) {
+        this.gender = teamLeader.getGender();
         this.teamLeader = teamLeader;
         this.members.add(teamLeader);
         teamLeader.setManager(this);
@@ -114,13 +127,13 @@ public class Team extends BaseTimeEntity {
     }
 
     public void activateTeam() {
-        if (!this.isActive && this.memberCount == this.members.size()) {
+        if (FALSE.equals(this.isActive) && this.memberCount == this.members.size()) {
             setActive(true);
         }
     }
 
     public void deactivateTeam() {
-        if (this.isActive && this.memberCount > this.members.size()) {
+        if (TRUE.equals(this.isActive) && this.memberCount > this.members.size()) {
             setActive(false);
         }
     }
@@ -144,5 +157,20 @@ public class Team extends BaseTimeEntity {
         if (member.getCollegeInfo().getMail() == null) {
             throw new UnAuthorizedUnivException();
         }
+    }
+
+    public void delete() {
+        this.members.forEach(member -> member.setTeam(null));
+        this.members.clear();
+        this.deactivateTeam();
+
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public Team checkTeamValid() {
+        if (this.getDeletedAt() != null) {
+            throw new TeamHasBeenDeletedException();
+        }
+        return this;
     }
 }

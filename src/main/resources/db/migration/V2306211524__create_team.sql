@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `team`
 (
     `team_id`             bigint      NOT NULL AUTO_INCREMENT,
-    `team_code`           char(15)    NOT NULL,
+    `team_code`           varchar(15) NOT NULL,
     `member_count`        int         NOT NULL,
     `is_active`           tinyint     NOT NULL DEFAULT 0,
     `gender`              char(6)     NOT NULL,
@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `team`
     `introduction`        varchar(100),
     `created_at`          datetime(6),
     `modified_at`         datetime(6),
+    `deleted_at`          datetime(6),
     `member_id`           bigint      NOT NULL,
     PRIMARY KEY (`team_id`),
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`) ON DELETE CASCADE

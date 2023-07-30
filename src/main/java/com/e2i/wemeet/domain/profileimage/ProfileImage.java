@@ -50,8 +50,8 @@ public class ProfileImage extends BaseTimeEntity {
 
     @Builder
     public ProfileImage(Long profileImageId, String basicUrl, String blurUrl,
-        String lowResolutionBasicUrl, String lowResolutionBlurUrl, boolean isMain,
-        boolean isCertified, Member member) {
+        String lowResolutionBasicUrl, String lowResolutionBlurUrl, Boolean isMain,
+        Boolean isCertified, Member member) {
         this.profileImageId = profileImageId;
         this.basicUrl = basicUrl;
         this.blurUrl = blurUrl;

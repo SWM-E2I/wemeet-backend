@@ -49,4 +49,9 @@ public interface MemberService {
      * 사용자 Role + Team 여부 조회
      */
     RoleResponseDto getMemberRole(Long memberId);
+
+    /*
+     * 회원 탈퇴
+     * */
+    void deleteMember(Long memberId);
 }

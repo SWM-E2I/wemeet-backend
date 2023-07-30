@@ -1,6 +1,7 @@
 package com.e2i.wemeet.util.aspect;
 
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.member.Role;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class TokenInjectionAspect {
 
     private final TokenInjector tokenInjector;
+    private final HttpServletResponse response;
 
     @AfterReturning(
         pointcut = "execution(* com.e2i.wemeet.service.member.MemberService.createMember(..))",
@@ -23,8 +25,23 @@ public class TokenInjectionAspect {
     )
     public void injectTokenAdvice(JoinPoint joinPoint, Long memberId) {
         HttpServletResponse response = getHttpServletResponseFromJoinPointArgs(joinPoint.getArgs());
-
         tokenInjector.injectToken(response, new MemberPrincipal(memberId, Role.USER.name()));
+    }
+
+    @AfterReturning(
+        pointcut = "execution(* com.e2i.wemeet.service.team.TeamService.deleteTeam(..)) && args(memberId, ..)"
+    )
+    public void injectUserTokenAdvice(final Long memberId) {
+        Payload tokenPayload = new Payload(memberId, Role.USER.name());
+        tokenInjector.injectToken(response, tokenPayload);
+    }
+
+    @AfterReturning(
+        pointcut = "execution(* com.e2i.wemeet.service.team.TeamService.createTeam(..)) && args(memberId, ..)"
+    )
+    public void injectManagerTokenAdvice(final Long memberId) {
+        Payload tokenPayload = new Payload(memberId, Role.MANAGER.name());
+        tokenInjector.injectToken(response, tokenPayload);
     }
 
     private HttpServletResponse getHttpServletResponseFromJoinPointArgs(Object[] args) {

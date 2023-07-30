@@ -10,13 +10,13 @@ import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public enum MemberFixture {
@@ -69,8 +69,17 @@ public enum MemberFixture {
     }
 
     public Member create() {
-        return createBuilder()
+        Member member = createBuilder()
             .build();
+        setMemberId(this.memberId, member);
+        return member;
+    }
+
+    public Member create_with_id(final Long memberId) {
+        Member member = createBuilder()
+            .build();
+        setMemberId(memberId, member);
+        return member;
     }
 
     public Member create_credit(final int credit) {
@@ -106,7 +115,6 @@ public enum MemberFixture {
 
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
-            .memberId(this.memberId)
             .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
@@ -116,8 +124,8 @@ public enum MemberFixture {
             .mbti(this.mbti)
             .introduction(this.introduction)
             .credit(this.credit)
-            .registrationType(RegistrationType.APP)
-            .role(this.role);
+            .role(this.role)
+            .imageAuth(this.imageAuth);
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {
@@ -206,5 +214,16 @@ public enum MemberFixture {
 
     public Role getRole() {
         return role;
+    }
+
+    private void setMemberId(Long memberId, Member member) {
+        Field memberIdField;
+        try {
+            memberIdField = member.getClass().getDeclaredField("memberId");
+            memberIdField.setAccessible(true);
+            memberIdField.set(member, memberId);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

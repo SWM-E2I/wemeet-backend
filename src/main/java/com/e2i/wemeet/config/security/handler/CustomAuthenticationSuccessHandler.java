@@ -1,7 +1,5 @@
 package com.e2i.wemeet.config.security.handler;
 
-import static com.e2i.wemeet.dto.response.ResponseStatus.SUCCESS;
-
 import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.dto.response.ResponseDto;
@@ -48,7 +46,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         log.info("Login Request Success - {}", principal.toString());
 
         SmsCredentialResponse data = SmsCredentialResponse.of(principal);
-        ResponseDto result = new ResponseDto(SUCCESS, "인증에 성공하였습니다.", data);
+        ResponseDto<SmsCredentialResponse> result = ResponseDto.success("인증에 성공하였습니다.", data);
 
         response.setStatus(200);
         response.setContentType("application/json");

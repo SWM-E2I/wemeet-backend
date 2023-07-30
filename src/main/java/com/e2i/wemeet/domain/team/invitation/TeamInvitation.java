@@ -1,5 +1,7 @@
 package com.e2i.wemeet.domain.team.invitation;
 
+import static java.lang.Boolean.TRUE;
+
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.team.Team;
@@ -78,7 +80,7 @@ public class TeamInvitation extends BaseTimeEntity {
     }
 
     private void isActiveTeam(Team team) {
-        if (team.isActive() && team.getMembers().size() == team.getMemberCount()) {
+        if (TRUE.equals(team.getIsActive()) && team.getMembers().size() == team.getMemberCount()) {
             throw new TeamAlreadyActiveException();
         }
     }

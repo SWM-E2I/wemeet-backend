@@ -21,14 +21,14 @@ public class Preference {
 
     private String drinkingOption;
 
-    private boolean isAvoidedFriends;
+    private Boolean isAvoidedFriends;
 
     @Column(length = 4)
     private String preferenceMbti;
 
     @Builder
     public Preference(String startPreferenceAdmissionYear, String endPreferenceAdmissionYear,
-        String sameCollegeState, String drinkingOption, boolean isAvoidedFriends,
+        String sameCollegeState, String drinkingOption, Boolean isAvoidedFriends,
         String preferenceMbti) {
         this.startPreferenceAdmissionYear = startPreferenceAdmissionYear;
         this.endPreferenceAdmissionYear = endPreferenceAdmissionYear;
