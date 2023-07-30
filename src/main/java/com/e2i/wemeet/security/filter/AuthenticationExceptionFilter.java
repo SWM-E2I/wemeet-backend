@@ -1,10 +1,11 @@
-package com.e2i.wemeet.config.security.filter;
+package com.e2i.wemeet.security.filter;
 
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED;
 
 import com.e2i.wemeet.dto.response.ResponseStatus;
 import com.e2i.wemeet.exception.CustomException;
 import com.e2i.wemeet.exception.ErrorResponse;
+import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +41,8 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException {
         try {
             filterChain.doFilter(request, response);
+        } catch (InvalidHttpRequestException e) {
+            setErrorResponse(response, e);
         } catch (CustomException e) {
             setErrorResponse(response, e);
         } catch (AccessDeniedException e) {
@@ -77,6 +80,18 @@ public class AuthenticationExceptionFilter extends OncePerRequestFilter {
         e.printStackTrace();
 
         setErrorResponseBody(response, ResponseStatus.ERROR, 50000, AUTH_COMMON_ERROR_MESSAGE);
+    }
+
+    // 유효하지 않은 Http 요청이 들어온 경우 - 404 예외 반환
+    private void setErrorResponse(HttpServletResponse response, InvalidHttpRequestException e)
+        throws IOException {
+        final int code = e.getErrorCode().getCode();
+        final String message = messageSourceAccessor.getMessage(e.getMessage());
+
+        log.info(AUTH_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+
+        setErrorResponseBody(response, ResponseStatus.ERROR, code, message);
+        response.setStatus(404);
     }
 
     /*
