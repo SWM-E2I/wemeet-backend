@@ -30,6 +30,7 @@ public enum ErrorCode {
     NON_TEAM_MEMBER(40021, "non.team.member"),
     MEMBER_HAS_BEEN_DELETED(40022, "member.has.been.deleted"),
     TEAM_HAS_BEEN_DELETED(40023, "team.has.been.deleted"),
+    INVALID_HTTP_REQUEST(40024, "invalid.http.request"),
 
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
@@ -57,6 +58,8 @@ public enum ErrorCode {
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
     UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
     UNAUTHORIZED_UNIV(40307, "unauthorized.univ"),
+
+    DATA_ACCESS(40400, "data.access"),
 
     UNEXPECTED_INTERNAL(50000, "unexpected.internal"),
     MISSING_REQUEST_PARAMETER(50001, "missing.request.parameter"),
