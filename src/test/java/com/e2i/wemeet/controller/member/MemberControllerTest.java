@@ -30,7 +30,6 @@ import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,9 +56,8 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
-        when(memberService.createMember(any(CreateMemberRequestDto.class), any(
-            HttpServletResponse.class))).thenReturn(
-            MemberFixture.KAI.create());
+        when(memberService.createMember(any(CreateMemberRequestDto.class)))
+            .thenReturn(MemberFixture.KAI.create().getMemberId());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")
@@ -74,8 +72,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).createMember(any(CreateMemberRequestDto.class),
-            any(HttpServletResponse.class));
+        verify(memberService).createMember(any(CreateMemberRequestDto.class));
 
         createMemberWriteRestDocs(perform);
     }

@@ -13,7 +13,6 @@ import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,8 @@ public class MemberController {
     private final CodeService codeService;
 
     @PostMapping
-    public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto,
-        HttpServletResponse response) {
-        memberService.createMember(requestDto, response);
+    public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
+        memberService.createMember(requestDto);
 
         return ResponseDto.success("Create Member Success");
     }

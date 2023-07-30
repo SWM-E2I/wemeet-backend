@@ -34,7 +34,6 @@ import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.e2i.wemeet.support.fixture.ProfileImageFixture;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,15 +56,12 @@ class MemberServiceTest {
     @Mock
     private ProfileImageRepository profileImageRepository;
 
-    @Mock
-    private HttpServletResponse response;
-
     @InjectMocks
     private MemberServiceImpl memberService;
 
     private static final Long memberId = 1L;
     private static final Member member = MemberFixture.KAI.create();
-    private static final List<Code> interestCode = new ArrayList<>();
+
     private static final List<Code> preferenceMeetingTypeCode = new ArrayList<>();
 
     @DisplayName("회원 생성에 성공한다.")
@@ -78,7 +74,7 @@ class MemberServiceTest {
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         // when
-        memberService.createMember(requestDto, response);
+        memberService.createMember(requestDto);
 
         // then
         verify(memberRepository).findByPhoneNumber(anyString());
@@ -97,7 +93,7 @@ class MemberServiceTest {
 
         // when & then
         assertThrows(DuplicatedPhoneNumberException.class, () -> {
-            memberService.createMember(requestDto, response);
+            memberService.createMember(requestDto);
         });
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));
