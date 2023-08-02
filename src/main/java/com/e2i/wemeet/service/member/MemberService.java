@@ -1,14 +1,10 @@
 package com.e2i.wemeet.service.member;
 
-import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
-import java.util.List;
 
 public interface MemberService {
 
@@ -23,12 +19,6 @@ public interface MemberService {
     void modifyMember(Long memberId, ModifyMemberRequestDto requestDto);
 
     /*
-     * 선호 상대 정보 수정
-     */
-    void modifyPreference(Long memberId, ModifyMemberPreferenceRequestDto requestDto,
-        List<Code> modifyCode);
-
-    /*
      * 마이페이지 상세 정보 조회
      */
 
@@ -38,11 +28,6 @@ public interface MemberService {
      * 사용자 정보 조회 (프로필 이미지, 인증 여부...)
      */
     MemberInfoResponseDto getMemberInfo(Long memberId);
-
-    /*
-     * 사용자 선호 상대 조회
-     */
-    MemberPreferenceResponseDto getMemberPrefer(Long memberId);
 
     /*
      * 사용자 Role + Team 여부 조회

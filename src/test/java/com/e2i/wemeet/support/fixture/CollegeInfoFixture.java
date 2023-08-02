@@ -3,6 +3,7 @@ package com.e2i.wemeet.support.fixture;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 
+// TODO :: service refactoring
 public enum CollegeInfoFixture {
     ANYANG_COLLEGE("22", "공대", "안양대학교", "pppp1234@anyang.ac.kr"),
     KOREA_COLLEGE("18", "공대", "고려대학교", "afgds234@korea.ac.kr"),
@@ -21,7 +22,7 @@ public enum CollegeInfoFixture {
     }
 
     public CollegeInfo create() {
-        return new CollegeInfo(college, collegeType, admissionYear, mail);
+        return null;
     }
 
     public CollegeInfoRequestDto createCollegeInfoDto() {

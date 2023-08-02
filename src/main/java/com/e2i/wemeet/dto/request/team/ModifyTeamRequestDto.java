@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.Builder;
 
+// TODO :: service refactoring
 @Builder
 public record ModifyTeamRequestDto(
     @NotBlank(message = "{not.blank.region}")

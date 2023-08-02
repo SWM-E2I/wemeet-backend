@@ -16,18 +16,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.MemberFixture;
-import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.util.List;
@@ -123,37 +120,6 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         getMemberInfoWriteRestDocs(perform);
     }
 
-    @DisplayName("선호 상대 정보 조회 성공")
-    @WithCustomMockUser
-    @Test
-    void getMemberPrefer_Success() throws Exception {
-        // given
-        MemberPreferenceResponseDto response = MemberPreferenceResponseDto.builder()
-            .sameCollegeState("0")
-            .drinkingOption("1")
-            .isAvoidedFriends(true)
-            .startPreferenceAdmissionYear("19")
-            .endPreferenceAdmissionYear("21")
-            .preferenceMbti("XXXX")
-            .preferenceMeetingTypeList(List.of())
-            .build();
-        when(memberService.getMemberPrefer(anyLong())).thenReturn(response);
-
-        // when
-        ResultActions perform = mockMvc.perform(get("/v1/member/prefer"));
-
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get Member-Prefer Success"))
-            .andExpect(jsonPath("$.data").exists());
-
-        // then
-        verify(memberService).getMemberPrefer(1L);
-
-        getMemberPreferWriteRestDocs(perform);
-    }
-
     @DisplayName("회원 정보 수정 성공")
     @WithCustomMockUser
     @Test
@@ -177,34 +143,6 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         // then
         verify(memberService).modifyMember(1L, request);
         modifyMemberWriteRestDocs(perform);
-    }
-
-    @DisplayName("선호 상대 정보 수정 성공")
-    @WithCustomMockUser
-    @Test
-    void modifyMemberPrefer_Success() throws Exception {
-        // given
-        ModifyMemberPreferenceRequestDto request
-            = PreferenceFixture.GENERAL_PREFERENCE.createModifyMemberPreferenceDto();
-
-        when(codeService.findCodeList(anyList())).thenReturn(List.of());
-
-        // when
-        ResultActions perform = mockMvc.perform(put("/v1/member/prefer")
-            .with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(toJson(request)));
-
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Modify Member Preference Success"))
-            .andExpect(jsonPath("$.data").doesNotExist());
-
-        // then
-        verify(memberService).modifyPreference(1L, request, List.of());
-
-        modifyMemberPreferWriteRestDocs(perform);
     }
 
     @DisplayName("회원 Role 정보 조회 성공")

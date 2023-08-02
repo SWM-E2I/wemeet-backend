@@ -2,7 +2,6 @@ package com.e2i.wemeet.controller.profileimage;
 
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
-import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,21 +18,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class ProfileImageController {
 
-    private final ProfileImageService profileImageService;
-
+    // TODO :: service refactoring
     @PostMapping
     public ResponseDto<Void> postProfileImage(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @RequestParam("main") boolean isMain,
         @RequestPart("file") MultipartFile file) {
-        profileImageService.postProfileImage(memberPrincipal.getMemberId(), file, isMain);
 
         return ResponseDto.success("Profile Image Upload Success");
     }
 
+    // TODO :: service refactoring
     @DeleteMapping("/{profileImageId}")
     public ResponseDto<Void> withdrawProfileImage(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
         @PathVariable("profileImageId") Long profileImageId) {
-        profileImageService.deleteProfileImage(memberPrincipal.getMemberId(), profileImageId);
 
         return ResponseDto.success("Profile Image Withdraw Success");
     }

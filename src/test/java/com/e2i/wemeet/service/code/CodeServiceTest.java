@@ -26,6 +26,7 @@ class CodeServiceTest {
     @InjectMocks
     private CodeServiceImpl codeService;
 
+    // TODO :: refactoring
     @DisplayName("코드 리스트 조회에 성공한다.")
     @Test
     void findCodeList_Success() {
@@ -37,8 +38,7 @@ class CodeServiceTest {
 
         Code testCode = Code.builder()
             .codePk(new CodePk(codeId, groupCodeId))
-            .codeName(codeName)
-            .description(description)
+            .value(codeName)
             .build();
 
         List<String> dataList = List.of("G001_C001");
@@ -50,8 +50,6 @@ class CodeServiceTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals(result.get(0).getCodeName(), codeName);
-        assertEquals(result.get(0).getDescription(), description);
     }
 
     @DisplayName("잘못된 형식의 코드를 입력하면 InvalidDataFormatException이 발생한다.")

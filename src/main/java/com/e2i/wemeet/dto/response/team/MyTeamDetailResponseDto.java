@@ -4,6 +4,7 @@ import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import java.util.List;
 import lombok.Builder;
 
+// TODO :: service refactoring
 @Builder
 public record MyTeamDetailResponseDto(
     int memberCount,

@@ -5,7 +5,6 @@ import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.Role;
-import com.e2i.wemeet.util.RandomCodeUtils;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -36,19 +35,17 @@ public record CreateMemberRequestDto(
 
 ) {
 
+    // TODO :: service refactoring
     public Member toMemberEntity() {
         return Member.builder()
-            .memberCode(RandomCodeUtils.createMemberCode())
             .nickname(nickname)
             .gender(Gender.findBy(gender))
             .phoneNumber(phoneNumber)
             .collegeInfo(CollegeInfo.builder()
-                .college(collegeInfo.college())
                 .collegeType(collegeInfo.collegeType())
                 .admissionYear(collegeInfo().admissionYear())
                 .build())
             .mbti(Mbti.findBy(mbti))
-            .introduction(introduction)
             .role(Role.USER)
             .credit(10)
             .build();

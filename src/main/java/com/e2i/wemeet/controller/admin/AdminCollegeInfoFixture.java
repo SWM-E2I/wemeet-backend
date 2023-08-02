@@ -2,6 +2,7 @@ package com.e2i.wemeet.controller.admin;
 
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 
+// TODO :: service refactoring
 public enum AdminCollegeInfoFixture {
     ANYANG("17", "공대", "안양대학교", "pppp1234@anyang.ac.kr"),
     SEOUL_WOMAN("18", "공대", "서울여자대학교", "pppp1234@seoul.ac.kr"),
@@ -21,7 +22,7 @@ public enum AdminCollegeInfoFixture {
     }
 
     public CollegeInfo create() {
-        return new CollegeInfo(college, collegeType, admissionYear, mail);
+        return null;
     }
 
     public String getAdmissionYear() {

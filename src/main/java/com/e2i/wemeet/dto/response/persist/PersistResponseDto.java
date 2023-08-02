@@ -2,6 +2,7 @@ package com.e2i.wemeet.dto.response.persist;
 
 import lombok.Builder;
 
+// TODO :: service refactoring
 @Builder
 public record PersistResponseDto(
     String nickname,

@@ -22,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -70,6 +71,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
+    @Builder
     public Member(String nickname, Gender gender, String phoneNumber, CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
         ProfileImage profileImage, Role role, LocalDateTime deletedAt) {
         this.nickname = nickname;

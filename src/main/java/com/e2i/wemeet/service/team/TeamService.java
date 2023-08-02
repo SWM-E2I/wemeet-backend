@@ -4,7 +4,6 @@ import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
-import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -27,18 +26,10 @@ public interface TeamService {
      */
     MyTeamDetailResponseDto getMyTeamDetail(Long memberId);
 
-    /*
-     * 팀원 목록 조회
-     */
-    TeamManagementResponseDto getTeamMemberList(Long memberId);
 
     /*
      * 팀 삭제
      */
     void deleteTeam(Long memberId);
 
-    /*
-     * 팀원 삭제
-     */
-    void deleteTeamMember(Long managerId, Long memberId);
 }

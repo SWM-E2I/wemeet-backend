@@ -34,13 +34,10 @@ public record CreateTeamRequestDto(
     @NotBlank(message = "{not.blank.introduction}")
     String introduction) {
 
+    // TODO :: service refactoring
     public Team toTeamEntity(String teamCode, Member member) {
         return Team.builder()
-            .teamCode(teamCode)
-            .memberCount(memberCount)
-            .region(region)
             .additionalActivity(AdditionalActivity.findBy(additionalActivity))
-            .drinkingOption(drinkingOption)
             .introduction(introduction)
             .teamLeader(member)
             .build();

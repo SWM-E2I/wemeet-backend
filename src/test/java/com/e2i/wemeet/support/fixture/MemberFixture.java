@@ -3,7 +3,6 @@ package com.e2i.wemeet.support.fixture;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG_COLLEGE;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA_COLLEGE;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.SEOULWOMEN_COLLEGE;
-import static com.e2i.wemeet.support.fixture.PreferenceFixture.GENERAL_PREFERENCE;
 
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
@@ -12,28 +11,23 @@ import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
-import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import java.lang.reflect.Field;
-import java.util.List;
 
+// TODO :: service refactoring
 public enum MemberFixture {
-    KAI(1L, "4100", "kai", Gender.MALE, "+821012341234",
-        ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
+    KAI(1L, "4100", "kai", Gender.MAN, "+821012341234",
+        ANYANG_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
 
-    RIM(2L, "4101", "rim", Gender.FEMALE, "+821056785678",
-        KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
+    RIM(2L, "4101", "rim", Gender.WOMAN, "+821056785678",
+        KOREA_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
 
-    SEYUN(3L, "4102", "seyun", Gender.MALE, "+821056785628",
-        SEOULWOMEN_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true),
+    SEYUN(3L, "4102", "seyun", Gender.MAN, "+821056785628",
+        SEOULWOMEN_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true),
 
-    JEONGYEOL(4L, "4103", "10cm", Gender.MALE, "+821056783678",
-        KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, true);
+    JEONGYEOL(4L, "4103", "10cm", Gender.WOMAN, "+821056783678",
+        KOREA_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, true);
 
     private final Long memberId;
     private final String memberCode;
@@ -41,7 +35,6 @@ public enum MemberFixture {
     private final Gender gender;
     private final String phoneNumber;
     private final CollegeInfo collegeInfo;
-    private final Preference preference;
     private final Mbti mbti;
     private final String introduction;
     private final int credit;
@@ -51,7 +44,7 @@ public enum MemberFixture {
 
     MemberFixture(Long memberId, String memberCode, String nickname, Gender gender,
         String phoneNumber,
-        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit,
+        CollegeInfo collegeInfo, Mbti mbti, String introduction, int credit,
         Role role, boolean imageAuth) {
         this.memberId = memberId;
         this.memberCode = memberCode;
@@ -59,7 +52,6 @@ public enum MemberFixture {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.collegeInfo = collegeInfo;
-        this.preference = preference;
         this.mbti = mbti;
         this.introduction = introduction;
         this.credit = credit;
@@ -100,12 +92,6 @@ public enum MemberFixture {
             .build();
     }
 
-    public Member create_preference(final Preference preference) {
-        return createBuilder()
-            .preference(preference)
-            .build();
-    }
-
     public Member create_college(final CollegeInfo collegeInfo) {
         return createBuilder()
             .collegeInfo(collegeInfo)
@@ -113,18 +99,7 @@ public enum MemberFixture {
     }
 
     private Member.MemberBuilder createBuilder() {
-        return Member.builder()
-            .memberCode(this.memberCode)
-            .nickname(this.nickname)
-            .gender(this.gender)
-            .phoneNumber(this.phoneNumber)
-            .collegeInfo(this.collegeInfo)
-            .preference(this.preference)
-            .mbti(this.mbti)
-            .introduction(this.introduction)
-            .credit(this.credit)
-            .role(this.role)
-            .imageAuth(this.imageAuth);
+        return Member.builder();
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {
@@ -137,16 +112,15 @@ public enum MemberFixture {
             .introduction("hello!!").build();
     }
 
+    // TODO :: service refactoring
     public MemberDetailResponseDto createMemberDetailResponseDto() {
         return MemberDetailResponseDto.builder()
             .nickname(this.nickname)
             .gender(this.gender)
             .mbti(this.mbti)
-            .college(this.collegeInfo.getCollege())
             .collegeType(this.collegeInfo.getCollegeType())
             .admissionYear(this.collegeInfo.getAdmissionYear())
             .introduction(this.introduction)
-            .profileImageList(List.of())
             .build();
     }
 
@@ -165,13 +139,6 @@ public enum MemberFixture {
             .profileImage("profileImage Key")
             .univAuth(true)
             .imageAuth(false)
-            .build();
-    }
-
-    public InviteTeamRequestDto inviteTeamRequestDto() {
-        return InviteTeamRequestDto.builder()
-            .nickname(this.nickname)
-            .memberCode(this.memberCode)
             .build();
     }
 
