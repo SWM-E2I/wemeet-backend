@@ -25,7 +25,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,6 +46,10 @@ public class Member extends BaseTimeEntity {
     @Convert(converter = CryptoConverter.class)
     @Column(length = 60, unique = true, nullable = false)
     private String phoneNumber;
+
+    @Convert(converter = CryptoConverter.class)
+    @Column(length = 60, unique = true)
+    private String email;
 
     @Embedded
     private CollegeInfo collegeInfo;
@@ -72,11 +75,13 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Member(String nickname, Gender gender, String phoneNumber, CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
+    public Member(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
+        Boolean imageAuth,
         ProfileImage profileImage, Role role, LocalDateTime deletedAt) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.collegeInfo = collegeInfo;
         this.mbti = mbti;
         this.credit = credit;
@@ -109,8 +114,9 @@ public class Member extends BaseTimeEntity {
         this.mbti = mbti;
     }
 
+    // TODO :: refactoring
     public boolean isEmailAuthenticated() {
-        return !StringUtils.hasText(this.collegeInfo.getEmail());
+        return false;
     }
 
     public Member checkMemberValid() {
@@ -124,5 +130,9 @@ public class Member extends BaseTimeEntity {
         if (this.role != Role.MANAGER && this.role != Role.ADMIN) {
             throw new UnAuthorizedRoleException();
         }
+    }
+
+    public void saveEmail(final String email) {
+        this.email = email;
     }
 }

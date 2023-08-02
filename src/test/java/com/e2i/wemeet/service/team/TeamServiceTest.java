@@ -116,7 +116,7 @@ class TeamServiceTest {
         CreateTeamRequestDto requestDto = TeamFixture.TEST_TEAM.createTeamRequestDto();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.ofNullable(member));
 
-        member.getCollegeInfo().saveMail(null);
+        member.saveEmail(null);
 
         // when & then
         assertThatThrownBy(
@@ -127,7 +127,7 @@ class TeamServiceTest {
         verify(teamRepository, never()).save(any(Team.class));
 
         // after
-        member.getCollegeInfo().saveMail("test@test.ac.kr");
+        member.saveEmail("test@test.ac.kr");
     }
 
     @DisplayName("팀 수정에 성공한다.")

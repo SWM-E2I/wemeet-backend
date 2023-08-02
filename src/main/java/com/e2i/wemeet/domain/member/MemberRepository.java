@@ -8,7 +8,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>, PersistLo
 
     Optional<Member> findByPhoneNumber(String phoneNumber);
 
-    Optional<Member> findByCollegeInfoMail(String mail);
-
-    Optional<Member> findByNicknameAndMemberCode(String nickname, String memberCode);
+    Optional<Member> findByEmail(String email);
 }

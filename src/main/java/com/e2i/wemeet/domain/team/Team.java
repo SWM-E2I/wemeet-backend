@@ -6,10 +6,10 @@ import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
-import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,8 +19,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +47,7 @@ public class Team extends BaseTimeEntity {
     private Gender gender;
 
     // TODO : Converter 적용
-    @Convert
+    // @Convert
     @Column(length = 20, nullable = false)
     private Region region;
 
@@ -52,12 +55,12 @@ public class Team extends BaseTimeEntity {
     private Integer drinkRate;
 
     // TODO : Converter 적용
-    @Convert
+    // @Convert
     @Column(nullable = false)
     private DrinkWithGame drinkWithGame;
 
     // TODO : Converter 적용
-    @Convert
+    // @Convert
     private AdditionalActivity additionalActivity;
 
     @Column(length = 150, nullable = false)
@@ -66,6 +69,9 @@ public class Team extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member teamLeader;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
+    private List<TeamMember> teamMembers = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
@@ -82,12 +88,6 @@ public class Team extends BaseTimeEntity {
         this.introduction = introduction;
         this.teamLeader = teamLeader;
         this.deletedAt = deletedAt;
-    }
-
-    private void isUnivAuth(Member member) {
-        if (member.getCollegeInfo().getEmail() == null) {
-            throw new UnAuthorizedUnivException();
-        }
     }
 
     public Team checkTeamValid() {
