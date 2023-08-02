@@ -30,7 +30,6 @@ import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.PreferenceFixture;
 import com.e2i.wemeet.support.fixture.ProfileImageFixture;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +52,6 @@ class MemberServiceTest {
     @Mock
     private ProfileImageRepository profileImageRepository;
 
-    @Mock
-    private HttpServletResponse response;
-
     @InjectMocks
     private MemberServiceImpl memberService;
 
@@ -74,7 +70,7 @@ class MemberServiceTest {
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         // when
-        memberService.createMember(requestDto, response);
+        memberService.createMember(requestDto);
 
         // then
         verify(memberRepository).findByPhoneNumber(anyString());
@@ -90,10 +86,10 @@ class MemberServiceTest {
         when(memberRepository.findByPhoneNumber(anyString())).thenReturn(
             Optional.of(Member.builder()
                 .build()));
+      
+        assertThatThrownBy(() -> memberService.createMember(requestDto, response))
+               .isInstanceOf(DuplicatedPhoneNumberException.class);
 
-        // when & then
-        assertThatThrownBy(() -> memberService.createMember(requestDto, response)).isInstanceOf(
-            DuplicatedPhoneNumberException.class);
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));
     }

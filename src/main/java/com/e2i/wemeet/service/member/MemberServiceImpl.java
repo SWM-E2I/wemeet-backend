@@ -19,7 +19,6 @@ import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long createMember(CreateMemberRequestDto requestDto, HttpServletResponse response) {
+    public Long createMember(CreateMemberRequestDto requestDto) {
         memberRepository.findByPhoneNumber(requestDto.phoneNumber())
             .ifPresent(member -> {
                 throw new DuplicatedPhoneNumberException();

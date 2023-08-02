@@ -8,7 +8,6 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberPreferenceResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface MemberService {
@@ -16,7 +15,7 @@ public interface MemberService {
     /*
      * Member 생성
      */
-    Long createMember(CreateMemberRequestDto requestDto, HttpServletResponse response);
+    Long createMember(CreateMemberRequestDto requestDto);
 
     /*
      * Member 수정

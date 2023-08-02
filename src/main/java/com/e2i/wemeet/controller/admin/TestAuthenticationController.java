@@ -1,6 +1,6 @@
 package com.e2i.wemeet.controller.admin;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.admin.TestAuthorizationService;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;

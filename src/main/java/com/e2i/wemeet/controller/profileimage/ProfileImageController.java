@@ -1,7 +1,7 @@
 package com.e2i.wemeet.controller.profileimage;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.dto.response.ResponseDto;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.profileimage.ProfileImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

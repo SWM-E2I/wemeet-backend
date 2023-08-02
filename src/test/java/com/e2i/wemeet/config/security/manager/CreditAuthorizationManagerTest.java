@@ -3,14 +3,16 @@ package com.e2i.wemeet.config.security.manager;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.Payload;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.Role;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.security.manager.CreditAuthorizationManager;
+import com.e2i.wemeet.security.manager.CreditAuthorize;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.token.Payload;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;

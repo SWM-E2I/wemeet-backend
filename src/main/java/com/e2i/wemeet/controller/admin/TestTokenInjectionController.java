@@ -1,11 +1,11 @@
 package com.e2i.wemeet.controller.admin;
 
-import com.e2i.wemeet.config.security.token.Payload;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.security.token.Payload;
+import com.e2i.wemeet.security.token.TokenInjector;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

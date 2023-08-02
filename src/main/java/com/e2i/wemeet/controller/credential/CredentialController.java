@@ -1,10 +1,10 @@
 package com.e2i.wemeet.controller.credential;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
 import com.e2i.wemeet.dto.request.credential.MailCredentialCheckRequestDto;
 import com.e2i.wemeet.dto.request.credential.MailCredentialRequestDto;
 import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.credential.email.EmailCredentialService;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
 import lombok.RequiredArgsConstructor;

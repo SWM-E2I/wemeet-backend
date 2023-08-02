@@ -2,10 +2,10 @@ package com.e2i.wemeet.support.config;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
-import com.e2i.wemeet.config.security.filter.AuthenticationExceptionFilter;
-import com.e2i.wemeet.config.security.filter.JwtAuthenticationFilter;
-import com.e2i.wemeet.config.security.filter.RefreshTokenProcessingFilter;
-import com.e2i.wemeet.config.security.filter.SMSLoginProcessingFilter;
+import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
+import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
+import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
+import com.e2i.wemeet.security.filter.SmsLoginProcessingFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 /*
-* Integration Test Module
-* */
+ * Integration Test Module
+ * */
 @Transactional
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -35,7 +35,7 @@ public abstract class AbstractIntegrationTest {
     protected ObjectMapper mapper;
 
     @Autowired
-    private SMSLoginProcessingFilter SMSLoginProcessingFilter;
+    private SmsLoginProcessingFilter SMSLoginProcessingFilter;
 
     @Autowired
     private AuthenticationExceptionFilter authenticationExceptionFilter;
@@ -52,6 +52,7 @@ public abstract class AbstractIntegrationTest {
     void setup(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .apply(documentationConfiguration(restDocumentation))
+            .addFilter(authenticationExceptionFilter)
             .addFilters(refreshTokenProcessingFilter, SMSLoginProcessingFilter, jwtAuthenticationFilter)
             .build();
     }

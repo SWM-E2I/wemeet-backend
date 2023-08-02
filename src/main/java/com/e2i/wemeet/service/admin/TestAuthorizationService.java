@@ -1,8 +1,8 @@
 package com.e2i.wemeet.service.admin;
 
-import com.e2i.wemeet.config.security.manager.CreditAuthorize;
-import com.e2i.wemeet.config.security.manager.IsManager;
 import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.security.manager.CreditAuthorize;
+import com.e2i.wemeet.security.manager.IsManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

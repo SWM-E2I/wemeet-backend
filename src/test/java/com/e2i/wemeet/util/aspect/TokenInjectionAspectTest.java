@@ -3,10 +3,10 @@ package com.e2i.wemeet.util.aspect;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-import com.e2i.wemeet.config.security.model.MemberPrincipal;
-import com.e2i.wemeet.config.security.token.Payload;
-import com.e2i.wemeet.config.security.token.TokenInjector;
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.security.token.Payload;
+import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;

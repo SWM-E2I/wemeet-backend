@@ -1,5 +1,6 @@
 package com.e2i.wemeet.controller;
 
+import static com.e2i.wemeet.exception.ErrorCode.DATA_ACCESS;
 import static com.e2i.wemeet.exception.ErrorCode.METHOD_ARGUMENT_NOT_VALID;
 import static com.e2i.wemeet.exception.ErrorCode.MISSING_REQUEST_PARAMETER;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
@@ -15,7 +16,9 @@ import com.e2i.wemeet.exception.notfound.NotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.JDBCException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,8 +34,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionController {
 
     private static final String ERROR_LOG_FORMAT = "Error Class : {}, Error Code : {}, Message : {}";
-
     private static final String UNAUTHORIZED_LOG_FORMAT = "UnAuthorized Error Class : {}, Error Code : {}, Message : {}";
+    private static final String SQL_ERROR_LOG_FORMAT = "SQL ERROR:: class : {}, \n *errorSql : {}, \n *message : {}";
+
     private final MessageSourceAccessor messageSourceAccessor;
 
     // @PreAuthorize 예외 핸들링
@@ -119,6 +123,25 @@ public class GlobalExceptionController {
         }
 
         log.info(ERROR_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity
+            .ok()
+            .body(ErrorResponse.fail(code, message));
+    }
+
+    // SQL 관련 예외 핸들링 + sql & sql 예외 원인 Logging
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDatabaseAccessException(final DataAccessException e) {
+        final int code = DATA_ACCESS.getCode();
+
+        String message = messageSourceAccessor.getMessage(DATA_ACCESS.getMessageKey());
+        if (e.getCause() instanceof JDBCException sqlException) {
+            String sql = sqlException.getSQL();
+            String sqlMessage = sqlException.getErrorMessage().split("SQL statement:")[0];
+            log.info(SQL_ERROR_LOG_FORMAT, sqlException.getSQLException().getClass().getName(), sql, sqlMessage);
+        } else {
+            log.warn(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
+        }
+
         return ResponseEntity
             .ok()
             .body(ErrorResponse.fail(code, message));
