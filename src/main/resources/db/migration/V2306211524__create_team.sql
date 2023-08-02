@@ -1,26 +1,19 @@
 CREATE TABLE IF NOT EXISTS `team`
 (
-    `team_id`             bigint      NOT NULL AUTO_INCREMENT,
-    `team_code`           varchar(15) NOT NULL,
-    `member_count`        int         NOT NULL,
-    `is_active`           tinyint     NOT NULL DEFAULT 0,
-    `gender`              char(6)     NOT NULL,
-    `region`              varchar(20) NOT NULL,
-    `drinking_option`     char(2)     NOT NULL,
-    `additional_activity` varchar(20),
-    `introduction`        varchar(100),
+    `team_id`             bigint       NOT NULL AUTO_INCREMENT,
+    `member_num`          tinyint      NOT NULL,
+    `gender`              char(1)      NOT NULL,
+    `region`              tinyint      NOT NULL,
+    `drink_rate`          tinyint      NOT NULL,
+    `drink_with_game`     tinyint      NOT NULL,
+    `additional_activity` tinyint,
+    `introduction`        varchar(150) NOT NULL,
     `created_at`          datetime(6),
     `modified_at`         datetime(6),
     `deleted_at`          datetime(6),
-    `member_id`           bigint      NOT NULL,
+    `team_leader_id`      bigint,
     PRIMARY KEY (`team_id`),
-    FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`) ON DELETE CASCADE
+    FOREIGN KEY (`team_leader_id`) REFERENCES member (`member_id`) ON DELETE SET NULL
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
-
-ALTER TABLE `member`
-    ADD `team_id` bigint;
-ALTER TABLE `member`
-    ADD FOREIGN KEY (`team_id`) REFERENCES team (`team_id`) ON DELETE SET NULL;
-
