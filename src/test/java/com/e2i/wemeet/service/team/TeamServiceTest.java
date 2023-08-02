@@ -12,8 +12,8 @@ import static org.mockito.Mockito.when;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.domain.profile_image.ProfileImageRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.team.invitation.InvitationAcceptStatus;
@@ -235,7 +235,7 @@ class TeamServiceTest {
         MyTeamDetailResponseDto result = teamService.getMyTeamDetail(1L);
 
         // then
-        assertThat(team.getMemberCount()).isEqualTo(result.memberCount());
+        assertThat(team.getMemberNum()).isEqualTo(result.memberCount());
         assertThat(team.getRegion()).isEqualTo(result.region());
         assertThat(team.getDrinkingOption()).isEqualTo(result.drinkingOption());
         assertThat(team.getAdditionalActivity()).isEqualTo(

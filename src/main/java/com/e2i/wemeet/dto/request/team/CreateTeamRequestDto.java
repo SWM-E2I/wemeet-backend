@@ -1,8 +1,8 @@
 package com.e2i.wemeet.dto.request.team;
 
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.team.AdditionalActivity;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

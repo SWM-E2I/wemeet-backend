@@ -1,14 +1,22 @@
-package com.e2i.wemeet.domain.member;
+package com.e2i.wemeet.domain.member.data;
 
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum Gender {
 
-    MALE,
-    FEMALE;
+    WOMAN("w"),
+    MAN("m");
+
+    private final String key;
+
+    Gender(String key) {
+        this.key = key;
+    }
 
     @JsonCreator
     public static Gender findBy(String value) {

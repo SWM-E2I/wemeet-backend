@@ -1,7 +1,7 @@
 package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
 
 public enum ProfileImageFixture {
 

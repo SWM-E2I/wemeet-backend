@@ -1,7 +1,5 @@
 package com.e2i.wemeet.controller.admin;
 
-import com.e2i.wemeet.domain.member.Preference;
-
 public enum AdminPreferenceFixture {
 
     GENERAL_PREFERENCE("19", "22", "22", "22", true, "ENTP");

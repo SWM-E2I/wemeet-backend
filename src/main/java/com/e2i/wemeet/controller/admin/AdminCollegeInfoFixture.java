@@ -1,6 +1,6 @@
 package com.e2i.wemeet.controller.admin;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
 
 public enum AdminCollegeInfoFixture {
     ANYANG("17", "공대", "안양대학교", "pppp1234@anyang.ac.kr"),

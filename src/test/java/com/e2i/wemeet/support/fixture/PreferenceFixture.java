@@ -1,6 +1,5 @@
 package com.e2i.wemeet.support.fixture;
 
-import com.e2i.wemeet.domain.member.Preference;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.PreferenceRequestDto;
 import java.util.List;

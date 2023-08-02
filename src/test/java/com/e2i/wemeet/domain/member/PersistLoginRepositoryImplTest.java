@@ -3,8 +3,9 @@ package com.e2i.wemeet.domain.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
-import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
+import com.e2i.wemeet.domain.profile_image.ProfileImageRepository;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import com.e2i.wemeet.support.config.RepositoryTest;

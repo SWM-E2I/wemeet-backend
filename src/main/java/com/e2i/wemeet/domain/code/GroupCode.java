@@ -20,8 +20,9 @@ public class GroupCode extends BaseTimeEntity {
     private String groupCodeId;
 
     @Column(nullable = false)
-    private String groupCodeName;
+    private String name;
 
     @Column(nullable = false)
     private String description;
+
 }

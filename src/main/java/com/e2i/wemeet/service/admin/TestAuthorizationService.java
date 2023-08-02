@@ -1,6 +1,6 @@
 package com.e2i.wemeet.service.admin;
 
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.manager.CreditAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
 import lombok.RequiredArgsConstructor;

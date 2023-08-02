@@ -1,7 +1,7 @@
 package com.e2i.wemeet.domain.member.persist;
 
 import static com.e2i.wemeet.domain.member.QMember.member;
-import static com.e2i.wemeet.domain.profileimage.QProfileImage.profileImage;
+import static com.e2i.wemeet.domain.profile_image.QProfileImage.profileImage;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;

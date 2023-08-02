@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.base;
+package com.e2i.wemeet.domain.base.converter;
 
 import com.e2i.wemeet.util.encryption.TwoWayEncryption;
 import jakarta.persistence.AttributeConverter;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Converter
 @Component
 public class CryptoConverter implements AttributeConverter<String, String> {
+
     private final TwoWayEncryption twoWayEncryption;
 
     public CryptoConverter(TwoWayEncryption twoWayEncryption) {

@@ -1,11 +1,11 @@
-package com.e2i.wemeet.domain.member;
+package com.e2i.wemeet.domain.member.data;
 
 /*
-* GUEST - 웹 인증 회원
-* USER - 앱 인증 회원
-* MANAGER - 팀장
-* ADMIN - 관리자
-* */
+ * GUEST - 웹 인증 회원
+ * USER - 앱 인증 회원
+ * MANAGER - 팀장
+ * ADMIN - 관리자
+ * */
 public enum Role {
     GUEST, USER, MANAGER, ADMIN;
 
@@ -16,9 +16,9 @@ public enum Role {
     }
 
     /*
-    * USER -> ROLE_USER
-    * -> 인가 로직에 필요함
-    * */
+     * USER -> ROLE_USER
+     * -> 인가 로직에 필요함
+     * */
     public static String getRoleAttachedPrefix(final String role) {
         if (role.startsWith(prefix)) {
             return role;

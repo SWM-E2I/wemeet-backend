@@ -1,9 +1,9 @@
 package com.e2i.wemeet.dto.response.member;
 
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
 import java.util.List;
 import lombok.Builder;
 

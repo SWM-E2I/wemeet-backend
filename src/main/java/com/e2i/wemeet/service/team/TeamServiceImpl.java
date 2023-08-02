@@ -3,9 +3,9 @@ package com.e2i.wemeet.service.team;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
-import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
+import com.e2i.wemeet.domain.profile_image.ProfileImageRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.team.invitation.InvitationAcceptStatus;
@@ -89,7 +89,7 @@ public class TeamServiceImpl implements TeamService {
             = teamPreferenceMeetingTypeRepository.findByTeamTeamId(team.getTeamId());
 
         return MyTeamDetailResponseDto.builder()
-            .memberCount(team.getMemberCount())
+            .memberCount(team.getMemberNum())
             .drinkingOption(team.getDrinkingOption())
             .region(team.getRegion())
             .introduction(team.getIntroduction())

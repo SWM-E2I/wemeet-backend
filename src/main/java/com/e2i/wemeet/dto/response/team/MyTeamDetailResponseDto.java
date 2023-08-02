@@ -1,6 +1,6 @@
 package com.e2i.wemeet.dto.response.team;
 
-import com.e2i.wemeet.domain.team.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import java.util.List;
 import lombok.Builder;
 

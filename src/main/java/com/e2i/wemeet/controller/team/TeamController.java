@@ -12,7 +12,6 @@ import com.e2i.wemeet.dto.response.team.TeamManagementResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.code.CodeService;
-import com.e2i.wemeet.service.team.TeamInvitationService;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

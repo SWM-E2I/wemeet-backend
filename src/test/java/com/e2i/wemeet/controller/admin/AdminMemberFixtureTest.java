@@ -2,11 +2,10 @@ package com.e2i.wemeet.controller.admin;
 
 import static com.e2i.wemeet.controller.admin.AdminMemberFixture.KAI;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.Role;
-import org.assertj.core.api.Assertions;
+import com.e2i.wemeet.domain.member.data.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

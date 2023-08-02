@@ -1,7 +1,6 @@
 package com.e2i.wemeet.domain.member.persist;
 
-import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import org.springframework.util.StringUtils;
 

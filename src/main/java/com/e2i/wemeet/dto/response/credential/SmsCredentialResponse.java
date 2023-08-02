@@ -1,6 +1,5 @@
 package com.e2i.wemeet.dto.response.credential;
 
-import com.e2i.wemeet.domain.member.RegistrationType;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;

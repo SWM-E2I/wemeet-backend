@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,21 +23,11 @@ public class Code extends BaseTimeEntity {
     private CodePk codePk;
 
     @Column(nullable = false)
-    private String codeName;
-
-    @Column(nullable = false)
-    private String description;
+    private String value;
 
     @MapsId("groupCodeId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "groupCodeId")
     private GroupCode groupCode;
 
-    @Builder
-    public Code(CodePk codePk, String codeName, String description, GroupCode groupCode) {
-        this.codePk = codePk;
-        this.codeName = codeName;
-        this.description = description;
-        this.groupCode = groupCode;
-    }
 }

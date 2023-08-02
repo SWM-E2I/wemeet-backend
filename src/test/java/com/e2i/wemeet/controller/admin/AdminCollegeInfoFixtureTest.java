@@ -3,7 +3,7 @@ package com.e2i.wemeet.controller.admin;
 import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.KU;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

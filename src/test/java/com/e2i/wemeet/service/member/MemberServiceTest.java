@@ -16,8 +16,8 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
-import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
+import com.e2i.wemeet.domain.profile_image.ProfileImageRepository;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -86,9 +86,9 @@ class MemberServiceTest {
         when(memberRepository.findByPhoneNumber(anyString())).thenReturn(
             Optional.of(Member.builder()
                 .build()));
-      
-        assertThatThrownBy(() -> memberService.createMember(requestDto, response))
-               .isInstanceOf(DuplicatedPhoneNumberException.class);
+
+        assertThatThrownBy(() -> memberService.createMember(requestDto))
+            .isInstanceOf(DuplicatedPhoneNumberException.class);
 
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));

@@ -1,6 +1,6 @@
 package com.e2i.wemeet.support.fixture;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 
 public enum CollegeInfoFixture {

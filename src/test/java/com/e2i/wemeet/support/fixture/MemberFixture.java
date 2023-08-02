@@ -5,12 +5,11 @@ import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA_COLLEGE;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.SEOULWOMEN_COLLEGE;
 import static com.e2i.wemeet.support.fixture.PreferenceFixture.GENERAL_PREFERENCE;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;

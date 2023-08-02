@@ -5,12 +5,11 @@ import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.KU;
 import static com.e2i.wemeet.controller.admin.AdminCollegeInfoFixture.SEOUL_WOMAN;
 import static com.e2i.wemeet.controller.admin.AdminPreferenceFixture.GENERAL_PREFERENCE;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.member.data.Role;
 import java.util.Arrays;
 
 public enum AdminMemberFixture {

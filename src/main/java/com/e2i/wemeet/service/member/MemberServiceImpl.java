@@ -1,15 +1,12 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.domain.code.Code;
-import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingType;
-import com.e2i.wemeet.domain.memberpreferencemeetingtype.MemberPreferenceMeetingTypeRepository;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
-import com.e2i.wemeet.domain.profileimage.ProfileImageRepository;
+import com.e2i.wemeet.domain.profile_image.ProfileImage;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberPreferenceRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -20,7 +17,6 @@ import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberPreferenceMeetingTypeRepository memberPreferenceMeetingTypeRepository;
-    private final ProfileImageRepository profileImageRepository;
 
 
     @Override
@@ -104,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
             .orElse(null);
 
         boolean imageAuth = mainProfileImage.map(ProfileImage::getIsCertified).orElse(false);
-        boolean univAuth = member.getCollegeInfo().getMail() != null;
+        boolean univAuth = member.getCollegeInfo().getEmail() != null;
 
         return MemberInfoResponseDto.builder()
             .nickname(member.getNickname())
