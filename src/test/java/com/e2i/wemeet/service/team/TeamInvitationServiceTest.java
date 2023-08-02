@@ -1,7 +1,7 @@
 package com.e2i.wemeet.service.team;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -97,9 +97,9 @@ class TeamInvitationServiceTest {
             Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
@@ -127,9 +127,9 @@ class TeamInvitationServiceTest {
         team.activateTeam();
 
         // when & then
-        assertThrows(TeamAlreadyActiveException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            TeamAlreadyActiveException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
@@ -159,9 +159,9 @@ class TeamInvitationServiceTest {
         member.setTeam(team);
 
         // when & then
-        assertThrows(TeamAlreadyExistsException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            TeamAlreadyExistsException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
@@ -190,9 +190,9 @@ class TeamInvitationServiceTest {
         member.getCollegeInfo().saveMail(null);
 
         // when & then
-        assertThrows(UnAuthorizedUnivException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            UnAuthorizedUnivException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
@@ -218,9 +218,9 @@ class TeamInvitationServiceTest {
         when(memberRepository.findById(manager.getMemberId())).thenReturn(Optional.of(manager));
 
         // when & then
-        assertThrows(GenderNotMatchException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            GenderNotMatchException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(otherMember.getNickname(),
             otherMember.getMemberCode());
@@ -248,9 +248,9 @@ class TeamInvitationServiceTest {
                 .build()));
 
         // when & then
-        assertThrows(InvitationAlreadyExistsException.class, () -> {
-            teamInvitationService.inviteTeam(managerId, requestDto);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.inviteTeam(managerId, requestDto)).isInstanceOf(
+            InvitationAlreadyExistsException.class);
 
         verify(memberRepository).findByNicknameAndMemberCode(member.getNickname(),
             member.getMemberCode());
@@ -276,8 +276,8 @@ class TeamInvitationServiceTest {
         // then
         verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
             invitation.getTeamInvitationId(), inviteMember.getMemberId());
-        assertEquals(InvitationAcceptStatus.ACCEPT, invitation.getAcceptStatus());
-        assertEquals(team, inviteMember.getTeam());
+        assertThat(invitation.getAcceptStatus()).isEqualTo(InvitationAcceptStatus.ACCEPT);
+        assertThat(inviteMember.getTeam()).isEqualTo(team);
 
         // after
         inviteMember.setTeam(null);
@@ -294,13 +294,12 @@ class TeamInvitationServiceTest {
 
         // when
         teamInvitationService.takeAcceptStatus(inviteMember.getMemberId(),
-            invitation.getTeamInvitationId(),
-            false);
+            invitation.getTeamInvitationId(), false);
 
         // then
         verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
             invitation.getTeamInvitationId(), inviteMember.getMemberId());
-        assertEquals(InvitationAcceptStatus.REJECT, invitation.getAcceptStatus());
+        assertThat(invitation.getAcceptStatus()).isEqualTo(InvitationAcceptStatus.REJECT);
 
         // after
         invitation.updateAcceptStatus(InvitationAcceptStatus.WAITING);
@@ -317,9 +316,10 @@ class TeamInvitationServiceTest {
         // when & then
         Long inviteMemberId = inviteMember.getMemberId();
         Long invitationId = invitation.getTeamInvitationId();
-        assertThrows(InvitationNotFoundException.class, () -> {
-            teamInvitationService.takeAcceptStatus(inviteMemberId, invitationId, true);
-        });
+
+        assertThatThrownBy(
+            () -> teamInvitationService.takeAcceptStatus(inviteMemberId, invitationId, true))
+            .isInstanceOf(InvitationNotFoundException.class);
 
         verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
             invitation.getTeamInvitationId(), inviteMember.getMemberId());
@@ -339,13 +339,13 @@ class TeamInvitationServiceTest {
         // when & then
         Long inviteMemberId = inviteMember.getMemberId();
         Long invitationId = invitation.getTeamInvitationId();
-        assertThrows(TeamAlreadyActiveException.class, () -> {
-            teamInvitationService.takeAcceptStatus(inviteMemberId, invitationId, true);
-        });
+        assertThatThrownBy(
+            () -> teamInvitationService.takeAcceptStatus(inviteMemberId, invitationId, true))
+            .isInstanceOf(TeamAlreadyActiveException.class);
 
         verify(teamInvitationRepository).findByTeamInvitationIdAndMemberMemberId(
             invitation.getTeamInvitationId(), inviteMember.getMemberId());
-        assertEquals(InvitationAcceptStatus.WAITING, invitation.getAcceptStatus());
+        assertThat(invitation.getAcceptStatus()).isEqualTo(InvitationAcceptStatus.WAITING);
 
         // after
         team.deleteMember(member);

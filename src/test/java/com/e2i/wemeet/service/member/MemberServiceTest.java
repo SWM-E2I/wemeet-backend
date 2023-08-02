@@ -1,11 +1,7 @@
 package com.e2i.wemeet.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -90,11 +86,10 @@ class MemberServiceTest {
         when(memberRepository.findByPhoneNumber(anyString())).thenReturn(
             Optional.of(Member.builder()
                 .build()));
+      
+        assertThatThrownBy(() -> memberService.createMember(requestDto, response))
+               .isInstanceOf(DuplicatedPhoneNumberException.class);
 
-        // when & then
-        assertThrows(DuplicatedPhoneNumberException.class, () -> {
-            memberService.createMember(requestDto);
-        });
         verify(memberRepository).findByPhoneNumber(anyString());
         verify(memberRepository, never()).save(any(Member.class));
     }
@@ -114,9 +109,9 @@ class MemberServiceTest {
         // then
         verify(memberRepository).findById(anyLong());
 
-        assertEquals(requestDto.nickname(), member.getNickname());
-        assertEquals(requestDto.mbti(), member.getMbti().toString());
-        assertEquals(requestDto.introduction(), member.getIntroduction());
+        assertThat(member.getNickname()).isEqualTo(requestDto.nickname());
+        assertThat(member.getMbti()).hasToString(requestDto.mbti());
+        assertThat(member.getIntroduction()).isEqualTo(requestDto.introduction());
     }
 
     @DisplayName("회원이 존재하지 않는 경우 회원 정보를 수정하면 MemberNotFoundException이 발생한다.")
@@ -128,15 +123,14 @@ class MemberServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.modifyMember(1L, requestDto);
-        });
+        assertThatThrownBy(() -> memberService.modifyMember(1L, requestDto)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
 
-        assertNotEquals(requestDto.nickname(), member.getNickname());
-        assertNotEquals(requestDto.mbti(), member.getMbti().toString());
-        assertNotEquals(requestDto.introduction(), member.getIntroduction());
+        assertThat(member.getNickname()).isNotEqualTo(requestDto.nickname());
+        assertThat(member.getMbti().toString()).isNotEqualTo(requestDto.mbti());
+        assertThat(member.getIntroduction()).isNotEqualTo(requestDto.introduction());
     }
 
     @DisplayName("회원 선호 정보 수정에 성공한다.")
@@ -156,14 +150,18 @@ class MemberServiceTest {
         verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository).saveAll(anyList());
 
-        assertEquals(requestDto.preferenceMbti(), member.getPreference().getPreferenceMbti());
-        assertEquals(requestDto.startPreferenceAdmissionYear(),
-            member.getPreference().getStartPreferenceAdmissionYear());
-        assertEquals(requestDto.endPreferenceAdmissionYear(),
-            member.getPreference().getEndPreferenceAdmissionYear());
-        assertEquals(requestDto.sameCollegeState(), member.getPreference().getSameCollegeState());
-        assertEquals(requestDto.drinkingOption(), member.getPreference().getDrinkingOption());
-        assertEquals(requestDto.isAvoidedFriends(), member.getPreference().getIsAvoidedFriends());
+        assertThat(member.getPreference().getPreferenceMbti()).isEqualTo(
+            requestDto.preferenceMbti());
+        assertThat(member.getPreference().getStartPreferenceAdmissionYear()).isEqualTo(
+            requestDto.startPreferenceAdmissionYear());
+        assertThat(member.getPreference().getEndPreferenceAdmissionYear()).isEqualTo(
+            requestDto.endPreferenceAdmissionYear());
+        assertThat(member.getPreference().getSameCollegeState()).isEqualTo(
+            requestDto.sameCollegeState());
+        assertThat(member.getPreference().getDrinkingOption()).isEqualTo(
+            requestDto.drinkingOption());
+        assertThat(member.getPreference().getIsAvoidedFriends()).isEqualTo(
+            requestDto.isAvoidedFriends());
     }
 
     @DisplayName("회원이 존재하지 않는 경우 선호 정보를 수정하면 MemberNotFoundException이 발생한다.")
@@ -176,22 +174,25 @@ class MemberServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.modifyPreference(memberId, requestDto, preferenceMeetingTypeCode);
-        });
+        assertThatThrownBy(() -> memberService.modifyPreference(memberId, requestDto,
+            preferenceMeetingTypeCode)).isInstanceOf(
+            MemberNotFoundException.class);
+
         verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository, never()).saveAll(anyList());
 
-        assertNotEquals(requestDto.preferenceMbti(), member.getPreference().getPreferenceMbti());
-        assertNotEquals(requestDto.startPreferenceAdmissionYear(),
-            member.getPreference().getStartPreferenceAdmissionYear());
-        assertNotEquals(requestDto.endPreferenceAdmissionYear(),
-            member.getPreference().getEndPreferenceAdmissionYear());
-        assertNotEquals(requestDto.sameCollegeState(),
-            member.getPreference().getSameCollegeState());
-        assertNotEquals(requestDto.drinkingOption(), member.getPreference().getDrinkingOption());
-        assertNotEquals(requestDto.isAvoidedFriends(),
-            member.getPreference().getIsAvoidedFriends());
+        assertThat(member.getPreference().getPreferenceMbti()).isNotEqualTo(
+            requestDto.preferenceMbti());
+        assertThat(member.getPreference().getStartPreferenceAdmissionYear()).isNotEqualTo(
+            requestDto.startPreferenceAdmissionYear());
+        assertThat(member.getPreference().getEndPreferenceAdmissionYear()).isNotEqualTo(
+            requestDto.endPreferenceAdmissionYear());
+        assertThat(member.getPreference().getSameCollegeState()).isNotEqualTo(
+            requestDto.sameCollegeState());
+        assertThat(member.getPreference().getDrinkingOption()).isNotEqualTo(
+            requestDto.drinkingOption());
+        assertThat(member.getPreference().getIsAvoidedFriends()).isNotEqualTo(
+            requestDto.isAvoidedFriends());
     }
 
     @DisplayName("회원 정보 조회에 성공한다.")
@@ -208,11 +209,11 @@ class MemberServiceTest {
         MemberInfoResponseDto result = memberService.getMemberInfo(memberId);
 
         // then
-        assertEquals(member.getNickname(), result.nickname());
-        assertEquals(member.getMemberCode(), result.memberCode());
-        assertEquals(profileImage.getLowResolutionBasicUrl(), result.profileImage());
-        assertTrue(result.imageAuth());
-        assertTrue(result.univAuth());
+        assertThat(member.getNickname()).isEqualTo(result.nickname());
+        assertThat(member.getMemberCode()).isEqualTo(result.memberCode());
+        assertThat(profileImage.getLowResolutionBasicUrl()).isEqualTo(result.profileImage());
+        assertThat(result.imageAuth()).isTrue();
+        assertThat(result.univAuth()).isTrue();
     }
 
     @DisplayName("회원이 존재하지 않는 경우 회원 정보 조회를 하면 MemberNotFoundException이 발생한다.")
@@ -222,9 +223,8 @@ class MemberServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.getMemberInfo(memberId);
-        });
+        assertThatThrownBy(() -> memberService.getMemberInfo(memberId)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(profileImageRepository, never()).findByMemberMemberIdAndIsMain(anyLong(),
@@ -245,13 +245,14 @@ class MemberServiceTest {
         MemberDetailResponseDto result = memberService.getMemberDetail(memberId);
 
         // then
-        assertEquals(member.getNickname(), result.nickname());
-        assertEquals(member.getGender(), result.gender());
-        assertEquals(member.getMbti(), result.mbti());
-        assertEquals(member.getCollegeInfo().getCollege(), result.college());
-        assertEquals(member.getCollegeInfo().getCollegeType(), result.collegeType());
-        assertEquals(member.getCollegeInfo().getAdmissionYear(), result.admissionYear());
-        assertEquals(member.getIntroduction(), result.introduction());
+        assertThat(member.getNickname()).isEqualTo(result.nickname());
+        assertThat(member.getGender()).isEqualTo(result.gender());
+        assertThat(member.getMbti()).isEqualTo(result.mbti());
+        assertThat(member.getCollegeInfo().getCollege()).isEqualTo(result.college());
+        assertThat(member.getCollegeInfo().getCollegeType()).isEqualTo(result.collegeType());
+        assertThat(member.getCollegeInfo().getAdmissionYear()).isEqualTo(
+            result.admissionYear());
+        assertThat(member.getIntroduction()).isEqualTo(result.introduction());
     }
 
     @DisplayName("회원이 존재하지 않는 경우 회원 상세 정보 조회를 하면 MemberNotFoundException이 발생한다.")
@@ -261,9 +262,8 @@ class MemberServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.getMemberDetail(memberId);
-        });
+        assertThatThrownBy(() -> memberService.getMemberDetail(memberId)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(profileImageRepository, never()).findByMemberMemberId(anyLong());
@@ -283,14 +283,18 @@ class MemberServiceTest {
         MemberPreferenceResponseDto result = memberService.getMemberPrefer(memberId);
 
         // then
-        assertEquals(member.getPreference().getDrinkingOption(), result.drinkingOption());
-        assertEquals(member.getPreference().getSameCollegeState(), result.sameCollegeState());
-        assertEquals(member.getPreference().getIsAvoidedFriends(), result.isAvoidedFriends());
-        assertEquals(member.getPreference().getStartPreferenceAdmissionYear(),
+        assertThat(member.getPreference().getDrinkingOption()).isEqualTo(
+            result.drinkingOption());
+        assertThat(member.getPreference().getSameCollegeState()).isEqualTo(
+            result.sameCollegeState());
+        assertThat(member.getPreference().getIsAvoidedFriends()).isEqualTo(
+            result.isAvoidedFriends());
+        assertThat(member.getPreference().getStartPreferenceAdmissionYear()).isEqualTo(
             result.startPreferenceAdmissionYear());
-        assertEquals(member.getPreference().getEndPreferenceAdmissionYear(),
+        assertThat(member.getPreference().getEndPreferenceAdmissionYear()).isEqualTo(
             result.endPreferenceAdmissionYear());
-        assertEquals(member.getPreference().getPreferenceMbti(), result.preferenceMbti());
+        assertThat(member.getPreference().getPreferenceMbti()).isEqualTo(
+            result.preferenceMbti());
     }
 
     @DisplayName("회원이 존재하지 않는 경우 선호 상대 정보 조회를 하면 MemberNotFoundException이 발생한다.")
@@ -300,9 +304,8 @@ class MemberServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.getMemberPrefer(memberId);
-        });
+        assertThatThrownBy(() -> memberService.getMemberPrefer(memberId)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(memberPreferenceMeetingTypeRepository, never()).findByMemberMemberId(anyLong());
@@ -318,8 +321,8 @@ class MemberServiceTest {
         RoleResponseDto result = memberService.getMemberRole(memberId);
 
         // then
-        assertFalse(result.isManager());
-        assertFalse(result.hasTeam());
+        assertThat(result.isManager()).isFalse();
+        assertThat(result.hasTeam()).isFalse();
     }
 
     @DisplayName("회원이 존재하지 않는 경우 회원 Role 정보 조회를 하면 MemberNotFoundException이 발생한다.")
@@ -329,9 +332,8 @@ class MemberServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(MemberNotFoundException.class, () -> {
-            memberService.getMemberRole(memberId);
-        });
+        assertThatThrownBy(() -> memberService.getMemberRole(memberId)).isInstanceOf(
+            MemberNotFoundException.class);
 
         verify(memberRepository).findById(anyLong());
     }
