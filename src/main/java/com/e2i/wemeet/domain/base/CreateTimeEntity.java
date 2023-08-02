@@ -5,15 +5,16 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseTimeEntity extends CreateTimeEntity {
+public abstract class CreateTimeEntity {
 
-    @LastModifiedDate
-    @Column(name = "MODIFIED_AT")
-    private LocalDateTime modifiedAt;
+    @CreatedDate
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+
 }
