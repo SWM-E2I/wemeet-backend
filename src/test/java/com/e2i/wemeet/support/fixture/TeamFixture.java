@@ -44,6 +44,14 @@ public enum TeamFixture {
         return team;
     }
 
+    public Team create_with_activity(Member teamLeader, List<TeamMember> teamMembers, AdditionalActivity additionalActivity) {
+        Team team = createBuilder(teamLeader)
+            .additionalActivity(additionalActivity)
+            .build();
+        team.addTeamMembers(teamMembers);
+        return team;
+    }
+
     // TODO :: refactor
     public CreateTeamRequestDto createTeamRequestDto() {
         return CreateTeamRequestDto.builder()

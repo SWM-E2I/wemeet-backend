@@ -21,16 +21,16 @@ import lombok.Getter;
 // TODO :: service refactoring
 @Getter
 public enum MemberFixture {
-    KAI("kai", Gender.MAN, "+821056785678", "2017e7024@as.ac.kr",
+    KAI("kai", Gender.MAN, "+821011112222", "2017e7024@as.ac.kr",
         ANYANG.create(), Mbti.INFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    RIM("rim", Gender.WOMAN, "+821056785678", "2019a24@gad.ac.kr",
+    RIM("rim", Gender.WOMAN, "+821098764444", "2019a24@gad.ac.kr",
         WOMAN.create(), Mbti.ISFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    SEYUN("seyun", Gender.MAN, "+821056785678", "2020a234@ad.ac.kr",
+    SEYUN("seyun", Gender.MAN, "+821090908888", "2020a234@ad.ac.kr",
         KOREA.create(), Mbti.ENFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    JEONGYEOL("jeongyeol", Gender.MAN, "+821056785678", "2014p13@pe.ac.kr",
+    JEONGYEOL("jeongyeol", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER);
 
@@ -68,7 +68,7 @@ public enum MemberFixture {
 
     // 대학 코드를 입력하여 생성
     public Member create(Code collegeCode) {
-        CollegeInfo collegeInfoFixture = CollegeInfoFixture.BASIC.create(collegeCode);
+        CollegeInfo collegeInfoFixture = CollegeInfoFixture.ENGINERRING.create(collegeCode);
 
         return createBuilder()
             .collegeInfo(collegeInfoFixture)

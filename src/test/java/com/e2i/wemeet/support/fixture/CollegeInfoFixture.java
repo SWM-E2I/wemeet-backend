@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum CollegeInfoFixture {
-    BASIC(null, CollegeType.ENGINEERING, "20"),
+    ENGINERRING(null, CollegeType.ENGINEERING, "20"),
     KOREA(CodeFixture.KOREA_UNIVERSITY.create(), CollegeType.ENGINEERING, "18"),
     ANYANG(CodeFixture.ANYANG_UNIVERSITY.create(), CollegeType.SOCIAL, "17"),
     WOMAN(CodeFixture.WOMANS_UNIVERSITY.create(), CollegeType.ARTS, "23"),
