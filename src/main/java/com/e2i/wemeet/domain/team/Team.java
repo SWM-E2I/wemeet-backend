@@ -3,6 +3,7 @@ package com.e2i.wemeet.domain.team;
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.converter.AdditionalActivityConverter;
 import com.e2i.wemeet.domain.base.converter.DrinkWithGameConverter;
+import com.e2i.wemeet.domain.base.converter.GenderConverter;
 import com.e2i.wemeet.domain.base.converter.RegionConverter;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.Gender;
@@ -15,8 +16,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,8 +45,7 @@ public class Team extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer memberNum;
 
-    @Column(length = 6, nullable = false)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = GenderConverter.class)
     private Gender gender;
 
     @Convert(converter = RegionConverter.class)
@@ -68,7 +66,7 @@ public class Team extends BaseTimeEntity {
     private String introduction;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "team_leader_id", updatable = false, nullable = false)
     private Member teamLeader;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
