@@ -1,6 +1,7 @@
 package com.e2i.wemeet.domain.team.data;
 
 import com.e2i.wemeet.exception.ErrorCode;
+import com.e2i.wemeet.exception.badrequest.InvalidDatabaseKeyToEnumException;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
@@ -34,5 +35,12 @@ public enum AdditionalActivity {
             .findFirst()
             .orElseThrow(
                 () -> new InvalidValueException(ErrorCode.INVALID_ADDITIONAL_ACTIVITY_VALUE));
+    }
+
+    public static AdditionalActivity findByKey(int key) {
+        return Arrays.stream(AdditionalActivity.values())
+            .filter(additionalActivity -> additionalActivity.getKey() == key)
+            .findFirst()
+            .orElseThrow(InvalidDatabaseKeyToEnumException::new);
     }
 }

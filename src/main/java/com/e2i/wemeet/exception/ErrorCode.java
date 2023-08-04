@@ -31,6 +31,7 @@ public enum ErrorCode {
     MEMBER_HAS_BEEN_DELETED(40022, "member.has.been.deleted"),
     TEAM_HAS_BEEN_DELETED(40023, "team.has.been.deleted"),
     INVALID_HTTP_REQUEST(40024, "invalid.http.request"),
+    INVALID_DATABASE_KEY_TO_ENUM(40025, "invalid.database.key.to.enum"),
 
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),

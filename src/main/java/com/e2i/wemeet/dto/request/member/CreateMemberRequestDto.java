@@ -42,7 +42,6 @@ public record CreateMemberRequestDto(
             .gender(Gender.findBy(gender))
             .phoneNumber(phoneNumber)
             .collegeInfo(CollegeInfo.builder()
-                .collegeType(collegeInfo.collegeType())
                 .admissionYear(collegeInfo().admissionYear())
                 .build())
             .mbti(Mbti.findBy(mbti))

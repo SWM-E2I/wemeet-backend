@@ -1,9 +1,11 @@
 package com.e2i.wemeet.domain.team_member;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.converter.MbtiConverter;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.team.Team;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,8 +31,7 @@ public class TeamMember extends BaseTimeEntity {
     @Embedded
     private CollegeInfo collegeInfo;
 
-    // TODO :: converter
-    // @Convert
+    @Convert(converter = MbtiConverter.class)
     private Mbti mbti;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,6 +43,13 @@ public class TeamMember extends BaseTimeEntity {
         this.collegeInfo = collegeInfo;
         this.mbti = mbti;
         this.team = team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+        if (!team.getTeamMembers().contains(this)) {
+            team.getTeamMembers().add(this);
+        }
     }
 }
 
