@@ -22,6 +22,7 @@ import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
+import com.e2i.wemeet.support.fixture.TeamMemberFixture;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ class TeamServiceTest {
         member = MemberFixture.KAI.create();
         manager = MemberFixture.SEYUN.create();
         inviteMember = MemberFixture.JEONGYEOL.create();
-        team = TeamFixture.TEST_TEAM.create_with_id(MemberFixture.KAI.create(), 1L);
+        team = TeamFixture.HONGDAE_TEAM_1.create(manager, TeamMemberFixture.create_3_man());
         preferenceMeetingTypeCode = new ArrayList<>();
         managerId = manager.getMemberId();
         memberId = member.getMemberId();
@@ -80,7 +81,7 @@ class TeamServiceTest {
     @Test
     void createTeam_NotFoundMember() {
         // given
-        CreateTeamRequestDto requestDto = TeamFixture.TEST_TEAM.createTeamRequestDto();
+        CreateTeamRequestDto requestDto = TeamFixture.HONGDAE_TEAM_1.createTeamRequestDto();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
@@ -96,7 +97,7 @@ class TeamServiceTest {
     @Test
     void createTeam_TeamAlreadyExists() {
         // given
-        CreateTeamRequestDto requestDto = TeamFixture.TEST_TEAM.createTeamRequestDto();
+        CreateTeamRequestDto requestDto = TeamFixture.HONGDAE_TEAM_1.createTeamRequestDto();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.ofNullable(member));
         // when & then
         assertThatThrownBy(
@@ -113,7 +114,7 @@ class TeamServiceTest {
     @Test
     void createTeam_UnAuthorizedUniv() {
         // given
-        CreateTeamRequestDto requestDto = TeamFixture.TEST_TEAM.createTeamRequestDto();
+        CreateTeamRequestDto requestDto = TeamFixture.HONGDAE_TEAM_1.createTeamRequestDto();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.ofNullable(member));
 
         member.saveEmail(null);
