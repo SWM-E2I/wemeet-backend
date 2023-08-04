@@ -2,6 +2,7 @@ package com.e2i.wemeet.support.config;
 
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.internal.InternalServerException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public abstract class ReflectionUtils {
@@ -12,7 +13,9 @@ public abstract class ReflectionUtils {
 
     public static <T> T createInstance(Class<T> clazz) {
         try {
-            return clazz.getDeclaredConstructor().newInstance();
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
         } catch (Exception e) {
             throw new InternalServerException(ErrorCode.UNEXPECTED_INTERNAL);
         }
