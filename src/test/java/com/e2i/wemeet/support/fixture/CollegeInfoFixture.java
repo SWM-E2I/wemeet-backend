@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum CollegeInfoFixture {
+    BASIC(null, CollegeType.ENGINEERING, "20"),
     KOREA(CodeFixture.KOREA_UNIVERSITY.create(), CollegeType.ENGINEERING, "18"),
     ANYANG(CodeFixture.ANYANG_UNIVERSITY.create(), CollegeType.SOCIAL, "17"),
     WOMAN(CodeFixture.WOMANS_UNIVERSITY.create(), CollegeType.ARTS, "23"),
@@ -25,10 +26,20 @@ public enum CollegeInfoFixture {
     }
 
     public CollegeInfo create() {
+        return createBuilder()
+            .build();
+    }
+
+    public CollegeInfo create(Code collegeCode) {
+        return createBuilder()
+            .collegeCode(collegeCode)
+            .build();
+    }
+
+    private CollegeInfo.CollegeInfoBuilder createBuilder() {
         return CollegeInfo.builder()
             .collegeCode(this.collegeCode)
             .collegeType(this.collegeType)
-            .admissionYear(this.admissionYear)
-            .build();
+            .admissionYear(this.admissionYear);
     }
 }

@@ -4,10 +4,12 @@ import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.WOMAN;
 
+import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
@@ -60,9 +62,17 @@ public enum MemberFixture {
     }
 
     public Member create() {
-        Member member = createBuilder()
+        return createBuilder()
             .build();
-        return member;
+    }
+
+    // 대학 코드를 입력하여 생성
+    public Member create(Code collegeCode) {
+        CollegeInfo collegeInfoFixture = CollegeInfoFixture.BASIC.create(collegeCode);
+
+        return createBuilder()
+            .collegeInfo(collegeInfoFixture)
+            .build();
     }
 
     public Member create_with_id(final Long memberId) {
@@ -98,7 +108,17 @@ public enum MemberFixture {
     }
 
     private Member.MemberBuilder createBuilder() {
-        return Member.builder();
+        return Member.builder()
+            .nickname(this.nickname)
+            .gender(this.gender)
+            .phoneNumber(this.phoneNumber)
+            .email(this.email)
+            .collegeInfo(this.collegeInfo)
+            .mbti(this.mbti)
+            .credit(this.credit)
+            .imageAuth(this.imageAuth)
+            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl))
+            .role(this.role);
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {
