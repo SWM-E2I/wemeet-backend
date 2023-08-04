@@ -35,10 +35,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @DisplayName("MEETING_REQUEST 테이블의 accept_status 필드 값 변환기를 검증한다.")
     @Nested
     class AcceptStatusConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, accept_status field에 key 값이 바인딩된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '수락 상태'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -68,10 +69,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("TEAM 테이블의 additional_activity 필드 값 변환기를 검증한다.")
     @Nested
     class AdditionalActivityConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, additional_activity field에 key 값이 바인딩된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '추가 활동'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -91,7 +93,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(acceptStatus).isEqualTo(5);
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 AdditionalActivity Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 숫자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
@@ -112,10 +114,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("college_type 필드 값 변환기를 검증한다.")
     @Nested
     class CollegeTypeConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, college_type field에 key 값이 바인딩된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '학과'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -131,7 +134,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(collegeType).isEqualTo(2);
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 CollegeType Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 숫자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
@@ -148,10 +151,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("TEAM 테이블의 drink_with_game 필드 값 변환기를 검증한다.")
     @Nested
     class DrinkWithGameConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, drink_with_game field에 key 값이 바인딩된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '음주 선호 정보'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -171,7 +175,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(drinkWithGame).isEqualTo(0);
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 DrinkWithGame Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 숫자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
@@ -192,10 +196,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("TEAM 테이블의 region 필드 값 변환기를 검증한다.")
     @Nested
     class RegionConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, region field에 key 값이 바인딩된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '미팅 지역'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -215,7 +220,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(region).isEqualTo(1);
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 Region Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 숫자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
@@ -236,10 +241,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("MEMBER 테이블의 gender 필드 값 변환기를 검증한다.")
     @Nested
     class GenderConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, gender field 에 바인딩 되는 값은 Gender의 key 값으로 변환되어 전송된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, '성별'에 한자리 문자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -255,7 +261,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(genderColumn).isEqualTo("m");
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 Gender Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 문자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
@@ -272,10 +278,11 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
         }
     }
 
+    @DisplayName("MEMBER 테이블의 mbti 필드 값 변환기를 검증한다.")
     @Nested
     class MbtiConverterTest {
 
-        @DisplayName("데이터 베이스에 요청을 전송할 때, mbti field 에 바인딩 되는 값은 mbti의 key 값으로 변환되어 전송된다.")
+        @DisplayName("데이터베이스에 요청을 전송할 때, 'MBTI'에 숫자 코드 값이 삽입된다.")
         @Test
         void convertToDatabaseColumn() {
             // given
@@ -291,7 +298,7 @@ public class JpaAttributeConverterTest extends AbstractRepositoryUnitTest {
             assertThat(mbti).isEqualTo(15);
         }
 
-        @DisplayName("데이터 베이스에서 가져온 값이 바인딩 될 때 Entity에 Mbti Enum이 바인딩된다")
+        @DisplayName("데이터 베이스에서 가져온 숫자 코드 값을 객체로 변환한다")
         @Test
         void convertToEntityAttribute() {
             // given
