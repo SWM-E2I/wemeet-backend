@@ -1,6 +1,9 @@
 package com.e2i.wemeet.domain.team;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.converter.AdditionalActivityConverter;
+import com.e2i.wemeet.domain.base.converter.DrinkWithGameConverter;
+import com.e2i.wemeet.domain.base.converter.RegionConverter;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
@@ -10,6 +13,7 @@ import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,21 +50,18 @@ public class Team extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    // TODO : Converter 적용
-    // @Convert
+    @Convert(converter = RegionConverter.class)
     @Column(length = 20, nullable = false)
     private Region region;
 
     @Column(nullable = false)
     private Integer drinkRate;
 
-    // TODO : Converter 적용
-    // @Convert
+    @Convert(converter = DrinkWithGameConverter.class)
     @Column(nullable = false)
     private DrinkWithGame drinkWithGame;
 
-    // TODO : Converter 적용
-    // @Convert
+    @Convert(converter = AdditionalActivityConverter.class)
     private AdditionalActivity additionalActivity;
 
     @Column(length = 150, nullable = false)
@@ -95,5 +96,13 @@ public class Team extends BaseTimeEntity {
             throw new TeamHasBeenDeletedException();
         }
         return this;
+    }
+
+    public void addTeamMembers(List<TeamMember> teamMembers) {
+        teamMembers.forEach(this::addTeamMember);
+    }
+
+    public void addTeamMember(TeamMember teamMember) {
+        teamMember.setTeam(this);
     }
 }
