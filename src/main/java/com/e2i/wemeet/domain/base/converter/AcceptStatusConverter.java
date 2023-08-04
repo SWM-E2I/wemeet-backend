@@ -1,9 +1,7 @@
 package com.e2i.wemeet.domain.base.converter;
 
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
-import com.e2i.wemeet.exception.badrequest.InvalidDatabaseKeyToEnumException;
 import jakarta.persistence.AttributeConverter;
-import java.util.Arrays;
 
 public class AcceptStatusConverter implements AttributeConverter<AcceptStatus, Integer> {
 
@@ -20,9 +18,6 @@ public class AcceptStatusConverter implements AttributeConverter<AcceptStatus, I
         if (dbData == null) {
             return null;
         }
-        return Arrays.stream(AcceptStatus.values())
-            .filter(acceptStatus -> acceptStatus.getKey() == dbData)
-            .findFirst()
-            .orElseThrow(InvalidDatabaseKeyToEnumException::new);
+        return AcceptStatus.findByKey(dbData);
     }
 }
