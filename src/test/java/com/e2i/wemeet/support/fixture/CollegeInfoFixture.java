@@ -1,51 +1,34 @@
 package com.e2i.wemeet.support.fixture;
 
+import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
-import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
+import com.e2i.wemeet.domain.member.data.CollegeType;
+import com.e2i.wemeet.support.fixture.code.CodeFixture;
+import lombok.Getter;
 
-// TODO :: service refactoring
+@Getter
 public enum CollegeInfoFixture {
-    ANYANG_COLLEGE("22", "공대", "안양대학교", "pppp1234@anyang.ac.kr"),
-    KOREA_COLLEGE("18", "공대", "고려대학교", "afgds234@korea.ac.kr"),
-    SEOULWOMEN_COLLEGE("19", "공대", "서울여자대학교", "fgafd1234@swu.ac.kr");
+    KOREA(CodeFixture.KOREA_UNIVERSITY.create(), CollegeType.ENGINEERING, "18"),
+    ANYANG(CodeFixture.ANYANG_UNIVERSITY.create(), CollegeType.SOCIAL, "17"),
+    WOMAN(CodeFixture.WOMANS_UNIVERSITY.create(), CollegeType.ARTS, "23"),
+    INHA(CodeFixture.INHA_UNIVERSITY.create(), CollegeType.ENGINEERING, "22"),
+    ;
 
+    private final Code collegeCode;
+    private final CollegeType collegeType;
     private final String admissionYear;
-    private final String collegeType;
-    private final String college;
-    private final String mail;
 
-    CollegeInfoFixture(String admissionYear, String collegeType, String college, String mail) {
-        this.admissionYear = admissionYear;
+    CollegeInfoFixture(Code collegeCode, CollegeType collegeType, String admissionYear) {
+        this.collegeCode = collegeCode;
         this.collegeType = collegeType;
-        this.college = college;
-        this.mail = mail;
+        this.admissionYear = admissionYear;
     }
 
     public CollegeInfo create() {
-        return null;
-    }
-
-    public CollegeInfoRequestDto createCollegeInfoDto() {
-        return CollegeInfoRequestDto.builder()
-            .admissionYear(this.admissionYear)
-            .college(this.college)
+        return CollegeInfo.builder()
+            .collegeCode(this.collegeCode)
             .collegeType(this.collegeType)
+            .admissionYear(this.admissionYear)
             .build();
-    }
-
-    public String getAdmissionYear() {
-        return admissionYear;
-    }
-
-    public String getCollegeType() {
-        return collegeType;
-    }
-
-    public String getCollege() {
-        return college;
-    }
-
-    public String getMail() {
-        return mail;
     }
 }

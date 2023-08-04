@@ -1,8 +1,8 @@
 package com.e2i.wemeet.support.fixture;
 
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG_COLLEGE;
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA_COLLEGE;
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.SEOULWOMEN_COLLEGE;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.WOMAN;
 
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
@@ -14,55 +14,54 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import java.lang.reflect.Field;
+import lombok.Getter;
 
 // TODO :: service refactoring
+@Getter
 public enum MemberFixture {
-    KAI(1L, "4100", "kai", Gender.MAN, "+821012341234",
-        ANYANG_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
+    KAI("kai", Gender.MAN, "+821056785678", "2017e7024@as.ac.kr",
+        ANYANG.create(), Mbti.INFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    RIM("rim", Gender.WOMAN, "+821056785678", "2019a24@gad.ac.kr",
+        WOMAN.create(), Mbti.ISFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    SEYUN("seyun", Gender.MAN, "+821056785678", "2020a234@ad.ac.kr",
+        KOREA.create(), Mbti.ENFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    JEONGYEOL("jeongyeol", Gender.MAN, "+821056785678", "2014p13@pe.ac.kr",
+        KOREA.create(), Mbti.ESFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER);
 
-    RIM(2L, "4101", "rim", Gender.WOMAN, "+821056785678",
-        KOREA_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
-
-    SEYUN(3L, "4102", "seyun", Gender.MAN, "+821056785628",
-        SEOULWOMEN_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true),
-
-    JEONGYEOL(4L, "4103", "10cm", Gender.WOMAN, "+821056783678",
-        KOREA_COLLEGE.create(), Mbti.INFJ, "안녕하세요", 100, Role.USER, true);
-
-    private final Long memberId;
-    private final String memberCode;
     private final String nickname;
     private final Gender gender;
     private final String phoneNumber;
+    private final String email;
     private final CollegeInfo collegeInfo;
     private final Mbti mbti;
-    private final String introduction;
-    private final int credit;
+    private final Integer credit;
+    private final Boolean imageAuth;
+    private final String basicUrl;
+    private final String lowUrl;
     private final Role role;
 
-    private final boolean imageAuth;
-
-    MemberFixture(Long memberId, String memberCode, String nickname, Gender gender,
-        String phoneNumber,
-        CollegeInfo collegeInfo, Mbti mbti, String introduction, int credit,
-        Role role, boolean imageAuth) {
-        this.memberId = memberId;
-        this.memberCode = memberCode;
+    MemberFixture(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
+        Boolean imageAuth, String basicUrl, String lowUrl, Role role) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.collegeInfo = collegeInfo;
         this.mbti = mbti;
-        this.introduction = introduction;
         this.credit = credit;
-        this.role = role;
         this.imageAuth = imageAuth;
+        this.basicUrl = basicUrl;
+        this.lowUrl = lowUrl;
+        this.role = role;
     }
 
     public Member create() {
         Member member = createBuilder()
             .build();
-        setMemberId(this.memberId, member);
         return member;
     }
 
@@ -107,7 +106,6 @@ public enum MemberFixture {
             .nickname(this.nickname)
             .gender(this.gender.toString())
             .phoneNumber(this.phoneNumber)
-            .collegeInfo(ANYANG_COLLEGE.createCollegeInfoDto())
             .mbti("ESTJ")
             .introduction("hello!!").build();
     }
@@ -118,9 +116,7 @@ public enum MemberFixture {
             .nickname(this.nickname)
             .gender(this.gender)
             .mbti(this.mbti)
-            .collegeType(this.collegeInfo.getCollegeType())
             .admissionYear(this.collegeInfo.getAdmissionYear())
-            .introduction(this.introduction)
             .build();
     }
 
@@ -135,51 +131,10 @@ public enum MemberFixture {
     public MemberInfoResponseDto createMemberInfoResponseDto() {
         return MemberInfoResponseDto.builder()
             .nickname(this.nickname)
-            .memberCode(this.memberCode)
             .profileImage("profileImage Key")
             .univAuth(true)
             .imageAuth(false)
             .build();
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public String getMemberCode() {
-        return memberCode;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public CollegeInfo getCollegeInfo() {
-        return collegeInfo;
-    }
-
-    public Mbti getMbti() {
-        return mbti;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public int getCredit() {
-        return credit;
-    }
-
-    public Role getRole() {
-        return role;
     }
 
     private void setMemberId(Long memberId, Member member) {
