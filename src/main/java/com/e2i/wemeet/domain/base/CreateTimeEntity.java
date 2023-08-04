@@ -15,6 +15,6 @@ public abstract class CreateTimeEntity {
 
     @CreatedDate
     @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
 }
