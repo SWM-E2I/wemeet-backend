@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class CollegeInfo {
 
     @ManyToOne
-    @JoinColumn(name = "collegeCodeId", referencedColumnName = "codeId")
-    @JoinColumn(name = "collegeGroupCodeId", referencedColumnName = "groupCodeId")
+    @JoinColumn(name = "collegeCodeId", referencedColumnName = "code_id")
+    @JoinColumn(name = "collegeGroupCodeId", referencedColumnName = "group_code_id")
     private Code collegeCode;
 
     @Convert(converter = CollegeTypeConverter.class)

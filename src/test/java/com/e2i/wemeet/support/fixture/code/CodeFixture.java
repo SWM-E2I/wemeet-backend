@@ -26,34 +26,24 @@ public enum CodeFixture {
 
     private final GroupCode groupCode;
     private final String codeId;
-    private final String value;
+    private final String codeValue;
 
-    CodeFixture(GroupCode groupCode, String codeId, String value) {
+    CodeFixture(GroupCode groupCode, String codeId, String codeValue) {
         this.groupCode = groupCode;
         this.codeId = codeId;
-        this.value = value;
+        this.codeValue = codeValue;
     }
 
     public Code create() {
         CodePk codePk = createCodePk(this.codeId, this.groupCode.getGroupCodeId());
 
-        Code code = ReflectionUtils.createInstance(Code.class);
-        ReflectionUtils.setFieldValue(code, "codePk", codePk);
-        ReflectionUtils.setFieldValue(code, "value", this.value);
-        ReflectionUtils.setFieldValue(code, "groupCode", this.groupCode);
-
-        return code;
+        return createCode(codePk, this.groupCode);
     }
 
     public Code create(final GroupCode groupCode) {
         CodePk codePk = createCodePk(this.codeId, groupCode.getGroupCodeId());
 
-        Code code = ReflectionUtils.createInstance(Code.class);
-        ReflectionUtils.setFieldValue(code, "codePk", codePk);
-        ReflectionUtils.setFieldValue(code, "value", this.value);
-        ReflectionUtils.setFieldValue(code, "groupCode", groupCode);
-
-        return code;
+        return createCode(codePk, groupCode);
     }
 
     private CodePk createCodePk(final String codeId, final String groupCodeId) {
@@ -62,5 +52,13 @@ public enum CodeFixture {
         ReflectionUtils.setFieldValue(codePk, "groupCodeId", groupCodeId);
 
         return codePk;
+    }
+
+    private Code createCode(CodePk codePk, GroupCode groupCode) {
+        Code code = ReflectionUtils.createInstance(Code.class);
+        ReflectionUtils.setFieldValue(code, "codePk", codePk);
+        ReflectionUtils.setFieldValue(code, "codeValue", this.codeValue);
+        ReflectionUtils.setFieldValue(code, "groupCode", groupCode);
+        return code;
     }
 }
