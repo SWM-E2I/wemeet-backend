@@ -73,7 +73,6 @@ public enum TeamFixture {
     private Team.TeamBuilder createBuilder(final Member teamLeader) {
         return Team.builder()
             .teamLeader(teamLeader)
-            .gender(teamLeader.getGender())
             .memberNum(this.memberNum)
             .region(this.region)
             .drinkRate(this.drinkRate)

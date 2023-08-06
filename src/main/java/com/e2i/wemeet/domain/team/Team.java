@@ -75,18 +75,27 @@ public class Team extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(Integer memberNum, Gender gender, Region region, Integer drinkRate, DrinkWithGame drinkWithGame,
+    public Team(Integer memberNum, Region region, Integer drinkRate, DrinkWithGame drinkWithGame,
         AdditionalActivity additionalActivity,
         String introduction, Member teamLeader, LocalDateTime deletedAt) {
+        setTeamLeader(teamLeader);
         this.memberNum = memberNum;
-        this.gender = gender;
         this.region = region;
         this.drinkRate = drinkRate;
         this.drinkWithGame = drinkWithGame;
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
-        this.teamLeader = teamLeader;
         this.deletedAt = deletedAt;
+    }
+
+    /*
+     * 팀장 설정은 생성자에서만 가능
+     * 연관 관계 설정은 Team 에서 진행
+     */
+    private void setTeamLeader(final Member teamLeader) {
+        this.teamLeader = teamLeader;
+        this.gender = teamLeader.getGender();
+        teamLeader.setTeam(this);
     }
 
     public Team checkTeamValid() {
