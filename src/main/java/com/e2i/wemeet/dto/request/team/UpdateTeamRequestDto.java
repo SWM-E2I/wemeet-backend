@@ -12,11 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 @Builder
-public record CreateTeamRequestDto(
-    @Max(value = 4, message = "{max.validate.member.num}")
-    @Min(value = 2, message = "{min.validate.member.num}")
-    int memberNum,
-
+public record UpdateTeamRequestDto(
     @NotBlank(message = "{not.blank.region}")
     String region,
 
@@ -29,7 +25,7 @@ public record CreateTeamRequestDto(
 
     @Nullable
     String additionalActivity,
-    
+
     @Length(min = 1, max = 150, message = "{length.validate.introduction}")
     @NotBlank(message = "{not.blank.introduction}")
     String introduction,

@@ -2,20 +2,15 @@ package com.e2i.wemeet.controller.team;
 
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
-import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
-import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
-import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,32 +29,27 @@ public class TeamController {
 
     // TODO :: service refactoring
     @PostMapping
-    public ResponseDto<Long> createTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto,
-        HttpServletResponse response) {
-        List<Code> teamPreferenceMeetingList = codeService.findCodeList(
-            createTeamRequestDto.preferenceMeetingTypeList());
-        Long teamId = teamService.createTeam(memberPrincipal.getMemberId(), createTeamRequestDto,
-            teamPreferenceMeetingList, response);
+    public ResponseDto<Void> createTeam(@MemberId Long memberId,
+        @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto) {
+        teamService.createTeam(memberId, createTeamRequestDto);
 
-        return ResponseDto.success("Create Team Success", teamId);
+        return ResponseDto.success("Create Team Success");
     }
 
     // TODO :: service refactoring
     @IsManager
     @PutMapping
-    public ResponseDto<Void> modifyTeam(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @RequestBody @Valid ModifyTeamRequestDto modifyTeamRequestDto) {
-        List<Code> teamPreferenceMeetingList = codeService.findCodeList(modifyTeamRequestDto.preferenceMeetingTypeList());
-        teamService.modifyTeam(memberPrincipal.getMemberId(), modifyTeamRequestDto, teamPreferenceMeetingList);
+    public ResponseDto<Void> modifyTeam(@MemberId Long memberId,
+        @RequestBody @Valid UpdateTeamRequestDto updateTeamRequestDto) {
+        teamService.updateTeam(memberId, updateTeamRequestDto);
 
         return ResponseDto.success("Modify Team Success");
     }
 
     // TODO :: service refactoring
     @GetMapping
-    public ResponseDto<MyTeamDetailResponseDto> getMyTeamDetail(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        MyTeamDetailResponseDto result = teamService.getMyTeamDetail(memberPrincipal.getMemberId());
+    public ResponseDto<MyTeamDetailResponseDto> readTeam(@MemberId Long memberId) {
+        MyTeamDetailResponseDto result = teamService.readTeam(memberId);
 
         return ResponseDto.success("Get My Team Detail Success", result);
     }
@@ -72,5 +62,4 @@ public class TeamController {
 
         return ResponseDto.success("Delete Team Success");
     }
-
 }
