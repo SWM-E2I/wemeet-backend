@@ -2,15 +2,15 @@ package com.e2i.wemeet.controller.member;
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.dto.response.member.RoleResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,48 +29,53 @@ public class MemberController {
     private final MemberService memberService;
     private final CodeService codeService;
 
+    // TODO: REFACTOR
     @PostMapping
     public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
-        memberService.createMember(requestDto);
 
         return ResponseDto.success("Create Member Success");
     }
 
+    // TODO: REFACTOR
     @GetMapping
-    public ResponseDto<MemberDetailResponseDto> getMemberDetail(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Long memberId = memberPrincipal.getMemberId();
-        MemberDetailResponseDto result = memberService.getMemberDetail(memberId);
+    public ResponseDto<MemberDetailResponseDto> getMemberDetail(@MemberId Long memberId) {
+        MemberDetailResponseDto result = memberService.readMemberDetail(memberId);
 
         return ResponseDto.success("Get Member-detail Success", result);
     }
 
+    // TODO: REFACTOR
     @GetMapping("/info")
-    public ResponseDto<MemberInfoResponseDto> getMemberInfo(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Long memberId = memberPrincipal.getMemberId();
-        MemberInfoResponseDto result = memberService.getMemberInfo(memberId);
+    public ResponseDto<MemberInfoResponseDto> getMemberInfo(@MemberId Long memberId) {
+        MemberInfoResponseDto result = memberService.readMemberInfo(memberId);
 
         return ResponseDto.success("Get Member-Info Success", result);
     }
 
+    // TODO: REFACTOR
     @PutMapping
-    public ResponseDto<Void> modifyMember(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-        @RequestBody @Valid ModifyMemberRequestDto requestDto) {
-        Long memberId = memberPrincipal.getMemberId();
-        memberService.modifyMember(memberId, requestDto);
+    public ResponseDto<Void> modifyNickname(@MemberId Long memberId) {
 
-        return ResponseDto.success("Modify Member Success");
+        return ResponseDto.success("Modify Member::nickname Success");
+    }
+
+    // TODO: REFACTOR
+    @PutMapping
+    public ResponseDto<Void> modifyMbti(@MemberId Long memberId) {
+
+        return ResponseDto.success("Modify Member::mbti Success");
     }
 
     @GetMapping("/role")
-    public ResponseDto<RoleResponseDto> getMemberRole(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        RoleResponseDto result = memberService.getMemberRole(memberPrincipal.getMemberId());
+    public ResponseDto<MemberRoleResponseDto> getMemberRole(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        MemberRoleResponseDto result = memberService.readMemberRole(memberPrincipal);
 
         return ResponseDto.success("Get Member Role Success", result);
     }
 
     @DeleteMapping
     public ResponseDto<Void> deleteMember(@MemberId Long memberId) {
-        memberService.deleteMember(memberId);
+        memberService.deleteMember(memberId, LocalDateTime.now());
 
         return ResponseDto.success("Delete Member Success");
     }

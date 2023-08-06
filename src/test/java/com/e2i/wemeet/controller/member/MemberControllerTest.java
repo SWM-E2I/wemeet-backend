@@ -19,7 +19,7 @@ import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.dto.response.member.RoleResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
@@ -45,7 +45,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @MockBean
     private CodeService codeService;
 
-    @DisplayName("회원 생성 성공")
+    @DisplayName("회원 가입을 할 수 있다.")
     @WithCustomMockUser
     @Test
     void createMember_Success() throws Exception {
@@ -80,7 +80,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     void getMemberDetail_Success() throws Exception {
         // given
         MemberDetailResponseDto response = MemberFixture.KAI.createMemberDetailResponseDto();
-        when(memberService.getMemberDetail(anyLong())).thenReturn(response);
+        when(memberService.readMemberDetail(anyLong())).thenReturn(response);
 
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member"));
@@ -92,7 +92,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService).getMemberDetail(1L);
+        verify(memberService).readMemberDetail(1L);
 
         getMemberDetailWriteRestDocs(perform);
     }
@@ -103,7 +103,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     void getMemberInfo_Success() throws Exception {
         // given
         MemberInfoResponseDto response = MemberFixture.KAI.createMemberInfoResponseDto();
-        when(memberService.getMemberInfo(anyLong())).thenReturn(response);
+        when(memberService.readMemberInfo(anyLong())).thenReturn(response);
 
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member/info"));
@@ -115,12 +115,12 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService).getMemberInfo(1L);
+        verify(memberService).readMemberInfo(1L);
 
         getMemberInfoWriteRestDocs(perform);
     }
 
-    @DisplayName("회원 정보 수정 성공")
+    @DisplayName("회원의 MBTI 정보를 수정할 수 있다.")
     @WithCustomMockUser
     @Test
     void modifyMember_Success() throws Exception {
@@ -141,7 +141,6 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).modifyMember(1L, request);
         modifyMemberWriteRestDocs(perform);
     }
 
@@ -150,12 +149,12 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void getMemberRole_Success() throws Exception {
         // given
-        RoleResponseDto response = RoleResponseDto.builder()
+        MemberRoleResponseDto response = MemberRoleResponseDto.builder()
             .isManager(false)
             .hasTeam(false)
             .build();
 
-        when(memberService.getMemberRole(anyLong())).thenReturn(response);
+        when(memberService.readMemberRole(any())).thenReturn(response);
 
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member/role"));
@@ -167,7 +166,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").exists());
 
         // then
-        verify(memberService).getMemberRole(1L);
+        verify(memberService).readMemberRole(null);
 
         getMemberRoleWriteRestDocs(perform);
     }

@@ -3,63 +3,63 @@ package com.e2i.wemeet.service.member;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberMbtiRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberNicknameRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
-import com.e2i.wemeet.dto.response.member.RoleResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.security.model.MemberPrincipal;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-
-    // TODO :: service refactoring
     @Override
-    @Transactional
     public Long createMember(CreateMemberRequestDto requestDto) {
         return null;
     }
 
-    // TODO :: service refactoring
     @Override
-    @Transactional
-    public void modifyMember(Long memberId, ModifyMemberRequestDto requestDto) {
+    public void updateNickname(Long memberId, UpdateMemberNicknameRequestDto requestDto) {
 
     }
 
-    // TODO :: service refactoring
     @Override
+    public void updateMbti(Long memberId, UpdateMemberMbtiRequestDto requestDto) {
+
+    }
+
     @Transactional(readOnly = true)
-    public MemberDetailResponseDto getMemberDetail(Long memberId) {
+    @Override
+    public MemberDetailResponseDto readMemberDetail(Long memberId) {
         return null;
     }
 
-    // TODO :: service refactoring
-    @Override
     @Transactional(readOnly = true)
-    public MemberInfoResponseDto getMemberInfo(Long memberId) {
-        return null;
-    }
-
-    // TODO :: service refactoring
     @Override
-    @Transactional(readOnly = true)
-    public RoleResponseDto getMemberRole(Long memberId) {
+    public MemberInfoResponseDto readMemberInfo(Long memberId) {
         return null;
     }
 
     @Override
-    public void deleteMember(Long memberId) {
+    public MemberRoleResponseDto readMemberRole(MemberPrincipal memberPrincipal) {
+        return null;
+    }
+
+    @Override
+    public void deleteMember(Long memberId, LocalDateTime deletedAt) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
-        // member.delete();
+        member.delete(deletedAt);
     }
 }
