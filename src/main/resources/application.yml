@@ -31,14 +31,24 @@ spring:
     activate:
       on-profile: local
     import: sub/local/application-db.yml
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:sub/local/data.sql
 ---
 spring:
   config:
     activate:
       on-profile: dev
     import: sub/dev/application-db.yml
+  sql:
+    init:
+      mode: never
 ---
 spring:
   config:
     activate:
       on-profile: prod
+  sql:
+    init:
+      mode: never
