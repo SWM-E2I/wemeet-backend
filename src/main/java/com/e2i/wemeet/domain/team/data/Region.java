@@ -1,5 +1,7 @@
 package com.e2i.wemeet.domain.team.data;
 
+import com.e2i.wemeet.exception.badrequest.InvalidDatabaseKeyToEnumException;
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -15,5 +17,12 @@ public enum Region {
     Region(int key, String name) {
         this.key = key;
         this.name = name;
+    }
+
+    public static Region findByKey(int key) {
+        return Arrays.stream(Region.values())
+            .filter(region -> region.getKey() == key)
+            .findFirst()
+            .orElseThrow(InvalidDatabaseKeyToEnumException::new);
     }
 }

@@ -139,11 +139,8 @@ class CreditAuthorizationManagerTest {
     static class MemberRepositoryImpl implements MemberRepository {
 
         @Override
-        public Optional<Member> findByNicknameAndMemberCode(String nickname, String memberCode) {
-            return Optional.of(
-                Member.builder()
-                    .build()
-            );
+        public Optional<Member> findByEmail(String email) {
+            return Optional.empty();
         }
 
         @Override
@@ -162,11 +159,6 @@ class CreditAuthorizationManagerTest {
 
         @Override
         public Optional<Member> findByPhoneNumber(String phoneNumber) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<Member> findByCollegeInfoMail(String mail) {
             return Optional.empty();
         }
 

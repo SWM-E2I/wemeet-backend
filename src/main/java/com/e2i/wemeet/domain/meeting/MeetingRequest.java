@@ -1,9 +1,11 @@
 package com.e2i.wemeet.domain.meeting;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.converter.AcceptStatusConverter;
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.Team;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,14 +34,14 @@ public class MeetingRequest extends BaseTimeEntity {
     @JoinColumn(name = "partnerTeamId", referencedColumnName = "teamId", nullable = false)
     private Team partnerTeam;
 
-    // TODO :: converter
-    // @Convert
+    @Convert(converter = AcceptStatusConverter.class)
     @Column(nullable = false)
     private AcceptStatus acceptStatus;
 
     @Column(length = 50)
     private String message;
 
+    @Builder
     public MeetingRequest(Team team, Team partnerTeam, AcceptStatus acceptStatus, String message) {
         this.team = team;
         this.partnerTeam = partnerTeam;

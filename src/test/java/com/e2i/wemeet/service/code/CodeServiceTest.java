@@ -37,8 +37,8 @@ class CodeServiceTest {
         String description = "코드 설명";
 
         Code testCode = Code.builder()
-            .codePk(new CodePk(codeId, groupCodeId))
-            .value(codeName)
+            .codeId(codeId)
+            .codeValue(codeName)
             .build();
 
         List<String> dataList = List.of("G001_C001");

@@ -2,6 +2,8 @@ package com.e2i.wemeet.domain.member;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.converter.CryptoConverter;
+import com.e2i.wemeet.domain.base.converter.GenderConverter;
+import com.e2i.wemeet.domain.base.converter.MbtiConverter;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
@@ -39,8 +41,8 @@ public class Member extends BaseTimeEntity {
     @Column(length = 20, nullable = false)
     private String nickname;
 
-    @Column(length = 6, nullable = false)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = GenderConverter.class)
+    @Column(nullable = false)
     private Gender gender;
 
     @Convert(converter = CryptoConverter.class)
@@ -54,8 +56,7 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private CollegeInfo collegeInfo;
 
-    @Column(length = 7, nullable = false)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = MbtiConverter.class)
     private Mbti mbti;
 
     @Column(nullable = false)
