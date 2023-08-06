@@ -9,9 +9,12 @@ import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
+import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -21,8 +24,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -72,12 +78,15 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
+    @OneToMany(mappedBy = "teamLeader", cascade = CascadeType.PERSIST)
+    private List<Team> team;
+
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
     @Builder
-    public Member(String nickname, Gender gender, String phoneNumber, String email,
-        CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
+    public Member(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
+        Boolean imageAuth,
         ProfileImage profileImage, Role role, LocalDateTime deletedAt) {
         this.nickname = nickname;
         this.gender = gender;
@@ -135,6 +144,24 @@ public class Member extends BaseTimeEntity {
 
     public void saveEmail(final String email) {
         this.email = email;
+    }
+
+    public void delete(LocalDateTime deletedAt) {
+        this.team.stream()
+            .map(Team::getDeletedAt)
+            .filter(Objects::isNull)
+            .findAny()
+            .ifPresent(team -> {
+                throw new TeamExistsException();
+            });
+
+        this.deletedAt = deletedAt;
+    }
+
+    public void setTeam(Team team) {
+        if (!this.team.contains(team)) {
+            this.team.add(team);
+        }
     }
 
     public void saveProfileImage(final ProfileImage profileImage) {
