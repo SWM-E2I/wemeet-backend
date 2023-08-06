@@ -27,6 +27,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -79,7 +80,7 @@ public class Member extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "teamLeader", cascade = CascadeType.PERSIST)
-    private List<Team> team;
+    private List<Team> team = new ArrayList<>();
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
@@ -147,13 +148,14 @@ public class Member extends BaseTimeEntity {
     }
 
     public void delete(LocalDateTime deletedAt) {
-        this.team.stream()
+        // Team 이 존재한다면 예외 발생
+        List<LocalDateTime> notDeleted = this.team.stream()
             .map(Team::getDeletedAt)
             .filter(Objects::isNull)
-            .findAny()
-            .ifPresent(team -> {
-                throw new TeamExistsException();
-            });
+            .toList();
+        if (!notDeleted.isEmpty()) {
+            throw new TeamExistsException();
+        }
 
         this.deletedAt = deletedAt;
     }
