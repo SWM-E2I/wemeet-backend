@@ -2,13 +2,13 @@ package com.e2i.wemeet.exception.badrequest;
 
 import com.e2i.wemeet.exception.ErrorCode;
 
-public class TeamAlreadyExistsException extends BadRequestException {
+public class TeamExistsException extends BadRequestException {
 
-    public TeamAlreadyExistsException() {
+    public TeamExistsException() {
         super(ErrorCode.TEAM_ALREADY_EXISTS);
     }
 
-    public TeamAlreadyExistsException(ErrorCode errorCode) {
+    public TeamExistsException(ErrorCode errorCode) {
         super(errorCode);
     }
 }
