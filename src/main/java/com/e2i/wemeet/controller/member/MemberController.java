@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/member")
@@ -78,5 +80,13 @@ public class MemberController {
         memberService.deleteMember(memberId, LocalDateTime.now());
 
         return ResponseDto.success("Delete Member Success");
+    }
+
+    @PostMapping("/profile_image")
+    public ResponseDto<Void> uploadProfileImage(@MemberId Long memberId,
+        @RequestPart("file") MultipartFile file) {
+        memberService.uploadProfileImage(memberId, file);
+
+        return ResponseDto.success("Upload Profile Image Success");
     }
 }
