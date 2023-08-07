@@ -6,10 +6,8 @@ import com.e2i.wemeet.domain.code.CodeRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.UpdateMemberMbtiRequestDto;
-import com.e2i.wemeet.dto.request.member.UpdateMemberNicknameRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
@@ -19,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -27,6 +24,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final CodeRepository codeRepository;
 
+    @Transactional
     @Override
     public Long createMember(final CreateMemberRequestDto requestDto) {
         Code code = getCode(requestDto.collegeInfo().collegeCode());
@@ -35,33 +33,32 @@ public class MemberServiceImpl implements MemberService {
         return member.getMemberId();
     }
 
-    @Override
-    public void updateNickname(Long memberId, UpdateMemberNicknameRequestDto requestDto) {
-
-    }
-
-    @Override
-    public void updateMbti(Long memberId, UpdateMemberMbtiRequestDto requestDto) {
-
-    }
-
     @Transactional(readOnly = true)
     @Override
-    public MemberDetailResponseDto readMemberDetail(Long memberId) {
-        return null;
+    public MemberDetailResponseDto readMemberDetail(final Long memberId) {
+        Member member = memberRepository.findByIdFetchCode(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
+
+        String collegeName = member.getCollegeInfo()
+            .getCollegeCode()
+            .getCodeValue();
+
+        return MemberDetailResponseDto.of(member, collegeName);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public MemberInfoResponseDto readMemberInfo(Long memberId) {
-        return null;
+    public MemberRoleResponseDto readMemberRole(final MemberPrincipal memberPrincipal) {
+        return MemberRoleResponseDto.of(memberPrincipal);
     }
 
+    @Transactional
     @Override
-    public MemberRoleResponseDto readMemberRole(MemberPrincipal memberPrincipal) {
-        return null;
+    public void updateMember(Long memberId, UpdateMemberRequestDto requestDto) {
+
     }
 
+    @Transactional
     @Override
     public void deleteMember(Long memberId, LocalDateTime deletedAt) {
         Member member = memberRepository.findById(memberId)
