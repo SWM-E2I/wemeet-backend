@@ -7,9 +7,9 @@ import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
-import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/team")
@@ -25,13 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
 
     private final TeamService teamService;
-    private final CodeService codeService;
 
     // TODO :: service refactoring
     @PostMapping
     public ResponseDto<Void> createTeam(@MemberId Long memberId,
-        @RequestBody @Valid CreateTeamRequestDto createTeamRequestDto) {
-        teamService.createTeam(memberId, createTeamRequestDto);
+        @RequestPart("data") @Valid CreateTeamRequestDto createTeamRequestDto,
+        @RequestPart("images") List<MultipartFile> images) {
+        teamService.createTeam(memberId, createTeamRequestDto, images);
 
         return ResponseDto.success("Create Team Success");
     }
