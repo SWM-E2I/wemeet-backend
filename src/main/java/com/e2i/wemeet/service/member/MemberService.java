@@ -8,7 +8,6 @@ import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.time.LocalDateTime;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
 
@@ -46,9 +45,4 @@ public interface MemberService {
      * 회원 탈퇴
      * */
     void deleteMember(Long memberId, LocalDateTime deletedAt);
-
-    /*
-     * 프로필 이미지 업로드
-     * */
-    void uploadProfileImage(Long memberId, MultipartFile file);
 }
