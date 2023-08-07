@@ -7,8 +7,8 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
-import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member_image.MemberImageService;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
-    private final CodeService codeService;
+    private final MemberImageService memberImageService;
+
 
     // TODO: REFACTOR
     @PostMapping
@@ -82,10 +83,10 @@ public class MemberController {
         return ResponseDto.success("Delete Member Success");
     }
 
-    @PostMapping("/profile_image")
+    @PostMapping("/profile-image")
     public ResponseDto<Void> uploadProfileImage(@MemberId Long memberId,
         @RequestPart("file") MultipartFile file) {
-        memberService.uploadProfileImage(memberId, file);
+        memberImageService.uploadProfileImage(memberId, file);
 
         return ResponseDto.success("Upload Profile Image Success");
     }

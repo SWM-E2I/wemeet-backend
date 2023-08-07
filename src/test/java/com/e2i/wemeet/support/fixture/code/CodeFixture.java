@@ -9,7 +9,7 @@ import com.e2i.wemeet.support.config.ReflectionUtils;
 
 public enum CodeFixture {
     // COLLEGE CODE
-    SEOUL_UNIVERSITY(COLLEGE_CODE.create(), "001", "대학교"),
+    SEOUL_UNIVERSITY(COLLEGE_CODE.create(), "001", "서울대학교"),
     KOREA_UNIVERSITY(COLLEGE_CODE.create(), "002", "고려대학교"),
     YONSEI_UNIVERSITY(COLLEGE_CODE.create(), "003", "연세대학교"),
     HANYANG_UNIVERSITY(COLLEGE_CODE.create(), "004", "한양대학교"),
@@ -60,5 +60,17 @@ public enum CodeFixture {
         ReflectionUtils.setFieldValue(code, "codeValue", this.codeValue);
         ReflectionUtils.setFieldValue(code, "groupCode", groupCode);
         return code;
+    }
+
+    public GroupCode getGroupCode() {
+        return groupCode;
+    }
+
+    public String getCodeId() {
+        return codeId;
+    }
+
+    public String getCodeValue() {
+        return codeValue;
     }
 }

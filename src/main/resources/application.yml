@@ -17,6 +17,10 @@ spring:
     enabled: true
     locations: classpath:/db/migration
     baseline-on-migrate: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   config:
     import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml
@@ -31,14 +35,24 @@ spring:
     activate:
       on-profile: local
     import: sub/local/application-db.yml
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:sub/local/data.sql
 ---
 spring:
   config:
     activate:
       on-profile: dev
     import: sub/dev/application-db.yml
+  sql:
+    init:
+      mode: never
 ---
 spring:
   config:
     activate:
       on-profile: prod
+  sql:
+    init:
+      mode: never

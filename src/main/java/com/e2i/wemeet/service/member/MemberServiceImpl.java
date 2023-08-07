@@ -24,14 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private static final String BASIC_SUFFIX = "-basic";
-    private static final String LOW_SUFFIX = "-low";
-    private static final String FILE_EXTENSION = ".jpg";
-    private final S3Service s3Service;
     private final MemberRepository memberRepository;
 
+    // TODO :: service refactoring
     @Override
     public Long createMember(CreateMemberRequestDto requestDto) {
+
         return null;
     }
 
@@ -68,27 +66,6 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
-        // member.delete(deletedAt);
-    }
-
-    @Override
-    @Transactional
-    public void uploadProfileImage(Long memberId, MultipartFile file) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new)
-            .checkMemberValid();
-
-        String objectKey = createObjectKey(memberId);
-        s3Service.upload(file, objectKey + BASIC_SUFFIX + FILE_EXTENSION);
-
-        member.saveProfileImage(ProfileImage.builder()
-            .basicUrl(objectKey + BASIC_SUFFIX + FILE_EXTENSION)
-            .lowUrl(objectKey + LOW_SUFFIX + FILE_EXTENSION)
-            .build());
-    }
-
-    private String createObjectKey(Long memberId) {
-        String uuid = UUID.randomUUID().toString();
-        return "v1/profileImage/" + memberId + "/" + uuid;
+        // member.delete();
     }
 }
