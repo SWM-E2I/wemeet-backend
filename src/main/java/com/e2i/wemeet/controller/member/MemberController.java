@@ -29,9 +29,9 @@ public class MemberController {
     private final MemberService memberService;
     private final CodeService codeService;
 
-    // TODO: REFACTOR
     @PostMapping
     public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
+        memberService.createMember(requestDto);
 
         return ResponseDto.success("Create Member Success");
     }
