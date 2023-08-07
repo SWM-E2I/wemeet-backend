@@ -2,9 +2,9 @@ package com.e2i.wemeet.controller.member;
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.member.MemberService;
@@ -28,7 +28,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
+    public ResponseDto<Void> create(@RequestBody @Valid CreateMemberRequestDto requestDto) {
         memberService.createMember(requestDto);
 
         return ResponseDto.success("Create Member Success");
@@ -41,19 +41,12 @@ public class MemberController {
         return ResponseDto.success("Get Member-detail Success", result);
     }
 
-    // TODO: REFACTOR
-    @GetMapping("/info")
-    public ResponseDto<MemberInfoResponseDto> getMemberInfo(@MemberId Long memberId) {
-        MemberInfoResponseDto result = memberService.readMemberInfo(memberId);
-
-        return ResponseDto.success("Get Member-Info Success", result);
-    }
-
-    // TODO: REFACTOR
     @PatchMapping
-    public ResponseDto<Void> modifyNickname(@MemberId Long memberId) {
+    public ResponseDto<Void> update(@Valid @RequestBody UpdateMemberRequestDto requestDto,
+        @MemberId Long memberId) {
+        memberService.updateMember(memberId, requestDto);
 
-        return ResponseDto.success("Modify Member::nickname Success");
+        return ResponseDto.success("Update Member Success");
     }
 
     @GetMapping("/role")
@@ -64,7 +57,7 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public ResponseDto<Void> deleteMember(@MemberId Long memberId) {
+    public ResponseDto<Void> delete(@MemberId Long memberId) {
         memberService.deleteMember(memberId, LocalDateTime.now());
 
         return ResponseDto.success("Delete Member Success");

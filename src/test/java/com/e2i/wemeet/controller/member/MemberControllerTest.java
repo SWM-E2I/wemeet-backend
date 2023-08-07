@@ -2,13 +2,13 @@ package com.e2i.wemeet.controller.member;
 
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -17,22 +17,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
-import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import java.util.List;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -41,9 +41,6 @@ class MemberControllerTest extends AbstractControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
-
-    @MockBean
-    private CodeService codeService;
 
     @DisplayName("회원 가입을 할 수 있다.")
     @WithCustomMockUser
@@ -61,19 +58,20 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(toJson(request)));
 
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Create Member Success"))
-            .andExpect(jsonPath("$.data").doesNotExist());
-
         // then
+        perform
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Create Member Success"),
+                jsonPath("$.data").doesNotExist()
+            );
         verify(memberService).createMember(any(CreateMemberRequestDto.class));
 
         createMemberWriteRestDocs(perform);
     }
 
-    @DisplayName("회원 상세 정보 조회 성공")
+    @DisplayName("회원 상세 정보를 조회할 수 있다.")
     @WithCustomMockUser
     @Test
     void getMemberDetail_Success() throws Exception {
@@ -84,6 +82,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member"));
 
+        // then
         perform
             .andExpectAll(
                 status().isOk(),
@@ -98,84 +97,106 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.profileImage.basicUrl").value(KAI.getBasicUrl()),
                 jsonPath("$.data.profileImage.lowUrl").value(KAI.getLowUrl())
             );
-
-        // then
         verify(memberService).readMemberDetail(1L);
+
         getMemberDetailWriteRestDocs(perform);
     }
 
-    @DisplayName("회원 정보 조회 성공")
-    @WithCustomMockUser
-    @Test
-    void getMemberInfo_Success() throws Exception {
-        // given
-        MemberInfoResponseDto response = KAI.createMemberInfoResponseDto();
-        when(memberService.readMemberInfo(anyLong())).thenReturn(response);
-
-        // when
-        ResultActions perform = mockMvc.perform(get("/v1/member/info"));
-
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get Member-Info Success"))
-            .andExpect(jsonPath("$.data").exists());
-
-        // then
-        verify(memberService).readMemberInfo(1L);
-
-        getMemberInfoWriteRestDocs(perform);
-    }
-
-    @DisplayName("회원의 MBTI 정보를 수정할 수 있다.")
+    @DisplayName("회원 정보를 수정할 수 있다.")
     @WithCustomMockUser
     @Test
     void modifyMember_Success() throws Exception {
         // given
-        ModifyMemberRequestDto request = KAI.createModifyMemberRequestDto();
-        when(codeService.findCodeList(anyList())).thenReturn(List.of());
+        UpdateMemberRequestDto request = KAI.createUpdateMemberRequestDto("기우미우", "ESTJ");
+        doNothing().when(memberService).updateMember(any(Long.class), any(UpdateMemberRequestDto.class));
 
         // when
-        ResultActions perform = mockMvc.perform(put("/v1/member")
+        ResultActions perform = mockMvc.perform(patch("/v1/member")
             .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content(toJson(request)));
 
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Modify Member Success"))
-            .andExpect(jsonPath("$.data").doesNotExist());
-
         // then
-        modifyMemberWriteRestDocs(perform);
+        perform
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Update Member Success"),
+                jsonPath("$.data").doesNotExist()
+            );
+        verify(memberService).updateMember(any(Long.class), any(UpdateMemberRequestDto.class));
+
+        updateMemberWriteRestDocs(perform);
     }
 
-    @DisplayName("회원 Role 정보 조회 성공")
+    @DisplayName("회원 역할 정보를 조회할 수 있다.")
     @WithCustomMockUser
     @Test
     void getMemberRole_Success() throws Exception {
         // given
-        MemberRoleResponseDto response = MemberRoleResponseDto.builder()
-            .isManager(false)
-            .hasTeam(false)
-            .build();
+        MemberPrincipal memberPrincipal = new MemberPrincipal(1L, "MANAGER");
+        MemberRoleResponseDto response = MemberRoleResponseDto.of(memberPrincipal);
 
-        when(memberService.readMemberRole(any())).thenReturn(response);
+        when(memberService.readMemberRole(any(MemberPrincipal.class)))
+            .thenReturn(response);
 
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member/role"));
 
-        perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get Member Role Success"))
-            .andExpect(jsonPath("$.data").exists());
-
         // then
-        verify(memberService).readMemberRole(null);
+        perform
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Get Member Role Success"),
+                jsonPath("$.data.isManager").value(true),
+                jsonPath("$.data.hasTeam").value(true)
+            );
+        verify(memberService).readMemberRole(any(MemberPrincipal.class));
 
         getMemberRoleWriteRestDocs(perform);
+    }
+
+    @DisplayName("회원 탈퇴를 할 수 있다.")
+    @WithCustomMockUser
+    @Test
+    void delete() throws Exception {
+        // given
+        doNothing().when(memberService).deleteMember(any(Long.class), any(LocalDateTime.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(RestDocumentationRequestBuilders.delete("/v1/member"));
+
+        // then
+        perform
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Delete Member Success"),
+                jsonPath("$.data").doesNotExist()
+            );
+        verify(memberService).deleteMember(any(Long.class), any(LocalDateTime.class));
+
+        deleteMemberWriteRestDocs(perform);
+    }
+
+    private void deleteMemberWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 탈퇴",
+                    ResourceSnippetParameters.builder()
+                        .tag("회원 탈퇴 API")
+                        .summary("회원 탈퇴 API 입니다.")
+                        .description(
+                            """
+                                    회원 탈퇴를 수행합니다. (deleteAt)
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )));
     }
 
     private void createMemberWriteRestDocs(ResultActions perform) throws Exception {
@@ -244,69 +265,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                 ));
     }
 
-    private void getMemberInfoWriteRestDocs(ResultActions perform) throws Exception {
-        perform
-            .andDo(
-                MockMvcRestDocumentationWrapper.document("회원 정보 조회",
-                    ResourceSnippetParameters.builder()
-                        .tag("회원 관련 API")
-                        .summary("회원 정보 조회 API 입니다.")
-                        .description(
-                            """
-                                    회원에 대한 정보를 조회합니다.
-                                """),
-                    responseFields(
-                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.nickname").type(JsonFieldType.STRING)
-                            .description("닉네임"),
-                        fieldWithPath("data.memberCode").type(JsonFieldType.STRING)
-                            .description("회원 코드"),
-                        fieldWithPath("data.profileImage").type(JsonFieldType.STRING)
-                            .description("프로필 이미지"),
-                        fieldWithPath("data.univAuth").type(JsonFieldType.BOOLEAN)
-                            .description("대학 인증 여부"),
-                        fieldWithPath("data.imageAuth").type(JsonFieldType.BOOLEAN)
-                            .description("사진 인증 여부")
-                    )
-                ));
-    }
-
-    private void getMemberPreferWriteRestDocs(ResultActions perform) throws Exception {
-
-        perform
-            .andDo(
-                MockMvcRestDocumentationWrapper.document("회원 선호 정보 조회",
-                    ResourceSnippetParameters.builder()
-                        .tag("회원 관련 API")
-                        .summary("회원 선호 정보 조회 API 입니다.")
-                        .description(
-                            """
-                                    회원이 선호하는 상대에 대한 정보를 조회합니다.
-                                """),
-                    responseFields(
-                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.sameCollegeState").type(JsonFieldType.STRING)
-                            .description("같은 학교 선호 여부"),
-                        fieldWithPath("data.drinkingOption").type(JsonFieldType.STRING)
-                            .description("술자리 선호 여부"),
-                        fieldWithPath("data.isAvoidedFriends").type(JsonFieldType.BOOLEAN)
-                            .description("아는 사람 피하기 여부"),
-                        fieldWithPath("data.startPreferenceAdmissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("선호 시작 학번"),
-                        fieldWithPath("data.endPreferenceAdmissionYear").type(JsonFieldType.STRING)
-                            .description("선호 끝 학번"),
-                        fieldWithPath("data.preferenceMbti").type(JsonFieldType.STRING)
-                            .description("선호 MBTI"),
-                        fieldWithPath("data.preferenceMeetingTypeList").type(JsonFieldType.ARRAY)
-                            .description("선호하는 미팅 타입")
-                    )
-                ));
-    }
-
-    private void modifyMemberWriteRestDocs(ResultActions perform) throws Exception {
+    private void updateMemberWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 상세 정보 수정",
@@ -321,45 +280,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("nickname").type(JsonFieldType.STRING)
                             .description("닉네임"),
                         fieldWithPath("mbti").type(JsonFieldType.STRING)
-                            .description("본인 MBTI"),
-                        fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("자기 소개")
-                    ),
-                    responseFields(
-                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data").type(JsonFieldType.NULL)
-                            .description("data에는 아무 값도 반환되지 않습니다")
-                    )));
-    }
-
-    private void modifyMemberPreferWriteRestDocs(ResultActions perform) throws Exception {
-        perform
-            .andDo(
-                MockMvcRestDocumentationWrapper.document("회원 선호 정보 수정",
-                    ResourceSnippetParameters.builder()
-                        .tag("회원 관련 API")
-                        .summary("회원 선호 정보 수정 API 입니다.")
-                        .description(
-                            """
-                                    회원이 선호하는 상대에 대한 정보를 수정합니다.
-                                """),
-                    requestFields(
-                        fieldWithPath("sameCollegeState").type(JsonFieldType.STRING)
-                            .description("같은 학교 선호 여부"),
-                        fieldWithPath("drinkingOption").type(JsonFieldType.STRING)
-                            .description("술자리 선호 여부"),
-                        fieldWithPath("isAvoidedFriends").type(JsonFieldType.BOOLEAN)
-                            .description("아는 사람 피하기 여부"),
-                        fieldWithPath("startPreferenceAdmissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("선호 시작 학번"),
-                        fieldWithPath("endPreferenceAdmissionYear").type(JsonFieldType.STRING)
-                            .description("선호 끝 학번"),
-                        fieldWithPath("preferenceMbti").type(JsonFieldType.STRING)
-                            .description("선호 MBTI"),
-                        fieldWithPath("preferenceMeetingTypeList").type(JsonFieldType.ARRAY)
-                            .description("선호하는 미팅 타입")
+                            .description("본인 MBTI")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
