@@ -144,6 +144,11 @@ class CreditAuthorizationManagerTest {
         }
 
         @Override
+        public Optional<Member> findByIdFetchCode(Long memberId) {
+            return Optional.empty();
+        }
+
+        @Override
         public Optional<Member> findById(Long id) {
             return Optional.of(
                 Member.builder()

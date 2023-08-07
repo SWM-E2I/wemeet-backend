@@ -5,6 +5,7 @@ import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.token.Payload;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
@@ -106,5 +107,22 @@ public class MemberPrincipal implements UserDetails {
         final String format = "MemberPrincipal(memberId=%d, role=%s, registrationType=%s)";
 
         return String.format(format, memberId, role);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MemberPrincipal that = (MemberPrincipal) o;
+        return Objects.equals(memberId, that.memberId) && Objects.equals(authorities, that.authorities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, authorities);
     }
 }
