@@ -2,7 +2,9 @@ package com.e2i.wemeet.service.member;
 
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.code.CodeFixture.SEOUL_UNIVERSITY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,14 +15,23 @@ import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.code.CodeRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
+import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
+import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
+import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.support.config.ReflectionUtils;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -181,61 +192,70 @@ class MemberServiceTest {
         @Test
         void readMemberInfo_Success() {
             // given
+            final Member kai = KAI.create_with_id(1L);
 
             // when
+            when(memberRepository.findByIdFetchCode(1L))
+                .thenReturn(Optional.of(kai));
 
             // then
-
+            MemberDetailResponseDto memberDetailResponseDto = memberService.readMemberDetail(kai.getMemberId());
+            assertAll(
+                () -> assertThat(memberDetailResponseDto).isNotNull(),
+                () -> assertThat(memberDetailResponseDto.nickname()).isEqualTo(KAI.getNickname()),
+                () -> assertThat(memberDetailResponseDto.college()).isEqualTo("안양대학교"),
+                () -> assertThat(memberDetailResponseDto.collegeType()).isEqualTo("인문/사회"),
+                () -> assertThat(memberDetailResponseDto.mbti()).isEqualTo(Mbti.INFJ),
+                () -> assertThat(memberDetailResponseDto.profileImage().basicUrl()).isEqualTo(KAI.getBasicUrl()),
+                () -> assertThat(memberDetailResponseDto.profileImage().lowUrl()).isEqualTo(KAI.getLowUrl()),
+                () -> assertThat(memberDetailResponseDto.admissionYear()).isGreaterThan("10")
+            );
         }
 
-        @DisplayName("회원 ID가 잘못되었을 경우, 회원 정보 조회에 실패한다.")
+        @DisplayName("회원 ID가 잘못되었을 경우, 회원 정보를 조회할 수 없다.")
         @Test
         void readWithInvalidId() {
             // given
+            final Long invalidId = 999L;
 
             // when
+            when(memberRepository.findByIdFetchCode(999L))
+                .thenReturn(Optional.empty());
 
             // then
+            assertThatThrownBy(() -> memberService.readMemberDetail(invalidId))
+                .isExactlyInstanceOf(MemberNotFoundException.class);
         }
 
         @DisplayName("삭제한 회원일 경우 회원 정보를 조회할 수 없다.")
         @Test
         void readWithDeletedMember() {
             // given
+            final Member kai = KAI.create_with_id(1L);
+            kai.delete(LocalDateTime.now());
 
             // when
+            when(memberRepository.findByIdFetchCode(1L))
+                .thenReturn(Optional.of(kai));
 
             // then
+            assertThatThrownBy(() -> memberService.readMemberDetail(1L))
+                .isExactlyInstanceOf(MemberHasBeenDeletedException.class);
         }
 
         @DisplayName("회원의 팀 소속 여부와 권한에 대해 조회할 수 있다.")
-        @Test
-        void readRole() {
+        @CsvSource(value = {"1, USER, false", "2, MANAGER, true"})
+        @ParameterizedTest
+        void readRole(Long memberId, String role, boolean isManager) {
             // given
+            MemberPrincipal memberPrincipal = new MemberPrincipal(memberId, role);
 
             // when
+            MemberRoleResponseDto responseDto = memberService.readMemberRole(memberPrincipal);
 
             // then
-        }
-
-        @DisplayName("회원의 일부 정보를 조회할 수 있다.")
-        @Test
-        void readMemberInfo() {
-            // given
-
-            // when
-
-            // then
-        }
-
-        @DisplayName("회원의 상세 정보를 조회할 수 있다.")
-        @Test
-        void readMemberDetail() {
-            // given
-
-            // when
-
-            // then
+            assertThat(responseDto.isManager()).isEqualTo(isManager);
+            assertThat(responseDto.hasTeam()).isEqualTo(isManager);
         }
     }
 
