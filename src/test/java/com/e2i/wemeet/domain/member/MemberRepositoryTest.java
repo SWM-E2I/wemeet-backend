@@ -61,4 +61,21 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
         assertThatThrownBy(() -> memberRepository.save(KAI.create(ANYANG_CODE)))
             .isExactlyInstanceOf(DataIntegrityViolationException.class);
     }
+
+    @DisplayName("회원 엔티티로부터 대학교 이름을 받을 수 있다.")
+    @Test
+    void findCollegeNameFromMember() {
+        // given
+        Long savedMemberId = memberRepository.save(KAI.create()).getMemberId();
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        Member member = memberRepository.findByIdFetchCode(savedMemberId)
+            .orElseThrow();
+
+        // then
+        assertThat(member.getCollegeInfo().getCollegeCode().getCodeValue())
+            .isEqualTo("안양대학교");
+    }
 }
