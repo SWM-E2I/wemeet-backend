@@ -2,12 +2,14 @@ package com.e2i.wemeet.domain.team;
 
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.converter.AdditionalActivityConverter;
+import com.e2i.wemeet.domain.base.converter.DrinkRateConverter;
 import com.e2i.wemeet.domain.base.converter.DrinkWithGameConverter;
 import com.e2i.wemeet.domain.base.converter.GenderConverter;
 import com.e2i.wemeet.domain.base.converter.RegionConverter;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_member.TeamMember;
@@ -52,8 +54,9 @@ public class Team extends BaseTimeEntity {
     @Column(length = 20, nullable = false)
     private Region region;
 
+    @Convert(converter = DrinkRateConverter.class)
     @Column(nullable = false)
-    private Integer drinkRate;
+    private DrinkRate drinkRate;
 
     @Convert(converter = DrinkWithGameConverter.class)
     @Column(nullable = false)
@@ -75,7 +78,8 @@ public class Team extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(Integer memberNum, Gender gender, Region region, Integer drinkRate, DrinkWithGame drinkWithGame,
+    public Team(Integer memberNum, Gender gender, Region region, DrinkRate drinkRate,
+        DrinkWithGame drinkWithGame,
         AdditionalActivity additionalActivity,
         String introduction, Member teamLeader, LocalDateTime deletedAt) {
         this.memberNum = memberNum;

@@ -3,6 +3,7 @@ package com.e2i.wemeet.support.fixture;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_member.TeamMember;
@@ -16,18 +17,19 @@ import lombok.Getter;
 @Getter
 public enum TeamFixture {
 
-    HONGDAE_TEAM_1(3, Region.HONGDAE, 40, DrinkWithGame.ANY,
+    HONGDAE_TEAM_1(3, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
         AdditionalActivity.CAFE, "홍대 팀 1"),
     ;
 
     private final Integer memberNum;
     private final Region region;
-    private final Integer drinkRate;
+    private final DrinkRate drinkRate;
     private final DrinkWithGame drinkWithGame;
     private final AdditionalActivity additionalActivity;
     private final String introduction;
 
-    TeamFixture(Integer memberNum, Region region, Integer drinkRate, DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity,
+    TeamFixture(Integer memberNum, Region region, DrinkRate drinkRate, DrinkWithGame drinkWithGame,
+        AdditionalActivity additionalActivity,
         String introduction) {
         this.memberNum = memberNum;
         this.region = region;
@@ -44,7 +46,8 @@ public enum TeamFixture {
         return team;
     }
 
-    public Team create_with_activity(Member teamLeader, List<TeamMember> teamMembers, AdditionalActivity additionalActivity) {
+    public Team create_with_activity(Member teamLeader, List<TeamMember> teamMembers,
+        AdditionalActivity additionalActivity) {
         Team team = createBuilder(teamLeader)
             .additionalActivity(additionalActivity)
             .build();
