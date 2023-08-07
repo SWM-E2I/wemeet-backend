@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,7 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.exception.badrequest.DuplicatedPhoneNumberException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.service.aws.s3.S3Service;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -34,8 +38,11 @@ class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private S3Service s3Service;
     @InjectMocks
     private MemberServiceImpl memberService;
+
 
     private static final Long memberId = 1L;
     private static final Member member = MemberFixture.KAI.create();
@@ -196,5 +203,29 @@ class MemberServiceTest {
         assertThat(kai.getDeletedAt())
             .isNotNull()
             .isExactlyInstanceOf(java.time.LocalDateTime.class);
+    }
+
+    @DisplayName("회원의 프로필 이미지를 등록할 수 있다.")
+    @Test
+    void uploadProfileImage_Success() {
+        // given
+        Member kai = MemberFixture.KAI.create();
+        MultipartFile multipartFile = new MockMultipartFile("file", "test.jpg", "image/jpg",
+            "test data".getBytes());
+
+        when(memberRepository.findById(memberId))
+            .thenReturn(Optional.of(kai));
+        doNothing().when(s3Service).upload(any(MultipartFile.class), anyString());
+
+        // when
+        memberService.uploadProfileImage(memberId, multipartFile);
+
+        // then
+        assertThat(kai.getProfileImage().getBasicUrl())
+            .isNotNull()
+            .containsPattern("v1/profileImage/.*.-basic.jpg");
+        assertThat(kai.getProfileImage().getLowUrl())
+            .isNotNull()
+            .containsPattern("v1/profileImage/.*.-low.jpg");
     }
 }
