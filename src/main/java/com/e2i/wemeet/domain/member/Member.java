@@ -38,7 +38,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 10, nullable = false)
     private String nickname;
 
     @Convert(converter = GenderConverter.class)
