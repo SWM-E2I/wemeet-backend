@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -26,11 +25,8 @@ public class S3ServiceImpl implements S3Service {
 
     private final S3Client s3Client;
 
-    @Value("${aws.s3.bucket}")
-    private String bucket;
-
     @Override
-    public void upload(MultipartFile multipartFile, String objectKey) {
+    public void upload(MultipartFile multipartFile, String objectKey, String bucket) {
         File file = convertMultipartFileToFile(multipartFile);
 
         Map<String, String> metadata = new HashMap<>();

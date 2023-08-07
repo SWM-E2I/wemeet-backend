@@ -12,6 +12,7 @@ import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.service.aws.s3.S3Service;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,11 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
+
+    @Value("${aws.s3.profileImageBucket}")
+    private String profileImageBucket;
 
     private static final String BASIC_SUFFIX = "-basic";
     private static final String LOW_SUFFIX = "-low";
     private static final String FILE_EXTENSION = ".jpg";
-    private final S3Service s3Service;
+
 
     // TODO :: service refactoring
     @Override
@@ -81,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
             .checkMemberValid();
 
         String objectKey = createObjectKey(memberId);
-        s3Service.upload(file, objectKey + BASIC_SUFFIX + FILE_EXTENSION);
+        s3Service.upload(file, objectKey + BASIC_SUFFIX + FILE_EXTENSION, profileImageBucket);
 
         member.saveProfileImage(ProfileImage.builder()
             .basicUrl(objectKey + BASIC_SUFFIX + FILE_EXTENSION)

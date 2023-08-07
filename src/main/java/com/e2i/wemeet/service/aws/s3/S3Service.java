@@ -7,5 +7,5 @@ public interface S3Service {
     /*
      * S3 오브젝트 업로드
      * */
-    void upload(MultipartFile multipartFile, String objectKey);
+    void upload(MultipartFile multipartFile, String objectKey, String bucket);
 }

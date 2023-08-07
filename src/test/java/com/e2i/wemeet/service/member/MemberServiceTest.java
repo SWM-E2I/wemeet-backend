@@ -215,7 +215,7 @@ class MemberServiceTest {
 
         when(memberRepository.findById(memberId))
             .thenReturn(Optional.of(kai));
-        doNothing().when(s3Service).upload(any(MultipartFile.class), anyString());
+        doNothing().when(s3Service).upload(any(MultipartFile.class), anyString(), any());
 
         // when
         memberService.uploadProfileImage(memberId, multipartFile);
