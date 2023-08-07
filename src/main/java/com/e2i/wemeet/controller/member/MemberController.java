@@ -34,7 +34,6 @@ public class MemberController {
         return ResponseDto.success("Create Member Success");
     }
 
-    // TODO: REFACTOR
     @GetMapping
     public ResponseDto<MemberDetailResponseDto> getMemberDetail(@MemberId Long memberId) {
         MemberDetailResponseDto result = memberService.readMemberDetail(memberId);

@@ -1,5 +1,6 @@
 package com.e2i.wemeet.controller.member;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,7 +25,6 @@ import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
-import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.util.List;
@@ -50,10 +50,10 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void createMember_Success() throws Exception {
         // given
-        CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
+        CreateMemberRequestDto request = KAI.createMemberRequestDto();
 
         when(memberService.createMember(any(CreateMemberRequestDto.class)))
-            .thenReturn(MemberFixture.KAI.create_with_id(1L).getMemberId());
+            .thenReturn(KAI.create_with_id(1L).getMemberId());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")
@@ -78,21 +78,29 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void getMemberDetail_Success() throws Exception {
         // given
-        MemberDetailResponseDto response = MemberFixture.KAI.createMemberDetailResponseDto();
+        MemberDetailResponseDto response = KAI.createMemberDetailResponseDto();
         when(memberService.readMemberDetail(anyLong())).thenReturn(response);
 
         // when
         ResultActions perform = mockMvc.perform(get("/v1/member"));
 
         perform
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("SUCCESS"))
-            .andExpect(jsonPath("$.message").value("Get Member-detail Success"))
-            .andExpect(jsonPath("$.data").exists());
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Get Member-detail Success"),
+                jsonPath("$.data.nickname").value(KAI.getNickname()),
+                jsonPath("$.data.gender").value(KAI.getGender().name()),
+                jsonPath("$.data.mbti").value(KAI.getMbti().name()),
+                jsonPath("$.data.college").value(KAI.getCollegeInfo().getCollegeCode().getCodeValue()),
+                jsonPath("$.data.collegeType").value(KAI.getCollegeInfo().getCollegeType().getDescription()),
+                jsonPath("$.data.admissionYear").value(KAI.getCollegeInfo().getAdmissionYear()),
+                jsonPath("$.data.profileImage.basicUrl").value(KAI.getBasicUrl()),
+                jsonPath("$.data.profileImage.lowUrl").value(KAI.getLowUrl())
+            );
 
         // then
         verify(memberService).readMemberDetail(1L);
-
         getMemberDetailWriteRestDocs(perform);
     }
 
@@ -101,7 +109,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void getMemberInfo_Success() throws Exception {
         // given
-        MemberInfoResponseDto response = MemberFixture.KAI.createMemberInfoResponseDto();
+        MemberInfoResponseDto response = KAI.createMemberInfoResponseDto();
         when(memberService.readMemberInfo(anyLong())).thenReturn(response);
 
         // when
@@ -124,7 +132,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void modifyMember_Success() throws Exception {
         // given
-        ModifyMemberRequestDto request = MemberFixture.KAI.createModifyMemberRequestDto();
+        ModifyMemberRequestDto request = KAI.createModifyMemberRequestDto();
         when(codeService.findCodeList(anyList())).thenReturn(List.of());
 
         // when
@@ -223,15 +231,15 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.mbti").type(JsonFieldType.STRING)
                             .description("본인 MBTI"),
                         fieldWithPath("data.college").type(JsonFieldType.STRING)
-                            .description("대학교"),
+                            .description("대학교명"),
                         fieldWithPath("data.collegeType").type(JsonFieldType.STRING)
-                            .description("대학교 유형"),
+                            .description("학과 정보"),
                         fieldWithPath("data.admissionYear").type(JsonFieldType.STRING)
                             .description("학번"),
-                        fieldWithPath("data.introduction").type(JsonFieldType.STRING)
-                            .description("자기 소개"),
-                        fieldWithPath("data.profileImageList").type(
-                            JsonFieldType.ARRAY).description("프로필 사진 리스트")
+                        fieldWithPath("data.profileImage.basicUrl").type(JsonFieldType.STRING)
+                            .description("회원 개인 프로필 사진 원본"),
+                        fieldWithPath("data.profileImage.lowUrl").type(JsonFieldType.STRING)
+                            .description("회원 개인 프로필 사진 저해상도")
                     )
                 ));
     }
