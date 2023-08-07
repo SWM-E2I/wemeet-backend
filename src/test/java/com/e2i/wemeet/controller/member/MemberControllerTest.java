@@ -26,6 +26,7 @@ import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.MemberFixture;
@@ -46,6 +47,9 @@ class MemberControllerTest extends AbstractControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private MemberImageService memberImageService;
 
     @MockBean
     private CodeService codeService;
@@ -182,7 +186,8 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     @Test
     void uploadProfileImage() throws Exception {
         // given
-        doNothing().when(memberService).uploadProfileImage(anyLong(), any(MultipartFile.class));
+        doNothing().when(memberImageService)
+            .uploadProfileImage(anyLong(), any(MultipartFile.class));
 
         // when
         ResultActions perform = mockMvc.perform(
@@ -197,7 +202,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andExpect(jsonPath("$.data").doesNotExist());
 
         // then
-        verify(memberService).uploadProfileImage(anyLong(), any(MultipartFile.class));
+        verify(memberImageService).uploadProfileImage(anyLong(), any(MultipartFile.class));
 
         uploadProfileImageWriteRestDocs(perform);
     }

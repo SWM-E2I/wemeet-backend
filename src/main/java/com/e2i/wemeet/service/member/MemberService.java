@@ -5,7 +5,6 @@ import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
 
@@ -39,9 +38,4 @@ public interface MemberService {
      * 회원 탈퇴
      * */
     void deleteMember(Long memberId);
-
-    /*
-     * 프로필 이미지 업로드
-     * */
-    void uploadProfileImage(Long memberId, MultipartFile file);
 }

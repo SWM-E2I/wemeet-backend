@@ -9,6 +9,7 @@ import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member_image.MemberImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberImageService memberImageService;
 
 
     @PostMapping
@@ -82,7 +84,7 @@ public class MemberController {
     @PostMapping("/profile-image")
     public ResponseDto<Void> uploadProfileImage(@MemberId Long memberId,
         @RequestPart("file") MultipartFile file) {
-        memberService.uploadProfileImage(memberId, file);
+        memberImageService.uploadProfileImage(memberId, file);
 
         return ResponseDto.success("Upload Profile Image Success");
     }
