@@ -156,37 +156,11 @@ public enum MemberFixture {
             .build();
     }
 
-    private CollegeInfoRequestDto createCollegeInfoRequestDto() {
-        return CollegeInfoRequestDto.builder()
-            .collegeCode(getCollegeCodeWithDelimiter(this.collegeInfo.getCollegeCode()))
-            .collegeType(this.collegeInfo.getCollegeType().name())
-            .admissionYear(this.collegeInfo.getAdmissionYear())
-            .build();
-    }
-
-    private CollegeInfoRequestDto createCollegeInfoRequestDto(String collegeCode) {
-        return CollegeInfoRequestDto.builder()
-            .collegeCode(collegeCode)
-            .collegeType(this.collegeInfo.getCollegeType().name())
-            .admissionYear(this.collegeInfo.getAdmissionYear())
-            .build();
-    }
-
-    // Delimiter가 붙은 코드를 생성 ex) CE-001
-    private String getCollegeCodeWithDelimiter(Code code) {
-        CodePk codePk = code.getCodePk();
-        return codePk.getGroupCodeId() + "-" + codePk.getCodeId();
-    }
-
-
-    // TODO :: service refactoring
     public MemberDetailResponseDto createMemberDetailResponseDto() {
-        return MemberDetailResponseDto.builder()
-            .nickname(this.nickname)
-            .gender(this.gender)
-            .mbti(this.mbti)
-            .admissionYear(this.collegeInfo.getAdmissionYear())
-            .build();
+        return MemberDetailResponseDto.of(
+            this.create(),
+            this.collegeInfo.getCollegeCode().getCodeValue()
+        );
     }
 
     public ModifyMemberRequestDto createModifyMemberRequestDto() {
@@ -259,5 +233,27 @@ public enum MemberFixture {
 
     public Role getRole() {
         return role;
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto() {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(getCollegeCodeWithDelimiter(this.collegeInfo.getCollegeCode()))
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto(String collegeCode) {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(collegeCode)
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    // Delimiter가 붙은 코드를 생성 ex) CE-001
+    private String getCollegeCodeWithDelimiter(Code code) {
+        CodePk codePk = code.getCodePk();
+        return codePk.getGroupCodeId() + "-" + codePk.getCodeId();
     }
 }
