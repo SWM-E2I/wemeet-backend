@@ -14,9 +14,8 @@ import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import java.lang.reflect.Field;
 
 public enum MemberFixture {
@@ -145,7 +144,7 @@ public enum MemberFixture {
     }
 
     public CreateMemberRequestDto createMemberRequestDto(String collegeCode) {
-        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto();
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto(collegeCode);
 
         return CreateMemberRequestDto.builder()
             .nickname(this.nickname)
@@ -163,32 +162,14 @@ public enum MemberFixture {
         );
     }
 
-    public ModifyMemberRequestDto createModifyMemberRequestDto() {
-        return ModifyMemberRequestDto.builder()
-            .nickname("modify nickname")
-            .introduction("modify introduction")
-            .mbti("ESTJ")
-            .build();
-    }
+    public UpdateMemberRequestDto createUpdateMemberRequestDto(final String nickname, final String mbti) {
+        String updateNickname = nickname == null ? this.nickname : nickname;
+        String updateMbti = mbti == null ? this.mbti.name() : mbti;
 
-    public MemberInfoResponseDto createMemberInfoResponseDto() {
-        return MemberInfoResponseDto.builder()
-            .nickname(this.nickname)
-            .profileImage("profileImage Key")
-            .univAuth(true)
-            .imageAuth(false)
+        return UpdateMemberRequestDto.builder()
+            .nickname(updateNickname)
+            .mbti(updateMbti)
             .build();
-    }
-
-    private void setMemberId(Long memberId, Member member) {
-        Field memberIdField;
-        try {
-            memberIdField = member.getClass().getDeclaredField("memberId");
-            memberIdField.setAccessible(true);
-            memberIdField.set(member, memberId);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public String getNickname() {
@@ -233,6 +214,17 @@ public enum MemberFixture {
 
     public Role getRole() {
         return role;
+    }
+
+    private void setMemberId(Long memberId, Member member) {
+        Field memberIdField;
+        try {
+            memberIdField = member.getClass().getDeclaredField("memberId");
+            memberIdField.setAccessible(true);
+            memberIdField.set(member, memberId);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private CollegeInfoRequestDto createCollegeInfoRequestDto() {
