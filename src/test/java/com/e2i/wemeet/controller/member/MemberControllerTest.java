@@ -52,9 +52,8 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         // given
         CreateMemberRequestDto request = MemberFixture.KAI.createMemberRequestDto();
 
-        when(codeService.findCodeList(anyList())).thenReturn(List.of());
         when(memberService.createMember(any(CreateMemberRequestDto.class)))
-            .thenReturn(MemberFixture.KAI.create().getMemberId());
+            .thenReturn(MemberFixture.KAI.create_with_id(1L).getMemberId());
 
         // when
         ResultActions perform = mockMvc.perform(post("/v1/member")
@@ -187,15 +186,13 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("gender").type(JsonFieldType.STRING).description("성별"),
                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
                             .description("핸드폰 번호"),
-                        fieldWithPath("collegeInfo.college").type(JsonFieldType.STRING)
-                            .description("대학교"),
+                        fieldWithPath("collegeInfo.collegeCode").type(JsonFieldType.STRING)
+                            .description("대학교 코드 (CE-001)"),
                         fieldWithPath("collegeInfo.collegeType").type(JsonFieldType.STRING)
-                            .description("대학교 유형"),
+                            .description("학과 (ENGINEERING)"),
                         fieldWithPath("collegeInfo.admissionYear").type(JsonFieldType.STRING)
-                            .description("학번"),
-                        fieldWithPath("mbti").type(JsonFieldType.STRING).description("본인 MBTI"),
-                        fieldWithPath("introduction").type(JsonFieldType.STRING).optional()
-                            .description("자기 소개")
+                            .description("학번 (17)"),
+                        fieldWithPath("mbti").type(JsonFieldType.STRING).description("본인 MBTI")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
