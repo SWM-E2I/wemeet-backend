@@ -186,7 +186,7 @@ class MemberControllerTest extends AbstractControllerUnitTest {
 
         // when
         ResultActions perform = mockMvc.perform(
-            multipart("/v1/member/profile_image").file("file", "test".getBytes())
+            multipart("/v1/member/profile-image").file("file", "test".getBytes())
                 .with(csrf())
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
 

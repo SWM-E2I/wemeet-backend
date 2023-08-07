@@ -79,7 +79,7 @@ public class MemberController {
         return ResponseDto.success("Delete Member Success");
     }
 
-    @PostMapping("/profile_image")
+    @PostMapping("/profile-image")
     public ResponseDto<Void> uploadProfileImage(@MemberId Long memberId,
         @RequestPart("file") MultipartFile file) {
         memberService.uploadProfileImage(memberId, file);
