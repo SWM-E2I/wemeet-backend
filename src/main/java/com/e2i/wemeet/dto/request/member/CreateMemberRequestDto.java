@@ -10,10 +10,11 @@ import com.e2i.wemeet.util.validator.bean.PhoneValid;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
+import org.hibernate.validator.constraints.Length;
 
 @Builder
 public record CreateMemberRequestDto(
-    @NotBlank(message = "{not.blank.nickname}")
+    @Length(min = 2, max = 10, message = "{length.nickname}")
     String nickname,
 
     @NotBlank(message = "{not.blank.gender}")

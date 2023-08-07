@@ -5,6 +5,7 @@ import com.e2i.wemeet.domain.code.Code;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class CollegeInfo {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collegeCodeId", referencedColumnName = "code_id")
     @JoinColumn(name = "collegeGroupCodeId", referencedColumnName = "group_code_id")
     private Code collegeCode;
