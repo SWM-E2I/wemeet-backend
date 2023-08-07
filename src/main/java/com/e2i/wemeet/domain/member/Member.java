@@ -76,8 +76,8 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Member(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
-        Boolean imageAuth,
+    public Member(String nickname, Gender gender, String phoneNumber, String email,
+        CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
         ProfileImage profileImage, Role role, LocalDateTime deletedAt) {
         this.nickname = nickname;
         this.gender = gender;
@@ -135,5 +135,9 @@ public class Member extends BaseTimeEntity {
 
     public void saveEmail(final String email) {
         this.email = email;
+    }
+
+    public void saveProfileImage(final ProfileImage profileImage) {
+        this.profileImage = profileImage;
     }
 }

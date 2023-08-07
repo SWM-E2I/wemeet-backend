@@ -18,11 +18,11 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-
     // TODO :: service refactoring
     @Override
     @Transactional
     public Long createMember(CreateMemberRequestDto requestDto) {
+
         return null;
     }
 
@@ -61,5 +61,6 @@ public class MemberServiceImpl implements MemberService {
             .checkMemberValid();
 
         // member.delete();
+
     }
 }

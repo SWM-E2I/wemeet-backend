@@ -33,9 +33,9 @@ class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
     @InjectMocks
     private MemberServiceImpl memberService;
+
 
     private static final Long memberId = 1L;
     private static final Member member = MemberFixture.KAI.create();

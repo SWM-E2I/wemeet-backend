@@ -8,8 +8,8 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.RoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
-import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member_image.MemberImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/member")
@@ -27,7 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final CodeService codeService;
+    private final MemberImageService memberImageService;
+
 
     @PostMapping
     public ResponseDto<Void> createMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
@@ -37,7 +40,8 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseDto<MemberDetailResponseDto> getMemberDetail(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ResponseDto<MemberDetailResponseDto> getMemberDetail(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
         MemberDetailResponseDto result = memberService.getMemberDetail(memberId);
 
@@ -45,7 +49,8 @@ public class MemberController {
     }
 
     @GetMapping("/info")
-    public ResponseDto<MemberInfoResponseDto> getMemberInfo(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ResponseDto<MemberInfoResponseDto> getMemberInfo(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Long memberId = memberPrincipal.getMemberId();
         MemberInfoResponseDto result = memberService.getMemberInfo(memberId);
 
@@ -62,7 +67,8 @@ public class MemberController {
     }
 
     @GetMapping("/role")
-    public ResponseDto<RoleResponseDto> getMemberRole(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ResponseDto<RoleResponseDto> getMemberRole(
+        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         RoleResponseDto result = memberService.getMemberRole(memberPrincipal.getMemberId());
 
         return ResponseDto.success("Get Member Role Success", result);
@@ -73,5 +79,13 @@ public class MemberController {
         memberService.deleteMember(memberId);
 
         return ResponseDto.success("Delete Member Success");
+    }
+
+    @PostMapping("/profile-image")
+    public ResponseDto<Void> uploadProfileImage(@MemberId Long memberId,
+        @RequestPart("file") MultipartFile file) {
+        memberImageService.uploadProfileImage(memberId, file);
+
+        return ResponseDto.success("Upload Profile Image Success");
     }
 }
