@@ -16,7 +16,7 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.NotBelongToTeamException;
-import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.security.token.TokenInjector;
@@ -102,7 +102,7 @@ class TeamServiceTest {
         // when & then
         assertThatThrownBy(
             () -> teamService.createTeam(1L, requestDto, preferenceMeetingTypeCode, response))
-            .isInstanceOf(TeamAlreadyExistsException.class);
+            .isInstanceOf(TeamExistsException.class);
 
         verify(memberRepository).findById(anyLong());
         verify(teamRepository, never()).save(any(Team.class));

@@ -5,32 +5,30 @@ import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA;
 import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.WOMAN;
 
 import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import java.lang.reflect.Field;
-import lombok.Getter;
 
-// TODO :: service refactoring
-@Getter
 public enum MemberFixture {
-    KAI("kai", Gender.MAN, "+821011112222", "2017e7024@as.ac.kr",
+    KAI("카이", Gender.MAN, "+821011112222", "2017e7024@as.ac.kr",
         ANYANG.create(), Mbti.INFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    RIM("rim", Gender.WOMAN, "+821098764444", "2019a24@gad.ac.kr",
+    RIM("째림", Gender.WOMAN, "+821098764444", "2019a24@gad.ac.kr",
         WOMAN.create(), Mbti.ISFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    SEYUN("seyun", Gender.MAN, "+821090908888", "2020a234@ad.ac.kr",
+    SEYUN("떼윤", Gender.MAN, "+821090908888", "2020a234@ad.ac.kr",
         KOREA.create(), Mbti.ENFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER),
-    JEONGYEOL("jeongyeol", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
+    JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER);
 
@@ -72,6 +70,18 @@ public enum MemberFixture {
 
         return createBuilder()
             .collegeInfo(collegeInfoFixture)
+            .build();
+    }
+
+    public Member create_phone(final String phoneNumber) {
+        return createBuilder()
+            .phoneNumber(phoneNumber)
+            .build();
+    }
+
+    public Member create_email(final String email) {
+        return createBuilder()
+            .email(email)
             .build();
     }
 
@@ -122,39 +132,88 @@ public enum MemberFixture {
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto();
+
         return CreateMemberRequestDto.builder()
             .nickname(this.nickname)
-            .gender(this.gender.toString())
             .phoneNumber(this.phoneNumber)
-            .mbti("ESTJ")
-            .introduction("hello!!").build();
+            .gender(this.gender.name())
+            .mbti(this.mbti.name())
+            .collegeInfo(collegeInfoRequestDto)
+            .build();
     }
 
-    // TODO :: service refactoring
+    public CreateMemberRequestDto createMemberRequestDto(String collegeCode) {
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto(collegeCode);
+
+        return CreateMemberRequestDto.builder()
+            .nickname(this.nickname)
+            .phoneNumber(this.phoneNumber)
+            .gender(this.gender.name())
+            .mbti(this.mbti.name())
+            .collegeInfo(collegeInfoRequestDto)
+            .build();
+    }
+
     public MemberDetailResponseDto createMemberDetailResponseDto() {
-        return MemberDetailResponseDto.builder()
-            .nickname(this.nickname)
-            .gender(this.gender)
-            .mbti(this.mbti)
-            .admissionYear(this.collegeInfo.getAdmissionYear())
+        return MemberDetailResponseDto.of(
+            this.create(),
+            this.collegeInfo.getCollegeCode().getCodeValue()
+        );
+    }
+
+    public UpdateMemberRequestDto createUpdateMemberRequestDto(final String nickname, final String mbti) {
+        String updateNickname = nickname == null ? this.nickname : nickname;
+        String updateMbti = mbti == null ? this.mbti.name() : mbti;
+
+        return UpdateMemberRequestDto.builder()
+            .nickname(updateNickname)
+            .mbti(updateMbti)
             .build();
     }
 
-    public ModifyMemberRequestDto createModifyMemberRequestDto() {
-        return ModifyMemberRequestDto.builder()
-            .nickname("modify nickname")
-            .introduction("modify introduction")
-            .mbti("ESTJ")
-            .build();
+    public String getNickname() {
+        return nickname;
     }
 
-    public MemberInfoResponseDto createMemberInfoResponseDto() {
-        return MemberInfoResponseDto.builder()
-            .nickname(this.nickname)
-            .profileImage("profileImage Key")
-            .univAuth(true)
-            .imageAuth(false)
-            .build();
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public CollegeInfo getCollegeInfo() {
+        return collegeInfo;
+    }
+
+    public Mbti getMbti() {
+        return mbti;
+    }
+
+    public Integer getCredit() {
+        return credit;
+    }
+
+    public Boolean getImageAuth() {
+        return imageAuth;
+    }
+
+    public String getBasicUrl() {
+        return basicUrl;
+    }
+
+    public String getLowUrl() {
+        return lowUrl;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     private void setMemberId(Long memberId, Member member) {
@@ -166,5 +225,27 @@ public enum MemberFixture {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto() {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(getCollegeCodeWithDelimiter(this.collegeInfo.getCollegeCode()))
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto(String collegeCode) {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(collegeCode)
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    // Delimiter가 붙은 코드를 생성 ex) CE-001
+    private String getCollegeCodeWithDelimiter(Code code) {
+        CodePk codePk = code.getCodePk();
+        return codePk.getGroupCodeId() + "-" + codePk.getCodeId();
     }
 }

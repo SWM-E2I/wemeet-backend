@@ -20,7 +20,6 @@ public enum Gender {
 
     @JsonCreator
     public static Gender findBy(String value) {
-
         return Arrays.stream(Gender.values())
             .filter(gender -> gender.name().equals(value.toUpperCase()))
             .findFirst()

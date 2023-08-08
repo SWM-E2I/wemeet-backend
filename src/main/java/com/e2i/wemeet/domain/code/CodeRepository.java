@@ -7,4 +7,6 @@ public interface CodeRepository extends JpaRepository<Code, CodePk> {
 
     Optional<Code> findByCodeValue(String codeValue);
 
+    Optional<Code> findByCodePk(CodePk codePk);
+
 }

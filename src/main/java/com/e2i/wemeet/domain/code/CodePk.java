@@ -24,4 +24,10 @@ public class CodePk implements Serializable {
         this.codeId = codeId;
         this.groupCodeId = groupCodeId;
     }
+
+    // CE-001 -> CODE PK 생성
+    public static CodePk of(final String groupCodeIdWithCodeId) {
+        final String[] split = groupCodeIdWithCodeId.split("-");
+        return new CodePk(split[1], split[0]);
+    }
 }
