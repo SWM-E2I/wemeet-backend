@@ -17,8 +17,10 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
+import com.e2i.wemeet.exception.badrequest.InvalidMbtiException;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
@@ -26,6 +28,7 @@ import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.support.config.ReflectionUtils;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.hibernate.exception.DataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -128,59 +131,68 @@ class MemberServiceTest {
     @Nested
     class Update {
 
-        @DisplayName("회원의 닉네임 정보를 수정할 수 있다.")
+        @DisplayName("회원의 닉네임과 MBTI 정보를 수정할 수 있다.")
         @Test
         void updateNickname() {
             // given
+            Member kai = KAI.create_with_id(1L);
+            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "ESTJ");
+            when(memberRepository.findById(1L))
+                .thenReturn(Optional.of(kai));
 
             // when
+            memberService.updateMember(1L, updateRequest);
 
             // then
-
-        }
-
-        @DisplayName("회원의 MBIT 정보를 수정할 수 있다.")
-        @Test
-        void updateMbti() {
-            // given
-
-            // when
-
-            // then
-
+            verify(memberRepository).findById(1L);
+            assertThat(kai.getNickname()).isEqualTo("기우미우");
+            assertThat(kai.getMbti()).isEqualTo(Mbti.ESTJ);
         }
 
         @DisplayName("회원의 ID가 잘못되었다면 회원 정보를 수정할 수 없다.")
         @Test
         void updateWithInvalidId() {
             // given
+            final Long invalidId = 999L;
+            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "ESTJ");
+            when(memberRepository.findById(invalidId))
+                .thenThrow(MemberNotFoundException.class);
 
-            // when
-
-            // then
-
+            // when & then
+            assertThatThrownBy(() -> memberService.updateMember(invalidId, updateRequest))
+                .isExactlyInstanceOf(MemberNotFoundException.class);
+            verify(memberRepository).findById(invalidId);
         }
 
         @DisplayName("수정한 MBTI가 존재하지 않다면 MBTI를 수정할 수 없다.")
         @Test
         void updateWithInvalidMbti() {
             // given
+            Member kai = KAI.create_with_id(1L);
+            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "PAQS");
+            when(memberRepository.findById(1L))
+                .thenReturn(Optional.of(kai));
 
-            // when
-
-            // then
-
+            // when & then
+            assertThatThrownBy(() -> memberService.updateMember(1L, updateRequest))
+                .isExactlyInstanceOf(InvalidMbtiException.class);
+            verify(memberRepository).findById(1L);
         }
 
-        @DisplayName("닉네임의 길이가 20자가 넘어간다면 닉네임을 수정할 수 없다.")
+        @DisplayName("닉네임의 길이가 10자가 넘어간다면 닉네임을 수정할 수 없다.")
         @Test
-        void updateWithOverTwentyLengthNickname() {
+        void updateWithOverTenLengthNickname() {
             // given
+            final String overTenLengthNickname = "기우미우기우미우기우미";
+            Member kai = KAI.create_with_id(1L);
+            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto(overTenLengthNickname, "ESTJ");
+            when(memberRepository.findById(1L))
+                .thenThrow(DataException.class);
 
-            // when
-
-            // then
-
+            // when & then
+            assertThatThrownBy(() -> memberService.updateMember(1L, updateRequest))
+                .isExactlyInstanceOf(DataException.class);
+            verify(memberRepository).findById(1L);
         }
     }
 
@@ -267,33 +279,50 @@ class MemberServiceTest {
         @Test
         void delete() {
             // given
+            Member kai = KAI.create_with_id(1L);
 
             // when
+            when(memberRepository.findById(1L))
+                .thenReturn(Optional.of(kai));
+            LocalDateTime deletedTime = LocalDateTime.now();
+            memberService.deleteMember(1L, deletedTime);
 
             // then
-
+            assertThat(kai.getDeletedAt()).isEqualTo(deletedTime);
         }
 
         @DisplayName("회원 ID가 잘못되었을 경우, 회원 탈퇴를 할 수 없다.")
         @Test
         void deleteWithInvalidId() {
             // given
+            final Long invalidId = 999L;
 
             // when
+            when(memberRepository.findById(invalidId))
+                .thenThrow(MemberNotFoundException.class);
+            LocalDateTime deletedTime = LocalDateTime.now();
 
             // then
-
+            assertThatThrownBy(() -> memberService.deleteMember(invalidId, deletedTime))
+                .isExactlyInstanceOf(MemberNotFoundException.class);
         }
 
         @DisplayName("이미 탈퇴한 회원일 경우 회원 탈퇴를 할 수 없다.")
         @Test
         void deleteWithAlreadyDeleted() {
             // given
+            Member kai = KAI.create_with_id(1L);
+            ReflectionUtils.setFieldValue(kai, "deletedAt", LocalDateTime.now());
 
             // when
+            when(memberRepository.findById(1L))
+                .thenReturn(Optional.of(kai));
+
+            LocalDateTime deletedTime = LocalDateTime.now();
 
             // then
-
+            assertThatThrownBy(() -> memberService.deleteMember(1L, deletedTime))
+                .isExactlyInstanceOf(MemberHasBeenDeletedException.class);
         }
     }
 }
