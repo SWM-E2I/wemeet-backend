@@ -10,6 +10,7 @@ import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
@@ -34,6 +35,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,7 +47,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 10, nullable = false)
     private String nickname;
 
     @Convert(converter = GenderConverter.class)
@@ -117,17 +119,8 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void modifyNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void modifyMbti(Mbti mbti) {
-        this.mbti = mbti;
-    }
-
-    // TODO :: refactoring
     public boolean isEmailAuthenticated() {
-        return false;
+        return StringUtils.hasText(this.email);
     }
 
     public Member checkMemberValid() {
@@ -164,5 +157,14 @@ public class Member extends BaseTimeEntity {
         if (!this.team.contains(team)) {
             this.team.add(team);
         }
+    }
+
+    public void update(UpdateMemberRequestDto requestDto) {
+        if (StringUtils.hasText(requestDto.nickname())
+            && requestDto.nickname().length() > 2
+            && requestDto.nickname().length() <= 10) {
+            this.nickname = requestDto.nickname();
+        }
+        this.mbti = Mbti.findBy(requestDto.mbti());
     }
 }
