@@ -42,8 +42,8 @@ public class MemberController {
     }
 
     @PatchMapping
-    public ResponseDto<Void> update(@Valid @RequestBody UpdateMemberRequestDto requestDto,
-        @MemberId Long memberId) {
+    public ResponseDto<Void> update(@MemberId Long memberId,
+        @Valid @RequestBody UpdateMemberRequestDto requestDto) {
         memberService.updateMember(memberId, requestDto);
 
         return ResponseDto.success("Update Member Success");
