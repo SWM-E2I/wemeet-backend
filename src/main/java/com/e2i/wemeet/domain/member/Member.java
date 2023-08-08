@@ -15,6 +15,7 @@ import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.util.validator.CustomFormatValidator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -160,11 +161,10 @@ public class Member extends BaseTimeEntity {
     }
 
     public void update(UpdateMemberRequestDto requestDto) {
-        if (StringUtils.hasText(requestDto.nickname())
-            && requestDto.nickname().length() >= 2
-            && requestDto.nickname().length() <= 10) {
-            this.nickname = requestDto.nickname();
-        }
+        CustomFormatValidator.validateNicknameFormat(requestDto.nickname());
+
+        this.nickname = requestDto.nickname();
         this.mbti = Mbti.findBy(requestDto.mbti());
     }
+
 }
