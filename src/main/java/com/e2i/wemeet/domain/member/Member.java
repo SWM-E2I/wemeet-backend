@@ -161,7 +161,7 @@ public class Member extends BaseTimeEntity {
 
     public void update(UpdateMemberRequestDto requestDto) {
         if (StringUtils.hasText(requestDto.nickname())
-            && requestDto.nickname().length() > 2
+            && requestDto.nickname().length() >= 2
             && requestDto.nickname().length() <= 10) {
             this.nickname = requestDto.nickname();
         }
