@@ -10,10 +10,12 @@ import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.util.validator.CustomFormatValidator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -27,12 +29,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -79,15 +83,15 @@ public class Member extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "teamLeader", cascade = CascadeType.PERSIST)
-    private List<Team> team;
+    private List<Team> team = new ArrayList<>();
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
     @Builder
-    public Member(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
-        Boolean imageAuth,
-        ProfileImage profileImage, Role role, LocalDateTime deletedAt) {
+    public Member(String nickname, Gender gender, String phoneNumber, String email,
+        CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
+        ProfileImage profileImage, Role role) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -98,7 +102,6 @@ public class Member extends BaseTimeEntity {
         this.imageAuth = imageAuth;
         this.profileImage = profileImage;
         this.role = role;
-        this.deletedAt = deletedAt;
     }
 
     public void addCredit(int amount) {
@@ -116,17 +119,8 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void modifyNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void modifyMbti(Mbti mbti) {
-        this.mbti = mbti;
-    }
-
-    // TODO :: refactoring
     public boolean isEmailAuthenticated() {
-        return false;
+        return StringUtils.hasText(this.email);
     }
 
     public Member checkMemberValid() {
@@ -147,13 +141,14 @@ public class Member extends BaseTimeEntity {
     }
 
     public void delete(LocalDateTime deletedAt) {
-        this.team.stream()
+        // Team 이 존재한다면 예외 발생
+        List<LocalDateTime> notDeleted = this.team.stream()
             .map(Team::getDeletedAt)
             .filter(Objects::isNull)
-            .findAny()
-            .ifPresent(team -> {
-                throw new TeamExistsException();
-            });
+            .toList();
+        if (!notDeleted.isEmpty()) {
+            throw new TeamExistsException();
+        }
 
         this.deletedAt = deletedAt;
     }
@@ -162,6 +157,13 @@ public class Member extends BaseTimeEntity {
         if (!this.team.contains(team)) {
             this.team.add(team);
         }
+    }
+
+    public void update(UpdateMemberRequestDto requestDto) {
+        CustomFormatValidator.validateNicknameFormat(requestDto.nickname());
+
+        this.nickname = requestDto.nickname();
+        this.mbti = Mbti.findBy(requestDto.mbti());
     }
 
     public void saveProfileImage(final ProfileImage profileImage) {

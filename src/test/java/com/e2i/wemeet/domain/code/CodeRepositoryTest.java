@@ -6,6 +6,8 @@ import com.e2i.wemeet.support.config.RepositoryTest;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RepositoryTest
@@ -39,5 +41,34 @@ class CodeRepositoryTest {
 
         // then
         assertThat(collegeCode).isEmpty();
+    }
+
+    @DisplayName("코드 PK로 대학 코드를 조회할 수 있다.")
+    @Test
+    void findByCodePk() {
+        // given
+        final String groupCodeIdWithCodeId = "CE-001";
+        CodePk codePk = CodePk.of(groupCodeIdWithCodeId);
+
+        // when
+        Optional<Code> code = codeRepository.findByCodePk(codePk);
+
+        // then
+        assertThat(code).isNotEmpty();
+        assertThat(code.get().getCodeValue()).isEqualTo("서울대학교");
+    }
+
+    @DisplayName("잘못된 코드 PK로 대학 코드를 조회할 수 없다.")
+    @ValueSource(strings = {"CE-999", "CE-000", "CES-001"})
+    @ParameterizedTest
+    void findByCodePkInvalidPk(String invalidGroupCodeIdWithCodeId) {
+        // given
+        CodePk codePk = CodePk.of(invalidGroupCodeIdWithCodeId);
+
+        // when
+        Optional<Code> code = codeRepository.findByCodePk(codePk);
+
+        // then
+        assertThat(code).isEmpty();
     }
 }

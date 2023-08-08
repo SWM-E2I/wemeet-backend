@@ -1,10 +1,8 @@
 package com.e2i.wemeet.service.member;
 
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.UpdateMemberMbtiRequestDto;
-import com.e2i.wemeet.dto.request.member.UpdateMemberNicknameRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.time.LocalDateTime;
@@ -17,29 +15,19 @@ public interface MemberService {
     Long createMember(CreateMemberRequestDto requestDto);
 
     /*
-     * 닉네임 수정
-     */
-    void updateNickname(Long memberId, UpdateMemberNicknameRequestDto requestDto);
-
-    /*
-     * MBTI 수정
-     * */
-    void updateMbti(Long memberId, UpdateMemberMbtiRequestDto requestDto);
-
-    /*
      * 마이페이지 상세 정보 조회
      */
     MemberDetailResponseDto readMemberDetail(Long memberId);
 
     /*
-     * 사용자 정보 조회 (프로필 이미지, 인증 여부...)
-     */
-    MemberInfoResponseDto readMemberInfo(Long memberId);
-
-    /*
      * 사용자 Role + Team 여부 조회
      */
     MemberRoleResponseDto readMemberRole(MemberPrincipal memberPrincipal);
+
+    /*
+     * 사용자 정보 수정
+     * */
+    void updateMember(Long memberId, UpdateMemberRequestDto requestDto);
 
     /*
      * 회원 탈퇴

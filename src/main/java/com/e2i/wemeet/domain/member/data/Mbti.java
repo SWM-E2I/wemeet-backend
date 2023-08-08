@@ -1,8 +1,7 @@
 package com.e2i.wemeet.domain.member.data;
 
-import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.badrequest.InvalidDatabaseKeyToEnumException;
-import com.e2i.wemeet.exception.badrequest.InvalidValueException;
+import com.e2i.wemeet.exception.badrequest.InvalidMbtiException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
 import lombok.Getter;
@@ -22,11 +21,10 @@ public enum Mbti {
 
     @JsonCreator
     public static Mbti findBy(String value) {
-
         return Arrays.stream(Mbti.values())
             .filter(mbti -> mbti.name().equals(value.toUpperCase()))
             .findFirst()
-            .orElseThrow(() -> new InvalidValueException(ErrorCode.INVALID_MBTI_VALUE));
+            .orElseThrow(InvalidMbtiException::new);
     }
 
     public static Mbti findByKey(int key) {

@@ -78,9 +78,9 @@ public class Team extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(Integer memberNum, Region region,  DrinkRate drinkRate, DrinkWithGame drinkWithGame,
-        AdditionalActivity additionalActivity,
-        String introduction, Member teamLeader, LocalDateTime deletedAt) {
+    public Team(Integer memberNum, Region region, DrinkRate drinkRate,
+        DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity,
+        String introduction, Member teamLeader) {
         setTeamLeader(teamLeader);
         this.memberNum = memberNum;
         this.region = region;
@@ -88,7 +88,6 @@ public class Team extends BaseTimeEntity {
         this.drinkWithGame = drinkWithGame;
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
-        this.deletedAt = deletedAt;
     }
 
     /*
