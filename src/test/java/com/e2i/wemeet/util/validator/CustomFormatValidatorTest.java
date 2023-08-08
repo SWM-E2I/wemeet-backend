@@ -15,8 +15,8 @@ class CustomFormatValidatorTest {
     @Test
     void validatePhoneFormat() {
         final String phone = "+821032452345";
-
-        CustomFormatValidator.validatePhoneFormat(phone);
+        assertThatNoException()
+            .isThrownBy(() -> CustomFormatValidator.validatePhoneFormat(phone));
     }
 
     @DisplayName("주어진 입력 값이 핸드폰 형식에 맞지 않으면 예외가 발생한다")
@@ -31,7 +31,8 @@ class CustomFormatValidatorTest {
     @ValueSource(strings = {"sign841@gs.anyang.ac.kr", "goefew12@koreka.ac.kr"})
     @ParameterizedTest
     void validateEmailFormat(String email) {
-        CustomFormatValidator.validateEmailFormat(email);
+        assertThatNoException()
+            .isThrownBy(() -> CustomFormatValidator.validateEmailFormat(email));
     }
 
     @DisplayName("주어진 입력 값이 이메일 형식에 맞지 않으면 예외가 발생한다.")
