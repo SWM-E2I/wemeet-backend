@@ -8,7 +8,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.support.config.AbstractRepositoryUnitTest;
+import org.hibernate.exception.DataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +79,24 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
         // then
         assertThat(member.getCollegeInfo().getCollegeCode().getCodeValue())
             .isEqualTo("안양대학교");
+    }
+
+    @DisplayName("닉네임 길이가 10자를 초과하면, 회원 정보를 수정할 수 없다.")
+    @Test
+    void saveFailWithOverTenLengthNickname() {
+        // given
+        UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우기우미우기우미", "ENFP");
+        Long savedMemberId = memberRepository.save(KAI.create(ANYANG_CODE)).getMemberId();
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        Member member = memberRepository.findById(savedMemberId)
+            .orElseThrow();
+
+        // then
+        member.update(updateRequest);
+        assertThatThrownBy(() -> entityManager.flush())
+            .isInstanceOf(DataException.class);
     }
 }
