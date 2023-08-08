@@ -55,7 +55,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void updateMember(Long memberId, UpdateMemberRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
+        member.update(requestDto);
     }
 
     @Transactional
