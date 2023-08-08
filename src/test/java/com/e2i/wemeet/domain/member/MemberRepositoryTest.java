@@ -9,8 +9,8 @@ import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
+import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import com.e2i.wemeet.support.config.AbstractRepositoryUnitTest;
-import org.hibernate.exception.DataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,8 +95,7 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
             .orElseThrow();
 
         // then
-        member.update(updateRequest);
-        assertThatThrownBy(() -> entityManager.flush())
-            .isInstanceOf(DataException.class);
+        assertThatThrownBy(() -> member.update(updateRequest))
+            .isInstanceOf(InvalidDataFormatException.class);
     }
 }

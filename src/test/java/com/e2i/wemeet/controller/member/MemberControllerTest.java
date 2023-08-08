@@ -8,10 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +25,7 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
@@ -35,12 +39,16 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.multipart.MultipartFile;
 
 @WebMvcTest(MemberController.class)
 class MemberControllerTest extends AbstractControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private MemberImageService memberImageService;
 
     @DisplayName("회원 가입을 할 수 있다.")
     @WithCustomMockUser
@@ -199,6 +207,32 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                     )));
     }
 
+    @DisplayName("회원 프로필 이미지를 등록할 수 있다.")
+    @WithCustomMockUser
+    @Test
+    void uploadProfileImage() throws Exception {
+        // given
+        doNothing().when(memberImageService)
+            .uploadProfileImage(anyLong(), any(MultipartFile.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(
+            multipart("/v1/member/profile-image").file("file", "test".getBytes())
+                .with(csrf())
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
+
+        perform
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("SUCCESS"))
+            .andExpect(jsonPath("$.message").value("Upload Profile Image Success"))
+            .andExpect(jsonPath("$.data").doesNotExist());
+
+        // then
+        verify(memberImageService).uploadProfileImage(anyLong(), any(MultipartFile.class));
+
+        uploadProfileImageWriteRestDocs(perform);
+    }
+
     private void createMemberWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
@@ -311,5 +345,26 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                             .description("팀 소속 여부")
                     )
                 ));
+    }
+
+    void uploadProfileImageWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 프로필 사진 등록",
+                    ResourceSnippetParameters.builder()
+                        .tag("회원 관련 API")
+                        .summary("회원 프로필 등록 API 입니다.")
+                        .description(
+                            """
+                                   회원의 프로필 사진을 등록합니다.
+                                """),
+                    requestParts(
+                        partWithName("file").description("프로필 이미지 파일")),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
+                    )));
     }
 }
