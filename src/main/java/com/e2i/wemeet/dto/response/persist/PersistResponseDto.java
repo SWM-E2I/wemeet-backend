@@ -2,20 +2,27 @@ package com.e2i.wemeet.dto.response.persist;
 
 import lombok.Builder;
 
-// TODO :: service refactoring
 @Builder
 public record PersistResponseDto(
     String nickname,
     boolean emailAuthenticated,
-    boolean preferenceCompleted,
     boolean hasMainProfileImage,
+    String basicProfileImage,
+    String lowProfileImage,
     boolean profileImageAuthenticated,
     boolean hasTeam
 ) {
 
+    @Override
     public String toString() {
-        return "PersistResponseDto(nickname=" + this.nickname() + ", emailAuthenticated=" + this.emailAuthenticated() + ", preferenceCompleted="
-            + this.preferenceCompleted() + ", hasMainProfileImage=" + this.hasMainProfileImage() + ", profileImageAuthenticated="
-            + this.profileImageAuthenticated() + ", hasTeam=" + this.hasTeam() + ")";
+        return "PersistResponseDto{" +
+            "nickname='" + nickname + '\'' +
+            ", emailAuthenticated=" + emailAuthenticated +
+            ", hasMainProfileImage=" + hasMainProfileImage +
+            ", basicProfileImage='" + basicProfileImage + '\'' +
+            ", lowProfileImage='" + lowProfileImage + '\'' +
+            ", profileImageAuthenticated=" + profileImageAuthenticated +
+            ", hasTeam=" + hasTeam +
+            '}';
     }
 }
