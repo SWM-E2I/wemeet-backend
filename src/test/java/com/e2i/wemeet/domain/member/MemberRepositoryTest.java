@@ -21,6 +21,25 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @DisplayName("핸드폰 번호로 회원을 조회할 수 있다.")
+    @Test
+    void findByPhoneNumber() {
+        // given
+        final String phone = "+821077779999";
+        memberRepository.save(RIM.create_phone(phone));
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        Member findMember = memberRepository.findByPhoneNumber(phone)
+            .orElseThrow();
+
+        // then
+        assertThat(findMember)
+            .extracting("nickname", "phoneNumber", "gender", "email")
+            .contains(RIM.getNickname(), phone, RIM.getGender(), RIM.getEmail());
+    }
+
     @DisplayName("회원 가입 요청을 통해 회원을 저장할 수 있다.")
     @Test
     void saveWithMemberRequestDto() {

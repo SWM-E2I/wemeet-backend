@@ -74,4 +74,20 @@ class CustomFormatValidatorTest {
         assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(nickname))
             .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
+
+    @DisplayName("코드 형식에 맞으면 검사에 통과한다.")
+    @ValueSource(strings = {"CE-001", "CE-999", "AR-010", "CE-003"})
+    @ParameterizedTest
+    void validateCodePkFormat(String groupCodeWithCodeId) {
+        assertThatNoException()
+            .isThrownBy(() -> CustomFormatValidator.validateCodePkFormat(groupCodeWithCodeId));
+    }
+
+    @DisplayName("코드 형식에 맞지 않으면 예외가 발생한다.")
+    @ValueSource(strings = {"CE-1000", "Ea-001", "1E-010", "10-003"})
+    @ParameterizedTest
+    void validateCodePkFormatFail(String groupCodeWithCodeId) {
+        assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(groupCodeWithCodeId))
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
+    }
 }

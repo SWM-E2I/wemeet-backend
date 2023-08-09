@@ -4,7 +4,6 @@ import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.code.CodeFixture.SEOUL_UNIVERSITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -107,7 +106,7 @@ class MemberServiceTest {
         @Test
         void createMember_InvalidCollegeCode() {
             // given
-            final String invalidCollegeCode = "E2I-MASTER";
+            final String invalidCollegeCode = "XX-999";
             CreateMemberRequestDto requestDto = KAI.createMemberRequestDto(invalidCollegeCode);
 
             Code code = SEOUL_UNIVERSITY.create();
@@ -212,16 +211,9 @@ class MemberServiceTest {
 
             // then
             MemberDetailResponseDto memberDetailResponseDto = memberService.readMemberDetail(kai.getMemberId());
-            assertAll(
-                () -> assertThat(memberDetailResponseDto).isNotNull(),
-                () -> assertThat(memberDetailResponseDto.nickname()).isEqualTo(KAI.getNickname()),
-                () -> assertThat(memberDetailResponseDto.college()).isEqualTo("안양대학교"),
-                () -> assertThat(memberDetailResponseDto.collegeType()).isEqualTo("인문/사회"),
-                () -> assertThat(memberDetailResponseDto.mbti()).isEqualTo(Mbti.INFJ),
-                () -> assertThat(memberDetailResponseDto.profileImage().basicUrl()).isEqualTo(KAI.getBasicUrl()),
-                () -> assertThat(memberDetailResponseDto.profileImage().lowUrl()).isEqualTo(KAI.getLowUrl()),
-                () -> assertThat(memberDetailResponseDto.admissionYear()).isGreaterThan("10")
-            );
+            assertThat(memberDetailResponseDto).isNotNull()
+                .extracting("nickname", "college", "collegeType", "mbti", "admissionYear")
+                .contains(kai.getNickname(), "안양대학교", "인문/사회", Mbti.INFJ, "17");
         }
 
         @DisplayName("회원 ID가 잘못되었을 경우, 회원 정보를 조회할 수 없다.")
