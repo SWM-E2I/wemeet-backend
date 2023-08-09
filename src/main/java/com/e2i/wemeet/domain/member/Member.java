@@ -72,9 +72,6 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer credit;
 
-    @Column
-    private Boolean imageAuth;
-
     @Embedded
     private ProfileImage profileImage;
 
@@ -99,7 +96,6 @@ public class Member extends BaseTimeEntity {
         this.collegeInfo = collegeInfo;
         this.mbti = mbti;
         this.credit = credit;
-        this.imageAuth = imageAuth;
         this.profileImage = profileImage;
         this.role = role;
     }

@@ -126,8 +126,7 @@ public enum MemberFixture {
             .collegeInfo(this.collegeInfo)
             .mbti(this.mbti)
             .credit(this.credit)
-            .imageAuth(this.imageAuth)
-            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl))
+            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl, this.imageAuth))
             .role(this.role);
     }
 
