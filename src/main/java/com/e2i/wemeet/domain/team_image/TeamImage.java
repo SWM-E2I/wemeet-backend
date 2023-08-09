@@ -29,16 +29,16 @@ public class TeamImage extends CreateTimeEntity {
     private String teamImageUrl;
 
     @Column(nullable = false)
-    private Integer order;
+    private Integer sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private Team team;
 
     @Builder
-    public TeamImage(String teamImageUrl, Integer order, Team team) {
+    public TeamImage(String teamImageUrl, Integer sequence, Team team) {
         this.teamImageUrl = teamImageUrl;
-        this.order = order;
+        this.sequence = sequence;
         this.team = team;
     }
 }
