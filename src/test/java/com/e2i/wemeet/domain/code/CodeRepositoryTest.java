@@ -1,8 +1,10 @@
 package com.e2i.wemeet.domain.code;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import com.e2i.wemeet.support.config.RepositoryTest;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,8 +60,8 @@ class CodeRepositoryTest {
         assertThat(code.get().getCodeValue()).isEqualTo("서울대학교");
     }
 
-    @DisplayName("잘못된 코드 PK로 대학 코드를 조회할 수 없다.")
-    @ValueSource(strings = {"CE-999", "CE-000", "CES-001"})
+    @DisplayName("올바른 형식의 코드 PK가 DB에 저장된 데이터가 아니라면 대학 코드를 조회할 수 없다.")
+    @ValueSource(strings = {"CE-999", "CE-000", "XX-001"})
     @ParameterizedTest
     void findByCodePkInvalidPk(String invalidGroupCodeIdWithCodeId) {
         // given
@@ -71,4 +73,27 @@ class CodeRepositoryTest {
         // then
         assertThat(code).isEmpty();
     }
+
+    @DisplayName("지정된 형식의 코드 리스트로 대학 코드들을 조회할 수 있다.")
+    @Test
+    void findByCodePkIn() {
+        // given
+        final String code1 = "CE-001";
+        final String code2 = "CE-002";
+        final String code3 = "CE-003";
+        List<CodePk> codePks = List.of(CodePk.of(code1), CodePk.of(code2), CodePk.of(code3));
+
+        // when
+        List<Code> codes = codeRepository.findByCodePkIn(codePks);
+
+        // then
+        assertThat(codes).hasSize(3)
+            .extracting("codePk.codeId", "codePk.groupCodeId")
+            .containsExactlyInAnyOrder(
+                tuple("001", "CE"),
+                tuple("002", "CE"),
+                tuple("003", "CE")
+            );
+    }
 }
+
