@@ -1,5 +1,6 @@
 package com.e2i.wemeet.config.security.filter;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -14,7 +15,6 @@ import com.e2i.wemeet.dto.request.LoginRequestDto;
 import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
-import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
@@ -72,10 +72,10 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
     @Test
     void smsLoginProcessToken() throws Exception {
         // given - 가입 & 인증 번호 발급
-        Member member = MemberFixture.KAI.create();
+        Member member = KAI.create();
         memberRepository.save(member);
 
-        String phone = "+821012341234";
+        String phone = KAI.getPhoneNumber();
         SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
         mvc.perform(
@@ -152,9 +152,6 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data").type(JsonFieldType.OBJECT)
                             .description("회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨"),
-                        fieldWithPath("data.registrationType").type(JsonFieldType.STRING)
-                            .description("사용자 회원 가입 종류를 반환 합니다. "
-                                + "(APP-앱, WEB-웹, NOT_REGISTERED-미가입)"),
                         fieldWithPath("data.memberId")
                             .description("회원 아이디"),
                         fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
