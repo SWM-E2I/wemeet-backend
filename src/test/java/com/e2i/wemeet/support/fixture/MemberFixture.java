@@ -98,6 +98,18 @@ public enum MemberFixture {
             .build();
     }
 
+    public Member create_profile_image(final ProfileImage profileImage) {
+        return createBuilder()
+            .profileImage(profileImage)
+            .build();
+    }
+
+    public Member create_image_auth(final boolean imageAuth) {
+        return createBuilder()
+            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl, imageAuth))
+            .build();
+    }
+
     public Member create_role(final Role role) {
         return createBuilder()
             .role(role)

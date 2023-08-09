@@ -17,7 +17,7 @@ import lombok.Getter;
 @Getter
 public enum TeamFixture {
 
-    HONGDAE_TEAM_1(3, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
+    HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
         AdditionalActivity.CAFE, "홍대 팀 1"),
     ;
 
