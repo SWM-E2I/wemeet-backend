@@ -5,6 +5,7 @@ import static com.e2i.wemeet.exception.ErrorCode.INVALID_EMAIL_FORMAT;
 import static com.e2i.wemeet.exception.ErrorCode.INVALID_NICKNAME_FORMAT;
 import static com.e2i.wemeet.exception.ErrorCode.INVALID_PHONE_FORMAT;
 
+import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,7 @@ public abstract class CustomFormatValidator {
     private static final Pattern SMS_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
     private static final Pattern EMAIL_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
     private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣\\s]{2,10}$");
+    private static final Pattern CODE_PK_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{3}$");
 
     public static void validatePhoneFormat(final String phone) {
         if (!PHONE_REG.matcher(phone).matches()) {
@@ -50,6 +52,12 @@ public abstract class CustomFormatValidator {
     public static void validateNicknameFormat(final String nickname) {
         if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
             throw new InvalidDataFormatException(INVALID_NICKNAME_FORMAT);
+        }
+    }
+
+    public static void validateCodePkFormat(final String groupCodeIdWithCodeId) {
+        if (!CODE_PK_PATTERN.matcher(groupCodeIdWithCodeId).matches()) {
+            throw new InvalidDataFormatException(ErrorCode.INVALID_DATA_FORMAT);
         }
     }
 }
