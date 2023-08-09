@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.code;
 
+import com.e2i.wemeet.util.validator.CustomFormatValidator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
@@ -27,6 +28,8 @@ public class CodePk implements Serializable {
 
     // CE-001 -> CODE PK 생성
     public static CodePk of(final String groupCodeIdWithCodeId) {
+        CustomFormatValidator.validateCodePkFormat(groupCodeIdWithCodeId);
+
         final String[] split = groupCodeIdWithCodeId.split("-");
         return new CodePk(split[1], split[0]);
     }

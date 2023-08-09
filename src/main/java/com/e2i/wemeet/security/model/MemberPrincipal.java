@@ -104,7 +104,7 @@ public class MemberPrincipal implements UserDetails {
                 .map(GrantedAuthority::getAuthority)
                 .toList()
         );
-        final String format = "MemberPrincipal(memberId=%d, role=%s, registrationType=%s)";
+        final String format = "MemberPrincipal(memberId=%d, role=%s)";
 
         return String.format(format, memberId, role);
     }
