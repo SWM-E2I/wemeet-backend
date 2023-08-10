@@ -1,5 +1,6 @@
 package com.e2i.wemeet.dto.response.persist;
 
+import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.persist.PersistData;
 import java.util.Objects;
 import lombok.Builder;
@@ -27,15 +28,15 @@ public record PersistResponseDto(
         if (Objects.isNull(persistData.profileImage())) {
             return createResponseHasNoImage(builder);
         }
-        return createResponse(persistData, builder);
+        return createResponse(persistData.profileImage(), builder);
     }
 
-    private static PersistResponseDto createResponse(PersistData persistData, PersistResponseDtoBuilder builder) {
+    private static PersistResponseDto createResponse(ProfileImage profileImage, PersistResponseDtoBuilder builder) {
         return builder
-            .hasMainProfileImage(persistData.profileImage().hasProfileImage())
-            .basicProfileImage(persistData.profileImage().getBasicUrl())
-            .lowProfileImage(persistData.profileImage().getLowUrl())
-            .profileImageAuthenticated(persistData.profileImage().getImageAuth())
+            .hasMainProfileImage(profileImage.hasProfileImage())
+            .profileImageAuthenticated(profileImage.isImageAuthenticated())
+            .basicProfileImage(profileImage.getBasicUrl())
+            .lowProfileImage(profileImage.getLowUrl())
             .build();
     }
 

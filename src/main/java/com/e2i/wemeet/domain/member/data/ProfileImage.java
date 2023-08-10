@@ -21,4 +21,12 @@ public class ProfileImage {
         this.lowUrl = lowUrl;
         this.imageAuth = imageAuth;
     }
+
+    public boolean hasProfileImage() {
+        return basicUrl != null;
+    }
+
+    public boolean isImageAuthenticated() {
+        return imageAuth;
+    }
 }
