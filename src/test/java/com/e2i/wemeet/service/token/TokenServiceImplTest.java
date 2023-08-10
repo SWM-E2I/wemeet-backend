@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import com.e2i.wemeet.exception.unauthorized.AccessTokenNotFoundException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,12 +54,12 @@ class TokenServiceImplTest {
     static class PersistLoginRepositoryRepositoryStub implements PersistLoginRepository {
 
         @Override
-        public PersistResponseDto findPersistResponseById(Long memberId) {
+        public Optional<PersistResponseDto> findPersistResponseById(Long memberId) {
             if (memberId == 999L) {
                 throw new AccessTokenNotFoundException();
             }
 
-            return PersistResponseDto.builder()
+            return Optional.of(PersistResponseDto.builder()
                 .nickname("nickname")
                 .emailAuthenticated(true)
                 .hasMainProfileImage(true)
@@ -66,7 +67,7 @@ class TokenServiceImplTest {
                 .lowProfileImage("lowUrl")
                 .profileImageAuthenticated(true)
                 .hasTeam(true)
-                .build();
+                .build());
         }
     }
 }

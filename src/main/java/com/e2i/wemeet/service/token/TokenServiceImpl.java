@@ -2,6 +2,7 @@ package com.e2i.wemeet.service.token;
 
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
+import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class TokenServiceImpl implements TokenService {
     @Transactional(readOnly = true)
     @Override
     public PersistResponseDto persistLogin(final Long memberId) {
-        return persistLoginRepository.findPersistResponseById(memberId);
+        return persistLoginRepository.findPersistResponseById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
     }
 }
