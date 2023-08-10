@@ -1,11 +1,10 @@
 package com.e2i.wemeet.domain.member;
 
-import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface MemberRepository extends JpaRepository<Member, Long>, PersistLoginRepository {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByPhoneNumber(String phoneNumber);
 

@@ -13,10 +13,20 @@ public class ProfileImage {
 
     private String basicUrl;
     private String lowUrl;
+    private Boolean imageAuth;
 
     @Builder
-    public ProfileImage(String basicUrl, String lowUrl) {
+    public ProfileImage(String basicUrl, String lowUrl, Boolean imageAuth) {
         this.basicUrl = basicUrl;
         this.lowUrl = lowUrl;
+        this.imageAuth = imageAuth;
+    }
+
+    public boolean hasProfileImage() {
+        return basicUrl != null;
+    }
+
+    public boolean isImageAuthenticated() {
+        return imageAuth;
     }
 }

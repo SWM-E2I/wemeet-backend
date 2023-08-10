@@ -26,21 +26,13 @@ class TokenControllerTest extends AbstractControllerUnitTest {
     @MockBean
     private TokenService tokenService;
 
+    @DisplayName("ACCESS TOKEN을 통해 유저의 상태 정보를 조회할 수 있다.")
     @WithCustomMockUser
-    @DisplayName("Persist Login 요청을 통해 유저의 상태 정보를 반환받는다.")
     @Test
     void persist() throws Exception {
         // given
-        given(tokenService.persistLogin(1L)).willReturn(
-            PersistResponseDto.builder()
-                .nickname("kai")
-                .hasTeam(true)
-                .emailAuthenticated(true)
-                .profileImageAuthenticated(false)
-                .hasMainProfileImage(true)
-                .preferenceCompleted(true)
-                .build()
-        );
+        given(tokenService.persistLogin(1L))
+            .willReturn(createPersistResponseDto());
 
         // when
         ResultActions perform = mockMvc.perform(
@@ -74,15 +66,29 @@ class TokenControllerTest extends AbstractControllerUnitTest {
                             .description("사용자의 닉네임을 반환합니다."),
                         fieldWithPath("data.emailAuthenticated").type(JsonFieldType.BOOLEAN)
                             .description("이메일 인증 여부를 반환합니다."),
-                        fieldWithPath("data.preferenceCompleted").type(JsonFieldType.BOOLEAN)
-                            .description("선호도 조사 여부를 반환합니다."),
-                        fieldWithPath("data.hasMainProfileImage").type(JsonFieldType.BOOLEAN)
-                            .description("프로필 이미지의 등록 여부를 반환합니다."),
                         fieldWithPath("data.profileImageAuthenticated").type(JsonFieldType.BOOLEAN)
-                            .description("프로필 이미지 인증 여부를 반환합니다."),
+                            .description("선호도 조사 여부를 반환합니다."),
                         fieldWithPath("data.hasTeam").type(JsonFieldType.BOOLEAN)
+                            .description("프로필 이미지의 등록 여부를 반환합니다."),
+                        fieldWithPath("data.hasMainProfileImage").type(JsonFieldType.BOOLEAN)
+                            .description("프로필 이미지 인증 여부를 반환합니다."),
+                        fieldWithPath("data.basicProfileImage").type(JsonFieldType.STRING)
+                            .description("팀의 존재 여부를 반환합니다."),
+                        fieldWithPath("data.lowProfileImage").type(JsonFieldType.STRING)
                             .description("팀의 존재 여부를 반환합니다.")
                     )
                 ));
+    }
+
+    private PersistResponseDto createPersistResponseDto() {
+        return PersistResponseDto.builder()
+            .nickname("닉네임")
+            .emailAuthenticated(true)
+            .profileImageAuthenticated(true)
+            .hasTeam(true)
+            .hasMainProfileImage(true)
+            .lowProfileImage("lowUrl")
+            .basicProfileImage("basicUrl")
+            .build();
     }
 }

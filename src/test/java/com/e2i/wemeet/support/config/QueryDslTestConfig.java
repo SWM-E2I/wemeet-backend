@@ -1,5 +1,6 @@
 package com.e2i.wemeet.support.config;
 
+import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepositoryImpl;
 import com.e2i.wemeet.util.encryption.AdvancedEncryptionStandard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,7 +25,7 @@ public class QueryDslTestConfig {
     }
 
     @Bean
-    public PersistLoginRepositoryImpl persistLoginImpl(JPAQueryFactory jpaQueryFactory) {
+    public PersistLoginRepository persistLoginRepository(JPAQueryFactory jpaQueryFactory) {
         return new PersistLoginRepositoryImpl(jpaQueryFactory);
     }
 }
