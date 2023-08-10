@@ -10,22 +10,28 @@ import com.e2i.wemeet.util.validator.bean.MbtiValid;
 import com.e2i.wemeet.util.validator.bean.NicknameValid;
 import com.e2i.wemeet.util.validator.bean.PhoneValid;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
 public record CreateMemberRequestDto(
+
+    @NotNull
     @NicknameValid
     String nickname,
 
+    @NotNull
     @GenderValid
     String gender,
 
+    @NotNull
     @PhoneValid
     String phoneNumber,
 
     @Valid
     CollegeInfoRequestDto collegeInfo,
 
+    @NotNull
     @MbtiValid
     String mbti
 

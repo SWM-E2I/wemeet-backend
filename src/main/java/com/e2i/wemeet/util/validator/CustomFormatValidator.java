@@ -8,6 +8,7 @@ import static com.e2i.wemeet.exception.ErrorCode.INVALID_PHONE_FORMAT;
 import com.e2i.wemeet.exception.ErrorCode;
 import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import java.util.regex.Pattern;
+import org.springframework.util.StringUtils;
 
 /*
   사용자 입력 값 형식 검증 유틸 클래스
@@ -26,13 +27,13 @@ public abstract class CustomFormatValidator {
     private static final Pattern CODE_PK_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{3}$");
 
     public static void validatePhoneFormat(final String phone) {
-        if (!PHONE_REG.matcher(phone).matches()) {
+        if (!StringUtils.hasText(phone) || !PHONE_REG.matcher(phone).matches()) {
             throw new InvalidDataFormatException(INVALID_PHONE_FORMAT);
         }
     }
 
     public static void validateEmailFormat(final String email) {
-        if (!EMAIL_REG.matcher(email).matches()) {
+        if (!StringUtils.hasText(email) || !EMAIL_REG.matcher(email).matches()) {
             throw new InvalidDataFormatException(INVALID_EMAIL_FORMAT);
         }
     }
@@ -50,13 +51,13 @@ public abstract class CustomFormatValidator {
     }
 
     public static void validateNicknameFormat(final String nickname) {
-        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
+        if (!StringUtils.hasText(nickname) || !NICKNAME_PATTERN.matcher(nickname).matches()) {
             throw new InvalidDataFormatException(INVALID_NICKNAME_FORMAT);
         }
     }
 
     public static void validateCodePkFormat(final String groupCodeIdWithCodeId) {
-        if (!CODE_PK_PATTERN.matcher(groupCodeIdWithCodeId).matches()) {
+        if (!StringUtils.hasText(groupCodeIdWithCodeId) || !CODE_PK_PATTERN.matcher(groupCodeIdWithCodeId).matches()) {
             throw new InvalidDataFormatException(ErrorCode.INVALID_DATA_FORMAT);
         }
     }

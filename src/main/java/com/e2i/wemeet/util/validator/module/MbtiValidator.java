@@ -9,6 +9,10 @@ public class MbtiValidator implements ConstraintValidator<MbtiValid, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (null == value) {
+            return true;
+        }
+
         try {
             Mbti.valueOf(value);
         } catch (IllegalArgumentException e) {
