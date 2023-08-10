@@ -8,6 +8,7 @@ import com.e2i.wemeet.domain.base.converter.GenderConverter;
 import com.e2i.wemeet.domain.base.converter.RegionConverter;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
@@ -98,6 +99,7 @@ public class Team extends BaseTimeEntity {
         this.teamLeader = teamLeader;
         this.gender = teamLeader.getGender();
         teamLeader.setTeam(this);
+        teamLeader.setRole(Role.MANAGER);
     }
 
     public Team checkTeamValid() {

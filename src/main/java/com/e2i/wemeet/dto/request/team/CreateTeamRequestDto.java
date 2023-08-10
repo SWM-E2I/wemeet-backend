@@ -1,9 +1,17 @@
 package com.e2i.wemeet.dto.request.team;
 
+import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.domain.team.data.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.DrinkRate;
+import com.e2i.wemeet.domain.team.data.DrinkWithGame;
+import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.util.validator.bean.AdditionalActivityValid;
+import com.e2i.wemeet.util.validator.bean.DrinkRateValid;
+import com.e2i.wemeet.util.validator.bean.DrinkWithGameValid;
+import com.e2i.wemeet.util.validator.bean.RegionValid;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -12,29 +20,42 @@ import org.hibernate.validator.constraints.Length;
 
 @Builder
 public record CreateTeamRequestDto(
-    @Max(value = 4, message = "{max.validate.member.num}")
-    @Min(value = 2, message = "{min.validate.member.num}")
-    int memberNum,
 
-    @NotBlank(message = "{not.blank.region}")
+    @NotNull
+    @RegionValid
     String region,
 
-    @NotBlank(message = "{not.blank.drink.rate}")
+    @NotNull
+    @DrinkRateValid
     String drinkRate,
 
-    @NotBlank(message = "{not.blank.drink.with.game}")
+    @NotNull
+    @DrinkWithGameValid
     String drinkWithGame,
 
     @Nullable
+    @AdditionalActivityValid
     String additionalActivity,
 
-    @Length(min = 1, max = 150, message = "{length.validate.introduction}")
-    @NotBlank(message = "{not.blank.introduction}")
+    @NotNull
+    @Length(max = 150)
     String introduction,
 
-    @Size(min = 1, max = 3, message = "{size.validate.team.members}")
-    @NotNull(message = "{not.null.team.members")
+    @NotNull
+    @Size(min = 1, max = 3)
+    @Valid
     List<TeamMemberDto> members
 ) {
 
+    public Team toEntity(Member teamLeader) {
+        return Team.builder()
+            .memberNum(members.size() + 1)
+            .region(Region.valueOf(region))
+            .drinkRate(DrinkRate.valueOf(drinkRate))
+            .drinkWithGame(DrinkWithGame.valueOf(drinkWithGame))
+            .additionalActivity(AdditionalActivity.findBy(additionalActivity))
+            .introduction(introduction)
+            .teamLeader(teamLeader)
+            .build();
+    }
 }

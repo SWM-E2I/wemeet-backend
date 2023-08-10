@@ -169,4 +169,14 @@ public class Member extends BaseTimeEntity {
     public void saveProfileImage(final ProfileImage profileImage) {
         this.profileImage = profileImage;
     }
+
+    public void validateTeamExist() {
+        this.team.stream()
+            .map(Team::getDeletedAt)
+            .filter(Objects::isNull)
+            .findFirst()
+            .ifPresent(team -> {
+                throw new TeamExistsException();
+            });
+    }
 }

@@ -17,7 +17,8 @@ public interface TeamService {
     /*
      * 팀 정보 수정
      */
-    void updateTeam(Long memberId, UpdateTeamRequestDto updateTeamRequestDto);
+    void updateTeam(Long memberId, UpdateTeamRequestDto updateTeamRequestDto,
+        List<MultipartFile> images);
 
     /*
      * 마이 팀 정보 조회

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +27,6 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    // TODO :: service refactoring
     @PostMapping
     public ResponseDto<Void> createTeam(@MemberId Long memberId,
         @RequestPart("data") @Valid CreateTeamRequestDto createTeamRequestDto,
@@ -38,17 +36,17 @@ public class TeamController {
         return ResponseDto.success("Create Team Success");
     }
 
-    // TODO :: service refactoring
     @IsManager
     @PutMapping
-    public ResponseDto<Void> modifyTeam(@MemberId Long memberId,
-        @RequestBody @Valid UpdateTeamRequestDto updateTeamRequestDto) {
-        teamService.updateTeam(memberId, updateTeamRequestDto);
+    public ResponseDto<Void> updateTeam(@MemberId Long memberId,
+        @RequestPart("data") @Valid UpdateTeamRequestDto createTeamRequestDto,
+        @RequestPart("images") List<MultipartFile> images) {
+        teamService.updateTeam(memberId, createTeamRequestDto, images);
 
         return ResponseDto.success("Modify Team Success");
     }
 
-    // TODO :: service refactoring
+    @IsManager
     @GetMapping
     public ResponseDto<MyTeamDetailResponseDto> readTeam(@MemberId Long memberId) {
         MyTeamDetailResponseDto result = teamService.readTeam(memberId);
@@ -56,7 +54,6 @@ public class TeamController {
         return ResponseDto.success("Get My Team Detail Success", result);
     }
 
-    // TODO :: service refactoring
     @IsManager
     @DeleteMapping
     public ResponseDto<Void> deleteTeam(@MemberId Long memberId) {
