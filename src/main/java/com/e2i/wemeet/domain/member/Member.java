@@ -13,6 +13,7 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
+import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import com.e2i.wemeet.util.validator.CustomFormatValidator;
@@ -170,13 +171,17 @@ public class Member extends BaseTimeEntity {
         this.profileImage = profileImage;
     }
 
-    public void validateTeamExist() {
-        this.team.stream()
-            .map(Team::getDeletedAt)
-            .filter(Objects::isNull)
+    public Team getCurrentTeam() {
+        return this.team.stream()
+            .filter(t -> t.getDeletedAt() == null)
             .findFirst()
-            .ifPresent(team -> {
-                throw new TeamExistsException();
-            });
+            .orElseThrow(TeamNotExistsException::new);
+    }
+
+    public void validateTeamExist() {
+        if (team.stream().anyMatch(t -> t.getDeletedAt() == null)) {
+            throw new TeamExistsException();
+        }
     }
 }
+

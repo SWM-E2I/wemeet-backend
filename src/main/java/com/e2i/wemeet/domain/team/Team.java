@@ -14,8 +14,8 @@ import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_member.TeamMember;
+import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -73,7 +73,7 @@ public class Team extends BaseTimeEntity {
     @JoinColumn(name = "team_leader_id", updatable = false, nullable = false)
     private Member teamLeader;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "team")
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     private LocalDateTime deletedAt;
@@ -116,4 +116,16 @@ public class Team extends BaseTimeEntity {
     public void addTeamMember(TeamMember teamMember) {
         teamMember.setTeam(this);
     }
+
+
+    public void update(UpdateTeamRequestDto updateTeamRequestDto) {
+        this.memberNum = updateTeamRequestDto.members().size() + 1;
+        this.region = Region.valueOf(updateTeamRequestDto.region());
+        this.drinkRate = DrinkRate.valueOf(updateTeamRequestDto.drinkRate());
+        this.drinkWithGame = DrinkWithGame.valueOf(updateTeamRequestDto.drinkWithGame());
+        this.additionalActivity = AdditionalActivity.valueOf(
+            updateTeamRequestDto.additionalActivity());
+        this.introduction = updateTeamRequestDto.introduction();
+    }
 }
+

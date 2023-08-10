@@ -38,7 +38,7 @@ public record CreateTeamRequestDto(
     String additionalActivity,
 
     @NotNull
-    @Length(max = 150)
+    @Length(min = 10, max = 150)
     String introduction,
 
     @NotNull

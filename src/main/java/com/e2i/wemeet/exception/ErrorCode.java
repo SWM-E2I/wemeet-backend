@@ -33,8 +33,8 @@ public enum ErrorCode {
     INVALID_HTTP_REQUEST(40024, "invalid.http.request"),
     INVALID_DATABASE_KEY_TO_ENUM(40025, "invalid.database.key.to.enum"),
     INVALID_NICKNAME_FORMAT(40026, "invalid.nickname.format"),
-
-
+    TEAM_NOT_EXISTS(40027, "team.not.exists"),
+    
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
     MEMBER_NOT_FOUND_BY_ID(40102, "member.not.found.by.id"),

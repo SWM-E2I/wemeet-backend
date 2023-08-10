@@ -47,7 +47,6 @@ public class TeamServiceImpl implements TeamService {
         Member teamLeader = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
-
         teamLeader.validateTeamExist();
 
         // team 생성
@@ -65,7 +64,20 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void updateTeam(final Long memberId, UpdateTeamRequestDto updateTeamRequestDto,
         List<MultipartFile> images) {
+        Member teamLeader = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
+        Team team = teamLeader.getCurrentTeam();
+
+        // 팀 정보 수정
+        team.update(updateTeamRequestDto);
+
+        // 팀원 수정
+        updateTeamMembers(updateTeamRequestDto.members(), team);
+
+        // 사진 수정
+        updateTeamImages(images, team);
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +89,12 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void deleteTeam(Long memberId) {
+    }
 
+
+    private void updateTeamImages(List<MultipartFile> images, Team team) {
+        teamImageRepository.deleteAllByTeamTeamId(team.getTeamId());
+        uploadTeamImages(images, team);
     }
 
     private void uploadTeamImages(List<MultipartFile> images, Team team) {
@@ -95,7 +112,12 @@ public class TeamServiceImpl implements TeamService {
                 .build());
         }
     }
-    
+
+    private void updateTeamMembers(List<TeamMemberDto> teamMemberDtoList, Team team) {
+        teamMemberRepository.deleteAllByTeamTeamId(team.getTeamId());
+        saveTeamMembers(teamMemberDtoList, team);
+    }
+
     private void saveTeamMembers(List<TeamMemberDto> teamMemberDtoList, Team team) {
         teamMemberDtoList.stream()
             .forEach(teamMember -> teamMemberRepository.save(teamMember.toEntity(
