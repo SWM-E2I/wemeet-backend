@@ -11,12 +11,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record TeamMemberDto(
+public record TeamMemberRequestDto(
 
     @NotNull
     @Valid
     CollegeInfoRequestDto collegeInfo,
-    
+
     @NotNull
     @MbtiValid
     String mbti
@@ -29,4 +29,5 @@ public record TeamMemberDto(
             .team(team)
             .build();
     }
+
 }

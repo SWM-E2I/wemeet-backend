@@ -7,11 +7,12 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
+import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.domain.team_image.TeamImage;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.domain.team_member.TeamMemberRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
-import com.e2i.wemeet.dto.request.team.TeamMemberDto;
+import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
@@ -84,7 +85,14 @@ public class TeamServiceImpl implements TeamService {
     @Transactional(readOnly = true)
     @Override
     public MyTeamDetailResponseDto readTeam(Long memberId) {
-        return null;
+        Member teamLeader = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
+
+        List<TeamImageData> teamImages = teamRepository.findTeamWithTeamImages(
+            teamLeader.getCurrentTeam().getTeamId());
+
+        return MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages);
     }
 
     @Transactional
@@ -119,13 +127,13 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
-    private void updateTeamMembers(List<TeamMemberDto> teamMemberDtoList, Team team) {
+    private void updateTeamMembers(List<TeamMemberRequestDto> teamMemberRequestDtoList, Team team) {
         teamMemberRepository.deleteAllByTeamTeamId(team.getTeamId());
-        saveTeamMembers(teamMemberDtoList, team);
+        saveTeamMembers(teamMemberRequestDtoList, team);
     }
 
-    private void saveTeamMembers(List<TeamMemberDto> teamMemberDtoList, Team team) {
-        teamMemberDtoList.stream()
+    private void saveTeamMembers(List<TeamMemberRequestDto> teamMemberRequestDtoList, Team team) {
+        teamMemberRequestDtoList.stream()
             .forEach(teamMember -> teamMemberRepository.save(teamMember.toEntity(
                 getCode(teamMember.collegeInfo().collegeCode()), team)));
     }

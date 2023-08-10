@@ -44,7 +44,7 @@ public record CreateTeamRequestDto(
     @NotNull
     @Size(min = 1, max = 3)
     @Valid
-    List<TeamMemberDto> members
+    List<TeamMemberRequestDto> members
 ) {
 
     public Team toEntity(Member teamLeader) {

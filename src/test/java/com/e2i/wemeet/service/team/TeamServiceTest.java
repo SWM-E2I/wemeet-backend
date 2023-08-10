@@ -1,4 +1,7 @@
 package com.e2i.wemeet.service.team;
+
+import com.e2i.wemeet.domain.member.MemberRepository;
+import com.e2i.wemeet.domain.team.TeamRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +42,7 @@ class TeamServiceTest {
             // given
 
             // when
-          
+
             // then
         }
 
