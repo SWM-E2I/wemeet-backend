@@ -127,5 +127,10 @@ public class Team extends BaseTimeEntity {
             updateTeamRequestDto.additionalActivity());
         this.introduction = updateTeamRequestDto.introduction();
     }
+
+    public void delete(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+        teamLeader.setRole(Role.USER);
+    }
 }
 

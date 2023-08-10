@@ -17,6 +17,7 @@ import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.service.aws.s3.S3Service;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -89,6 +90,11 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void deleteTeam(Long memberId) {
+        Member teamLeader = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
+
+        teamLeader.getCurrentTeam().delete(LocalDateTime.now());
     }
 
 
