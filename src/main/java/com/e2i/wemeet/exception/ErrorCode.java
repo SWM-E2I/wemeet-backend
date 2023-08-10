@@ -33,6 +33,8 @@ public enum ErrorCode {
     INVALID_HTTP_REQUEST(40024, "invalid.http.request"),
     INVALID_DATABASE_KEY_TO_ENUM(40025, "invalid.database.key.to.enum"),
     INVALID_NICKNAME_FORMAT(40026, "invalid.nickname.format"),
+    VALIDATION_ERROR(40027, "validation.error"),
+    HTTP_MESSAGE_NOT_READABLE(40028, "http.message.not.readable"),
 
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
