@@ -1,7 +1,7 @@
 package com.e2i.wemeet.dto.response.team;
 
-import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.team_member.TeamMember;
 import lombok.Builder;
 
 @Builder
@@ -12,13 +12,12 @@ public record TeamMemberResponseDto(
     Mbti mbti
 ) {
 
-    public static TeamMemberResponseDto of(CollegeInfo collegeInfo, Mbti mbti
-    ) {
+    public static TeamMemberResponseDto of(TeamMember teamMember) {
         return TeamMemberResponseDto.builder()
-            .college(collegeInfo.getCollegeCode().getCodeValue())
-            .collegeType(collegeInfo.getCollegeType().getDescription())
-            .admissionYear(collegeInfo.getAdmissionYear())
-            .mbti(mbti)
+            .college(teamMember.getCollegeInfo().getCollegeCode().getCodeValue())
+            .collegeType(teamMember.getCollegeInfo().getCollegeType().getDescription())
+            .admissionYear(teamMember.getCollegeInfo().getAdmissionYear())
+            .mbti(teamMember.getMbti())
             .build();
     }
 }

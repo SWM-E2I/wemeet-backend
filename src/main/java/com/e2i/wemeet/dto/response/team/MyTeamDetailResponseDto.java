@@ -36,8 +36,7 @@ public record MyTeamDetailResponseDto(
                     .toList())
             .members(
                 team.getTeamMembers().stream()
-                    .map(teamMember -> TeamMemberResponseDto.of(teamMember.getCollegeInfo(),
-                        teamMember.getMbti()))
+                    .map(TeamMemberResponseDto::of)
                     .toList())
             .build();
     }
