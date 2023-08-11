@@ -49,7 +49,7 @@ public class TeamServiceImpl implements TeamService {
         Member teamLeader = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
-        teamLeader.validateTeamExist();
+        teamLeader.validateTeamCreation();
 
         // team 생성
         Team team = teamRepository.save(createTeamRequestDto.toEntity(teamLeader));

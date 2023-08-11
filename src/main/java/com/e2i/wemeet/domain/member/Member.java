@@ -12,10 +12,12 @@ import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
+import com.e2i.wemeet.exception.badrequest.ProfileImageNotExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.util.validator.CustomFormatValidator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -178,10 +180,22 @@ public class Member extends BaseTimeEntity {
             .orElseThrow(TeamNotExistsException::new);
     }
 
-    public void validateTeamExist() {
-        if (team.stream().anyMatch(t -> t.getDeletedAt() == null)) {
+    public void validateTeamCreation() {
+        if (this.team.stream().anyMatch(t -> t.getDeletedAt() == null)) {
             throw new TeamExistsException();
         }
+
+        if (!isEmailAuthenticated()) {
+            throw new UnAuthorizedUnivException();
+        }
+
+        if (!isProfileImageExists()) {
+            throw new ProfileImageNotExistsException();
+        }
+    }
+
+    public boolean isProfileImageExists() {
+        return this.profileImage.getBasicUrl() != null;
     }
 }
 
