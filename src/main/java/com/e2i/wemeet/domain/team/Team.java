@@ -16,6 +16,7 @@ import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -73,7 +74,7 @@ public class Team extends BaseTimeEntity {
     @JoinColumn(name = "team_leader_id", updatable = false, nullable = false)
     private Member teamLeader;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     private LocalDateTime deletedAt;
@@ -126,6 +127,7 @@ public class Team extends BaseTimeEntity {
         this.additionalActivity = AdditionalActivity.valueOf(
             updateTeamRequestDto.additionalActivity());
         this.introduction = updateTeamRequestDto.introduction();
+        this.teamMembers.clear();
     }
 
     public void delete(LocalDateTime deletedAt) {

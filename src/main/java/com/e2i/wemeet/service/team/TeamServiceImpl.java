@@ -10,7 +10,6 @@ import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.domain.team_image.TeamImage;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
-import com.e2i.wemeet.domain.team_member.TeamMemberRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
@@ -33,10 +32,9 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
-    private final CodeRepository codeRepository;
-    private final TeamMemberRepository teamMemberRepository;
-
     private final TeamImageRepository teamImageRepository;
+    private final CodeRepository codeRepository;
+
     private final S3Service s3Service;
 
     @Value("${aws.s3.teamImageBucket}")
@@ -76,7 +74,7 @@ public class TeamServiceImpl implements TeamService {
         team.update(updateTeamRequestDto);
 
         // 팀원 수정
-        updateTeamMembers(updateTeamRequestDto.members(), team);
+        saveTeamMembers(updateTeamRequestDto.members(), team);
 
         // 사진 수정
         updateTeamImages(images, team);
@@ -127,15 +125,13 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
-    private void updateTeamMembers(List<TeamMemberRequestDto> teamMemberRequestDtoList, Team team) {
-        teamMemberRepository.deleteAllByTeamTeamId(team.getTeamId());
-        saveTeamMembers(teamMemberRequestDtoList, team);
-    }
-
-    private void saveTeamMembers(List<TeamMemberRequestDto> teamMemberRequestDtoList, Team team) {
-        teamMemberRequestDtoList.stream()
-            .forEach(teamMember -> teamMemberRepository.save(teamMember.toEntity(
-                getCode(teamMember.collegeInfo().collegeCode()), team)));
+    private void saveTeamMembers(List<TeamMemberRequestDto> teamMembers, Team team) {
+        team.addTeamMembers(
+            teamMembers.stream()
+                .map(teamMember -> teamMember.toEntity(
+                    getCode(teamMember.collegeInfo().collegeCode()), team))
+                .toList()
+        );
     }
 
     private Code getCode(final String groupCodeIdWithCodeId) {
