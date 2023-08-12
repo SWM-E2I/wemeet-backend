@@ -1,5 +1,6 @@
 package com.e2i.wemeet.security.filter;
 
+import com.e2i.wemeet.config.log.MdcKey;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -62,5 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authentication =
             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        MDC.put(MdcKey.MEMBER_ID.getKey(), String.valueOf(payload.getMemberId()));
     }
 }
