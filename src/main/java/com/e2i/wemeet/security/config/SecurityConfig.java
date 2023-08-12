@@ -5,6 +5,7 @@ import static org.springframework.http.HttpMethod.POST;
 import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
+import com.e2i.wemeet.security.filter.RequestEndPointCheckFilter;
 import com.e2i.wemeet.security.filter.SmsLoginProcessingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,7 @@ public class SecurityConfig {
     private final SmsLoginProcessingFilter SMSLoginProcessingFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RefreshTokenProcessingFilter refreshTokenProcessingFilter;
-    // private final RequestEndPointCheckFilter;
+    private final RequestEndPointCheckFilter requestEndPointCheckFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -81,7 +82,7 @@ public class SecurityConfig {
             .addFilterAfter(authenticationExceptionFilter, LogoutFilter.class)
             .addFilterAfter(SMSLoginProcessingFilter, AuthenticationExceptionFilter.class)
             .addFilterAfter(refreshTokenProcessingFilter, SmsLoginProcessingFilter.class)
-            //.addFilterAfter(requestEndPointCheckFilter, RefreshTokenProcessingFilter.class)
+            .addFilterAfter(requestEndPointCheckFilter, RefreshTokenProcessingFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 
         return http.build();

@@ -73,9 +73,9 @@ public class SecurityBeanConfig {
             objectMapper, accessTokenHandler);
     }
 
-    // @Bean
-    public RequestEndPointCheckFilter requestEndPointCheckFilter(HttpRequestEndPointChecker endPointChecker) {
-        return new RequestEndPointCheckFilter(endPointChecker);
+    @Bean
+    public RequestEndPointCheckFilter requestEndPointCheckFilter(DispatcherServlet dispatcherServlet) {
+        return new RequestEndPointCheckFilter(httpRequestEndPointChecker(dispatcherServlet));
     }
 
     // AccessToken 유효성 검증 필터
@@ -152,7 +152,7 @@ public class SecurityBeanConfig {
     }
 
     // 요청을 처리할 수 있는 핸들러가 있는지 판별하는 컴포넌트
-    //@Bean
+    @Bean
     public HttpRequestEndPointChecker httpRequestEndPointChecker(DispatcherServlet dispatcherServlet) {
         return new DispatcherServletEndPointChecker(dispatcherServlet);
     }
