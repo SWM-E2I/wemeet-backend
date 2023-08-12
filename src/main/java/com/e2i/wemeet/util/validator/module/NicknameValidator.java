@@ -10,6 +10,10 @@ public class NicknameValidator implements ConstraintValidator<NicknameValid, Str
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (null == value) {
+            return true;
+        }
+
         try {
             CustomFormatValidator.validateNicknameFormat(value);
         } catch (InvalidDataFormatException e) {

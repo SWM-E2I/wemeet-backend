@@ -1,11 +1,5 @@
 package com.e2i.wemeet.dto.request.team;
 
-import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.team.Team;
-import com.e2i.wemeet.domain.team.data.AdditionalActivity;
-import com.e2i.wemeet.domain.team.data.DrinkRate;
-import com.e2i.wemeet.domain.team.data.DrinkWithGame;
-import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.util.validator.bean.AdditionalActivityValid;
 import com.e2i.wemeet.util.validator.bean.DrinkRateValid;
 import com.e2i.wemeet.util.validator.bean.DrinkWithGameValid;
@@ -19,7 +13,7 @@ import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
 @Builder
-public record CreateTeamRequestDto(
+public record UpdateTeamRequestDto(
 
     @NotNull
     @RegionValid
@@ -47,15 +41,4 @@ public record CreateTeamRequestDto(
     List<TeamMemberRequestDto> members
 ) {
 
-    public Team toEntity(Member teamLeader) {
-        return Team.builder()
-            .memberNum(members.size() + 1)
-            .region(Region.valueOf(region))
-            .drinkRate(DrinkRate.valueOf(drinkRate))
-            .drinkWithGame(DrinkWithGame.valueOf(drinkWithGame))
-            .additionalActivity(AdditionalActivity.findBy(additionalActivity))
-            .introduction(introduction)
-            .teamLeader(teamLeader)
-            .build();
-    }
 }

@@ -90,4 +90,11 @@ class CustomFormatValidatorTest {
         assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(groupCodeWithCodeId))
             .isExactlyInstanceOf(InvalidDataFormatException.class);
     }
+
+    @DisplayName("코드 형식에 맞지 않으면 예외가 발생한다.")
+    @Test
+    void validateCodePkFormatFails() {
+        assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(null))
+            .isExactlyInstanceOf(InvalidDataFormatException.class);
+    }
 }

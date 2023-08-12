@@ -11,7 +11,10 @@ public class CollegeCodeValidator implements ConstraintValidator<CollegeCodeVali
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (null == value) {
+            return true;
+        }
         return collegeCodePattern.matcher(value).matches();
     }
-    
+
 }

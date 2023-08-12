@@ -1,20 +1,20 @@
 package com.e2i.wemeet.util.validator.module;
 
-import com.e2i.wemeet.domain.member.data.Mbti;
-import com.e2i.wemeet.util.validator.bean.MbtiValid;
+import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.util.validator.bean.RegionValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class MbtiValidator implements ConstraintValidator<MbtiValid, String> {
+public class RegionValidator implements ConstraintValidator<RegionValid, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (null == value) {
+        if (value == null) {
             return true;
         }
 
         try {
-            Mbti.valueOf(value);
+            Region.valueOf(value);
         } catch (IllegalArgumentException e) {
             return false;
         }

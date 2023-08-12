@@ -9,6 +9,10 @@ public class CollegeTypeValidator implements ConstraintValidator<CollegeTypeVali
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (null == value) {
+            return true;
+        }
+
         try {
             CollegeType.valueOf(value);
         } catch (IllegalArgumentException e) {

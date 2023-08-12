@@ -35,7 +35,8 @@ public enum ErrorCode {
     INVALID_NICKNAME_FORMAT(40026, "invalid.nickname.format"),
     VALIDATION_ERROR(40027, "validation.error"),
     HTTP_MESSAGE_NOT_READABLE(40028, "http.message.not.readable"),
-
+    TEAM_NOT_EXISTS(40029, "team.not.exists"),
+    PROFILE_IMAGE_NOT_EXISTS(40030, "profile.image.not.exists"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),

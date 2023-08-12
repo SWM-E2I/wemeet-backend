@@ -8,7 +8,7 @@ import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
-import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -62,8 +62,8 @@ public enum TeamFixture {
     }
 
     // TODO :: refactor
-    public ModifyTeamRequestDto modifyTeamRequestDto() {
-        return ModifyTeamRequestDto.builder()
+    public UpdateTeamRequestDto modifyTeamRequestDto() {
+        return UpdateTeamRequestDto.builder()
             .build();
     }
 

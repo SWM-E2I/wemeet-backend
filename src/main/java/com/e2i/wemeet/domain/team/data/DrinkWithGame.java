@@ -2,7 +2,9 @@ package com.e2i.wemeet.domain.team.data;
 
 import com.e2i.wemeet.exception.badrequest.InvalidDatabaseKeyToEnumException;
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum DrinkWithGame {
     ANY(0, "상관 없어"),
     MASTER(1, "나는야 술게임 고수"),
