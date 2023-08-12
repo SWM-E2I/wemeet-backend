@@ -2,6 +2,7 @@ package com.e2i.wemeet.security.config;
 
 import static org.springframework.http.HttpMethod.POST;
 
+import com.e2i.wemeet.config.log.LogFilter;
 import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
 import com.e2i.wemeet.security.filter.RefreshTokenProcessingFilter;
@@ -18,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 @RequiredArgsConstructor
 @EnableMethodSecurity
@@ -29,6 +31,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RefreshTokenProcessingFilter refreshTokenProcessingFilter;
     private final RequestEndPointCheckFilter requestEndPointCheckFilter;
+    private final LogFilter logFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -79,6 +82,7 @@ public class SecurityConfig {
          * 5. JwtAuthenticationFiler : AccessToken 의 유효성을 검사 후, SecurityContext 에 인증 객체 할당
          */
         http
+            .addFilterBefore(logFilter, WebAsyncManagerIntegrationFilter.class)
             .addFilterAfter(authenticationExceptionFilter, LogoutFilter.class)
             .addFilterAfter(SMSLoginProcessingFilter, AuthenticationExceptionFilter.class)
             .addFilterAfter(refreshTokenProcessingFilter, SmsLoginProcessingFilter.class)
