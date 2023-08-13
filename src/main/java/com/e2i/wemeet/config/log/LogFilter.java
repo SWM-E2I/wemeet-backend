@@ -23,13 +23,13 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 public class LogFilter extends OncePerRequestFilter {
 
-    private static final String REQUEST_LOG_FORMAT = "REQUEST :: HTTP_METHOD: {}, URL: {}, AGENT: {}, BODY: {}";
-    private static final String RESPONSE_LOG_FORMAT = "RESPONSE :: HTTP_METHOD: {}, URL: {}, STATUS_CODE: {}, QUERY_COUNT: {}, TIME_TAKEN: {}ms, MEMBER_ID: {}, BODY: {}";
+    private static final String REQUEST_LOG_FORMAT = "REQUEST:: HTTP_METHOD: {}, URL: {}, AGENT: {}, BODY: {}";
+    private static final String RESPONSE_LOG_FORMAT = "RESPONSE:: HTTP_METHOD: {}, URL: {}, STATUS_CODE: {}, QUERY_COUNT: {}, TIME_TAKEN: {}ms, MEMBER_ID: {}, BODY: {}";
     private static final String QUERY_COUNT_WARNING_LOG_FORMAT = "WARN QUERY EXECUTION TIME:: {}";
 
     private static final int QUERY_COUNT_WARNING_STANDARD = 10;
-    private static final String NO_REQUEST_BODY = "NO_BODY";
-    private static final String NOT_AUTHENTICATED = "UNAUTHENTICATED_MEMBER";
+    private static final String NO_REQUEST_BODY = "none";
+    private static final String NOT_AUTHENTICATED = "none";
 
     private static final Logger log = LogManager.getLogger(LogFilter.class);
     private final StopWatch apiWatch;
