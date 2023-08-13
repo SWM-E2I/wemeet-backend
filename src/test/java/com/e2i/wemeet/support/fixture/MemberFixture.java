@@ -44,7 +44,8 @@ public enum MemberFixture {
     private final String lowUrl;
     private final Role role;
 
-    MemberFixture(String nickname, Gender gender, String phoneNumber, String email, CollegeInfo collegeInfo, Mbti mbti, Integer credit,
+    MemberFixture(String nickname, Gender gender, String phoneNumber, String email,
+        CollegeInfo collegeInfo, Mbti mbti, Integer credit,
         Boolean imageAuth, String basicUrl, String lowUrl, Role role) {
         this.nickname = nickname;
         this.gender = gender;
@@ -173,7 +174,8 @@ public enum MemberFixture {
         );
     }
 
-    public UpdateMemberRequestDto createUpdateMemberRequestDto(final String nickname, final String mbti) {
+    public UpdateMemberRequestDto createUpdateMemberRequestDto(final String nickname,
+        final String mbti) {
         String updateNickname = nickname == null ? this.nickname : nickname;
         String updateMbti = mbti == null ? this.mbti.name() : mbti;
 
