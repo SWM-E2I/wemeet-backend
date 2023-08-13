@@ -1,6 +1,6 @@
 package com.e2i.wemeet.config.log.aspect;
 
-import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.config.log.MdcKey;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +10,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.slf4j.MDC;
+import org.springframework.util.StringUtils;
 
 @Aspect
 public class ControllerLogAspect {
@@ -38,11 +39,11 @@ public class ControllerLogAspect {
     }
 
     private String getMemberId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof MemberPrincipal memberPrincipal)) {
+        String memberId = MDC.get(MdcKey.MEMBER_ID.getKey());
+        if (!StringUtils.hasText(memberId)) {
             return NOT_AUTHENTICATED;
         }
-        return String.valueOf(memberPrincipal.getMemberId());
+        return memberId;
     }
 
     private Map<String, Object> getParameters(JoinPoint joinPoint, MethodSignature signature) {
