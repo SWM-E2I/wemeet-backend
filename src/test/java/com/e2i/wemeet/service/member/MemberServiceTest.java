@@ -184,7 +184,8 @@ class MemberServiceTest {
             // given
             final String overTenLengthNickname = "기우미우기우미우기우미";
             Member kai = KAI.create_with_id(1L);
-            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto(overTenLengthNickname, "ESTJ");
+            UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto(overTenLengthNickname,
+                "ESTJ");
             when(memberRepository.findById(1L))
                 .thenThrow(DataException.class);
 
@@ -210,10 +211,11 @@ class MemberServiceTest {
                 .thenReturn(Optional.of(kai));
 
             // then
-            MemberDetailResponseDto memberDetailResponseDto = memberService.readMemberDetail(kai.getMemberId());
+            MemberDetailResponseDto memberDetailResponseDto = memberService.readMemberDetail(
+                kai.getMemberId());
             assertThat(memberDetailResponseDto).isNotNull()
                 .extracting("nickname", "college", "collegeType", "mbti", "admissionYear")
-                .contains(kai.getNickname(), "안양대학교", "인문/사회", Mbti.INFJ, "17");
+                .contains(kai.getNickname(), "안양대학교", "인문사회대", Mbti.INFJ, "17");
         }
 
         @DisplayName("회원 ID가 잘못되었을 경우, 회원 정보를 조회할 수 없다.")
