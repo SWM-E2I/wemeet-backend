@@ -6,10 +6,12 @@ import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
+import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import java.lang.reflect.Field;
 import java.util.List;
 import lombok.Getter;
@@ -104,6 +106,15 @@ public enum TeamFixture {
             .introduction(this.introduction)
             .members(members)
             .build();
+    }
+
+    public MyTeamDetailResponseDto createMyTeamDetailResponseDto() {
+        return MyTeamDetailResponseDto.of(
+            this.create(MemberFixture.RIM.create(),
+                List.of(TeamMemberFixture.OLIVER.create())),
+            List.of(TeamImageData.builder()
+                .url("testUrl")
+                .build()));
     }
 
     private Team.TeamBuilder createBuilder(final Member teamLeader) {
