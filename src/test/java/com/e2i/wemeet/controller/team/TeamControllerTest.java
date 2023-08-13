@@ -4,27 +4,16 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
-import com.e2i.wemeet.service.code.CodeService;
-import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(TeamController.class)
 class TeamControllerTest extends AbstractControllerUnitTest {
-
-    @MockBean
-    private TeamService teamService;
-
-    @MockBean
-    private CodeService codeService;
 
     // TODO :: service refactoring
     @DisplayName("팀 생성 성공")
