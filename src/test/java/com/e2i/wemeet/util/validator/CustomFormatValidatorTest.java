@@ -60,7 +60,7 @@ class CustomFormatValidatorTest {
     }
 
     @DisplayName("닉네임 형식이 맞으면 검사에 통과한다")
-    @ValueSource(strings = {"군산 피바다", "사랑", "사란짱", "열글자닉네임추천좀요"})
+    @ValueSource(strings = {"군산 피바", "욤", "사란짱", "엘리멘탈로 "})
     @ParameterizedTest
     void validateNicknameFormat(String nickname) {
         assertThatNoException()
@@ -68,7 +68,7 @@ class CustomFormatValidatorTest {
     }
 
     @DisplayName("닉네임 형식에 맞지 않으면 예외가 발생한다.")
-    @ValueSource(strings = {"김", "씨", "띄 어 쓰 기 포 함", "열한글자닉네임추천좀요"})
+    @ValueSource(strings = {"", " ", "띄 어 쓰기", "여섯글자불가"})
     @ParameterizedTest
     void validateNicknameFormatFail(String nickname) {
         assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(nickname))

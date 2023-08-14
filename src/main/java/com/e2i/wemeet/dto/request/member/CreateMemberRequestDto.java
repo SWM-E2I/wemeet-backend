@@ -39,7 +39,7 @@ public record CreateMemberRequestDto(
 
     public Member toEntity(Code collegeCode) {
         return Member.builder()
-            .nickname(this.nickname)
+            .nickname(this.nickname.trim())
             .gender(Gender.valueOf(this.gender))
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo.toCollegeInfo(collegeCode))

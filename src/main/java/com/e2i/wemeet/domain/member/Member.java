@@ -53,7 +53,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 5, nullable = false)
     private String nickname;
 
     @Convert(converter = GenderConverter.class)
@@ -161,10 +161,14 @@ public class Member extends BaseTimeEntity {
     }
 
     public void update(UpdateMemberRequestDto requestDto) {
-        CustomFormatValidator.validateNicknameFormat(requestDto.nickname());
-
-        this.nickname = requestDto.nickname();
-        this.mbti = Mbti.findBy(requestDto.mbti());
+        if (StringUtils.hasText(requestDto.mbti())) {
+            this.mbti = Mbti.findBy(requestDto.mbti());
+        }
+        if (StringUtils.hasText(requestDto.nickname())) {
+            String nickname = requestDto.nickname();
+            CustomFormatValidator.validateNicknameFormat(nickname);
+            this.nickname = nickname.trim();
+        }
     }
 
     public void saveProfileImage(final ProfileImage profileImage) {

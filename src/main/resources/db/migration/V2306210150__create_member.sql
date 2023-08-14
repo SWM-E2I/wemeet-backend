@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `member`
 (
     `member_id`             bigint            NOT NULL AUTO_INCREMENT,
-    `nickname`              varchar(10)       NOT NULL,
+    `nickname`              varchar(5)        NOT NULL,
     `gender`                char(1)           NOT NULL,
     `phone_number`          char(24)          NOT NULL,
     `college_code_id`       char(3)           NOT NULL,

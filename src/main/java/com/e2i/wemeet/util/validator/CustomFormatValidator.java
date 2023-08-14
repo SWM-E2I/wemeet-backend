@@ -23,7 +23,7 @@ public abstract class CustomFormatValidator {
     private static final Pattern EMAIL_REG = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:ac\\.kr)$");
     private static final Pattern SMS_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
     private static final Pattern EMAIL_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣\\s]{2,10}$");
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣\\s]{1,5}$");
     private static final Pattern CODE_PK_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{3}$");
 
     public static void validatePhoneFormat(final String phone) {
@@ -51,7 +51,7 @@ public abstract class CustomFormatValidator {
     }
 
     public static void validateNicknameFormat(final String nickname) {
-        if (!StringUtils.hasText(nickname) || !NICKNAME_PATTERN.matcher(nickname).matches()) {
+        if (!StringUtils.hasText(nickname) || !NICKNAME_PATTERN.matcher(nickname.trim()).matches()) {
             throw new InvalidDataFormatException(INVALID_NICKNAME_FORMAT);
         }
     }
