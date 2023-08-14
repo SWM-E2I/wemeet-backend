@@ -65,8 +65,8 @@ class MemberTest {
         assertThat(kai.getMbti().name()).isEqualTo("ISTJ");
     }
 
-    @DisplayName("변경할 닉네임의 길이가 2 ~ 10자의 길이가 아니라면 닉네임을 변경할 수 없다.")
-    @ValueSource(strings = {"기", "", "열한글자마에스트로이다", "띄 어 쓰 기 로 열"})
+    @DisplayName("변경할 닉네임의 길이가 1 ~ 5자의 한글이 아니라면 닉네임을 변경할 수 없다.")
+    @ValueSource(strings = {"kadf", "kai", "여섯글자불가"})
     @ParameterizedTest
     void updateFailNicknameLength(String nickname) {
         // given
