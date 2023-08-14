@@ -100,7 +100,8 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
         return List.of(
             DynamicTest.dynamicTest("인증 번호를 발급 받을 수 있다.", () -> {
                 // given
-                SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(savedMembersPhone);
+                SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(
+                    savedMembersPhone);
 
                 // when
                 mvc.perform(
@@ -115,7 +116,8 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
             }),
             DynamicTest.dynamicTest("인증 성공 후 AccessToken 과 RefreshToken 이 반환된다.", () -> {
                 String credential = operations.get(savedMembersPhone);
-                LoginRequestDto loginRequestDto = new LoginRequestDto(savedMembersPhone, credential);
+                LoginRequestDto loginRequestDto = new LoginRequestDto(savedMembersPhone,
+                    credential);
 
                 ResultActions perform = mvc.perform(
                     post("/v1/auth/phone/validate")
@@ -185,6 +187,8 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
                             .description("회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨"),
                         fieldWithPath("data.memberId")
                             .description("회원 아이디"),
+                        fieldWithPath("data.isRegistered")
+                            .description("회원 가입 여부"),
                         fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
                             .description("회원 권한")
                     )
