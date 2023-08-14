@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+  <property name="LOG_PATTERN"
+    value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) %boldWhite([%C{4}.%M:%yellow(%L)]) [%magenta(correlationId)-%cyan(%X{correlationId})] - %msg%n"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <root level="info">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>
