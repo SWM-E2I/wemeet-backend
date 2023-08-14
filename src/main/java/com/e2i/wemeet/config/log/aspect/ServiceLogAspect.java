@@ -3,8 +3,7 @@ package com.e2i.wemeet.config.log.aspect;
 import com.e2i.wemeet.config.log.MdcKey;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,10 +12,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 @Aspect
 public class ServiceLogAspect {
 
-    private static final Logger log = LogManager.getLogger(ServiceLogAspect.class);
     private static final String SERVICE_LOG_FORMAT_BEFORE_PROCEED = "[SERVICE-START] :: MEMBER_ID: {}, CLASS: {}, METHOD: {}, PARAMS: {}";
     private static final String SERVICE_LOG_FORMAT_AFTER_PROCEED = "[SERVICE-END] :: MEMBER_ID: {}, CLASS: {}, METHOD: {}, RETURN_TYPE: {}, RETURN_VALUE: {}";
     private static final String NOT_AUTHENTICATED = "none";

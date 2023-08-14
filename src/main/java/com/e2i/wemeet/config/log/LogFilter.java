@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -20,18 +19,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+@Slf4j
 @Component
 public class LogFilter extends OncePerRequestFilter {
 
     private static final String REQUEST_LOG_FORMAT = "REQUEST:: HTTP_METHOD: {}, URL: {}, AGENT: {}, BODY: {}";
-    private static final String RESPONSE_LOG_FORMAT = "RESPONSE:: HTTP_METHOD: {}, URL: {}, STATUS_CODE: {}, QUERY_COUNT: {}, TIME_TAKEN: {}ms, MEMBER_ID: {}, BODY: {}";
+    private static final String RESPONSE_LOG_FORMAT = "RESPONSE:: HTTP_METHOD= {}, URL= {}, STATUS_CODE= {}, QUERY_COUNT= {}, TIME_TAKEN= {}ms, MEMBER_ID= {}, BODY= {}";
     private static final String QUERY_COUNT_WARNING_LOG_FORMAT = "WARN QUERY EXECUTION TIME:: {}";
 
     private static final int QUERY_COUNT_WARNING_STANDARD = 10;
     private static final String NO_REQUEST_BODY = "none";
     private static final String NOT_AUTHENTICATED = "none";
 
-    private static final Logger log = LogManager.getLogger(LogFilter.class);
     private final StopWatch apiWatch;
     private final QueryCounter queryCounter;
 
