@@ -29,12 +29,13 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        MemberPrincipal principal = (MemberPrincipal) SecurityContextHolder.getContext()
+        Object principal = SecurityContextHolder.getContext()
             .getAuthentication().getPrincipal();
-        if (principal == null || principal.getMemberId() == null) {
+
+        if (!(principal instanceof MemberPrincipal memberPrincipal)) {
             throw new AccessTokenNotFoundException();
         }
 
-        return principal.getMemberId();
+        return memberPrincipal.getMemberId();
     }
 }

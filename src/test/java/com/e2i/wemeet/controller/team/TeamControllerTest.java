@@ -30,19 +30,16 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(TeamController.class)
 class TeamControllerTest extends AbstractControllerUnitTest {
-
-    @MockBean
-    private TeamService teamService;
-
 
     @DisplayName("팀을 생성할 수 있다.")
     @WithCustomMockUser
