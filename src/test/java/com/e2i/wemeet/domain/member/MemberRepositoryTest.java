@@ -10,7 +10,7 @@ import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
-import com.e2i.wemeet.support.config.AbstractRepositoryUnitTest;
+import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

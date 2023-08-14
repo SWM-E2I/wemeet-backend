@@ -1,4 +1,4 @@
-package com.e2i.wemeet.support.config;
+package com.e2i.wemeet.support.module;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 

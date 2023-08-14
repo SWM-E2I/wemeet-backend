@@ -1,15 +1,14 @@
-package com.e2i.wemeet.support.config;
+package com.e2i.wemeet.support.module;
 
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodeRepository;
 import com.e2i.wemeet.domain.code.GroupCodeRepository;
+import com.e2i.wemeet.support.config.RepositoryTest;
 import com.e2i.wemeet.support.fixture.code.CodeFixture;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @RepositoryTest
 public abstract class AbstractRepositoryUnitTest {
 

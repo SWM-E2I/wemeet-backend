@@ -3,7 +3,7 @@ package com.e2i.wemeet.domain.base;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.e2i.wemeet.domain.base.converter.CryptoConverter;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import com.e2i.wemeet.util.encryption.TwoWayEncryption;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
