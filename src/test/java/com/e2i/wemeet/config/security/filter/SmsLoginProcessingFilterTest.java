@@ -1,6 +1,7 @@
 package com.e2i.wemeet.config.security.filter;
 
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -17,15 +18,21 @@ import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
+@Profile("prod")
 @DisplayName("SMS 인증 테스트")
 class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
 
@@ -35,73 +42,97 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("올바른 인증번호를 입력하면 SMS 인증에 성공한다.")
-    @Test
-    void smsLoginProcess() throws Exception {
-        // given - 인증 번호 발급
+    @DisplayName("인증 번호를 발급하고 인증하는 데에 성공한다.")
+    @TestFactory
+    Collection<DynamicTest> smsLoginProcessDynamic() {
+        // given
+        final ValueOperations<String, String> operations = redisTemplate.opsForValue();
         final String phone = "+821088990011";
-        SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
 
-        mvc.perform(
-            post("/v1/auth/phone/issue")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(toJson(credentialRequestDto))
+        return List.of(
+            DynamicTest.dynamicTest("인증 번호를 발급 받을 수 있다.", () -> {
+                // given
+                SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
+
+                // when
+                mvc.perform(
+                    post("/v1/auth/phone/issue")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(toJson(credentialRequestDto))
+                );
+
+                // then
+                String credential = operations.get(phone);
+                assertThat(credential).hasSize(6);
+            }),
+            DynamicTest.dynamicTest("올바른 인증 번호를 입력 하면 로그인에 성공한다.", () -> {
+                // given
+                String credential = operations.get(phone);
+                LoginRequestDto loginRequestDto = new LoginRequestDto(phone, credential);
+
+                // when
+                ResultActions perform = mvc.perform(
+                    RestDocumentationRequestBuilders.post("/v1/auth/phone/validate")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(toJson(loginRequestDto))
+                );
+
+                // then
+                perform.andExpectAll(
+                    status().isOk(),
+                    jsonPath("$.status").value("SUCCESS"),
+                    jsonPath("$.message").value("인증에 성공하였습니다."),
+                    jsonPath("$.data").isNotEmpty());
+
+                writeRestDocs(perform);
+            })
         );
-        String credential = redisTemplate.opsForValue().get(phone);
-
-        // when - 로그인 요청
-        LoginRequestDto loginRequestDto = new LoginRequestDto(phone, credential);
-
-        ResultActions perform = mvc.perform(
-            RestDocumentationRequestBuilders.post("/v1/auth/phone/validate")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(toJson(loginRequestDto))
-        );
-
-        // then
-        perform.andExpectAll(
-            status().isOk(),
-            jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("인증에 성공하였습니다."),
-            jsonPath("$.data").isNotEmpty());
-
-        writeRestDocs(perform);
     }
 
     @DisplayName("SMS 인증에 성공한 사용자가 이미 가입된 사용자라면 AccessToken 과 RefreshToken이 반환된다.")
-    @Test
-    void smsLoginProcessToken() throws Exception {
-        // given - 가입 & 인증 번호 발급
-        Member member = KAI.create();
-        memberRepository.save(member);
+    @TestFactory
+    Collection<DynamicTest> smsLoginProcessWithRegisteredMemberDynamic() {
+        // given
+        final ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        final Member savedMember = memberRepository.save(KAI.create());
+        final String savedMembersPhone = savedMember.getPhoneNumber();
 
-        String phone = KAI.getPhoneNumber();
-        SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(phone);
+        return List.of(
+            DynamicTest.dynamicTest("인증 번호를 발급 받을 수 있다.", () -> {
+                // given
+                SmsCredentialRequestDto credentialRequestDto = new SmsCredentialRequestDto(savedMembersPhone);
 
-        mvc.perform(
-            post("/v1/auth/phone/issue")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(toJson(credentialRequestDto))
-        );
-        String credential = redisTemplate.opsForValue().get(phone);
+                // when
+                mvc.perform(
+                    post("/v1/auth/phone/issue")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(toJson(credentialRequestDto))
+                );
 
-        // when - 로그인 요청
-        LoginRequestDto loginRequestDto = new LoginRequestDto(phone, credential);
+                // then
+                String credential = operations.get(savedMembersPhone);
+                assertThat(credential).hasSize(6);
+            }),
+            DynamicTest.dynamicTest("인증 성공 후 AccessToken 과 RefreshToken 이 반환된다.", () -> {
+                String credential = operations.get(savedMembersPhone);
+                LoginRequestDto loginRequestDto = new LoginRequestDto(savedMembersPhone, credential);
 
-        ResultActions perform = mvc.perform(
-            post("/v1/auth/phone/validate")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(toJson(loginRequestDto))
-        );
+                ResultActions perform = mvc.perform(
+                    post("/v1/auth/phone/validate")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(toJson(loginRequestDto))
+                );
 
-        // then
-        perform.andExpectAll(
-            status().isOk(),
-            header().exists(JwtEnv.ACCESS.getKey()),
-            header().exists(JwtEnv.REFRESH.getKey()),
-            jsonPath("$.status").value("SUCCESS"),
-            jsonPath("$.message").value("인증에 성공하였습니다."),
-            jsonPath("$.data").isNotEmpty()
+                // then
+                perform.andExpectAll(
+                    status().isOk(),
+                    header().exists(JwtEnv.ACCESS.getKey()),
+                    header().exists(JwtEnv.REFRESH.getKey()),
+                    jsonPath("$.status").value("SUCCESS"),
+                    jsonPath("$.message").value("인증에 성공하였습니다."),
+                    jsonPath("$.data").isNotEmpty()
+                );
+            })
         );
     }
 
