@@ -31,7 +31,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     @DisplayName("팀 수정 성공")
     @WithCustomMockUser(role = "MANAGER")
     @Test
-    void modifyTeam_Success() throws Exception {
+    void updateTeam_Success() throws Exception {
         // given
 
         // when
@@ -87,27 +87,30 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                                     팀 생성을 진행합니다.
                                 """),
                     requestFields(
-                        fieldWithPath("memberCount").type(JsonFieldType.NUMBER).description("인원수"),
+                        fieldWithPath("memberNum").type(JsonFieldType.NUMBER).description("인원수"),
                         fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
-                        fieldWithPath("drinkingOption").type(JsonFieldType.STRING)
-                            .description("술자리 여부"),
-                        fieldWithPath("preferenceMeetingTypeList").type(JsonFieldType.ARRAY)
-                            .description("선호 미팅 유형"),
+                        fieldWithPath("drinkRate").type(JsonFieldType.NUMBER)
+                            .description("음주 수치"),
+                        fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
+                            .description("술게임 여부"),
                         fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("팀 소개")
+                            .description("팀 소개"),
+                        fieldWithPath("images").type(JsonFieldType.ARRAY).description("팀 이미지"),
+                        fieldWithPath("members").type(JsonFieldType.ARRAY)
+                            .description("팀원 정보")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data").type(JsonFieldType.NUMBER)
-                            .description("생성된 팀의 teamId")
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data에는 아무 값도 반환되지 않습니다")
                     )
                 ));
     }
 
-    private void modifyTeamWriteRestDocs(ResultActions perform) throws Exception {
+    private void updateTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
                 MockMvcRestDocumentationWrapper.document("팀 수정",
@@ -120,14 +123,17 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                                 """),
                     requestFields(
                         fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
-                        fieldWithPath("drinkingOption").type(JsonFieldType.STRING)
-                            .description("술자리 여부"),
-                        fieldWithPath("preferenceMeetingTypeList").type(JsonFieldType.ARRAY)
-                            .description("선호 미팅 유형"),
+                        fieldWithPath("drinkRate").type(JsonFieldType.NUMBER)
+                            .description("음주 수치"),
+                        fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
+                            .description("술게임 여부"),
                         fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("팀 소개")
+                            .description("팀 소개"),
+                        fieldWithPath("images").type(JsonFieldType.ARRAY).description("팀 이미지"),
+                        fieldWithPath("members").type(JsonFieldType.ARRAY)
+                            .description("팀원 정보")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -138,7 +144,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 ));
     }
 
-    private void getMyTeamDetailWriteRestDocs(ResultActions perform) throws Exception {
+    private void readTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
                 MockMvcRestDocumentationWrapper.document("마이 팀 조회",
