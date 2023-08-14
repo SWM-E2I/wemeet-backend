@@ -55,7 +55,6 @@ public class MemberPrincipal implements UserDetails {
             .filter(authorities -> authorities.equals(Role.getRoleAttachedPrefix(Role.GUEST.name())))
             .findFirst()
             .orElseGet(() -> null) == null;
-
     }
 
     public Long getMemberId() {
