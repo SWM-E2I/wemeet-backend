@@ -65,7 +65,7 @@ public class AwsSesService implements EmailCredentialService {
         boolean result = origin.equals(input);
         if (result) {
             memberRepository.findById(memberId).ifPresent(member ->
-                member.getCollegeInfo().saveMail(target));
+                member.saveEmail(target));
         }
 
         return result;
@@ -85,7 +85,7 @@ public class AwsSesService implements EmailCredentialService {
     }
 
     private void validateIsExistMail(String mail) {
-        memberRepository.findByCollegeInfoMail(mail)
+        memberRepository.findByEmail(mail)
             .ifPresent(member -> {
                 throw new DuplicatedMailException();
             });

@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.member.Role;
-import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import com.e2i.wemeet.security.manager.CreditAuthorizationManager;
@@ -139,11 +138,13 @@ class CreditAuthorizationManagerTest {
     static class MemberRepositoryImpl implements MemberRepository {
 
         @Override
-        public Optional<Member> findByNicknameAndMemberCode(String nickname, String memberCode) {
-            return Optional.of(
-                Member.builder()
-                    .build()
-            );
+        public Optional<Member> findByEmail(String email) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Member> findByIdFetchCode(Long memberId) {
+            return Optional.empty();
         }
 
         @Override
@@ -162,11 +163,6 @@ class CreditAuthorizationManagerTest {
 
         @Override
         public Optional<Member> findByPhoneNumber(String phoneNumber) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<Member> findByCollegeInfoMail(String mail) {
             return Optional.empty();
         }
 
@@ -310,10 +306,6 @@ class CreditAuthorizationManagerTest {
             return null;
         }
 
-        @Override
-        public PersistResponseDto findPersistResponseById(Long memberId) {
-            return null;
-        }
     }
 
     static class RoleHierarchyImpl implements RoleHierarchy {

@@ -1,11 +1,11 @@
 package com.e2i.wemeet.security.model;
 
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.RegistrationType;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.token.Payload;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
@@ -23,30 +23,25 @@ public class MemberPrincipal implements UserDetails {
      * RoleHierarchy 적용 -> 각 사용자 당 권한 정보는 한개만 갖도록 구현
      * */
     private final List<? extends GrantedAuthority> authorities;
-    private final RegistrationType registrationType;
 
     public MemberPrincipal() {
         this.memberId = null;
         this.authorities = List.of(Role.GUEST::getRoleAttachedPrefix);
-        this.registrationType = RegistrationType.NOT_REGISTERED;
     }
 
     public MemberPrincipal(final Member member) {
         this.memberId = member.getMemberId();
         this.authorities = getAuthorities(member.getRole().name());
-        this.registrationType = RegistrationType.APP;
     }
 
     public MemberPrincipal(final Payload payload) {
         this.memberId = payload.getMemberId();
         this.authorities = getAuthorities(payload.getRole());
-        this.registrationType = RegistrationType.APP;
     }
 
     public MemberPrincipal(final Long memberId, final String role) {
         this.memberId = memberId;
         this.authorities = getAuthorities(role);
-        this.registrationType = RegistrationType.APP;
     }
 
     private List<? extends GrantedAuthority> getAuthorities(final String authority) {
@@ -54,17 +49,16 @@ public class MemberPrincipal implements UserDetails {
         return List.of(() -> attachedPrefixRole);
     }
 
+    public boolean isRegistered() {
+        return this.authorities.stream()
+            .map(GrantedAuthority::getAuthority)
+            .filter(authorities -> authorities.equals(Role.getRoleAttachedPrefix(Role.GUEST.name())))
+            .findFirst()
+            .orElseGet(() -> null) == null;
+    }
+
     public Long getMemberId() {
         return memberId;
-    }
-
-    public boolean isRegistered() {
-        return this.registrationType != null
-            && this.registrationType != RegistrationType.NOT_REGISTERED;
-    }
-
-    public RegistrationType getRegistrationType() {
-        return registrationType;
     }
 
     @Override
@@ -109,8 +103,25 @@ public class MemberPrincipal implements UserDetails {
                 .map(GrantedAuthority::getAuthority)
                 .toList()
         );
-        final String format = "MemberPrincipal(memberId=%d, role=%s, registrationType=%s)";
+        final String format = "MemberPrincipal(memberId=%d, role=%s)";
 
-        return String.format(format, memberId, role, registrationType);
+        return String.format(format, memberId, role);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MemberPrincipal that = (MemberPrincipal) o;
+        return Objects.equals(memberId, that.memberId) && Objects.equals(authorities, that.authorities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, authorities);
     }
 }

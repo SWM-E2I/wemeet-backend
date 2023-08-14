@@ -1,6 +1,6 @@
 package com.e2i.wemeet.util.aspect;
 
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.security.token.Payload;
 import com.e2i.wemeet.security.token.TokenInjector;

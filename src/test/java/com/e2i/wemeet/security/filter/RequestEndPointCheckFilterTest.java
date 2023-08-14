@@ -2,28 +2,23 @@ package com.e2i.wemeet.security.filter;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
-import com.e2i.wemeet.security.handler.HttpRequestEndPointChecker;
+import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.util.StringUtils;
+import org.springframework.test.web.servlet.ResultActions;
 
-class RequestEndPointCheckFilterTest {
-
-    private RequestEndPointCheckFilter requestEndPointCheckFilter;
-
-    @BeforeEach
-    void setUp() {
-        requestEndPointCheckFilter = new RequestEndPointCheckFilter(new MockHttpRequestEndPointChecker());
-    }
+class RequestEndPointCheckFilterTest extends AbstractIntegrationTest {
 
     @DisplayName("요청에 맞는 핸들러가 없을 경우, 예외가 발생한다.")
     @Test
@@ -51,11 +46,31 @@ class RequestEndPointCheckFilterTest {
             .isThrownBy(() -> requestEndPointCheckFilter.doFilterInternal(request, response, filterChain));
     }
 
-    static class MockHttpRequestEndPointChecker implements HttpRequestEndPointChecker {
+    @DisplayName("요청에 맞는 핸들러가 있을 경우, 요청이 정상 수행된다.")
+    @Test
+    void filterSuccess() throws Exception {
+        // given
+        ResultActions perform = mvc.perform(get("/health"));
 
-        @Override
-        public boolean isEndPointExist(HttpServletRequest request) {
-            return StringUtils.hasText(request.getRequestURI());
-        }
+        // when & then
+        perform.andExpectAll(
+            status().isOk(),
+            jsonPath("$").value("Health check passed")
+        );
+    }
+
+    @DisplayName("요청에 맞는 핸들러가 없을 경우, 에러 응답이 반환된다.")
+    @Test
+    void filterFail() throws Exception {
+        // given
+        ResultActions perform = mvc.perform(get("/invalid_url"));
+
+        // when & then
+        perform.andExpectAll(
+            status().isNotFound(),
+            jsonPath("$.status").value("ERROR"),
+            jsonPath("$.code").value(40024),
+            jsonPath("$.message").value("존재하지 않는 API 입니다.")
+        );
     }
 }

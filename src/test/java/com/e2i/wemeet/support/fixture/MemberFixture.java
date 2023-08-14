@@ -1,78 +1,89 @@
 package com.e2i.wemeet.support.fixture;
 
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG_COLLEGE;
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA_COLLEGE;
-import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.SEOULWOMEN_COLLEGE;
-import static com.e2i.wemeet.support.fixture.PreferenceFixture.GENERAL_PREFERENCE;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.ANYANG;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.KOREA;
+import static com.e2i.wemeet.support.fixture.CollegeInfoFixture.WOMAN;
 
-import com.e2i.wemeet.domain.member.CollegeInfo;
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
+import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.member.Preference;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.CollegeInfo;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Mbti;
+import com.e2i.wemeet.domain.member.data.ProfileImage;
+import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
-import com.e2i.wemeet.dto.request.member.ModifyMemberRequestDto;
-import com.e2i.wemeet.dto.request.team.InviteTeamRequestDto;
+import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
-import com.e2i.wemeet.dto.response.member.MemberInfoResponseDto;
 import java.lang.reflect.Field;
-import java.util.List;
 
 public enum MemberFixture {
-    KAI(1L, "4100", "kai", Gender.MALE, "+821012341234",
-        ANYANG_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
+    KAI("카이", Gender.MAN, "+821011112222", "2017e7024@as.ac.kr",
+        ANYANG.create(), Mbti.INFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    RIM("째림", Gender.WOMAN, "+821098764444", "2019a24@gad.ac.kr",
+        WOMAN.create(), Mbti.ISFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    SEYUN("떼윤", Gender.MAN, "+821090908888", "2020a234@ad.ac.kr",
+        KOREA.create(), Mbti.ENFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+    JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
+        KOREA.create(), Mbti.ESFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER);
 
-    RIM(2L, "4101", "rim", Gender.FEMALE, "+821056785678",
-        KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, false),
-
-    SEYUN(3L, "4102", "seyun", Gender.MALE, "+821056785628",
-        SEOULWOMEN_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.MANAGER, true),
-
-    JEONGYEOL(4L, "4103", "10cm", Gender.MALE, "+821056783678",
-        KOREA_COLLEGE.create(), GENERAL_PREFERENCE.create(),
-        Mbti.INFJ, "안녕하세요", 100, Role.USER, true);
-
-    private final Long memberId;
-    private final String memberCode;
     private final String nickname;
     private final Gender gender;
     private final String phoneNumber;
+    private final String email;
     private final CollegeInfo collegeInfo;
-    private final Preference preference;
     private final Mbti mbti;
-    private final String introduction;
-    private final int credit;
+    private final Integer credit;
+    private final Boolean imageAuth;
+    private final String basicUrl;
+    private final String lowUrl;
     private final Role role;
 
-    private final boolean imageAuth;
-
-    MemberFixture(Long memberId, String memberCode, String nickname, Gender gender,
-        String phoneNumber,
-        CollegeInfo collegeInfo, Preference preference, Mbti mbti, String introduction, int credit,
-        Role role, boolean imageAuth) {
-        this.memberId = memberId;
-        this.memberCode = memberCode;
+    MemberFixture(String nickname, Gender gender, String phoneNumber, String email,
+        CollegeInfo collegeInfo, Mbti mbti, Integer credit,
+        Boolean imageAuth, String basicUrl, String lowUrl, Role role) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.collegeInfo = collegeInfo;
-        this.preference = preference;
         this.mbti = mbti;
-        this.introduction = introduction;
         this.credit = credit;
-        this.role = role;
         this.imageAuth = imageAuth;
+        this.basicUrl = basicUrl;
+        this.lowUrl = lowUrl;
+        this.role = role;
     }
 
     public Member create() {
-        Member member = createBuilder()
+        return createBuilder()
             .build();
-        setMemberId(this.memberId, member);
-        return member;
+    }
+
+    // 대학 코드를 입력하여 생성
+    public Member create(Code collegeCode) {
+        CollegeInfo collegeInfoFixture = CollegeInfoFixture.ENGINERRING.create(collegeCode);
+
+        return createBuilder()
+            .collegeInfo(collegeInfoFixture)
+            .build();
+    }
+
+    public Member create_phone(final String phoneNumber) {
+        return createBuilder()
+            .phoneNumber(phoneNumber)
+            .build();
+    }
+
+    public Member create_email(final String email) {
+        return createBuilder()
+            .email(email)
+            .build();
     }
 
     public Member create_with_id(final Long memberId) {
@@ -85,6 +96,18 @@ public enum MemberFixture {
     public Member create_credit(final int credit) {
         return createBuilder()
             .credit(credit)
+            .build();
+    }
+
+    public Member create_profile_image(final ProfileImage profileImage) {
+        return createBuilder()
+            .profileImage(profileImage)
+            .build();
+    }
+
+    public Member create_image_auth(final boolean imageAuth) {
+        return createBuilder()
+            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl, imageAuth))
             .build();
     }
 
@@ -101,12 +124,6 @@ public enum MemberFixture {
             .build();
     }
 
-    public Member create_preference(final Preference preference) {
-        return createBuilder()
-            .preference(preference)
-            .build();
-    }
-
     public Member create_college(final CollegeInfo collegeInfo) {
         return createBuilder()
             .collegeInfo(collegeInfo)
@@ -115,73 +132,57 @@ public enum MemberFixture {
 
     private Member.MemberBuilder createBuilder() {
         return Member.builder()
-            .memberCode(this.memberCode)
             .nickname(this.nickname)
             .gender(this.gender)
             .phoneNumber(this.phoneNumber)
+            .email(this.email)
             .collegeInfo(this.collegeInfo)
-            .preference(this.preference)
             .mbti(this.mbti)
-            .introduction(this.introduction)
             .credit(this.credit)
-            .role(this.role)
-            .imageAuth(this.imageAuth);
+            .profileImage(new ProfileImage(this.basicUrl, this.lowUrl, this.imageAuth))
+            .role(this.role);
     }
 
     public CreateMemberRequestDto createMemberRequestDto() {
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto();
+
         return CreateMemberRequestDto.builder()
             .nickname(this.nickname)
-            .gender(this.gender.toString())
             .phoneNumber(this.phoneNumber)
-            .collegeInfo(ANYANG_COLLEGE.createCollegeInfoDto())
-            .mbti("ESTJ")
-            .introduction("hello!!").build();
+            .gender(this.gender.name())
+            .mbti(this.mbti.name())
+            .collegeInfo(collegeInfoRequestDto)
+            .build();
+    }
+
+    public CreateMemberRequestDto createMemberRequestDto(String collegeCode) {
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto(collegeCode);
+
+        return CreateMemberRequestDto.builder()
+            .nickname(this.nickname)
+            .phoneNumber(this.phoneNumber)
+            .gender(this.gender.name())
+            .mbti(this.mbti.name())
+            .collegeInfo(collegeInfoRequestDto)
+            .build();
     }
 
     public MemberDetailResponseDto createMemberDetailResponseDto() {
-        return MemberDetailResponseDto.builder()
-            .nickname(this.nickname)
-            .gender(this.gender)
-            .mbti(this.mbti)
-            .college(this.collegeInfo.getCollege())
-            .collegeType(this.collegeInfo.getCollegeType())
-            .admissionYear(this.collegeInfo.getAdmissionYear())
-            .introduction(this.introduction)
-            .profileImageList(List.of())
+        return MemberDetailResponseDto.of(
+            this.create(),
+            this.collegeInfo.getCollegeCode().getCodeValue()
+        );
+    }
+
+    public UpdateMemberRequestDto createUpdateMemberRequestDto(final String nickname,
+        final String mbti) {
+        String updateNickname = nickname == null ? this.nickname : nickname;
+        String updateMbti = mbti == null ? this.mbti.name() : mbti;
+
+        return UpdateMemberRequestDto.builder()
+            .nickname(updateNickname)
+            .mbti(updateMbti)
             .build();
-    }
-
-    public ModifyMemberRequestDto createModifyMemberRequestDto() {
-        return ModifyMemberRequestDto.builder()
-            .nickname("modify nickname")
-            .introduction("modify introduction")
-            .mbti("ESTJ")
-            .build();
-    }
-
-    public MemberInfoResponseDto createMemberInfoResponseDto() {
-        return MemberInfoResponseDto.builder()
-            .nickname(this.nickname)
-            .memberCode(this.memberCode)
-            .profileImage("profileImage Key")
-            .univAuth(true)
-            .imageAuth(false)
-            .build();
-    }
-
-    public InviteTeamRequestDto inviteTeamRequestDto() {
-        return InviteTeamRequestDto.builder()
-            .nickname(this.nickname)
-            .memberCode(this.memberCode)
-            .build();
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public String getMemberCode() {
-        return memberCode;
     }
 
     public String getNickname() {
@@ -196,6 +197,10 @@ public enum MemberFixture {
         return phoneNumber;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public CollegeInfo getCollegeInfo() {
         return collegeInfo;
     }
@@ -204,12 +209,20 @@ public enum MemberFixture {
         return mbti;
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public Integer getCredit() {
+        return credit;
     }
 
-    public int getCredit() {
-        return credit;
+    public Boolean getImageAuth() {
+        return imageAuth;
+    }
+
+    public String getBasicUrl() {
+        return basicUrl;
+    }
+
+    public String getLowUrl() {
+        return lowUrl;
     }
 
     public Role getRole() {
@@ -225,5 +238,27 @@ public enum MemberFixture {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto() {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(getCollegeCodeWithDelimiter(this.collegeInfo.getCollegeCode()))
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto(String collegeCode) {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(collegeCode)
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    // Delimiter가 붙은 코드를 생성 ex) CE-001
+    private String getCollegeCodeWithDelimiter(Code code) {
+        CodePk codePk = code.getCodePk();
+        return codePk.getGroupCodeId() + "-" + codePk.getCodeId();
     }
 }

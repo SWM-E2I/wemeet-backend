@@ -1,28 +1,32 @@
 package com.e2i.wemeet.domain.team;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
-import com.e2i.wemeet.domain.member.Gender;
+import com.e2i.wemeet.domain.base.converter.AdditionalActivityConverter;
+import com.e2i.wemeet.domain.base.converter.DrinkRateConverter;
+import com.e2i.wemeet.domain.base.converter.DrinkWithGameConverter;
+import com.e2i.wemeet.domain.base.converter.GenderConverter;
+import com.e2i.wemeet.domain.base.converter.RegionConverter;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.teampreferencemeetingtype.TeamPreferenceMeetingType;
-import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
-import com.e2i.wemeet.exception.badrequest.TeamAlreadyExistsException;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.domain.team.data.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.DrinkRate;
+import com.e2i.wemeet.domain.team.data.DrinkWithGame;
+import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team_member.TeamMember;
+import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
-import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,129 +46,61 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column(length = 15, nullable = false)
-    private String teamCode;
-
     @Column(nullable = false)
-    private Integer memberCount;
+    private Integer memberNum;
 
-    @Column(nullable = false)
-    private Boolean isActive;
-
-    @Column(length = 6, nullable = false)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = GenderConverter.class)
     private Gender gender;
 
+    @Convert(converter = RegionConverter.class)
     @Column(length = 20, nullable = false)
-    private String region;
+    private Region region;
 
+    @Convert(converter = DrinkRateConverter.class)
     @Column(nullable = false)
-    private String drinkingOption;
+    private DrinkRate drinkRate;
 
-    @Column(length = 20)
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = DrinkWithGameConverter.class)
+    @Column(nullable = false)
+    private DrinkWithGame drinkWithGame;
+
+    @Convert(converter = AdditionalActivityConverter.class)
     private AdditionalActivity additionalActivity;
 
-    @Column(length = 100)
+    @Column(length = 150, nullable = false)
     private String introduction;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_leader_id", updatable = false, nullable = false)
     private Member teamLeader;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
-    private List<Member> members = new ArrayList<>();
-
-    @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
-    private List<TeamPreferenceMeetingType> preferenceMeetingTypes = new ArrayList<>();
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamMember> teamMembers = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
     @Builder
-    public Team(String teamCode, int memberCount,
-        String drinkingOption, String region,
-        AdditionalActivity additionalActivity,
+    public Team(Integer memberNum, Region region, DrinkRate drinkRate,
+        DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity,
         String introduction, Member teamLeader) {
-        validateIsAbleManager(teamLeader);
-
-        this.teamCode = teamCode;
-        this.memberCount = memberCount;
-        this.region = region;
-        this.drinkingOption = drinkingOption;
-        this.introduction = introduction;
-        this.additionalActivity = additionalActivity;
         setTeamLeader(teamLeader);
-        setActive(false);
+        this.memberNum = memberNum;
+        this.region = region;
+        this.drinkRate = drinkRate;
+        this.drinkWithGame = drinkWithGame;
+        this.additionalActivity = additionalActivity;
+        this.introduction = introduction;
     }
 
-    public void updateTeam(ModifyTeamRequestDto modifyTeamRequestDto) {
-        this.region = modifyTeamRequestDto.region();
-        this.drinkingOption = modifyTeamRequestDto.drinkingOption();
-        this.additionalActivity = AdditionalActivity.findBy(
-            modifyTeamRequestDto.additionalActivity());
-        this.introduction = modifyTeamRequestDto.introduction();
-    }
-
-    public void setTeamLeader(Member teamLeader) {
-        this.gender = teamLeader.getGender();
+    /*
+     * 팀장 설정은 생성자에서만 가능
+     * 연관 관계 설정은 Team 에서 진행
+     */
+    private void setTeamLeader(final Member teamLeader) {
         this.teamLeader = teamLeader;
-        this.members.add(teamLeader);
-        teamLeader.setManager(this);
-    }
-
-    public void addMember(Member member) {
-        if (!this.members.contains(member) && this.members.size() < this.memberCount) {
-            this.members.add(member);
-            member.setTeam(this);
-        }
-    }
-
-    public void deleteMember(Member member) {
-        if (this.members.contains(member)) {
-            this.members.remove(member);
-            member.setTeam(null);
-        }
-    }
-
-    public void activateTeam() {
-        if (FALSE.equals(this.isActive) && this.memberCount == this.members.size()) {
-            setActive(true);
-        }
-    }
-
-    public void deactivateTeam() {
-        if (TRUE.equals(this.isActive) && this.memberCount > this.members.size()) {
-            setActive(false);
-        }
-    }
-
-    private void setActive(boolean active) {
-        isActive = active;
-    }
-
-    private void validateIsAbleManager(final Member manager) {
-        isTeamExist(manager);
-        isUnivAuth(manager);
-    }
-
-    private void isTeamExist(Member member) {
-        if (member.getTeam() != null) {
-            throw new TeamAlreadyExistsException();
-        }
-    }
-
-    private void isUnivAuth(Member member) {
-        if (member.getCollegeInfo().getMail() == null) {
-            throw new UnAuthorizedUnivException();
-        }
-    }
-
-    public void delete() {
-        this.members.forEach(member -> member.setTeam(null));
-        this.members.clear();
-        this.deactivateTeam();
-
-        this.deletedAt = LocalDateTime.now();
+        this.gender = teamLeader.getGender();
+        teamLeader.setTeam(this);
+        teamLeader.setRole(Role.MANAGER);
     }
 
     public Team checkTeamValid() {
@@ -173,4 +109,30 @@ public class Team extends BaseTimeEntity {
         }
         return this;
     }
+
+    public void addTeamMembers(List<TeamMember> teamMembers) {
+        teamMembers.forEach(this::addTeamMember);
+    }
+
+    public void addTeamMember(TeamMember teamMember) {
+        teamMember.setTeam(this);
+    }
+
+
+    public void update(UpdateTeamRequestDto updateTeamRequestDto) {
+        this.memberNum = updateTeamRequestDto.members().size() + 1;
+        this.region = Region.valueOf(updateTeamRequestDto.region());
+        this.drinkRate = DrinkRate.valueOf(updateTeamRequestDto.drinkRate());
+        this.drinkWithGame = DrinkWithGame.valueOf(updateTeamRequestDto.drinkWithGame());
+        this.additionalActivity = AdditionalActivity.valueOf(
+            updateTeamRequestDto.additionalActivity());
+        this.introduction = updateTeamRequestDto.introduction();
+        this.teamMembers.clear();
+    }
+
+    public void delete(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+        teamLeader.setRole(Role.USER);
+    }
 }
+

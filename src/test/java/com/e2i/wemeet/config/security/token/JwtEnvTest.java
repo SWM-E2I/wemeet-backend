@@ -3,7 +3,7 @@ package com.e2i.wemeet.config.security.token;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;
 import org.junit.jupiter.api.DisplayName;

@@ -1,11 +1,16 @@
 package com.e2i.wemeet.support.fixture;
 
-import com.e2i.wemeet.domain.member.Gender;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.team.AdditionalActivity;
 import com.e2i.wemeet.domain.team.Team;
+import com.e2i.wemeet.domain.team.data.AdditionalActivity;
+import com.e2i.wemeet.domain.team.data.DrinkRate;
+import com.e2i.wemeet.domain.team.data.DrinkWithGame;
+import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team.data.TeamImageData;
+import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
-import com.e2i.wemeet.dto.request.team.ModifyTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
+import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -14,113 +19,112 @@ import lombok.Getter;
 @Getter
 public enum TeamFixture {
 
-    TEST_TEAM(1L, "df42hg", 3, Gender.MALE, "건대입구", "0", AdditionalActivity.SHOW,
-        "안녕하세요. 저희 팀은 멋쟁이 팀입니다.", MemberFixture.KAI.create()),
-    HONGDAE_TEAM(null, "hongda", 3, null, "홍대 입구", "0", AdditionalActivity.SHOW,
-        "안녕하세요. 홍대 팀 인사올립니다.", null);
+    HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!"),
+    WOMAN_TEAM(2, Region.SINCHON, DrinkRate.LOW, DrinkWithGame.ANY,
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!"),
+    WOMAN_TEAM_2(2, Region.HONGDAE, DrinkRate.MIDDLE, DrinkWithGame.BEGINNER,
+        AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!");
 
-    private final Long teamId;
-    private final String teamCode;
-
-    private final int memberCount;
-
-    private final Gender gender;
-
-    private final String region;
-
-    private final String drinkingOption;
-
+    private final Integer memberNum;
+    private final Region region;
+    private final DrinkRate drinkRate;
+    private final DrinkWithGame drinkWithGame;
     private final AdditionalActivity additionalActivity;
-
     private final String introduction;
 
-    private final Member member;
-
-    TeamFixture(Long teamId, String teamCode, int memberCount, Gender gender, String region,
-        String drinkingOption, AdditionalActivity additionalActivity, String introduction,
-        Member member) {
-        this.teamId = teamId;
-        this.teamCode = teamCode;
-        this.memberCount = memberCount;
-        this.gender = gender;
+    TeamFixture(Integer memberNum, Region region, DrinkRate drinkRate, DrinkWithGame drinkWithGame,
+        AdditionalActivity additionalActivity,
+        String introduction) {
+        this.memberNum = memberNum;
         this.region = region;
-        this.drinkingOption = drinkingOption;
+        this.drinkRate = drinkRate;
+        this.drinkWithGame = drinkWithGame;
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
-        this.member = member;
     }
 
-    public Team create() {
-        Team team = createBuilder()
+    public Team create(Member teamLeader, List<TeamMember> teamMembers) {
+        Team team = createBuilder(teamLeader)
             .build();
-        setTeamId(team, this.teamId);
+        team.addTeamMembers(teamMembers);
         return team;
     }
 
-    public Team create(Member teamLeader) {
-        return createTeamBuilder(teamLeader)
+    public Team create_with_activity(Member teamLeader, List<TeamMember> teamMembers,
+        AdditionalActivity additionalActivity) {
+        Team team = createBuilder(teamLeader)
+            .additionalActivity(additionalActivity)
             .build();
-    }
-
-    public Team create_with_id(Member teamLeader, Long teamId) {
-        Team team = createTeamBuilder(teamLeader)
-            .build();
-        setTeamId(team, teamId);
+        team.addTeamMembers(teamMembers);
         return team;
     }
 
-    public Team.TeamBuilder createTeamBuilder(Member member) {
-        return Team.builder()
-            .teamCode(member.getMemberId() + "@" + this.teamCode)
-            .memberCount(this.memberCount)
-            .region(this.region)
-            .drinkingOption(this.drinkingOption)
-            .additionalActivity(this.additionalActivity)
-            .introduction(this.introduction)
-            .teamLeader(member);
+    public CreateTeamRequestDto createTeamRequestDto_2_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+
+        return createTeamRequestDto(List.of(teamMember1));
     }
 
-    public CreateTeamRequestDto createTeamRequestDto() {
+    public CreateTeamRequestDto createTeamRequestDto_3_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+        TeamMemberRequestDto teamMember2 = TeamMemberFixture.ELLI.createTeamMemberRequestDto();
+
+        return createTeamRequestDto(List.of(teamMember1, teamMember2));
+    }
+
+    public CreateTeamRequestDto createTeamRequestDto(List<TeamMemberRequestDto> members) {
         return CreateTeamRequestDto.builder()
-            .memberCount(this.memberCount)
-            .region(this.region)
-            .drinkingOption(this.drinkingOption)
-            .additionalActivity(this.additionalActivity.toString())
-            .preferenceMeetingTypeList(List.of("G001_C001"))
+            .region(this.region.name())
+            .drinkRate(this.drinkRate.name())
+            .drinkWithGame(this.drinkWithGame.name())
+            .additionalActivity(this.additionalActivity.name())
             .introduction(this.introduction)
+            .members(members)
             .build();
     }
 
-    public ModifyTeamRequestDto modifyTeamRequestDto() {
-        return ModifyTeamRequestDto.builder()
-            .region("홍대 입구")
-            .drinkingOption("1")
-            .additionalActivity("CAFE")
-            .preferenceMeetingTypeList(List.of("G001_C002"))
-            .introduction("멋쟁이팀 인사드립니다.")
-            .build();
+    public UpdateTeamRequestDto updateTeamRequestDto_2_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.RACHEL.createTeamMemberRequestDto();
+
+        return updateTeamRequestDto(List.of(teamMember1));
     }
 
-    public MyTeamDetailResponseDto myTeamDetailResponseDto() {
-        return MyTeamDetailResponseDto.builder()
-            .memberCount(this.memberCount)
-            .region(this.region)
-            .drinkingOption(this.drinkingOption)
-            .additionalActivity(this.additionalActivity)
-            .preferenceMeetingTypeList(List.of("G001_C002"))
+    public UpdateTeamRequestDto updateTeamRequestDto_3_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+        TeamMemberRequestDto teamMember2 = TeamMemberFixture.ELLI.createTeamMemberRequestDto();
+
+        return updateTeamRequestDto(List.of(teamMember1, teamMember2));
+    }
+
+    public UpdateTeamRequestDto updateTeamRequestDto(List<TeamMemberRequestDto> members) {
+        return UpdateTeamRequestDto.builder()
+            .region(this.region.name())
+            .drinkRate(this.drinkRate.name())
+            .drinkWithGame(this.drinkWithGame.name())
+            .additionalActivity(this.additionalActivity.name())
             .introduction(this.introduction)
-            .managerImageAuth(member.getImageAuth())
+            .members(members)
             .build();
     }
 
-    private Team.TeamBuilder createBuilder() {
+    public MyTeamDetailResponseDto createMyTeamDetailResponseDto() {
+        return MyTeamDetailResponseDto.of(
+            this.create(MemberFixture.RIM.create(),
+                List.of(TeamMemberFixture.OLIVER.create())),
+            List.of(TeamImageData.builder()
+                .url("testUrl")
+                .build()));
+    }
+
+    private Team.TeamBuilder createBuilder(final Member teamLeader) {
         return Team.builder()
-            .teamCode(this.teamCode)
-            .memberCount(this.memberCount)
-            .region(region)
-            .drinkingOption(this.drinkingOption)
+            .teamLeader(teamLeader)
+            .memberNum(this.memberNum)
+            .region(this.region)
+            .drinkRate(this.drinkRate)
+            .drinkWithGame(this.drinkWithGame)
             .additionalActivity(this.additionalActivity)
-            .teamLeader(this.member)
             .introduction(this.introduction);
     }
 

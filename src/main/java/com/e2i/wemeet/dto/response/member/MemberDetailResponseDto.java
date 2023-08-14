@@ -1,10 +1,8 @@
 package com.e2i.wemeet.dto.response.member;
 
-import com.e2i.wemeet.domain.member.Gender;
-import com.e2i.wemeet.domain.member.Mbti;
 import com.e2i.wemeet.domain.member.Member;
-import com.e2i.wemeet.domain.profileimage.ProfileImage;
-import java.util.List;
+import com.e2i.wemeet.domain.member.data.Gender;
+import com.e2i.wemeet.domain.member.data.Mbti;
 import lombok.Builder;
 
 @Builder
@@ -15,16 +13,20 @@ public record MemberDetailResponseDto(
     String college,
     String collegeType,
     String admissionYear,
-    String introduction,
-    List<ProfileImage> profileImageList
+    ProfileImageResponseDto profileImage
 ) {
 
-    public MemberDetailResponseDto(Member member, List<ProfileImage> profileImageList) {
-        this(
-            member.getNickname(), member.getGender(), member.getMbti(),
-            member.getCollegeInfo().getCollege(),
-            member.getCollegeInfo().getCollegeType(),
-            member.getCollegeInfo().getAdmissionYear(), member.getIntroduction(), profileImageList
-        );
+    public static MemberDetailResponseDto of(final Member member, final String college) {
+        ProfileImageResponseDto profileImage = ProfileImageResponseDto.of(member.getProfileImage());
+
+        return MemberDetailResponseDto.builder()
+            .nickname(member.getNickname())
+            .gender(member.getGender())
+            .mbti(member.getMbti())
+            .college(college)
+            .collegeType(member.getCollegeInfo().getCollegeType().getDescription())
+            .admissionYear(member.getCollegeInfo().getAdmissionYear())
+            .profileImage(profileImage)
+            .build();
     }
 }

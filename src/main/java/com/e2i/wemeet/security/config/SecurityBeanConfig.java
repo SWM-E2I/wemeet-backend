@@ -74,8 +74,8 @@ public class SecurityBeanConfig {
     }
 
     @Bean
-    public RequestEndPointCheckFilter requestEndPointCheckFilter(HttpRequestEndPointChecker endPointChecker) {
-        return new RequestEndPointCheckFilter(endPointChecker);
+    public RequestEndPointCheckFilter requestEndPointCheckFilter(DispatcherServlet dispatcherServlet) {
+        return new RequestEndPointCheckFilter(httpRequestEndPointChecker(dispatcherServlet));
     }
 
     // AccessToken 유효성 검증 필터

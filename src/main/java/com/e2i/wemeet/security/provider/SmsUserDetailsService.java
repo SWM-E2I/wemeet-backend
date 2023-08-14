@@ -3,6 +3,7 @@ package com.e2i.wemeet.security.provider;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.security.model.MemberPrincipal;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,12 +19,10 @@ public class SmsUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByPhoneNumber(username).orElse(null);
+        Optional<Member> member = memberRepository.findByPhoneNumber(username);
 
         // SMS 인증을 요청한 사용자가 회원가입이 되어있지 않을 경우
-        if (member == null) {
-            return new MemberPrincipal();
-        }
-        return new MemberPrincipal(member);
+        return member.map(MemberPrincipal::new)
+            .orElseGet(MemberPrincipal::new);
     }
 }

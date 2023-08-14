@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;

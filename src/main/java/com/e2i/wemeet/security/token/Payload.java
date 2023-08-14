@@ -1,7 +1,7 @@
 package com.e2i.wemeet.security.token;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.e2i.wemeet.domain.member.Role;
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import java.util.Collection;
 import java.util.Map;

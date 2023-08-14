@@ -1,14 +1,12 @@
 package com.e2i.wemeet.domain.base;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import com.e2i.wemeet.domain.base.converter.CryptoConverter;
 import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.util.encryption.TwoWayEncryption;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @DisplayName("CryptoConverter 테스트")

@@ -1,7 +1,6 @@
 package com.e2i.wemeet.controller.admin;
 
-import com.e2i.wemeet.domain.member.Preference;
-
+// TODO :: service refactoring
 public enum AdminPreferenceFixture {
 
     GENERAL_PREFERENCE("19", "22", "22", "22", true, "ENTP");
@@ -27,17 +26,6 @@ public enum AdminPreferenceFixture {
         this.drinkingOption = drinkingOption;
         this.isAvoidedFriends = isAvoidedFriends;
         this.preferenceMbti = preferenceMbti;
-    }
-
-    public Preference create() {
-        return Preference.builder()
-            .startPreferenceAdmissionYear(startPreferenceAdmissionYear)
-            .endPreferenceAdmissionYear(endPreferenceAdmissionYear)
-            .sameCollegeState(sameCollegeState)
-            .drinkingOption(drinkingOption)
-            .isAvoidedFriends(isAvoidedFriends)
-            .preferenceMbti(preferenceMbti)
-            .build();
     }
 
 }
