@@ -12,7 +12,7 @@ public record MyTeamDetailResponseDto(
     int memberNum,
     String region,
     String drinkRate,
-    String drinkingWithGame,
+    String drinkWithGame,
     String additionalActivity,
     String introduction,
     List<TeamImageDto> images,
@@ -27,7 +27,7 @@ public record MyTeamDetailResponseDto(
             .memberNum(team.getMemberNum())
             .region(team.getRegion().getName())
             .drinkRate(team.getDrinkRate().getName())
-            .drinkingWithGame(team.getDrinkWithGame().getName())
+            .drinkWithGame(team.getDrinkWithGame().getName())
             .additionalActivity(additionalActivity.map(AdditionalActivity::getName).orElse(null))
             .introduction(team.getIntroduction())
             .images(

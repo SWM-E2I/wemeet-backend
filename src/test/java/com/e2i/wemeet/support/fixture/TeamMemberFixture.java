@@ -1,8 +1,12 @@
 package com.e2i.wemeet.support.fixture;
 
+import com.e2i.wemeet.domain.code.Code;
+import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.team_member.TeamMember;
+import com.e2i.wemeet.dto.request.member.CollegeInfoRequestDto;
+import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import java.util.List;
 import lombok.Getter;
 
@@ -54,5 +58,33 @@ public enum TeamMemberFixture {
             RACHEL.create(),
             EMMA.create()
         );
+    }
+
+    public static List<TeamMember> create_1_woman() {
+        return List.of(
+            OLIVIA.create()
+        );
+    }
+
+    public TeamMemberRequestDto createTeamMemberRequestDto() {
+        CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto();
+
+        return TeamMemberRequestDto.builder()
+            .collegeInfo(collegeInfoRequestDto)
+            .mbti(this.mbti.name())
+            .build();
+    }
+
+    private CollegeInfoRequestDto createCollegeInfoRequestDto() {
+        return CollegeInfoRequestDto.builder()
+            .collegeCode(getCollegeCodeWithDelimiter(this.collegeInfo.getCollegeCode()))
+            .collegeType(this.collegeInfo.getCollegeType().name())
+            .admissionYear(this.collegeInfo.getAdmissionYear())
+            .build();
+    }
+
+    private String getCollegeCodeWithDelimiter(Code code) {
+        CodePk codePk = code.getCodePk();
+        return codePk.getGroupCodeId() + "-" + codePk.getCodeId();
     }
 }

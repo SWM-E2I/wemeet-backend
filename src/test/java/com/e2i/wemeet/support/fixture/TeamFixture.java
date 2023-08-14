@@ -6,8 +6,10 @@ import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
+import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import java.lang.reflect.Field;
@@ -18,8 +20,11 @@ import lombok.Getter;
 public enum TeamFixture {
 
     HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
-        AdditionalActivity.CAFE, "홍대 팀 1"),
-    ;
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!"),
+    WOMAN_TEAM(2, Region.SINCHON, DrinkRate.LOW, DrinkWithGame.ANY,
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!"),
+    WOMAN_TEAM_2(2, Region.HONGDAE, DrinkRate.MIDDLE, DrinkWithGame.BEGINNER,
+        AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!");
 
     private final Integer memberNum;
     private final Region region;
@@ -55,22 +60,61 @@ public enum TeamFixture {
         return team;
     }
 
-    // TODO :: refactor
-    public CreateTeamRequestDto createTeamRequestDto() {
+    public CreateTeamRequestDto createTeamRequestDto_2_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+
+        return createTeamRequestDto(List.of(teamMember1));
+    }
+
+    public CreateTeamRequestDto createTeamRequestDto_3_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+        TeamMemberRequestDto teamMember2 = TeamMemberFixture.ELLI.createTeamMemberRequestDto();
+
+        return createTeamRequestDto(List.of(teamMember1, teamMember2));
+    }
+
+    public CreateTeamRequestDto createTeamRequestDto(List<TeamMemberRequestDto> members) {
         return CreateTeamRequestDto.builder()
+            .region(this.region.name())
+            .drinkRate(this.drinkRate.name())
+            .drinkWithGame(this.drinkWithGame.name())
+            .additionalActivity(this.additionalActivity.name())
+            .introduction(this.introduction)
+            .members(members)
             .build();
     }
 
-    // TODO :: refactor
-    public UpdateTeamRequestDto modifyTeamRequestDto() {
+    public UpdateTeamRequestDto updateTeamRequestDto_2_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.RACHEL.createTeamMemberRequestDto();
+
+        return updateTeamRequestDto(List.of(teamMember1));
+    }
+
+    public UpdateTeamRequestDto updateTeamRequestDto_3_members() {
+        TeamMemberRequestDto teamMember1 = TeamMemberFixture.OLIVER.createTeamMemberRequestDto();
+        TeamMemberRequestDto teamMember2 = TeamMemberFixture.ELLI.createTeamMemberRequestDto();
+
+        return updateTeamRequestDto(List.of(teamMember1, teamMember2));
+    }
+
+    public UpdateTeamRequestDto updateTeamRequestDto(List<TeamMemberRequestDto> members) {
         return UpdateTeamRequestDto.builder()
+            .region(this.region.name())
+            .drinkRate(this.drinkRate.name())
+            .drinkWithGame(this.drinkWithGame.name())
+            .additionalActivity(this.additionalActivity.name())
+            .introduction(this.introduction)
+            .members(members)
             .build();
     }
 
-    // TODO :: refactor
-    public MyTeamDetailResponseDto myTeamDetailResponseDto() {
-        return MyTeamDetailResponseDto.builder()
-            .build();
+    public MyTeamDetailResponseDto createMyTeamDetailResponseDto() {
+        return MyTeamDetailResponseDto.of(
+            this.create(MemberFixture.RIM.create(),
+                List.of(TeamMemberFixture.OLIVER.create())),
+            List.of(TeamImageData.builder()
+                .url("testUrl")
+                .build()));
     }
 
     private Team.TeamBuilder createBuilder(final Member teamLeader) {

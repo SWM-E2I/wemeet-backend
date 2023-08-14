@@ -43,7 +43,7 @@ public class TeamController {
         @RequestPart("images") List<MultipartFile> images) {
         teamService.updateTeam(memberId, createTeamRequestDto, images);
 
-        return ResponseDto.success("Modify Team Success");
+        return ResponseDto.success("Update Team Success");
     }
 
     @IsManager
