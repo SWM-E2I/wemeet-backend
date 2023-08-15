@@ -5,13 +5,11 @@ import com.e2i.wemeet.domain.meeting.MeetingRequest;
 import com.e2i.wemeet.domain.meeting.MeetingRequestRepository;
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.Team;
-import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.request.meeting.MeetingHandleRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
-import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.security.manager.CreditAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
 import java.util.List;
@@ -26,19 +24,13 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final MeetingRequestRepository meetingRequestRepository;
-    private final TeamRepository teamRepository;
 
     @Transactional
     @CreditAuthorize(value = 10)
     @Override
-    public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberId) {
-        Team team = teamRepository.findByMemberId(memberId)
-            .orElseThrow(TeamNotFoundException::new)
-            .checkTeamValid();
-
-        Team partnerTeam = teamRepository.findById(requestDto.partnerTeamId())
-            .orElseThrow(TeamNotFoundException::new)
-            .checkTeamValid();
+    public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId) {
+        Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
+        Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
 
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
@@ -73,4 +65,5 @@ public class MeetingServiceImpl implements MeetingService {
     public List<ReceivedMeetingResponseDto> getReceiveRequestList(final Long MemberId) {
         return null;
     }
+
 }
