@@ -45,6 +45,7 @@ public enum ErrorCode {
     CODE_NOT_FOUND(40104, "code.not.found"),
     INVITED_MEMBER_NOT_FOUND(40105, "invited.member.not.found"),
     INVITATION_NOT_FOUND(40106, "invitation.not.found"),
+    TEAM_NOT_FOUND(40107, "team.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
