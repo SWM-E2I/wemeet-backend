@@ -26,7 +26,7 @@ public class History extends CreateTimeEntity {
     private Long historyId;
 
     @Column(nullable = false)
-    private Boolean isLike;
+    private Boolean isLiked;
 
     @ManyToOne
     @JoinColumn(name = "teamId", referencedColumnName = "teamId", nullable = false)
@@ -37,13 +37,13 @@ public class History extends CreateTimeEntity {
     private Member member;
 
     @Builder
-    public History(Boolean isLike, Team team, Member member) {
-        this.isLike = isLike;
+    public History(Boolean isLiked, Team team, Member member) {
+        this.isLiked = isLiked;
         this.team = team;
         this.member = member;
     }
 
-    public void updateIsLike(Boolean isLike) {
-        this.isLike = isLike;
+    public void updateIsLike(Boolean isLiked) {
+        this.isLiked = isLiked;
     }
 }

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `history`
 (
     `history_id`        bigint  NOT NULL AUTO_INCREMENT,
-    `is_like`        tinyint DEFAULT 0 NOT NULL,
+    `is_liked`        tinyint DEFAULT 0 NOT NULL,
     `created_at`            datetime(6),
     `member_id`               bigint  NOT NULL,
     `team_id`               bigint  NOT NULL,
