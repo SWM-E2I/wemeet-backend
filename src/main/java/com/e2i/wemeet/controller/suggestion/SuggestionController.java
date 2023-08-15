@@ -2,6 +2,7 @@ package com.e2i.wemeet.controller.suggestion;
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.dto.response.ResponseDto;
+import com.e2i.wemeet.dto.response.suggestion.CheckSuggestionResponseDto;
 import com.e2i.wemeet.dto.response.suggestion.SuggestionResponseDto;
 import com.e2i.wemeet.service.suggestion.SuggestionService;
 import java.util.List;
@@ -20,6 +21,15 @@ public class SuggestionController {
     @GetMapping
     public ResponseDto<List<SuggestionResponseDto>> readSuggestion(@MemberId Long memberId) {
         List<SuggestionResponseDto> response = suggestionService.readSuggestion(memberId);
+
+        return ResponseDto.success("Get Suggestion Success", response);
+    }
+
+    @GetMapping("/check")
+    public ResponseDto<CheckSuggestionResponseDto> checkTodaySuggestionHistory(
+        @MemberId Long memberId) {
+        CheckSuggestionResponseDto response = suggestionService.checkTodaySuggestionHistory(
+            memberId);
 
         return ResponseDto.success("Get Suggestion Success", response);
     }

@@ -37,6 +37,7 @@ public enum ErrorCode {
     HTTP_MESSAGE_NOT_READABLE(40028, "http.message.not.readable"),
     TEAM_NOT_EXISTS(40029, "team.not.exists"),
     PROFILE_IMAGE_NOT_EXISTS(40030, "profile.image.not.exists"),
+    SUGGESTION_HISTORY_EXISTS(40031, "suggestion.history.exists"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
