@@ -1,7 +1,6 @@
 package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.meeting.MeetingRequest;
-import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.Team;
 import lombok.Getter;
 
@@ -24,7 +23,6 @@ public enum MeetingRequestFixture {
         return MeetingRequest.builder()
             .team(team)
             .partnerTeam(partnerTeam)
-            .acceptStatus(AcceptStatus.PENDING)
             .message(this.message);
     }
 }

@@ -99,6 +99,15 @@ public enum MemberFixture {
             .build();
     }
 
+    public Member create_credit(Code collegeCode, final int credit) {
+        CollegeInfo collegeInfoFixture = CollegeInfoFixture.ENGINERRING.create(collegeCode);
+
+        return createBuilder()
+            .credit(credit)
+            .collegeInfo(collegeInfoFixture)
+            .build();
+    }
+
     public Member create_profile_image(final ProfileImage profileImage) {
         return createBuilder()
             .profileImage(profileImage)

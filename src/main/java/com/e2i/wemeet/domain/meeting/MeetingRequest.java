@@ -1,5 +1,7 @@
 package com.e2i.wemeet.domain.meeting;
 
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
+
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.converter.AcceptStatusConverter;
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
@@ -42,10 +44,14 @@ public class MeetingRequest extends BaseTimeEntity {
     private String message;
 
     @Builder
-    public MeetingRequest(Team team, Team partnerTeam, AcceptStatus acceptStatus, String message) {
+    public MeetingRequest(Team team, Team partnerTeam, String message) {
+        this.acceptStatus = PENDING;
         this.team = team;
         this.partnerTeam = partnerTeam;
-        this.acceptStatus = acceptStatus;
         this.message = message;
+    }
+
+    public void changeStatus(AcceptStatus status) {
+        this.acceptStatus = status;
     }
 }
