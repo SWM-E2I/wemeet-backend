@@ -7,6 +7,7 @@ import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class CustomFormatValidatorTest {
@@ -96,5 +97,24 @@ class CustomFormatValidatorTest {
     void validateCodePkFormatFails() {
         assertThatThrownBy(() -> CustomFormatValidator.validateNicknameFormat(null))
             .isExactlyInstanceOf(InvalidDataFormatException.class);
+    }
+
+    @DisplayName("주어진 문자열이 오픈 카카오톡 링크인지 검증할 수 있다.")
+    @CsvSource({
+        "https://open.kakao.com/o/S13kdfs1, true",
+        "https://open.kakao.com/o/a2r5zqs1, true",
+        "https://open.daum.com/o/gjgjgjgj, false",
+        "https://open.kakao.com/gjgjgjgj, false"
+    })
+    @ParameterizedTest
+    void validateWithKakaoOpenChatLink(String kakaoChatLink, boolean expected) {
+        // when
+        if (expected) {
+            assertThatNoException()
+                .isThrownBy(() -> CustomFormatValidator.validateOpenChatLinkFormat(kakaoChatLink));
+        } else {
+            assertThatThrownBy(() -> CustomFormatValidator.validateOpenChatLinkFormat(kakaoChatLink))
+                .isExactlyInstanceOf(InvalidDataFormatException.class);
+        }
     }
 }
