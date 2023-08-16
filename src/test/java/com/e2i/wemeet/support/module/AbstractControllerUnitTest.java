@@ -7,7 +7,8 @@ import com.e2i.wemeet.controller.meeting.MeetingController;
 import com.e2i.wemeet.controller.member.MemberController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.service.code.CodeService;
-import com.e2i.wemeet.service.meeting.MeetingService;
+import com.e2i.wemeet.service.meeting.MeetingHandleService;
+import com.e2i.wemeet.service.meeting.MeetingListService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.service.team.TeamService;
@@ -60,7 +61,10 @@ public abstract class AbstractControllerUnitTest {
     protected TokenService tokenService;
 
     @MockBean
-    protected MeetingService meetingService;
+    protected MeetingHandleService meetingHandleService;
+
+    @MockBean
+    protected MeetingListService meetingListService;
 
 
     protected MockMvc mockMvc;
