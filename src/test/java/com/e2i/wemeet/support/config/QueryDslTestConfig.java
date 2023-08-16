@@ -1,7 +1,7 @@
 package com.e2i.wemeet.support.config;
 
-import com.e2i.wemeet.domain.meeting.MeetingCustomRepository;
-import com.e2i.wemeet.domain.meeting.MeetingCustomRepositoryImpl;
+import com.e2i.wemeet.domain.meeting.MeetingReadRepository;
+import com.e2i.wemeet.domain.meeting.MeetingReadRepositoryImpl;
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepositoryImpl;
 import com.e2i.wemeet.util.encryption.AdvancedEncryptionStandard;
@@ -32,7 +32,7 @@ public class QueryDslTestConfig {
     }
 
     @Bean
-    public MeetingCustomRepository meetingCustomRepository(EntityManager entityManager) {
-        return new MeetingCustomRepositoryImpl(jpaQueryFactory(), entityManager);
+    public MeetingReadRepository meetingCustomRepository(EntityManager entityManager) {
+        return new MeetingReadRepositoryImpl(jpaQueryFactory(), entityManager);
     }
 }
