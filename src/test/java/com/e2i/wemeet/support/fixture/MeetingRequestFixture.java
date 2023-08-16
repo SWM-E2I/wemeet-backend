@@ -2,9 +2,7 @@ package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.meeting.MeetingRequest;
 import com.e2i.wemeet.domain.team.Team;
-import lombok.Getter;
 
-@Getter
 public enum MeetingRequestFixture {
     BASIC_REQUEST("재미있게 놀아요!");
 
@@ -24,5 +22,9 @@ public enum MeetingRequestFixture {
             .team(team)
             .partnerTeam(partnerTeam)
             .message(this.message);
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

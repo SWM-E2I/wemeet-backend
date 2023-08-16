@@ -17,17 +17,22 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class MeetingCustomRepositoryImpl implements MeetingCustomRepository {
+public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
 
     @Override
-    public Team findTeamReferenceByLeaderId(Long memberId) {
-        Optional<TeamCheckProxy> teamCheckProxy = findTeamCheckProxyByLeaderId(memberId);
-        Long teamId = getTeamIdWithCheckValid(teamCheckProxy);
+    public Team findTeamReferenceByLeaderId(Long memberLeaderId) {
+        Long teamId = findTeamIdByLeaderId(memberLeaderId);
 
-        return findTeamReferenceById(teamId);
+        return entityManager.getReference(Team.class, teamId);
+    }
+
+    @Override
+    public Long findTeamIdByLeaderId(Long memberLeaderId) {
+        Optional<TeamCheckProxy> teamCheckProxy = findTeamCheckProxyByLeaderId(memberLeaderId);
+        return getTeamIdWithCheckValid(teamCheckProxy);
     }
 
     @Override

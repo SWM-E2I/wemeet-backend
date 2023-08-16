@@ -17,10 +17,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class MeetingCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
+class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
     @Autowired
-    private MeetingCustomRepository meetingCustomRepository;
+    private MeetingReadRepository meetingReadRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -39,7 +39,7 @@ class MeetingCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
 
             // when
-            Team proxy = meetingCustomRepository.findTeamReferenceByLeaderId(kai.getMemberId());
+            Team proxy = meetingReadRepository.findTeamReferenceByLeaderId(kai.getMemberId());
 
             // then
             assertThat(proxy).isNotNull();
@@ -52,7 +52,7 @@ class MeetingCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
 
             // when & then
-            assertThatThrownBy(() -> meetingCustomRepository.findTeamReferenceByLeaderId(kai.getMemberId()))
+            assertThatThrownBy(() -> meetingReadRepository.findTeamReferenceByLeaderId(kai.getMemberId()))
                 .isExactlyInstanceOf(TeamNotFoundException.class);
         }
 
@@ -64,7 +64,7 @@ class MeetingCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             Long teamId = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man())).getTeamId();
 
             // when
-            Team proxy = meetingCustomRepository.findTeamReferenceById(teamId);
+            Team proxy = meetingReadRepository.findTeamReferenceById(teamId);
 
             // then
             assertThat(proxy).isNotNull();
@@ -77,7 +77,34 @@ class MeetingCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             final Long invalidTeamId = 9999L;
 
             // when & then
-            assertThatThrownBy(() -> meetingCustomRepository.findTeamReferenceById(invalidTeamId))
+            assertThatThrownBy(() -> meetingReadRepository.findTeamReferenceById(invalidTeamId))
+                .isExactlyInstanceOf(TeamNotFoundException.class);
+        }
+
+        @DisplayName("리더의 ID로 팀 ID를 찾을 수 있다.")
+        @Test
+        void findTeamIdByLeaderId() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Long teamId = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man())).getTeamId();
+
+            // when
+            Long findTeamId = meetingReadRepository.findTeamIdByLeaderId(kai.getMemberId());
+
+            // then
+            assertThat(teamId).isEqualTo(findTeamId);
+        }
+
+        @DisplayName("잘못된 리더의 ID로는 팀 ID를 찾을 수 없다.")
+        @Test
+        void findTeamIdByInvalidLeaderId() {
+            // given
+            final Long invalidLeaderId = 9999L;
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Long teamId = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man())).getTeamId();
+
+            // when
+            assertThatThrownBy(() -> meetingReadRepository.findTeamIdByLeaderId(invalidLeaderId))
                 .isExactlyInstanceOf(TeamNotFoundException.class);
         }
 
