@@ -1,5 +1,7 @@
 package com.e2i.wemeet.domain.meeting;
 
+import static com.e2i.wemeet.util.validator.CustomFormatValidator.validateOpenChatLinkFormat;
+
 import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.team.Team;
 import jakarta.persistence.Column;
@@ -11,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,15 +34,20 @@ public class Meeting extends BaseTimeEntity {
     @JoinColumn(name = "partnerTeamId", referencedColumnName = "teamId", nullable = false)
     private Team partnerTeam;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String chatLink;
 
     private LocalDateTime isOver;
 
-    public Meeting(Team team, Team partnerTeam, String chatLink, LocalDateTime isOver) {
+    @Builder
+    public Meeting(Team team, Team partnerTeam, String chatLink) {
         this.team = team;
         this.partnerTeam = partnerTeam;
-        this.chatLink = chatLink;
-        this.isOver = isOver;
+        this.chatLink = validateOpenChatLinkFormat(chatLink);
     }
+
+    public void setOver(LocalDateTime now) {
+        this.isOver = now;
+    }
+
 }
