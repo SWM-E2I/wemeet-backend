@@ -105,11 +105,13 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
+    // 크레딧 획득
     public void addCredit(int amount) {
         this.credit += amount;
     }
 
-    public void minusCredit(int amount) {
+    // 크레딧 소모
+    public void useCredit(int amount) {
         if (this.credit - amount < 0) {
             throw new CreditNotEnoughException();
         }
