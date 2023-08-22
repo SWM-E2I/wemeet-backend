@@ -29,13 +29,13 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     @Transactional
     @Override
-    public List<SuggestionResponseDto> readSuggestion(Long memberId) {
+    public List<SuggestionResponseDto> readSuggestion(Long memberId, LocalDateTime requestTime) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
         // 이미 추천을 받은 경우
-        if (!teamRepository.findHistory(memberId, LocalDateTime.now()).isEmpty()) {
+        if (!teamRepository.findHistory(memberId, requestTime).isEmpty()) {
             throw new SuggestionHistoryExistsException();
         }
 

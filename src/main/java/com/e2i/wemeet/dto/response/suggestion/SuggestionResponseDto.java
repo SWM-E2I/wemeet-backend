@@ -24,7 +24,7 @@ public record SuggestionResponseDto(
             .leader(TeamLeaderResponseDto.builder()
                 .college(data.teamLeader().college())
                 .nickname(data.teamLeader().nickname())
-                .mbti(data.teamLeader().mbti())
+                .mbti(data.teamLeader().mbti().name())
                 .build()
             ).build();
     }

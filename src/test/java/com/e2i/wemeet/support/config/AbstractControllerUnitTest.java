@@ -4,10 +4,12 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 
 import com.e2i.wemeet.controller.TokenController;
 import com.e2i.wemeet.controller.member.MemberController;
+import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
+import com.e2i.wemeet.service.suggestion.SuggestionService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.service.token.TokenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,7 +35,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @WebMvcTest({
     TokenController.class,
     TeamController.class,
-    MemberController.class
+    MemberController.class,
+    SuggestionController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -55,6 +58,8 @@ public abstract class AbstractControllerUnitTest {
     @MockBean
     protected TokenService tokenService;
 
+    @MockBean
+    protected SuggestionService suggestionService;
 
     protected MockMvc mockMvc;
 

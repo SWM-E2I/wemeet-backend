@@ -5,6 +5,7 @@ import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.dto.response.suggestion.CheckSuggestionResponseDto;
 import com.e2i.wemeet.dto.response.suggestion.SuggestionResponseDto;
 import com.e2i.wemeet.service.suggestion.SuggestionService;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ public class SuggestionController {
 
     @GetMapping
     public ResponseDto<List<SuggestionResponseDto>> readSuggestion(@MemberId Long memberId) {
-        List<SuggestionResponseDto> response = suggestionService.readSuggestion(memberId);
+        LocalDateTime requestTime = LocalDateTime.now();
+        List<SuggestionResponseDto> response = suggestionService.readSuggestion(memberId,
+            requestTime);
 
         return ResponseDto.success("Get Suggestion Success", response);
     }
@@ -31,6 +34,6 @@ public class SuggestionController {
         CheckSuggestionResponseDto response = suggestionService.checkTodaySuggestionHistory(
             memberId);
 
-        return ResponseDto.success("Get Suggestion Success", response);
+        return ResponseDto.success("Check Suggestion Success", response);
     }
 }
