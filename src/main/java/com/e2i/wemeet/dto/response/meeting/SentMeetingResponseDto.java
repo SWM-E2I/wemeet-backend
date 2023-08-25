@@ -2,6 +2,7 @@ package com.e2i.wemeet.dto.response.meeting;
 
 import com.e2i.wemeet.domain.team.data.Region;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record SentMeetingResponseDto(
 
@@ -10,7 +11,8 @@ public record SentMeetingResponseDto(
     int memberCount,
     Region region,
     boolean isDeleted,
-    LocalDateTime meetingRequestTime,
+    LocalDateTime requestSentTime,
+    List<String> teamProfileImageUrl,
     LeaderResponse leader
 
 ) {

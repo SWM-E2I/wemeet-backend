@@ -2,16 +2,18 @@ package com.e2i.wemeet.dto.response.meeting;
 
 import com.e2i.wemeet.domain.team.data.Region;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public record ReceivedMeetingResponseDto(
+public record AcceptedMeetingResponseDto(
 
-    Long meetingRequestId,
+    Long meetingId,
     Long teamId,
     int memberCount,
     Region region,
     boolean isDeleted,
-    LocalDateTime requestReceivedTime,
-    String message,
+    LocalDateTime meetingRequestTime,
+    LocalDateTime meetingAcceptTime,
+    List<String> teamProfileImageUrl,
     LeaderResponse leader
 
 ) {
