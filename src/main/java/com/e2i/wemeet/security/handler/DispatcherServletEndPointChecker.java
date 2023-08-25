@@ -19,7 +19,7 @@ public class DispatcherServletEndPointChecker implements HttpRequestEndPointChec
 
     @Override
     public boolean isEndPointExist(HttpServletRequest request) {
-        if (StringUtils.hasText(request.getRequestURI()) || request.getRequestURI().equals("/h2-console")) {
+        if (StringUtils.hasText(request.getRequestURI()) && request.getRequestURI().equals("/h2-console")) {
             return true;
         }
 

@@ -32,7 +32,7 @@ public class QueryDslTestConfig {
     }
 
     @Bean
-    public MeetingReadRepository meetingCustomRepository(EntityManager entityManager) {
+    public MeetingReadRepository meetingReadRepository(EntityManager entityManager) {
         return new MeetingReadRepositoryImpl(jpaQueryFactory(), entityManager);
     }
 }

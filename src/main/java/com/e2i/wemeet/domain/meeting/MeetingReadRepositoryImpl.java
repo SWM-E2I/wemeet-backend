@@ -13,10 +13,8 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
-@Repository
 public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
     private final JPAQueryFactory queryFactory;

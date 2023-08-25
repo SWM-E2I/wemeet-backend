@@ -276,7 +276,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
                 .getMeetingRequestId();
             final String chatLink = "https://open.kakao.com/o/1sdfasdf";
-            final LocalDateTime now = LocalDateTime.of(2023, 8, 16, 14, 0, 0);
+            final LocalDateTime now = LocalDateTime.now();
 
             setAuthentication(rim.getMemberId(), "MANAGER");
             final int rimCredit = rim.getCredit();
