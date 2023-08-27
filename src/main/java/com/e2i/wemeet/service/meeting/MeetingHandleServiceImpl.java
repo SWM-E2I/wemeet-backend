@@ -87,7 +87,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Override
     public Long acceptRequest(final String openChatLink, final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)
-            .orElseThrow(MeetingRequestNotFound::new);
+            .orElseThrow(MeetingRequestNotFound::new)
+            .checkValid();
 
         validateAbleToHandlingMeetingRequest(acceptDateTime, memberLeaderId, meetingRequest);
         meetingRequest.changeStatus(ACCEPT);
@@ -103,7 +104,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Override
     public AcceptStatus rejectRequest(final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime rejectDateTime) {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchPartnerTeam(meetingRequestId)
-            .orElseThrow(MeetingRequestNotFound::new);
+            .orElseThrow(MeetingRequestNotFound::new)
+            .checkValid();
 
         validateAbleToHandlingMeetingRequest(rejectDateTime, memberLeaderId, meetingRequest);
         meetingRequest.changeStatus(REJECT);

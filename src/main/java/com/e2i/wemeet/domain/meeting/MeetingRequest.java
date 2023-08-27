@@ -54,4 +54,11 @@ public class MeetingRequest extends BaseTimeEntity {
     public void changeStatus(AcceptStatus status) {
         this.acceptStatus = status;
     }
+
+    public MeetingRequest checkValid() {
+        team.checkTeamValid();
+        partnerTeam.checkTeamValid();
+
+        return this;
+    }
 }
