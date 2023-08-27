@@ -1,17 +1,29 @@
 package com.e2i.wemeet.domain.meeting;
 
+import static com.e2i.wemeet.support.fixture.MeetingFixture.BASIC_MEETING;
+import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.BASIC_REQUEST;
+import static com.e2i.wemeet.support.fixture.MemberFixture.CHAEWON;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
+import static com.e2i.wemeet.support.fixture.TeamImagesFixture.BASIC_TEAM_IMAGE;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
+import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_woman;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
 
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
+import com.e2i.wemeet.domain.team_image.TeamImageRepository;
+import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
+import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
+import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,6 +39,15 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private MeetingRequestRepository meetingRequestRepository;
+
+    @Autowired
+    private MeetingRepository meetingRepository;
+
+    @Autowired
+    private TeamImageRepository teamImageRepository;
 
     @Nested
     class FindTeamProxy {
@@ -106,6 +127,175 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
             // when
             assertThatThrownBy(() -> meetingReadRepository.findTeamIdByLeaderId(invalidLeaderId))
                 .isExactlyInstanceOf(TeamNotFoundException.class);
+        }
+
+    }
+
+    @DisplayName("미팅 신청 목록 조회 테스트")
+    @Nested
+    class FindMeeting {
+
+        @DisplayName("성사된 미팅 목록을 조회할 수 있다.")
+        @Test
+        void findAcceptedMeetingList() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Member chaewon = memberRepository.save(CHAEWON.create(WOMANS_CODE));
+
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
+
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(rimTeam));
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(chaewonTeam));
+
+            meetingRepository.save(BASIC_MEETING.create(kaiTeam, rimTeam));
+            meetingRepository.save(BASIC_MEETING.create(kaiTeam, chaewonTeam));
+
+            // when
+            List<AcceptedMeetingResponseDto> meetingList = meetingReadRepository.findAcceptedMeetingList(kai.getMemberId());
+
+            // then
+            assertThat(meetingList).hasSize(2)
+                .extracting("memberCount", "region", "isDeleted",
+                    "teamProfileImageUrl", "leader.nickname")
+                .contains(
+                    tuple(4, rimTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), rim.getNickname()
+                    ),
+                    tuple(4, chaewonTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
+                    )
+                );
+
+        }
+
+        @DisplayName("성사된 미팅이 없을 경우, 아무것도 조회되지 않는다.")
+        @Test
+        void findAcceptedMeetingListWithNoneSuccessedMeeting() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+            // when
+            List<AcceptedMeetingResponseDto> acceptedMeetingList = meetingReadRepository.findAcceptedMeetingList(kai.getMemberId());
+
+            // then
+            assertThat(acceptedMeetingList).isEmpty();
+        }
+
+        @DisplayName("팀이 없을 경우 아무것도 조회되지 않는다.")
+        @Test
+        void findAcceptedMeetingListWithNoTeam() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+
+            // when
+            List<AcceptedMeetingResponseDto> acceptedMeetingList = meetingReadRepository.findAcceptedMeetingList(kai.getMemberId());
+
+            // then
+            assertThat(acceptedMeetingList).isEmpty();
+        }
+
+        @DisplayName("보낸 요청 목록을 조회할 수 있다.")
+        @Test
+        void findSentRequestList() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Member chaewon = memberRepository.save(CHAEWON.create(WOMANS_CODE));
+
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(rimTeam));
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(chaewonTeam));
+
+            meetingRequestRepository.saveAll(List.of(
+                BASIC_REQUEST.create(kaiTeam, rimTeam),
+                BASIC_REQUEST.create(kaiTeam, chaewonTeam))
+            );
+
+            // when
+            List<SentMeetingResponseDto> sentRequestList = meetingReadRepository.findSentRequestList(kai.getMemberId());
+
+            // then
+            assertThat(sentRequestList).hasSize(2)
+                .extracting("memberCount", "region", "isDeleted",
+                    "teamProfileImageUrl", "leader.nickname")
+                .contains(
+                    tuple(4, rimTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), rim.getNickname()
+                    ),
+                    tuple(4, chaewonTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
+                    )
+                );
+        }
+
+        @DisplayName("보낸 요청이 없을 경우, 아무것도 조회되지 않는다.")
+        @Test
+        void findSentRequestListWithNoRequest() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+            // when
+            List<SentMeetingResponseDto> sentRequestList = meetingReadRepository.findSentRequestList(kai.getMemberId());
+
+            // then
+            assertThat(sentRequestList).isEmpty();
+        }
+
+        @DisplayName("받은 요청을 목록을 조회할 수 있다.")
+        @Test
+        void findReceivedRequestList() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Member chaewon = memberRepository.save(CHAEWON.create(WOMANS_CODE));
+
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(rimTeam));
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(chaewonTeam));
+
+            meetingRequestRepository.saveAll(List.of(
+                BASIC_REQUEST.create(rimTeam, kaiTeam),
+                BASIC_REQUEST.create(chaewonTeam, kaiTeam))
+            );
+
+            // when
+            List<ReceivedMeetingResponseDto> receivedRequest = meetingReadRepository.findReceiveRequestList(kai.getMemberId());
+
+            // then
+            assertThat(receivedRequest).hasSize(2)
+                .extracting("memberCount", "region", "isDeleted",
+                    "teamProfileImageUrl", "leader.nickname")
+                .contains(
+                    tuple(4, rimTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), rim.getNickname()
+                    ),
+                    tuple(4, chaewonTeam.getRegion(), false,
+                        BASIC_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
+                    )
+                );
+        }
+
+        @DisplayName("받은 요청이 없을 경우, 아무것도 조회되지 않는다.")
+        @Test
+        void findReceivedRequestListWithNoRequest() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+            // when
+            List<ReceivedMeetingResponseDto> receivedRequest = meetingReadRepository.findReceiveRequestList(kai.getMemberId());
+
+            // then
+            assertThat(receivedRequest).isEmpty();
         }
 
     }
