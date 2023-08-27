@@ -30,6 +30,10 @@ public enum MemberFixture {
         "/v1/asdf", "/v1/idwq", Role.USER),
     JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
+        "/v1/asdf", "/v1/idwq", Role.USER),
+
+    CHAEWON("채원", Gender.WOMAN, "+821089071365", "2020p13@lesse.ac.kr",
+        WOMAN.create(), Mbti.ISTJ, 100, false,
         "/v1/asdf", "/v1/idwq", Role.USER);
 
     private final String nickname;
