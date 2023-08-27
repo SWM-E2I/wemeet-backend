@@ -1,10 +1,19 @@
 package com.e2i.wemeet.domain.meeting;
 
+import static com.e2i.wemeet.domain.code.QCode.code;
+import static com.e2i.wemeet.domain.meeting.QMeeting.meeting;
+import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
+import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
 
+import com.e2i.wemeet.domain.member.QMember;
+import com.e2i.wemeet.domain.team.QTeam;
 import com.e2i.wemeet.domain.team.Team;
-import com.e2i.wemeet.dto.dsl.QTeamCheckProxy;
-import com.e2i.wemeet.dto.dsl.TeamCheckProxy;
+import com.e2i.wemeet.dto.dsl.MeetingInformationDto;
+import com.e2i.wemeet.dto.dsl.QMeetingInformationDto;
+import com.e2i.wemeet.dto.dsl.QTeamCheckProxyDto;
+import com.e2i.wemeet.dto.dsl.TeamCheckProxyDto;
+import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
@@ -20,58 +29,112 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
 
+    // LeaderId로 Team 프록시 객체 조회
     @Override
-    public Team findTeamReferenceByLeaderId(Long memberLeaderId) {
+    public Team findTeamReferenceByLeaderId(final Long memberLeaderId) {
         Long teamId = findTeamIdByLeaderId(memberLeaderId);
 
         return entityManager.getReference(Team.class, teamId);
     }
 
+    // LeaderId로 TeamId 조회
     @Override
-    public Long findTeamIdByLeaderId(Long memberLeaderId) {
-        Optional<TeamCheckProxy> teamCheckProxy = findTeamCheckProxyByLeaderId(memberLeaderId);
+    public Long findTeamIdByLeaderId(final Long memberLeaderId) {
+        Optional<TeamCheckProxyDto> teamCheckProxy = findTeamCheckProxyByLeaderId(memberLeaderId);
         return getTeamIdWithCheckValid(teamCheckProxy);
     }
 
+    // TeamId로 Team 프록시 객체 조회
     @Override
-    public Team findTeamReferenceById(Long teamId) {
-        Optional<TeamCheckProxy> teamCheckProxy = findTeamCheckProxyByTeamId(teamId);
+    public Team findTeamReferenceById(final Long teamId) {
+        Optional<TeamCheckProxyDto> teamCheckProxy = findTeamCheckProxyByTeamId(teamId);
         getTeamIdWithCheckValid(teamCheckProxy);
 
         return entityManager.getReference(Team.class, teamId);
     }
 
+    // 성사된 미팅 조회
     @Override
-    public List<SentMeetingResponseDto> findSentRequestList(Long memberId) {
+    public List<AcceptedMeetingResponseDto> findAcceptedMeetingList(final Long memberId) {
+        QMember partnerTeamLeader = new QMember("teamLeader");
+        QTeam partnerTeam = new QTeam("partnerTeam");
+
+        List<MeetingInformationDto> meetingList = queryFactory.select(
+                new QMeetingInformationDto(
+                    meeting.meetingId,
+                    meeting.createdAt.as("meetingAcceptTime"),
+                    partnerTeam.deletedAt,
+                    partnerTeam.teamId,
+                    partnerTeam.memberNum.as("memberCount"),
+                    partnerTeam.region,
+                    partnerTeamLeader.memberId.as("partnerLeaderId"),
+                    partnerTeamLeader.nickname.as("partnerLeaderNickname"),
+                    partnerTeamLeader.mbti.as("partnerLeaderMbti"),
+                    partnerTeamLeader.profileImage.lowUrl.as("partnerLeaderLowProfileUrl"),
+                    code.codeValue.as("partnerLeaderCollegeName")
+                ))
+            .from(meeting)
+            // My Team & Partner Team
+            .join(meeting.team, team).on(team.deletedAt.isNull())
+            .join(meeting.partnerTeam, partnerTeam)
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(member.memberId.eq(memberId))
+            .fetch();
+
+        return meetingList.stream()
+            .map(meetingInformation -> AcceptedMeetingResponseDto.of(
+                meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
+            ))
+            .toList();
+    }
+
+    // 보낸 미팅 신청 조회
+    @Override
+    public List<SentMeetingResponseDto> findSentRequestList(final Long memberId) {
+
         return null;
     }
 
+    // 받은 미팅 신청 조회
     @Override
-    public List<ReceivedMeetingResponseDto> findReceiveRequestList(Long memberId) {
+    public List<ReceivedMeetingResponseDto> findReceiveRequestList(final Long memberId) {
         return null;
     }
 
-    private Optional<TeamCheckProxy> findTeamCheckProxyByLeaderId(final Long leaderId) {
+    private List<String> findTeamProfileImageUrl(final Long teamId) {
+        return queryFactory.select(teamImage.teamImageUrl)
+            .from(team)
+            .join(teamImage).on(team.teamId.eq(teamImage.team.teamId))
+            .where(team.teamId.eq(teamId))
+            .orderBy(teamImage.sequence.asc())
+            .fetch();
+    }
+
+    private Optional<TeamCheckProxyDto> findTeamCheckProxyByLeaderId(final Long leaderId) {
         return Optional.ofNullable(
             queryFactory
-                .select(new QTeamCheckProxy(team.teamId, team.deletedAt))
+                .select(new QTeamCheckProxyDto(team.teamId, team.deletedAt))
                 .from(team)
                 .where(team.teamLeader.memberId.eq(leaderId))
                 .fetchFirst()
         );
     }
 
-    private Long getTeamIdWithCheckValid(final Optional<TeamCheckProxy> teamCheckProxy) {
+    private Long getTeamIdWithCheckValid(final Optional<TeamCheckProxyDto> teamCheckProxy) {
         return teamCheckProxy
             .orElseThrow(TeamNotFoundException::new)
             .checkValid()
             .getTeamId();
     }
 
-    private Optional<TeamCheckProxy> findTeamCheckProxyByTeamId(final Long teamId) {
+    private Optional<TeamCheckProxyDto> findTeamCheckProxyByTeamId(final Long teamId) {
         return Optional.ofNullable(
             queryFactory
-                .select(new QTeamCheckProxy(team.teamId, team.deletedAt))
+                .select(new QTeamCheckProxyDto(team.teamId, team.deletedAt))
                 .from(team)
                 .where(team.teamId.eq(teamId))
                 .fetchFirst()
