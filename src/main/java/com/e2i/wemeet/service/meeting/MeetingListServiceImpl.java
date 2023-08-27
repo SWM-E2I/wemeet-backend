@@ -5,6 +5,7 @@ import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeetingListServiceImpl implements MeetingListService {
 
-    public static final int MEETING_EXPIRE_DAY = 7;
+    private static final int MEETING_EXPIRE_DAY = 7;
+    private static final int REQUEST_EXPIRE_DAY = 3;
 
     private final MeetingRepository meetingRepository;
 
@@ -22,8 +24,10 @@ public class MeetingListServiceImpl implements MeetingListService {
      - 미팅이 성사된지 7일이 되었는지 확인 -> 성사된 미팅은 EXPIRED 상태로 변경
      * -> EXPIRED 된 미팅도 보내줌
      */
+    @IsManager
     @Override
-    public List<AcceptedMeetingResponseDto> getAcceptedMeetingList(Long memberId) {
+    public List<AcceptedMeetingResponseDto> getAcceptedMeetingList(final Long memberId, final LocalDateTime findDateTime) {
+
         return null;
     }
 
@@ -37,7 +41,7 @@ public class MeetingListServiceImpl implements MeetingListService {
      */
     @IsManager
     @Override
-    public List<SentMeetingResponseDto> getSentRequestList(final Long MemberId) {
+    public List<SentMeetingResponseDto> getSentRequestList(final Long MemberId, final LocalDateTime findDateTime) {
         return null;
     }
 
@@ -51,7 +55,7 @@ public class MeetingListServiceImpl implements MeetingListService {
      */
     @IsManager
     @Override
-    public List<ReceivedMeetingResponseDto> getReceiveRequestList(final Long MemberId) {
+    public List<ReceivedMeetingResponseDto> getReceiveRequestList(final Long MemberId, final LocalDateTime findDateTime) {
         return null;
     }
 

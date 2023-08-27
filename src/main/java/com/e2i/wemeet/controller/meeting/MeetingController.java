@@ -6,6 +6,7 @@ import com.e2i.wemeet.dto.request.meeting.MeetingRequestAcceptDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
+import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.service.meeting.MeetingHandleService;
@@ -65,20 +66,30 @@ public class MeetingController {
     }
 
     // TODO: 성사된 미팅 목록 조회 API
+    @GetMapping("/v1/meeting/accepted")
+    public ResponseDto<List<AcceptedMeetingResponseDto>> getAcceptedMeetingList(@MemberId Long memberId) {
+        final LocalDateTime findDateTime = LocalDateTime.now();
+        List<AcceptedMeetingResponseDto> acceptedMeetingList = meetingListService.getAcceptedMeetingList(memberId, findDateTime);
+
+        return ResponseDto.success("Get accepted meeting list success", acceptedMeetingList);
+    }
 
 
     @GetMapping("/v1/meeting/sent")
     public ResponseDto<List<SentMeetingResponseDto>> getSentMeetingRequestList(@MemberId Long memberId) {
-        List<SentMeetingResponseDto> sentRequestList = meetingListService.getSentRequestList(memberId);
+        final LocalDateTime findDateTime = LocalDateTime.now();
+        List<SentMeetingResponseDto> sentRequestList = meetingListService.getSentRequestList(memberId, findDateTime);
 
         return ResponseDto.success("Get sent meeting request list success", sentRequestList);
     }
 
     @GetMapping("/v1/meeting/receive")
     public ResponseDto<List<ReceivedMeetingResponseDto>> getReceiveMeetingRequestList(@MemberId Long memberId) {
-        List<ReceivedMeetingResponseDto> receiveRequestList = meetingListService.getReceiveRequestList(memberId);
+        final LocalDateTime findDateTime = LocalDateTime.now();
+        List<ReceivedMeetingResponseDto> receiveRequestList = meetingListService.getReceiveRequestList(memberId, findDateTime);
 
         return ResponseDto.success("Get receive meeting request list success", receiveRequestList);
     }
+
 
 }
