@@ -19,22 +19,22 @@ import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import java.lang.reflect.Field;
 
 public enum MemberFixture {
-    KAI("카이", Gender.MAN, "+821011112222", "2017e7024@as.ac.kr",
+    KAI("카이", Gender.MAN, "+821011112222", "2017e7024@gs.anyang.ac.kr",
         ANYANG.create(), Mbti.INFJ, 100, false,
-        "/v1/asdf", "/v1/idwq", Role.USER),
-    RIM("째림", Gender.WOMAN, "+821098764444", "2019a24@gad.ac.kr",
+        "/v1/asdf", "/v1/kai", Role.USER),
+    RIM("째림", Gender.WOMAN, "+821098764444", "2019a24@woman.ac.kr",
         WOMAN.create(), Mbti.ISFJ, 100, false,
-        "/v1/asdf", "/v1/idwq", Role.USER),
-    SEYUN("떼윤", Gender.MAN, "+821090908888", "2020a234@ad.ac.kr",
+        "/v1/asdf", "/v1/rim", Role.USER),
+    SEYUN("떼윤", Gender.MAN, "+821090908888", "2020a234@korea.ac.kr",
         KOREA.create(), Mbti.ENFJ, 100, false,
-        "/v1/asdf", "/v1/idwq", Role.USER),
-    JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@pe.ac.kr",
+        "/v1/asdf", "/v1/sey", Role.USER),
+    JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@korea.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
-        "/v1/asdf", "/v1/idwq", Role.USER),
+        "/v1/asdf", "/v1/jeong", Role.USER),
 
-    CHAEWON("채원", Gender.WOMAN, "+821089071365", "2020p13@lesse.ac.kr",
+    CHAEWON("채원", Gender.WOMAN, "+821089071365", "2020p13@woman.ac.kr",
         WOMAN.create(), Mbti.ISTJ, 100, false,
-        "/v1/asdf", "/v1/idwq", Role.USER);
+        "/v1/asdf", "/v1/chaechae", Role.USER);
 
     private final String nickname;
     private final Gender gender;
