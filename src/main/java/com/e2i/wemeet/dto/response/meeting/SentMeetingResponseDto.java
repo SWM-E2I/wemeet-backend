@@ -13,7 +13,7 @@ public record SentMeetingResponseDto(
     boolean isDeleted,
     LocalDateTime requestSentTime,
     List<String> teamProfileImageUrl,
-    LeaderResponse leader
+    LeaderResponseDto leader
 
 ) {
 

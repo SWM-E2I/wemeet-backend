@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TeamCheckProxy {
+public class TeamCheckProxyDto {
 
     private Long teamId;
     private LocalDateTime deletedAt;
 
     @QueryProjection
-    public TeamCheckProxy(Long teamId, LocalDateTime deletedAt) {
+    public TeamCheckProxyDto(Long teamId, LocalDateTime deletedAt) {
         this.teamId = teamId;
         this.deletedAt = deletedAt;
     }
 
-    public TeamCheckProxy checkValid() {
+    public TeamCheckProxyDto checkValid() {
         if (deletedAt != null) {
             throw new TeamHasBeenDeletedException();
         }

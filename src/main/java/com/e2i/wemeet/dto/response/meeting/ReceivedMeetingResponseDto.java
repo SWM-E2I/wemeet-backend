@@ -12,7 +12,7 @@ public record ReceivedMeetingResponseDto(
     boolean isDeleted,
     LocalDateTime requestReceivedTime,
     String message,
-    LeaderResponse leader
+    LeaderResponseDto leader
 
 ) {
 
