@@ -4,7 +4,9 @@ import com.e2i.wemeet.domain.meeting.MeetingRequest;
 import com.e2i.wemeet.domain.team.Team;
 
 public enum MeetingRequestFixture {
-    BASIC_REQUEST("재미있게 놀아요!");
+    BASIC_REQUEST("재미있게 놀아요!"),
+    WITH_OUT_MESSAGE(null);
+
 
     private final String message;
 
