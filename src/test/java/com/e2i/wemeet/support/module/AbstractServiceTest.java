@@ -3,6 +3,7 @@ package com.e2i.wemeet.support.module;
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodeRepository;
 import com.e2i.wemeet.domain.code.GroupCodeRepository;
+import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.support.fixture.code.CodeFixture;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @SpringBootTest
@@ -42,6 +45,13 @@ public abstract class AbstractServiceTest {
             .orElseThrow();
         HANYANG_CODE = codeRepository.findByCodeValue(CodeFixture.HANYANG_UNIVERSITY.getCodeValue())
             .orElseThrow();
+    }
+
+    protected void setAuthentication(Long memberId, String role) {
+        MemberPrincipal principal = new MemberPrincipal(memberId, role);
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 }

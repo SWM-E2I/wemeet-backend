@@ -36,7 +36,6 @@ import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
-import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,8 +44,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -418,13 +415,6 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             assertThat(meetingRequest.getAcceptStatus()).isEqualTo(EXPIRED);
         }
 
-    }
-
-    private void setAuthentication(Long memberId, String role) {
-        MemberPrincipal principal = new MemberPrincipal(memberId, role);
-        UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 }
