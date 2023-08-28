@@ -5,7 +5,9 @@ import com.e2i.wemeet.domain.team.Team;
 
 public enum MeetingFixture {
 
-    BASIC_MEETING("https://open.kakao.com/o/1sdfasdf");
+    BASIC_MEETING("https://open.kakao.com/o/1sdfasdf"),
+    SECOND_MEETING("https://open.kakao.com/o/second22"),
+    THIRD_MEETING("https://open.kakao.com/o/third333");
 
     private final String chatUrl;
 

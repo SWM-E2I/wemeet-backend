@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,17 +36,19 @@ public class Meeting extends BaseTimeEntity {
     @Column(length = 50, nullable = false)
     private String chatLink;
 
-    private LocalDateTime isOver;
+    @Column(nullable = false)
+    private Boolean isOver;
 
     @Builder
     public Meeting(Team team, Team partnerTeam, String chatLink) {
         this.team = team;
         this.partnerTeam = partnerTeam;
         this.chatLink = validateOpenChatLinkFormat(chatLink);
+        this.isOver = false;
     }
 
-    public void setOver(LocalDateTime now) {
-        this.isOver = now;
+    public void over() {
+        this.isOver = true;
     }
 
 }

@@ -13,10 +13,12 @@ public class MeetingInformationDto {
 
     private Long meetingId;
     private LocalDateTime meetingAcceptTime;
+    private boolean isOver;
     private LocalDateTime deletedAt;
     private Long teamId;
     private int memberCount;
     private Region region;
+
     private Long partnerLeaderId;
     private String partnerLeaderNickname;
     private Mbti partnerLeaderMbti;
@@ -24,12 +26,12 @@ public class MeetingInformationDto {
     private String partnerLeaderCollegeName;
 
     @QueryProjection
-    public MeetingInformationDto(Long meetingId, LocalDateTime meetingAcceptTime, LocalDateTime deletedAt, Long teamId, int memberCount,
-        Region region,
-        Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti, String partnerLeaderLowProfileUrl,
-        String partnerLeaderCollegeName) {
+    public MeetingInformationDto(Long meetingId, LocalDateTime meetingAcceptTime, boolean isOver, LocalDateTime deletedAt, Long teamId,
+        int memberCount, Region region, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti,
+        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName) {
         this.meetingId = meetingId;
         this.meetingAcceptTime = meetingAcceptTime;
+        this.isOver = isOver;
         this.deletedAt = deletedAt;
         this.teamId = teamId;
         this.memberCount = memberCount;
@@ -41,20 +43,25 @@ public class MeetingInformationDto {
         this.partnerLeaderCollegeName = partnerLeaderCollegeName;
     }
 
+    public boolean isOver() {
+        return isOver;
+    }
+
     @Override
     public String toString() {
         return "MeetingInformationDto{" +
             "meetingId=" + meetingId +
+            ", meetingAcceptTime=" + meetingAcceptTime +
+            ", isOver=" + isOver +
+            ", deletedAt=" + deletedAt +
             ", teamId=" + teamId +
             ", memberCount=" + memberCount +
             ", region=" + region +
-            ", deletedAt=" + deletedAt +
-            ", meetingAcceptTime=" + meetingAcceptTime +
             ", partnerLeaderId=" + partnerLeaderId +
             ", partnerLeaderNickname='" + partnerLeaderNickname + '\'' +
             ", partnerLeaderMbti=" + partnerLeaderMbti +
-            ", partnerLeaderCollegeName='" + partnerLeaderCollegeName + '\'' +
             ", partnerLeaderLowProfileUrl='" + partnerLeaderLowProfileUrl + '\'' +
+            ", partnerLeaderCollegeName='" + partnerLeaderCollegeName + '\'' +
             '}';
     }
 }

@@ -7,6 +7,7 @@ import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
 import static com.e2i.wemeet.support.fixture.TeamImagesFixture.BASIC_TEAM_IMAGE;
+import static com.e2i.wemeet.support.fixture.TeamImagesFixture.SECOND_TEAM_IMAGE;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_woman;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,7 +149,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
             Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
 
             teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(rimTeam));
-            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(chaewonTeam));
+            teamImageRepository.saveAll(SECOND_TEAM_IMAGE.createTeamImages(chaewonTeam));
 
             meetingRepository.save(BASIC_MEETING.create(kaiTeam, rimTeam));
             meetingRepository.save(BASIC_MEETING.create(kaiTeam, chaewonTeam));
@@ -165,7 +166,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
                         BASIC_TEAM_IMAGE.getTeamImages(), rim.getNickname()
                     ),
                     tuple(4, chaewonTeam.getRegion(), false,
-                        BASIC_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
+                        SECOND_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
                     )
                 );
 
@@ -210,7 +211,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
             Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
             Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
             teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(rimTeam));
-            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(chaewonTeam));
+            teamImageRepository.saveAll(SECOND_TEAM_IMAGE.createTeamImages(chaewonTeam));
 
             meetingRequestRepository.saveAll(List.of(
                 BASIC_REQUEST.create(kaiTeam, rimTeam),
@@ -229,7 +230,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
                         BASIC_TEAM_IMAGE.getTeamImages(), rim.getNickname()
                     ),
                     tuple(4, chaewonTeam.getRegion(), false,
-                        BASIC_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
+                        SECOND_TEAM_IMAGE.getTeamImages(), chaewon.getNickname()
                     )
                 );
         }

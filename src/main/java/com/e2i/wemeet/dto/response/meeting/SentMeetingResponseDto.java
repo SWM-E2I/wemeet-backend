@@ -1,5 +1,6 @@
 package com.e2i.wemeet.dto.response.meeting;
 
+import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.dto.dsl.MeetingRequestInformationDto;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public record SentMeetingResponseDto(
     int memberCount,
     Region region,
     boolean isDeleted,
+    AcceptStatus acceptStatus,
     LocalDateTime requestSentTime,
     String message,
     List<String> teamProfileImageUrl,
@@ -29,6 +31,7 @@ public record SentMeetingResponseDto(
             .memberCount(requestDto.getMemberCount())
             .region(requestDto.getRegion())
             .isDeleted(requestDto.getDeletedAt() != null)
+            .acceptStatus(requestDto.getAcceptStatus())
             .requestSentTime(requestDto.getRequestSentTime())
             .message(requestDto.getMessage())
             .teamProfileImageUrl(teamProfileImageUrl)
