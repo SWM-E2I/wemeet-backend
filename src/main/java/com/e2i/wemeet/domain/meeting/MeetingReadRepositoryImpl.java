@@ -23,6 +23,7 @@ import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +95,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .map(meetingInformation -> AcceptedMeetingResponseDto.of(
                 meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
             ))
+            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
             .toList();
     }
 
@@ -103,7 +105,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
         List<MeetingRequestInformationDto> meetingRequestList = selectMeetingRequestInformationDto()
             .from(meetingRequest)
             // My Team & Partner Team
-            .join(meetingRequest.team, team)
+            .join(meetingRequest.team, team).on(team.deletedAt.isNull())
             .join(meetingRequest.partnerTeam, partnerTeam)
             // Me & Partner Team Leader
             .join(team.teamLeader, member)
@@ -127,7 +129,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .from(meetingRequest)
             // PartnerTeam == RequestReceivedTeam == My Team
             .join(meetingRequest.team, partnerTeam)
-            .join(meetingRequest.partnerTeam, team)
+            .join(meetingRequest.partnerTeam, team).on(team.deletedAt.isNull())
             // Me & Partner Team Leader
             .join(team.teamLeader, member)
             .join(partnerTeam.teamLeader, partnerTeamLeader)
