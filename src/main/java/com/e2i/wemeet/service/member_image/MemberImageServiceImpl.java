@@ -22,7 +22,7 @@ public class MemberImageServiceImpl implements MemberImageService {
     @Value("${aws.s3.profileImageBucket}")
     private String profileImageBucket;
 
-    private static final String VERSION_PREFIX = "/v1/";
+    private static final String VERSION_PREFIX = "v1/";
     private static final String BASIC_PREFIX = "/basic/";
     private static final String LOW_PREFIX = "/low/";
     private static final String FILE_EXTENSION = ".jpg";
