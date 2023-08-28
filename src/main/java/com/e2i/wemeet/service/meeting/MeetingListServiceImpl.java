@@ -5,30 +5,44 @@ import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
+import com.e2i.wemeet.util.validator.CustomExpirationValidator;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class MeetingListServiceImpl implements MeetingListService {
 
-    private static final int MEETING_EXPIRE_DAY = 7;
-    private static final int REQUEST_EXPIRE_DAY = 3;
+    public static final int MEETING_EXPIRE_DAY = 7;
+    public static final int REQUEST_EXPIRE_DAY = 3;
 
     private final MeetingRepository meetingRepository;
 
     /*
      * 미팅 목록 *
-     - 미팅이 성사된지 7일이 되었는지 확인 -> 성사된 미팅은 EXPIRED 상태로 변경
-     * -> EXPIRED 된 미팅도 보내줌
+     - 매칭된 이후 7일이 지났는지 확인 & 상대 팀이 삭제 되었는지 확인
+     * -> 두 조건 중 하나라도 만족하면 Meeting Entity 의 isOver == true 로 update
+     * -> 결과 값에는 isExpired == true 보내줌
      */
     @IsManager
     @Override
     public List<AcceptedMeetingResponseDto> getAcceptedMeetingList(final Long memberId, final LocalDateTime findDateTime) {
+        List<AcceptedMeetingResponseDto> meetingList = meetingRepository.findAcceptedMeetingList(memberId);
+        updateMeetingsIfNecessary(meetingList, findDateTime);
 
-        return null;
+        for (AcceptedMeetingResponseDto acceptedMeetingResponseDto : meetingList) {
+            if (CustomExpirationValidator.isExpiredOfDays(acceptedMeetingResponseDto.getMeetingAcceptTime(), findDateTime, MEETING_EXPIRE_DAY)
+                || acceptedMeetingResponseDto.isDeleted()) {
+                acceptedMeetingResponseDto.expired();
+            }
+        }
+
+        return meetingList;
     }
 
     /*
@@ -57,6 +71,24 @@ public class MeetingListServiceImpl implements MeetingListService {
     @Override
     public List<ReceivedMeetingResponseDto> getReceiveRequestList(final Long MemberId, final LocalDateTime findDateTime) {
         return null;
+    }
+
+    // 만료된 미팅 & 삭제된 팀 Meeting 상태 갱신 (isOver = true)
+    private void updateMeetingsIfNecessary(final List<AcceptedMeetingResponseDto> meetingList, final LocalDateTime findDateTime) {
+        Stream<Long> expiredIds = meetingList.stream()
+            .filter(meeting -> !meeting.isExpired())
+            .filter(meeting -> CustomExpirationValidator.isExpiredOfDays(meeting.getMeetingAcceptTime(), findDateTime, MEETING_EXPIRE_DAY))
+            .map(AcceptedMeetingResponseDto::getMeetingId);
+
+        Stream<Long> deletedIds = meetingList.stream()
+            .filter(AcceptedMeetingResponseDto::isDeleted)
+            .filter(meeting -> !meeting.isExpired())
+            .map(AcceptedMeetingResponseDto::getMeetingId);
+
+        List<Long> updateList = Stream.concat(expiredIds, deletedIds)
+            .toList();
+
+        meetingRepository.updateMeetingToOver(updateList);
     }
 
 }
