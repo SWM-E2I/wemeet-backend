@@ -22,6 +22,13 @@ public class ProfileImage {
         this.imageAuth = imageAuth;
     }
 
+    public ProfileImage(String basicUrl, String lowUrl) {
+        this.basicUrl = basicUrl;
+        this.lowUrl = lowUrl;
+        this.imageAuth = false;
+    }
+
+
     public boolean hasProfileImage() {
         return basicUrl != null;
     }

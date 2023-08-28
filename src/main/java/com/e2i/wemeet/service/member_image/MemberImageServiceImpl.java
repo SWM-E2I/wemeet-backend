@@ -43,9 +43,6 @@ public class MemberImageServiceImpl implements MemberImageService {
 
         s3Service.upload(file, basicObjectKey, profileImageBucket);
 
-        member.saveProfileImage(ProfileImage.builder()
-            .basicUrl(basicObjectKey)
-            .lowUrl(lowObjectKey)
-            .build());
+        member.saveProfileImage(new ProfileImage(basicObjectKey, lowObjectKey));
     }
 }
