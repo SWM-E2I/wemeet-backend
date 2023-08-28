@@ -22,6 +22,8 @@ public class MemberImageServiceImpl implements MemberImageService {
     @Value("${aws.s3.profileImageBucket}")
     private String profileImageBucket;
 
+    private static final String HTTPS_ADDRESS = "https://";
+    private static final String AWS_S3_DOMAIN = ".s3.ap-northeast-2.amazonaws.com/";
     private static final String VERSION_PREFIX = "v1/";
     private static final String BASIC_PREFIX = "/basic/";
     private static final String LOW_PREFIX = "/low/";
@@ -42,7 +44,9 @@ public class MemberImageServiceImpl implements MemberImageService {
             VERSION_PREFIX + memberId + LOW_PREFIX + randomKey + FILE_EXTENSION;
 
         s3Service.upload(file, basicObjectKey, profileImageBucket);
-
-        member.saveProfileImage(new ProfileImage(basicObjectKey, lowObjectKey));
+        System.out.println("basicObjectKey = " + basicObjectKey);
+        member.saveProfileImage(
+            new ProfileImage(HTTPS_ADDRESS + profileImageBucket + AWS_S3_DOMAIN + basicObjectKey,
+                HTTPS_ADDRESS + profileImageBucket + AWS_S3_DOMAIN + lowObjectKey));
     }
 }
