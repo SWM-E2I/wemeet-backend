@@ -6,22 +6,29 @@ import com.e2i.wemeet.dto.dsl.MeetingRequestInformationDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 
-@Builder
-public record ReceivedMeetingResponseDto(
+@Getter
+public final class ReceivedMeetingResponseDto extends MeetingRequestResponseDto {
 
-    Long meetingRequestId,
-    Long teamId,
-    int memberCount,
-    Region region,
-    boolean isDeleted,
-    AcceptStatus acceptStatus,
-    LocalDateTime requestReceivedTime,
-    String message,
-    List<String> teamProfileImageUrl,
-    LeaderResponseDto leader
+    private final Long teamId;
+    private final int memberCount;
+    private final Region region;
+    private final String message;
+    private final List<String> teamProfileImageUrl;
+    private final LeaderResponseDto leader;
 
-) {
+    @Builder
+    private ReceivedMeetingResponseDto(Long meetingRequestId, AcceptStatus acceptStatus, LocalDateTime requestTime, boolean partnerTeamDeleted,
+        Long teamId, int memberCount, Region region, String message, List<String> teamProfileImageUrl, LeaderResponseDto leader) {
+        super(meetingRequestId, acceptStatus, requestTime, partnerTeamDeleted);
+        this.teamId = teamId;
+        this.memberCount = memberCount;
+        this.region = region;
+        this.message = message;
+        this.teamProfileImageUrl = teamProfileImageUrl;
+        this.leader = leader;
+    }
 
     public static ReceivedMeetingResponseDto of(final MeetingRequestInformationDto requestDto,
         final List<String> teamProfileImageUrl) {
@@ -30,12 +37,28 @@ public record ReceivedMeetingResponseDto(
             .teamId(requestDto.getTeamId())
             .memberCount(requestDto.getMemberCount())
             .region(requestDto.getRegion())
-            .isDeleted(requestDto.getDeletedAt() != null)
+            .partnerTeamDeleted(requestDto.getDeletedAt() != null)
             .acceptStatus(requestDto.getAcceptStatus())
-            .requestReceivedTime(requestDto.getRequestSentTime())
+            .requestTime(requestDto.getRequestSentTime())
             .message(requestDto.getMessage())
             .teamProfileImageUrl(teamProfileImageUrl)
             .leader(LeaderResponseDto.of(requestDto))
             .build();
+    }
+
+    @Override
+    public String toString() {
+        return "ReceivedMeetingResponseDto{" +
+            "teamId=" + teamId +
+            ", memberCount=" + memberCount +
+            ", region=" + region +
+            ", message='" + message + '\'' +
+            ", teamProfileImageUrl=" + teamProfileImageUrl +
+            ", leader=" + leader +
+            ", meetingRequestId=" + meetingRequestId +
+            ", acceptStatus=" + acceptStatus +
+            ", requestTime=" + requestTime +
+            ", partnerTeamDeleted=" + partnerTeamDeleted +
+            '}';
     }
 }
