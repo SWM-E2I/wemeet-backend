@@ -11,6 +11,7 @@ import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
 import com.e2i.wemeet.service.meeting.MeetingHandleService;
 import com.e2i.wemeet.service.meeting.MeetingListService;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,33 +31,33 @@ public class MeetingController {
     private final MeetingListService meetingListService;
 
     @PostMapping("/meeting")
-    public ResponseDto<Void> sendMeetingRequest(@MemberId Long memberId, @RequestBody SendMeetingRequestDto requestDto) {
+    public ResponseDto<Void> sendMeetingRequest(@MemberId Long memberId, @RequestBody @Valid SendMeetingRequestDto requestDto) {
         meetingHandleService.sendRequest(requestDto, memberId);
 
         return ResponseDto.success("Send meeting request success");
     }
 
-    @PostMapping("/v1/meeting/message")
+    @PostMapping("/meeting/message")
     public ResponseDto<Void> sendMeetingRequestWithMessage(@MemberId Long memberId,
-        @RequestBody SendMeetingWithMessageRequestDto requestDto) {
+        @RequestBody @Valid SendMeetingWithMessageRequestDto requestDto) {
         meetingHandleService.sendRequestWithMessage(requestDto, memberId);
 
         return ResponseDto.success("Send meeting request with message success");
     }
 
-    @PostMapping("/v1/meeting/accept/{meetingRequestId}")
+    @PostMapping("/meeting/accept/{meetingRequestId}")
     public ResponseDto<Long> acceptMeetingRequest(@MemberId Long memberId,
-        @RequestBody MeetingRequestAcceptDto requestDto,
+        @RequestBody @Valid MeetingRequestAcceptDto requestDto,
         @PathVariable Long meetingRequestId) {
         final String openChatLink = requestDto.kakaoOpenChatLink();
         final LocalDateTime acceptDateTime = LocalDateTime.now();
 
         Long meetingId = meetingHandleService.acceptRequest(openChatLink, memberId, meetingRequestId, acceptDateTime);
 
-        return ResponseDto.success("Meeting was successfully matched.", meetingId);
+        return ResponseDto.success("Meeting was successfully matched", meetingId);
     }
 
-    @PostMapping("/v1/meeting/reject/{meetingRequestId}")
+    @PostMapping("/meeting/reject/{meetingRequestId}")
     public ResponseDto<AcceptStatus> rejectMeetingRequest(@MemberId Long memberId,
         @PathVariable Long meetingRequestId) {
         LocalDateTime rejectDateTime = LocalDateTime.now();
@@ -65,8 +66,7 @@ public class MeetingController {
         return ResponseDto.success("Meeting request successfully Rejected", acceptStatus);
     }
 
-    // TODO: 성사된 미팅 목록 조회 API
-    @GetMapping("/v1/meeting/accepted")
+    @GetMapping("/meeting/accepted")
     public ResponseDto<List<AcceptedMeetingResponseDto>> getAcceptedMeetingList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<AcceptedMeetingResponseDto> acceptedMeetingList = meetingListService.getAcceptedMeetingList(memberId, findDateTime);
@@ -75,7 +75,7 @@ public class MeetingController {
     }
 
 
-    @GetMapping("/v1/meeting/sent")
+    @GetMapping("/meeting/sent")
     public ResponseDto<List<SentMeetingResponseDto>> getSentMeetingRequestList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<SentMeetingResponseDto> sentRequestList = meetingListService.getSentRequestList(memberId, findDateTime);
@@ -83,8 +83,8 @@ public class MeetingController {
         return ResponseDto.success("Get sent meeting request list success", sentRequestList);
     }
 
-    @GetMapping("/v1/meeting/receive")
-    public ResponseDto<List<ReceivedMeetingResponseDto>> getReceiveMeetingRequestList(@MemberId Long memberId) {
+    @GetMapping("/meeting/received")
+    public ResponseDto<List<ReceivedMeetingResponseDto>> getReceivedMeetingRequestList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<ReceivedMeetingResponseDto> receiveRequestList = meetingListService.getReceiveRequestList(memberId, findDateTime);
 
