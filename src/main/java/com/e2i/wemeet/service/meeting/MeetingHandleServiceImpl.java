@@ -73,7 +73,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
             .partnerTeam(partnerTeam)
-            .message(requestDto.getMessageWithValid())
+            .message(requestDto.message())
             .build();
 
         meetingRequestRepository.save(meetingRequest);

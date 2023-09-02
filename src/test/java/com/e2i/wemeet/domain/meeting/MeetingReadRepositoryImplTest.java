@@ -223,7 +223,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
             // then
             assertThat(sentRequestList).hasSize(2)
-                .extracting("memberCount", "region", "isDeleted",
+                .extracting("memberCount", "region", "partnerTeamDeleted",
                     "teamProfileImageUrl", "leader.nickname")
                 .contains(
                     tuple(4, rimTeam.getRegion(), false,
@@ -273,7 +273,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
             // then
             assertThat(receivedRequest).hasSize(2)
-                .extracting("memberCount", "region", "isDeleted",
+                .extracting("memberCount", "region", "partnerTeamDeleted",
                     "teamProfileImageUrl", "leader.nickname")
                 .contains(
                     tuple(4, rimTeam.getRegion(), false,

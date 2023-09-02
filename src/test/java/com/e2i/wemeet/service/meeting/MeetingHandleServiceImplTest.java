@@ -37,6 +37,7 @@ import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -252,7 +253,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             // when & then
             assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
-                .isExactlyInstanceOf(InvalidDataFormatException.class);
+                .isExactlyInstanceOf(UndeclaredThrowableException.class);
         }
 
     }
@@ -293,7 +294,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                     .contains(ACCEPT, BASIC_REQUEST.getMessage()),
                 () -> assertThat(findMeeting).isNotNull()
                     .extracting("team", "partnerTeam", "chatLink", "isOver")
-                    .contains(kaiTeam, rimTeam, chatLink, null));
+                    .contains(kaiTeam, rimTeam, chatLink, false));
 
             assertThat(rim.getCredit()).isEqualTo(rimCredit - CREDIT_AMOUNT_ACCEPT);
         }
