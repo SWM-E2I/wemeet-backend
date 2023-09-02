@@ -32,7 +32,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
         Object principal = SecurityContextHolder.getContext()
             .getAuthentication().getPrincipal();
 
-        if (!(principal instanceof MemberPrincipal memberPrincipal)) {
+        if (!(principal instanceof MemberPrincipal memberPrincipal) || memberPrincipal.getMemberId() == null) {
             throw new AccessTokenNotFoundException();
         }
 
