@@ -23,21 +23,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/v1")
+@RequestMapping("/v1/meeting")
 @RestController
 public class MeetingController {
 
     private final MeetingHandleService meetingHandleService;
     private final MeetingListService meetingListService;
 
-    @PostMapping("/meeting")
+    @PostMapping
     public ResponseDto<Void> sendMeetingRequest(@MemberId Long memberId, @RequestBody @Valid SendMeetingRequestDto requestDto) {
         meetingHandleService.sendRequest(requestDto, memberId);
 
         return ResponseDto.success("Send meeting request success");
     }
 
-    @PostMapping("/meeting/message")
+    @PostMapping("/message")
     public ResponseDto<Void> sendMeetingRequestWithMessage(@MemberId Long memberId,
         @RequestBody @Valid SendMeetingWithMessageRequestDto requestDto) {
         meetingHandleService.sendRequestWithMessage(requestDto, memberId);
@@ -45,7 +45,7 @@ public class MeetingController {
         return ResponseDto.success("Send meeting request with message success");
     }
 
-    @PostMapping("/meeting/accept/{meetingRequestId}")
+    @PostMapping("/accept/{meetingRequestId}")
     public ResponseDto<Long> acceptMeetingRequest(@MemberId Long memberId,
         @RequestBody @Valid MeetingRequestAcceptDto requestDto,
         @PathVariable Long meetingRequestId) {
@@ -57,7 +57,7 @@ public class MeetingController {
         return ResponseDto.success("Meeting was successfully matched", meetingId);
     }
 
-    @PostMapping("/meeting/reject/{meetingRequestId}")
+    @PostMapping("/reject/{meetingRequestId}")
     public ResponseDto<AcceptStatus> rejectMeetingRequest(@MemberId Long memberId,
         @PathVariable Long meetingRequestId) {
         LocalDateTime rejectDateTime = LocalDateTime.now();
@@ -66,7 +66,7 @@ public class MeetingController {
         return ResponseDto.success("Meeting request successfully Rejected", acceptStatus);
     }
 
-    @GetMapping("/meeting/accepted")
+    @GetMapping("/accepted")
     public ResponseDto<List<AcceptedMeetingResponseDto>> getAcceptedMeetingList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<AcceptedMeetingResponseDto> acceptedMeetingList = meetingListService.getAcceptedMeetingList(memberId, findDateTime);
@@ -75,7 +75,7 @@ public class MeetingController {
     }
 
 
-    @GetMapping("/meeting/sent")
+    @GetMapping("/sent")
     public ResponseDto<List<SentMeetingResponseDto>> getSentMeetingRequestList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<SentMeetingResponseDto> sentRequestList = meetingListService.getSentRequestList(memberId, findDateTime);
@@ -83,7 +83,7 @@ public class MeetingController {
         return ResponseDto.success("Get sent meeting request list success", sentRequestList);
     }
 
-    @GetMapping("/meeting/received")
+    @GetMapping("/received")
     public ResponseDto<List<ReceivedMeetingResponseDto>> getReceivedMeetingRequestList(@MemberId Long memberId) {
         final LocalDateTime findDateTime = LocalDateTime.now();
         List<ReceivedMeetingResponseDto> receiveRequestList = meetingListService.getReceiveRequestList(memberId, findDateTime);
