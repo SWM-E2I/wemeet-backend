@@ -1,6 +1,6 @@
-package com.e2i.wemeet.domain.credit;
+package com.e2i.wemeet.domain.cost;
 
-import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.CreateTimeEntity;
 import com.e2i.wemeet.domain.member.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CostHistory extends BaseTimeEntity {
+public class CostHistory extends CreateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
