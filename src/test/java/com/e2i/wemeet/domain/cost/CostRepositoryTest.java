@@ -17,7 +17,7 @@ class CostRepositoryTest extends AbstractRepositoryUnitTest {
     @Test
     void findValueByType() {
         // given
-        costRepository.save(new Cost(MEETING_ACCEPT));
+        costRepository.save(new Cost(MEETING_ACCEPT.name(), 5));
         entityManager.flush();
         entityManager.clear();
 
