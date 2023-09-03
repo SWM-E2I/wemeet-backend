@@ -1,5 +1,8 @@
 package com.e2i.wemeet.service.meeting;
 
+import static com.e2i.wemeet.domain.cost.Spent.MEETING_ACCEPT;
+import static com.e2i.wemeet.domain.cost.Spent.MEETING_REQUEST;
+import static com.e2i.wemeet.domain.cost.Spent.MEETING_REQUEST_WITH_MESSAGE;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.ACCEPT;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.EXPIRED;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
@@ -14,7 +17,6 @@ import com.e2i.wemeet.domain.meeting.MeetingRepository;
 import com.e2i.wemeet.domain.meeting.MeetingRequest;
 import com.e2i.wemeet.domain.meeting.MeetingRequestRepository;
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
-import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
@@ -24,9 +26,11 @@ import com.e2i.wemeet.exception.badrequest.ExpiredException;
 import com.e2i.wemeet.exception.notfound.MeetingRequestNotFound;
 import com.e2i.wemeet.security.manager.CostAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
+import com.e2i.wemeet.service.cost.SpendEvent;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,16 +41,12 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
 
     public static final int MEETING_REQUEST_EXPIRE_DAY = 3;
 
-    public static final int CREDIT_AMOUNT_ACCEPT = 5;
-    public static final int CREDIT_AMOUNT_REQUEST = 10;
-    public static final int CREDIT_AMOUNT_REQUEST_WITH_MESSAGE = 12;
-
     private final MeetingRepository meetingRepository;
-    private final MemberRepository memberRepository;
     private final MeetingRequestRepository meetingRequestRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    @CostAuthorize(value = CREDIT_AMOUNT_REQUEST, role = Role.MANAGER)
+    @CostAuthorize(type = MEETING_REQUEST, role = Role.MANAGER)
     @Override
     public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
@@ -59,12 +59,12 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
 
         meetingRequestRepository.save(meetingRequest);
 
-        memberRepository.findById(memberLeaderId)
-            .ifPresent(member -> member.useCredit(CREDIT_AMOUNT_REQUEST));
+        // 이벤트 발행
+        eventPublisher.publishEvent(SpendEvent.of(MEETING_REQUEST, memberLeaderId));
     }
 
     @Transactional
-    @CostAuthorize(value = 12, role = Role.MANAGER)
+    @CostAuthorize(type = MEETING_REQUEST_WITH_MESSAGE, role = Role.MANAGER)
     @Override
     public void sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
@@ -78,12 +78,12 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
 
         meetingRequestRepository.save(meetingRequest);
 
-        memberRepository.findById(memberLeaderId)
-            .ifPresent(member -> member.useCredit(CREDIT_AMOUNT_REQUEST_WITH_MESSAGE));
+        // 이벤트 발행
+        eventPublisher.publishEvent(SpendEvent.of(MEETING_REQUEST_WITH_MESSAGE, memberLeaderId));
     }
 
     @Transactional
-    @CostAuthorize(value = CREDIT_AMOUNT_ACCEPT, role = Role.MANAGER)
+    @CostAuthorize(type = MEETING_ACCEPT, role = Role.MANAGER)
     @Override
     public Long acceptRequest(final String openChatLink, final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)
@@ -93,8 +93,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         validateAbleToHandlingMeetingRequest(acceptDateTime, memberLeaderId, meetingRequest);
         meetingRequest.changeStatus(ACCEPT);
 
-        memberRepository.findById(memberLeaderId)
-            .ifPresent(member -> member.useCredit(CREDIT_AMOUNT_ACCEPT));
+        // 이벤트 발행
+        eventPublisher.publishEvent(SpendEvent.of(MEETING_ACCEPT, memberLeaderId));
 
         return saveMeeting(openChatLink, meetingRequest).getMeetingId();
     }
