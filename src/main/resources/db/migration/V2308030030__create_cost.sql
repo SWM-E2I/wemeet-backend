@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS `cost`
 (
-    `cost_id` bigint      NOT NULL AUTO_INCREMENT,
-    `type`    varchar(30) NOT NULL,
-    `value`   tinyint     NOT NULL,
+    `cost_id`    bigint      NOT NULL AUTO_INCREMENT,
+    `type`       varchar(30) NOT NULL,
+    `cost_value` tinyint     NOT NULL,
     PRIMARY KEY (`cost_id`)
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
 
-INSERT INTO `cost` (`cost_id`, `type`, `value`)
+INSERT INTO `cost` (`cost_id`, `type`, `cost_value`)
 values (1, 'PAYMENT_5900', 15),
        (2, 'PAYMENT_9900', 30),
        (3, 'PAYMENT_14900', 50),

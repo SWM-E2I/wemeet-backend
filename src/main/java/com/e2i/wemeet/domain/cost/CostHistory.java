@@ -42,11 +42,18 @@ public class CostHistory extends CreateTimeEntity {
         this.costValue = costValue;
     }
 
-    public CostHistory(Member member, Spent spent) {
+    public CostHistory(Member member, Spent spent, Integer costValue) {
         this.member = member;
         this.costType = Spent.getTypeName();
         this.detail = spent.name();
-        this.costValue = spent.getValue();
+        this.costValue = costValue;
+    }
+
+    public CostHistory(Member member, Payment payment, Integer costValue) {
+        this.member = member;
+        this.costType = Payment.getTypeName();
+        this.detail = payment.name();
+        this.costValue = costValue;
     }
 
     public boolean isSpent() {
@@ -55,5 +62,9 @@ public class CostHistory extends CreateTimeEntity {
 
     public boolean isEarn() {
         return Earn.getTypeName().equals(this.costType);
+    }
+
+    public boolean isPayment() {
+        return Payment.getTypeName().equals(this.costType);
     }
 }

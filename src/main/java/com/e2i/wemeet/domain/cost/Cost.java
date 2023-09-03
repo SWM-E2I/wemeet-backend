@@ -21,16 +21,11 @@ public class Cost {
     @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "cost_value")
     private Integer value;
 
-    public Cost(Earn earn, Integer value) {
-        this.type = earn.name();
+    public Cost(String type, Integer value) {
+        this.type = type;
         this.value = value;
-    }
-
-    public Cost(Spent spent) {
-        this.type = spent.name();
-        this.value = spent.getValue();
     }
 }
