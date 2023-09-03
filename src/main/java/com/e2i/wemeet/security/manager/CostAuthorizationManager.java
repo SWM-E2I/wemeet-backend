@@ -1,5 +1,6 @@
 package com.e2i.wemeet.security.manager;
 
+import com.e2i.wemeet.domain.cost.CostRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
@@ -17,12 +18,13 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CreditAuthorizationManager {
+public class CostAuthorizationManager {
 
     private final MemberRepository memberRepository;
+    private final CostRepository costRepository;
     private final RoleHierarchy roleHierarchy;
 
-    public void verify(final Authentication authentication, final CreditAuthorize object) {
+    public void verify(final Authentication authentication, final CostAuthorize object) {
         AuthorizationDecision decision = check(authentication, object);
         if (!decision.hasCredit) {
             throw new CreditNotEnoughException();
@@ -32,10 +34,13 @@ public class CreditAuthorizationManager {
         }
     }
 
-    private AuthorizationDecision check(final Authentication authentication, final CreditAuthorize object) {
+    private AuthorizationDecision check(final Authentication authentication, final CostAuthorize object) {
         int requiredCredit = object.value();
         int memberCredit = getMemberCredit(authentication);
 
+        if (requiredCredit == -1) {
+            costRepository.findValueByType(object.type().name());
+        }
         boolean hasCredit = verifyCredit(requiredCredit, memberCredit);
         boolean hasRole = verifyRole(authentication, object.role());
 

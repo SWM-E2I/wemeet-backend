@@ -22,7 +22,7 @@ import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
 import com.e2i.wemeet.exception.badrequest.ExpiredException;
 import com.e2i.wemeet.exception.notfound.MeetingRequestNotFound;
-import com.e2i.wemeet.security.manager.CreditAuthorize;
+import com.e2i.wemeet.security.manager.CostAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -46,7 +46,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     private final MeetingRequestRepository meetingRequestRepository;
 
     @Transactional
-    @CreditAuthorize(value = CREDIT_AMOUNT_REQUEST, role = Role.MANAGER)
+    @CostAuthorize(value = CREDIT_AMOUNT_REQUEST, role = Role.MANAGER)
     @Override
     public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
@@ -64,7 +64,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     @Transactional
-    @CreditAuthorize(value = 12, role = Role.MANAGER)
+    @CostAuthorize(value = 12, role = Role.MANAGER)
     @Override
     public void sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
@@ -83,7 +83,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     @Transactional
-    @CreditAuthorize(value = CREDIT_AMOUNT_ACCEPT, role = Role.MANAGER)
+    @CostAuthorize(value = CREDIT_AMOUNT_ACCEPT, role = Role.MANAGER)
     @Override
     public Long acceptRequest(final String openChatLink, final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)

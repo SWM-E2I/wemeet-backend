@@ -3,13 +3,14 @@ package com.e2i.wemeet.config.security.manager;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.e2i.wemeet.domain.cost.Spent;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
-import com.e2i.wemeet.security.manager.CreditAuthorizationManager;
-import com.e2i.wemeet.security.manager.CreditAuthorize;
+import com.e2i.wemeet.security.manager.CostAuthorizationManager;
+import com.e2i.wemeet.security.manager.CostAuthorize;
 import com.e2i.wemeet.security.model.MemberPrincipal;
 import com.e2i.wemeet.security.token.Payload;
 import java.lang.annotation.Annotation;
@@ -31,14 +32,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-class CreditAuthorizationManagerTest {
+class CostAuthorizationManagerTest {
 
-    private CreditAuthorizationManager creditAuthorizationManager;
+    private CostAuthorizationManager costAuthorizationManager;
 
     @BeforeEach
     void setUp() {
-        creditAuthorizationManager = new CreditAuthorizationManager(new MemberRepositoryImpl(),
-            new RoleHierarchyImpl());
+        costAuthorizationManager = new CostAuthorizationManager(new MemberRepositoryImpl(), null, new RoleHierarchyImpl());
     }
 
     @DisplayName("사용자가 보유한 credit의 개수가 요청에 필요한 credit의 개수보다 많을 경우 성공한다.")
@@ -50,7 +50,7 @@ class CreditAuthorizationManagerTest {
             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
         // when
-        CreditAuthorize creditAuthorize = new CreditAuthorize() {
+        CostAuthorize costAuthorize = new CostAuthorize() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return null;
@@ -62,6 +62,11 @@ class CreditAuthorizationManagerTest {
             }
 
             @Override
+            public Spent type() {
+                return Spent.MORE_TEAM;
+            }
+
+            @Override
             public Role role() {
                 return Role.USER;
             }
@@ -69,7 +74,7 @@ class CreditAuthorizationManagerTest {
 
         //then
         assertDoesNotThrow(
-            () -> creditAuthorizationManager.verify(authentication, creditAuthorize));
+            () -> costAuthorizationManager.verify(authentication, costAuthorize));
     }
 
     @DisplayName("사용자가 보유한 credit의 개수가 요청에 필요한 credit의 개수보다 적을 경우 예외가 발생한다.")
@@ -81,7 +86,7 @@ class CreditAuthorizationManagerTest {
             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
         // when
-        CreditAuthorize creditAuthorize = new CreditAuthorize() {
+        CostAuthorize costAuthorize = new CostAuthorize() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return null;
@@ -93,13 +98,18 @@ class CreditAuthorizationManagerTest {
             }
 
             @Override
+            public Spent type() {
+                return Spent.MORE_TEAM;
+            }
+
+            @Override
             public Role role() {
                 return Role.USER;
             }
         };
 
         //then
-        assertThatThrownBy(() -> creditAuthorizationManager.verify(authentication, creditAuthorize))
+        assertThatThrownBy(() -> costAuthorizationManager.verify(authentication, costAuthorize))
             .isExactlyInstanceOf(CreditNotEnoughException.class);
     }
 
@@ -113,7 +123,7 @@ class CreditAuthorizationManagerTest {
             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
         // when
-        CreditAuthorize creditAuthorize = new CreditAuthorize() {
+        CostAuthorize costAuthorize = new CostAuthorize() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return null;
@@ -125,13 +135,18 @@ class CreditAuthorizationManagerTest {
             }
 
             @Override
+            public Spent type() {
+                return Spent.MORE_TEAM;
+            }
+
+            @Override
             public Role role() {
                 return Role.MANAGER;
             }
         };
 
         //then
-        assertThatThrownBy(() -> creditAuthorizationManager.verify(authentication, creditAuthorize))
+        assertThatThrownBy(() -> costAuthorizationManager.verify(authentication, costAuthorize))
             .isExactlyInstanceOf(UnAuthorizedRoleException.class);
     }
 
