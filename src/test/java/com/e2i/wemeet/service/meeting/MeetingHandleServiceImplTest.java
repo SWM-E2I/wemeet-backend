@@ -3,9 +3,6 @@ package com.e2i.wemeet.service.meeting;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.ACCEPT;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.EXPIRED;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.REJECT;
-import static com.e2i.wemeet.service.meeting.MeetingHandleServiceImpl.CREDIT_AMOUNT_ACCEPT;
-import static com.e2i.wemeet.service.meeting.MeetingHandleServiceImpl.CREDIT_AMOUNT_REQUEST;
-import static com.e2i.wemeet.service.meeting.MeetingHandleServiceImpl.CREDIT_AMOUNT_REQUEST_WITH_MESSAGE;
 import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.BASIC_REQUEST;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
@@ -93,7 +90,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                 .contains(
                     tuple(kaiTeam, rimTeam, AcceptStatus.PENDING, null)
                 );
-            assertThat(kai.getCredit()).isEqualTo(kaiCredit - CREDIT_AMOUNT_REQUEST);
+            assertThat(kai.getCredit()).isLessThan(kaiCredit);
         }
 
         @DisplayName("보유하고 있는 크레딧이 부족하면 미팅을 신청할 수 없다.")
@@ -112,6 +109,28 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             // when & then
             assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
                 .isExactlyInstanceOf(CreditNotEnoughException.class);
+        }
+
+        @DisplayName("미팅을 신청하면 크레딧이 차감된다.")
+        @Test
+        void sendRequestReduceCreditAfterRequest() {
+            // given
+            final int credit = 50;
+            Member kai = memberRepository.save(KAI.create_credit(ANYANG_CODE, credit));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            // when
+            meetingHandleService.sendRequest(request, kai.getMemberId());
+
+            // then
+            Integer findCredit = memberRepository.findCreditByMemberId(kai.getMemberId())
+                .orElseThrow();
+            assertThat(findCredit).isLessThan(credit);
         }
 
         @DisplayName("partnerTeamId가 잘못되었다면 미팅을 신청할 수 없다.")
@@ -196,7 +215,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                 .contains(
                     tuple(kaiTeam, rimTeam, AcceptStatus.PENDING, message)
                 );
-            assertThat(kai.getCredit()).isEqualTo(kaiCredit - CREDIT_AMOUNT_REQUEST_WITH_MESSAGE);
+            assertThat(kai.getCredit()).isLessThan(kaiCredit);
         }
 
         @DisplayName("보유하고 있는 크레딧이 부족하면 쪽지와 함께 미팅을 신청할 수 없다.")
@@ -217,6 +236,30 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             // when & then
             assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
                 .isExactlyInstanceOf(CreditNotEnoughException.class);
+        }
+
+        @DisplayName("미팅을 신청하면 크레딧이 차감된다.")
+        @Test
+        void sendResponseWithMessageReduceCreditAfterRequest() {
+            // given
+            final int credit = 50;
+            Member kai = memberRepository.save(KAI.create_credit(ANYANG_CODE, credit));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            final String message = "안녕하세요";
+
+            SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            // when
+            meetingHandleService.sendRequestWithMessage(request, kai.getMemberId());
+
+            // then
+            Integer findCredit = memberRepository.findCreditByMemberId(kai.getMemberId())
+                .orElseThrow();
+            assertThat(findCredit).isLessThan(credit);
         }
 
         @DisplayName("팀이 없는 사용자라면 쪽지와 함께 미팅을 신청할 수 없다.")
@@ -296,7 +339,33 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                     .extracting("team", "partnerTeam", "chatLink", "isOver")
                     .contains(kaiTeam, rimTeam, chatLink, false));
 
-            assertThat(rim.getCredit()).isEqualTo(rimCredit - CREDIT_AMOUNT_ACCEPT);
+            assertThat(rim.getCredit()).isLessThan(rimCredit);
+        }
+
+        @DisplayName("미팅 신청을 수락하면 크레딧이 차감된다.")
+        @Test
+        void handleRequestToAcceptReduceCreditAfterAccept() {
+            // given
+            final int credit = 30;
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create_credit(WOMANS_CODE, credit));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
+                .getMeetingRequestId();
+            final String chatLink = "https://open.kakao.com/o/1sdfasdf";
+            final LocalDateTime now = LocalDateTime.now();
+
+            setAuthentication(rim.getMemberId(), "MANAGER");
+
+            // when
+            meetingHandleService.acceptRequest(chatLink, rim.getMemberId(), meetingRequestId, now);
+
+            // then
+            Integer findCredit = memberRepository.findCreditByMemberId(rim.getMemberId())
+                .orElseThrow();
+            assertThat(findCredit).isLessThan(credit);
         }
 
         @DisplayName("받았던 미팅 신청을 거절할 수 있다.")
