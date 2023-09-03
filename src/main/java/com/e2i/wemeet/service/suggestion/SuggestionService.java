@@ -15,5 +15,6 @@ public interface SuggestionService {
     /*
      * 오늘의 추천 여부 확인
      * */
-    CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId);
+    CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
+        LocalDateTime requestTime);
 }

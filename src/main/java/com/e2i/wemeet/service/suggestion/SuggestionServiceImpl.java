@@ -47,12 +47,12 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId) {
+    public CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
+        LocalDateTime requestTime) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
-        LocalDateTime requestTime = LocalDateTime.now();
         return findSuggestionHistory(member.getMemberId(), requestTime);
     }
 

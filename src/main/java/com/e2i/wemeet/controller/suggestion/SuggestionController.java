@@ -31,8 +31,9 @@ public class SuggestionController {
     @GetMapping("/check")
     public ResponseDto<CheckSuggestionResponseDto> checkTodaySuggestionHistory(
         @MemberId Long memberId) {
+        LocalDateTime requestTime = LocalDateTime.now();
         CheckSuggestionResponseDto response = suggestionService.checkTodaySuggestionHistory(
-            memberId);
+            memberId, requestTime);
 
         return ResponseDto.success("Check Suggestion Success", response);
     }

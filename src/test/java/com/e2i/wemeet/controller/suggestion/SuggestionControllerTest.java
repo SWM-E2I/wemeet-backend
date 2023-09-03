@@ -90,7 +90,7 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
             )
             .build();
 
-        when(suggestionService.checkTodaySuggestionHistory(anyLong())).thenReturn(response);
+        when(suggestionService.checkTodaySuggestionHistory(anyLong(), any())).thenReturn(response);
 
         ResultActions perform = mockMvc.perform(get("/v1/suggestion/check"));
         perform
@@ -101,7 +101,7 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.isReceivedSuggestion").value(response.isReceivedSuggestion())
             );
 
-        verify(suggestionService).checkTodaySuggestionHistory(anyLong());
+        verify(suggestionService).checkTodaySuggestionHistory(anyLong(), any());
 
         checkTodaySuggestionHistoryRestDocs(perform);
     }
