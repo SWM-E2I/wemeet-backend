@@ -1,10 +1,10 @@
 package com.e2i.wemeet.security.manager;
 
 import com.e2i.wemeet.domain.cost.CostRepository;
-import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.exception.ErrorCode;
+import com.e2i.wemeet.exception.notfound.CostNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
@@ -39,7 +39,8 @@ public class CostAuthorizationManager {
         int memberCredit = getMemberCredit(authentication);
 
         if (requiredCredit == -1) {
-            costRepository.findValueByType(object.type().name());
+            requiredCredit = costRepository.findValueByType(object.type().name())
+                .orElseThrow(CostNotFoundException::new);
         }
         boolean hasCredit = verifyCredit(requiredCredit, memberCredit);
         boolean hasRole = verifyRole(authentication, object.role());
@@ -72,9 +73,8 @@ public class CostAuthorizationManager {
         MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
         Long memberId = principal.getMemberId();
 
-        Member member = memberRepository.findById(memberId)
+        return memberRepository.findCreditByMemberId(memberId)
             .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND_BY_ID));
-        return member.getCredit();
     }
 
     private record AuthorizationDecision(boolean hasCredit, boolean hasRole) {
