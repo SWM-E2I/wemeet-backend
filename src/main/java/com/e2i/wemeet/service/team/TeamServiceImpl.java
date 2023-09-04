@@ -38,6 +38,9 @@ public class TeamServiceImpl implements TeamService {
 
     private final S3Service s3Service;
 
+    private static final String HTTPS_ADDRESS = "https://";
+    private static final String AWS_S3_DOMAIN = ".s3.ap-northeast-2.amazonaws.com/";
+
     @Value("${aws.s3.teamImageBucket}")
     private String teamImageBucket;
 
@@ -125,7 +128,7 @@ public class TeamServiceImpl implements TeamService {
 
             teamImageRepository.save(TeamImage.builder()
                 .team(team)
-                .teamImageUrl(imagePath)
+                .teamImageUrl(HTTPS_ADDRESS + teamImageBucket + AWS_S3_DOMAIN + imagePath)
                 .sequence(sequence + 1)
                 .build());
         }
