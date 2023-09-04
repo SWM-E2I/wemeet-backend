@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 public enum CollegeType {
     ETC(0, "그 외"),
-    SOCIAL(1, "인문사회대"),
-    ENGINEERING(2, "자연공학대"),
-    ARTS(3, "예체능대"),
-    EDUCATION(4, "교육대"),
-    MEDICINE(5, "의약대"),
+    SOCIAL(1, "인문사회"),
+    ENGINEERING(2, "자연공학"),
+    ARTS(3, "예체능"),
+    EDUCATION(4, "교육"),
+    MEDICINE(5, "의약"),
     ;
 
     private final int key;

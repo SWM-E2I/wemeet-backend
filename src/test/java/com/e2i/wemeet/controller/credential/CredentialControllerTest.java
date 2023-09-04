@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.e2i.wemeet.dto.request.credential.MailCredentialCheckRequestDto;
 import com.e2i.wemeet.dto.request.credential.MailCredentialRequestDto;
 import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;

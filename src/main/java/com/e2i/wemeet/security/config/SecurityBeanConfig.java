@@ -1,5 +1,6 @@
 package com.e2i.wemeet.security.config;
 
+import com.e2i.wemeet.domain.cost.CostRepository;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.security.filter.AuthenticationExceptionFilter;
 import com.e2i.wemeet.security.filter.JwtAuthenticationFilter;
@@ -9,7 +10,7 @@ import com.e2i.wemeet.security.filter.SmsLoginProcessingFilter;
 import com.e2i.wemeet.security.handler.CustomAuthenticationSuccessHandler;
 import com.e2i.wemeet.security.handler.DispatcherServletEndPointChecker;
 import com.e2i.wemeet.security.handler.HttpRequestEndPointChecker;
-import com.e2i.wemeet.security.manager.CreditAuthorizationManager;
+import com.e2i.wemeet.security.manager.CostAuthorizationManager;
 import com.e2i.wemeet.security.provider.SmsCredentialAuthenticationProvider;
 import com.e2i.wemeet.security.provider.SmsUserDetailsService;
 import com.e2i.wemeet.security.token.TokenInjector;
@@ -147,8 +148,8 @@ public class SecurityBeanConfig {
 
     // Credit 개수를 확인하는 AuthorizationManager
     @Bean
-    public CreditAuthorizationManager authorizationManager(MemberRepository memberRepository) {
-        return new CreditAuthorizationManager(memberRepository, roleHierarchy());
+    public CostAuthorizationManager authorizationManager(MemberRepository memberRepository, CostRepository costRepository) {
+        return new CostAuthorizationManager(memberRepository, costRepository, roleHierarchy());
     }
 
     // 요청을 처리할 수 있는 핸들러가 있는지 판별하는 컴포넌트

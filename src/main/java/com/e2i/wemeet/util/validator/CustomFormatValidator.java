@@ -25,6 +25,7 @@ public abstract class CustomFormatValidator {
     private static final Pattern EMAIL_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
     private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣\\s]{1,5}$");
     private static final Pattern CODE_PK_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{3}$");
+    private static final Pattern OPEN_CHAT_LINK_PATTERN = Pattern.compile("https://open\\.kakao\\.com/o/[a-zA-Z0-9]{8}");
 
     public static void validatePhoneFormat(final String phone) {
         if (!StringUtils.hasText(phone) || !PHONE_REG.matcher(phone).matches()) {
@@ -60,5 +61,12 @@ public abstract class CustomFormatValidator {
         if (!StringUtils.hasText(groupCodeIdWithCodeId) || !CODE_PK_PATTERN.matcher(groupCodeIdWithCodeId).matches()) {
             throw new InvalidDataFormatException(ErrorCode.INVALID_DATA_FORMAT);
         }
+    }
+
+    public static String validateOpenChatLinkFormat(final String openChatLink) {
+        if (!StringUtils.hasText(openChatLink) || !OPEN_CHAT_LINK_PATTERN.matcher(openChatLink).matches()) {
+            throw new InvalidDataFormatException(ErrorCode.INVALID_CHAT_LINK_FORMAT);
+        }
+        return openChatLink;
     }
 }

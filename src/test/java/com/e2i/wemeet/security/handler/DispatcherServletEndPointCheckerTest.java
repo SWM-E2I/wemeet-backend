@@ -2,7 +2,7 @@ package com.e2i.wemeet.security.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;

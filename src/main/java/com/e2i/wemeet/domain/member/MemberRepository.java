@@ -13,4 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m join fetch m.collegeInfo.collegeCode where m.memberId = :memberId")
     Optional<Member> findByIdFetchCode(@Param("memberId") Long memberId);
+
+    @Query("select m.credit from Member m where m.memberId = :memberId")
+    Optional<Integer> findCreditByMemberId(@Param("memberId") Long memberId);
+
 }

@@ -37,7 +37,14 @@ public enum ErrorCode {
     HTTP_MESSAGE_NOT_READABLE(40028, "http.message.not.readable"),
     TEAM_NOT_EXISTS(40029, "team.not.exists"),
     PROFILE_IMAGE_NOT_EXISTS(40030, "profile.image.not.exists"),
-    SUGGESTION_HISTORY_EXISTS(40031, "suggestion.history.exists"),
+    INVALID_MESSAGE_FORMAT(40031, "invalid.message.format"),
+    CHAT_LINK_NOT_EXIST(40032, "chat.link.not.exist"),
+    EXPIRED(40033, "expired"),
+    EXPIRED_MEETING_REQUEST(40033, "expired.meeting.request"),
+    EXPIRED_MEETING(40033, "expired.meeting"),
+    INVALID_CHAT_LINK_FORMAT(40033, "invalid.chat.link.format"),
+    ACCEPT_STATUS_IS_NOT_PENDING(40034, "accept.status.is.not.pending"),
+    SUGGESTION_HISTORY_EXISTS(40035, "suggestion.history.exists"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),
@@ -46,6 +53,8 @@ public enum ErrorCode {
     CODE_NOT_FOUND(40104, "code.not.found"),
     INVITED_MEMBER_NOT_FOUND(40105, "invited.member.not.found"),
     INVITATION_NOT_FOUND(40106, "invitation.not.found"),
+    TEAM_NOT_FOUND(40107, "team.not.found"),
+    COST_NOT_FOUND(40108, "cost.not.found"),
 
     ACCESS_TOKEN_EXPIRED(40200, "access.token.expired"),
     REFRESH_TOKEN_EXPIRED(40201, "refresh.token.expired"),
@@ -55,6 +64,8 @@ public enum ErrorCode {
     REFRESH_TOKEN_MISMATCH(40205, "refresh.token.mismatch"),
     REFRESH_TOKEN_NOT_FOUND(40206, "refresh.token.not.found"),
     ACCESS_TOKEN_NOT_FOUND(40207, "access.token.not.found"),
+    MEETING_REQUEST_NOT_FOUND(40208, "meeting.request.not.found"),
+    MEETING_NOT_FOUND(40209, "meeting.not.found"),
 
     UNAUTHORIZED(40300, "unauthorized"),
     UNAUTHORIZED_ROLE(40301, "unauthorized.role"),
@@ -79,7 +90,8 @@ public enum ErrorCode {
 
     AWS_S3_OBJECT_UPLOAD_ERROR(50300, "aws.s3.object.upload.error"),
     AWS_S3_OBJECT_DELETE_ERROR(50301, "aws.s3.object.delete.error"),
-    AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error");
+    AWS_S3_FILE_CONVERSION_ERROR(50302, "aws.s3.file.conversion.error"),
+    ;
 
 
     private final int code;

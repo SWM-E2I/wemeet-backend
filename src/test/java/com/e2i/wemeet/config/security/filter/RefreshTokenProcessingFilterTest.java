@@ -13,7 +13,7 @@ import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import jakarta.servlet.http.Cookie;

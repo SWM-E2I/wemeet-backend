@@ -1,13 +1,12 @@
 package com.e2i.wemeet.support.fixture;
 
 import com.e2i.wemeet.domain.meeting.MeetingRequest;
-import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.Team;
-import lombok.Getter;
 
-@Getter
 public enum MeetingRequestFixture {
-    BASIC_REQUEST("재미있게 놀아요!");
+    BASIC_REQUEST("재미있게 놀아요!"),
+    WITH_OUT_MESSAGE(null);
+
 
     private final String message;
 
@@ -24,7 +23,10 @@ public enum MeetingRequestFixture {
         return MeetingRequest.builder()
             .team(team)
             .partnerTeam(partnerTeam)
-            .acceptStatus(AcceptStatus.PENDING)
             .message(this.message);
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

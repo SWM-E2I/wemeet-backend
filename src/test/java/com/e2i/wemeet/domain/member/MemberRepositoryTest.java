@@ -10,7 +10,7 @@ import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
-import com.e2i.wemeet.support.config.AbstractRepositoryUnitTest;
+import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
         Member member = memberRepository.save(entity);
 
         // then
-        assertThat(member.getMemberId()).isGreaterThan(0L);
+        assertThat(member.getMemberId()).isPositive();
     }
 
     @DisplayName("동일한 번호로 가입한 사용자가 있다면, 회원을 저장할 수 없다.")
@@ -116,5 +116,20 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
         // then
         assertThatThrownBy(() -> member.update(updateRequest))
             .isInstanceOf(InvalidDataFormatException.class);
+    }
+
+    @DisplayName("멤버의 크레딧을 조회할 수 있다.")
+    @Test
+    void findCreditByMemberId() {
+        // given
+        final Long memberId = memberRepository.save(KAI.create_credit(ANYANG_CODE, 300)).getMemberId();
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        final Integer credit = memberRepository.findCreditByMemberId(memberId).orElseThrow();
+
+        // then
+        assertThat(credit).isEqualTo(300);
     }
 }
