@@ -23,7 +23,7 @@ public class H2DatabaseRunnerConfig {
         """;
 
     @Bean
-    @Profile("default")
+    @Profile("!(prod | dev)")
     ApplicationRunner applicationRunner(final DataSource dataSource,
         final H2ConsoleProperties h2ConsoleProperties) {
         return args -> {

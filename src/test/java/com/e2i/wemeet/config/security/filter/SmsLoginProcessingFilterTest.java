@@ -15,7 +15,7 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.dto.request.LoginRequestDto;
 import com.e2i.wemeet.dto.request.credential.SmsCredentialRequestDto;
 import com.e2i.wemeet.security.token.JwtEnv;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.util.Collection;

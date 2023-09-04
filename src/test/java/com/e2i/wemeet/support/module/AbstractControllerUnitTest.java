@@ -1,15 +1,19 @@
-package com.e2i.wemeet.support.config;
+package com.e2i.wemeet.support.module;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 import com.e2i.wemeet.controller.TokenController;
+import com.e2i.wemeet.controller.meeting.MeetingController;
 import com.e2i.wemeet.controller.member.MemberController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.service.meeting.MeetingHandleService;
+import com.e2i.wemeet.service.meeting.MeetingListService;
 import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.service.token.TokenService;
+import com.e2i.wemeet.support.config.TestWebBeanConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,7 +37,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @WebMvcTest({
     TokenController.class,
     TeamController.class,
-    MemberController.class
+    MemberController.class,
+    MeetingController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -54,6 +59,12 @@ public abstract class AbstractControllerUnitTest {
 
     @MockBean
     protected TokenService tokenService;
+
+    @MockBean
+    protected MeetingHandleService meetingHandleService;
+
+    @MockBean
+    protected MeetingListService meetingListService;
 
 
     protected MockMvc mockMvc;

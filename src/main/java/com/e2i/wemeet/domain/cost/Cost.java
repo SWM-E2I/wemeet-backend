@@ -1,6 +1,5 @@
-package com.e2i.wemeet.domain.credit;
+package com.e2i.wemeet.domain.cost;
 
-import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Cost extends BaseTimeEntity {
+public class Cost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,16 +21,11 @@ public class Cost extends BaseTimeEntity {
     @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "cost_value")
     private Integer value;
 
-    public Cost(Earn earn, Integer value) {
-        this.type = earn.name();
+    public Cost(String type, Integer value) {
+        this.type = type;
         this.value = value;
-    }
-
-    public Cost(Spent spent) {
-        this.type = spent.name();
-        this.value = spent.getValue();
     }
 }

@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.exception.badrequest.InvalidHttpRequestException;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

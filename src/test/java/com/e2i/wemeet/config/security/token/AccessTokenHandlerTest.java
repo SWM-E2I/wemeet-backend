@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.security.token.Payload;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

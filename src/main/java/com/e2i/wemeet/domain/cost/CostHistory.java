@@ -1,6 +1,6 @@
-package com.e2i.wemeet.domain.credit;
+package com.e2i.wemeet.domain.cost;
 
-import com.e2i.wemeet.domain.base.BaseTimeEntity;
+import com.e2i.wemeet.domain.base.CreateTimeEntity;
 import com.e2i.wemeet.domain.member.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CostHistory extends BaseTimeEntity {
+public class CostHistory extends CreateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +42,18 @@ public class CostHistory extends BaseTimeEntity {
         this.costValue = costValue;
     }
 
-    public CostHistory(Member member, Spent spent) {
+    public CostHistory(Member member, Spent spent, Integer costValue) {
         this.member = member;
         this.costType = Spent.getTypeName();
         this.detail = spent.name();
-        this.costValue = spent.getValue();
+        this.costValue = costValue;
+    }
+
+    public CostHistory(Member member, Payment payment, Integer costValue) {
+        this.member = member;
+        this.costType = Payment.getTypeName();
+        this.detail = payment.name();
+        this.costValue = costValue;
     }
 
     public boolean isSpent() {
@@ -55,5 +62,9 @@ public class CostHistory extends BaseTimeEntity {
 
     public boolean isEarn() {
         return Earn.getTypeName().equals(this.costType);
+    }
+
+    public boolean isPayment() {
+        return Payment.getTypeName().equals(this.costType);
     }
 }

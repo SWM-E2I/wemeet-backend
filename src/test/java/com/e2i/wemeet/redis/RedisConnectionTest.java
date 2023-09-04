@@ -1,6 +1,6 @@
 package com.e2i.wemeet.redis;
 
-import com.e2i.wemeet.support.config.AbstractIntegrationTest;
+import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
