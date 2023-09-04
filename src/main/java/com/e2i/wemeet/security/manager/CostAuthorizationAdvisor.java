@@ -14,17 +14,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @Aspect
-public class CreditAuthorizationAdvisor {
+public class CostAuthorizationAdvisor {
 
-    private final CreditAuthorizationManager creditAuthorizationManager;
+    private final CostAuthorizationManager costAuthorizationManager;
 
-    @Before("@annotation(com.e2i.wemeet.security.manager.CreditAuthorize)")
+    @Before("@annotation(com.e2i.wemeet.security.manager.CostAuthorize)")
     public void verify(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        CreditAuthorize creditAuthorize = signature.getMethod().getAnnotation(CreditAuthorize.class);
+        CostAuthorize costAuthorize = signature.getMethod().getAnnotation(CostAuthorize.class);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        creditAuthorizationManager.verify(authentication, creditAuthorize);
+        costAuthorizationManager.verify(authentication, costAuthorize);
     }
 
 }
