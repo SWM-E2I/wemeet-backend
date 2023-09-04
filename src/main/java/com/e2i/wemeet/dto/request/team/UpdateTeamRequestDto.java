@@ -3,6 +3,7 @@ package com.e2i.wemeet.dto.request.team;
 import com.e2i.wemeet.util.validator.bean.AdditionalActivityValid;
 import com.e2i.wemeet.util.validator.bean.DrinkRateValid;
 import com.e2i.wemeet.util.validator.bean.DrinkWithGameValid;
+import com.e2i.wemeet.util.validator.bean.KakaoOpenChatLinkValid;
 import com.e2i.wemeet.util.validator.bean.RegionValid;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public record UpdateTeamRequestDto(
     String introduction,
 
     @NotNull
-    @Length(max = 50)
+    @KakaoOpenChatLinkValid
     String chatLink,
 
     @NotNull
