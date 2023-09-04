@@ -20,11 +20,12 @@ import lombok.Getter;
 public enum TeamFixture {
 
     HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
-        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!"),
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!", "https://open.kakao.com/0/1234"),
     WOMAN_TEAM(2, Region.SINCHON, DrinkRate.LOW, DrinkWithGame.ANY,
-        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!"),
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!", "https://open.kakao.com/0/5678"),
     WOMAN_TEAM_2(2, Region.HONGDAE, DrinkRate.MIDDLE, DrinkWithGame.BEGINNER,
-        AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!");
+        AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!",
+        "https://open.kakao.com/0/4738");
 
     private final Integer memberNum;
     private final Region region;
@@ -32,16 +33,18 @@ public enum TeamFixture {
     private final DrinkWithGame drinkWithGame;
     private final AdditionalActivity additionalActivity;
     private final String introduction;
+    private final String chatLink;
 
     TeamFixture(Integer memberNum, Region region, DrinkRate drinkRate, DrinkWithGame drinkWithGame,
         AdditionalActivity additionalActivity,
-        String introduction) {
+        String introduction, String chatLink) {
         this.memberNum = memberNum;
         this.region = region;
         this.drinkRate = drinkRate;
         this.drinkWithGame = drinkWithGame;
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
+        this.chatLink = chatLink;
     }
 
     public Team create(Member teamLeader, List<TeamMember> teamMembers) {
@@ -80,6 +83,7 @@ public enum TeamFixture {
             .drinkWithGame(this.drinkWithGame.name())
             .additionalActivity(this.additionalActivity.name())
             .introduction(this.introduction)
+            .chatLink(this.chatLink)
             .members(members)
             .build();
     }
@@ -104,6 +108,7 @@ public enum TeamFixture {
             .drinkWithGame(this.drinkWithGame.name())
             .additionalActivity(this.additionalActivity.name())
             .introduction(this.introduction)
+            .chatLink(this.chatLink)
             .members(members)
             .build();
     }
@@ -125,7 +130,8 @@ public enum TeamFixture {
             .drinkRate(this.drinkRate)
             .drinkWithGame(this.drinkWithGame)
             .additionalActivity(this.additionalActivity)
-            .introduction(this.introduction);
+            .introduction(this.introduction)
+            .chatLink(this.chatLink);
     }
 
     private void setTeamId(Team team, Long teamId) {

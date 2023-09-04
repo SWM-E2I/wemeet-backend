@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `team`
     `drink_with_game`     tinyint      NOT NULL,
     `additional_activity` tinyint,
     `introduction`        varchar(150) NOT NULL,
+    `chat_link`        varchar(50) NOT NULL,
     `created_at`          datetime(6),
     `modified_at`         datetime(6),
     `deleted_at`          datetime(6),

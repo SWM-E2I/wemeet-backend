@@ -42,6 +42,10 @@ public record CreateTeamRequestDto(
     String introduction,
 
     @NotNull
+    @Length(max = 50)
+    String chatLink,
+
+    @NotNull
     @Size(min = 1, max = 3)
     @Valid
     List<TeamMemberRequestDto> members
@@ -55,6 +59,7 @@ public record CreateTeamRequestDto(
             .drinkWithGame(DrinkWithGame.valueOf(drinkWithGame))
             .additionalActivity(AdditionalActivity.findBy(additionalActivity))
             .introduction(introduction)
+            .chatLink(chatLink)
             .teamLeader(teamLeader)
             .build();
     }
