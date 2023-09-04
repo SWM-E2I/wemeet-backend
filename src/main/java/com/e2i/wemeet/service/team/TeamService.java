@@ -2,7 +2,7 @@ package com.e2i.wemeet.service.team;
 
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
-import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +23,7 @@ public interface TeamService {
     /*
      * 마이 팀 정보 조회
      */
-    MyTeamDetailResponseDto readTeam(Long memberId);
+    MyTeamResponseDto readTeam(Long memberId);
 
 
     /*

@@ -5,7 +5,7 @@ import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
-import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.validation.Valid;
@@ -46,10 +46,10 @@ public class TeamController {
         return ResponseDto.success("Update Team Success");
     }
 
-    @IsManager
+
     @GetMapping
-    public ResponseDto<MyTeamDetailResponseDto> readTeam(@MemberId Long memberId) {
-        MyTeamDetailResponseDto result = teamService.readTeam(memberId);
+    public ResponseDto<MyTeamResponseDto> readTeam(@MemberId Long memberId) {
+        MyTeamResponseDto result = teamService.readTeam(memberId);
 
         return ResponseDto.success("Get My Team Detail Success", result);
     }

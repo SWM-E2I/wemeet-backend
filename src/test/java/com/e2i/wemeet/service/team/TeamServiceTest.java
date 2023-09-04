@@ -26,7 +26,7 @@ import com.e2i.wemeet.domain.team_image.TeamImage;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
-import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.exception.badrequest.ProfileImageNotExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
@@ -181,7 +181,7 @@ class TeamServiceTest {
             // when
             when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
 
-            MyTeamDetailResponseDto response = teamService.readTeam(1L);
+            MyTeamResponseDto response = teamService.readTeam(1L);
 
             // then
             verify(memberRepository).findById(1L);
