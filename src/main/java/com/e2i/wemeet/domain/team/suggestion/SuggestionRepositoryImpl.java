@@ -11,7 +11,7 @@ import com.e2i.wemeet.domain.team.data.suggestion.SuggestionHistoryData;
 import com.e2i.wemeet.domain.team.data.suggestion.SuggestionTeamData;
 import com.e2i.wemeet.domain.team.data.suggestion.TeamLeaderData;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,7 +52,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
             .where(team.teamId.notIn(suggestionHistory))
             .where(team.memberNum.eq(memberNum))
             .where(teamImage.sequence.eq(1))
-            .orderBy(NumberExpression.random().asc())
+            .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(SUGGESTION_TEAM_LIMIT)
             .fetch();
     }
@@ -80,7 +80,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
             .where(team.gender.ne(gender))
             .where(team.teamId.notIn(suggestionHistory))
             .where(teamImage.sequence.eq(1))
-            .orderBy(NumberExpression.random().asc())
+            .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(SUGGESTION_TEAM_LIMIT)
             .fetch();
     }
