@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record MyTeamResponseDto(
     boolean hasTeam,
-    MyTeamDetailResponseDto data
+    MyTeamDetailResponseDto team
 ) {
 
     public static MyTeamResponseDto of(boolean hasTeam) {
@@ -14,10 +14,10 @@ public record MyTeamResponseDto(
             .build();
     }
 
-    public static MyTeamResponseDto of(boolean hasTeam, MyTeamDetailResponseDto data) {
+    public static MyTeamResponseDto of(boolean hasTeam, MyTeamDetailResponseDto team) {
         return MyTeamResponseDto.builder()
             .hasTeam(hasTeam)
-            .data(data)
+            .team(team)
             .build();
     }
 }
