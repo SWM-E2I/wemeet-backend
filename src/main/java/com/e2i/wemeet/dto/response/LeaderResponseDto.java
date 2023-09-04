@@ -1,4 +1,4 @@
-package com.e2i.wemeet.dto.response.meeting;
+package com.e2i.wemeet.dto.response;
 
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.CollegeType;
