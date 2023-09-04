@@ -1,6 +1,7 @@
 package com.e2i.wemeet.dto.response.meeting;
 
 import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.member.data.CollegeType;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.dto.dsl.MeetingInformationDto;
 import com.e2i.wemeet.dto.dsl.MeetingRequestInformationDto;
@@ -10,7 +11,10 @@ public record LeaderResponseDto(
     String nickname,
     Mbti mbti,
     String collegeName,
-    String leaderLowProfileImageUrl
+    CollegeType collegeType,
+    String admissionYear,
+    String leaderLowProfileImageUrl,
+    Boolean imageAuth
 
 ) {
 
@@ -20,7 +24,10 @@ public record LeaderResponseDto(
             leader.getNickname(),
             leader.getMbti(),
             collegeName,
-            leader.getProfileImage().getLowUrl()
+            leader.getCollegeInfo().getCollegeType(),
+            leader.getCollegeInfo().getAdmissionYear(),
+            leader.getProfileImage().getLowUrl(),
+            leader.getProfileImage().getImageAuth()
         );
     }
 
@@ -30,7 +37,10 @@ public record LeaderResponseDto(
             meetingInformationDto.getPartnerLeaderNickname(),
             meetingInformationDto.getPartnerLeaderMbti(),
             meetingInformationDto.getPartnerLeaderCollegeName(),
-            meetingInformationDto.getPartnerLeaderLowProfileUrl()
+            meetingInformationDto.getPartnerLeaderCollegeType(),
+            meetingInformationDto.getPartnerLeaderAdmissionYear(),
+            meetingInformationDto.getPartnerLeaderLowProfileUrl(),
+            meetingInformationDto.getPartnerLeaderImageAuth()
         );
     }
 
@@ -40,7 +50,10 @@ public record LeaderResponseDto(
             meetingRequestInformationDto.getPartnerLeaderNickname(),
             meetingRequestInformationDto.getPartnerLeaderMbti(),
             meetingRequestInformationDto.getPartnerLeaderCollegeName(),
-            meetingRequestInformationDto.getPartnerLeaderLowProfileUrl()
+            meetingRequestInformationDto.getPartnerLeaderCollegeType(),
+            meetingRequestInformationDto.getPartnerLeaderAdmissionYear(),
+            meetingRequestInformationDto.getPartnerLeaderLowProfileUrl(),
+            meetingRequestInformationDto.getPartnerLeaderImageAuth()
         );
     }
 
