@@ -22,21 +22,21 @@ class CodeRepositoryTest {
     @Test
     void findByCodeValue_CollegeCode() {
         // given
-        String collegeName = "서울대학교";
+        String collegeName = "서울대";
 
         // when
         Optional<Code> collegeCode = codeRepository.findByCodeValue(collegeName);
 
         // then
         assertThat(collegeCode).isNotEmpty();
-        assertThat(collegeCode.get().getCodePk().getCodeId()).isEqualTo("001");
+        assertThat(collegeCode.get().getCodePk().getCodeId()).isEqualTo("051");
     }
 
     @DisplayName("대학교명이 존재하지 않으면 대학교 코드를 조회할 수 없다.")
     @Test
     void findByCodeValue_invalidCollegeCode() {
         // given
-        String collegeName = "서운대학교";
+        String collegeName = "서운대";
 
         // when
         Optional<Code> collegeCode = codeRepository.findByCodeValue(collegeName);
@@ -49,7 +49,7 @@ class CodeRepositoryTest {
     @Test
     void findByCodePk() {
         // given
-        final String groupCodeIdWithCodeId = "CE-001";
+        final String groupCodeIdWithCodeId = "CE-051";
         CodePk codePk = CodePk.of(groupCodeIdWithCodeId);
 
         // when
@@ -57,11 +57,11 @@ class CodeRepositoryTest {
 
         // then
         assertThat(code).isNotEmpty();
-        assertThat(code.get().getCodeValue()).isEqualTo("서울대학교");
+        assertThat(code.get().getCodeValue()).isEqualTo("서울대");
     }
 
     @DisplayName("올바른 형식의 코드 PK가 DB에 저장된 데이터가 아니라면 대학 코드를 조회할 수 없다.")
-    @ValueSource(strings = {"CE-999", "CE-000", "XX-001"})
+    @ValueSource(strings = {"CE-999", "XX-001"})
     @ParameterizedTest
     void findByCodePkInvalidPk(String invalidGroupCodeIdWithCodeId) {
         // given

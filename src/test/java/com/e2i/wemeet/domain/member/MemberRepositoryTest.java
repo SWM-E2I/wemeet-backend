@@ -97,7 +97,7 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
 
         // then
         assertThat(member.getCollegeInfo().getCollegeCode().getCodeValue())
-            .isEqualTo("안양대학교");
+            .isEqualTo("안양대");
     }
 
     @DisplayName("닉네임 길이가 10자를 초과하면, 회원 정보를 수정할 수 없다.")
@@ -122,7 +122,8 @@ class MemberRepositoryTest extends AbstractRepositoryUnitTest {
     @Test
     void findCreditByMemberId() {
         // given
-        final Long memberId = memberRepository.save(KAI.create_credit(ANYANG_CODE, 300)).getMemberId();
+        final Long memberId = memberRepository.save(KAI.create_credit(ANYANG_CODE, 300))
+            .getMemberId();
         entityManager.flush();
         entityManager.clear();
 

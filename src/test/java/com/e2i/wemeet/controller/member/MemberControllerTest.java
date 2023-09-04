@@ -24,8 +24,8 @@ import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.dto.response.member.MemberDetailResponseDto;
 import com.e2i.wemeet.dto.response.member.MemberRoleResponseDto;
 import com.e2i.wemeet.security.model.MemberPrincipal;
+import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
-import com.e2i.wemeet.support.module.AbstractControllerUnitTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.time.LocalDateTime;
@@ -88,8 +88,10 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.nickname").value(KAI.getNickname()),
                 jsonPath("$.data.gender").value(KAI.getGender().name()),
                 jsonPath("$.data.mbti").value(KAI.getMbti().name()),
-                jsonPath("$.data.college").value(KAI.getCollegeInfo().getCollegeCode().getCodeValue()),
-                jsonPath("$.data.collegeType").value(KAI.getCollegeInfo().getCollegeType().getDescription()),
+                jsonPath("$.data.college").value(
+                    KAI.getCollegeInfo().getCollegeCode().getCodeValue()),
+                jsonPath("$.data.collegeType").value(
+                    KAI.getCollegeInfo().getCollegeType().getDescription()),
                 jsonPath("$.data.admissionYear").value(KAI.getCollegeInfo().getAdmissionYear()),
                 jsonPath("$.data.profileImage.basicUrl").value(KAI.getBasicUrl()),
                 jsonPath("$.data.profileImage.lowUrl").value(KAI.getLowUrl())
@@ -105,7 +107,8 @@ class MemberControllerTest extends AbstractControllerUnitTest {
     void modifyMember_Success() throws Exception {
         // given
         UpdateMemberRequestDto request = KAI.createUpdateMemberRequestDto("기우미우", "ESTJ");
-        doNothing().when(memberService).updateMember(any(Long.class), any(UpdateMemberRequestDto.class));
+        doNothing().when(memberService)
+            .updateMember(any(Long.class), any(UpdateMemberRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(patch("/v1/member")
@@ -162,7 +165,8 @@ class MemberControllerTest extends AbstractControllerUnitTest {
         doNothing().when(memberService).deleteMember(any(Long.class), any(LocalDateTime.class));
 
         // when
-        ResultActions perform = mockMvc.perform(RestDocumentationRequestBuilders.delete("/v1/member"));
+        ResultActions perform = mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/v1/member"));
 
         // then
         perform

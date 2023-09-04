@@ -9,17 +9,17 @@ import com.e2i.wemeet.support.config.ReflectionUtils;
 
 public enum CodeFixture {
     // COLLEGE CODE
-    SEOUL_UNIVERSITY(COLLEGE_CODE.create(), "001", "서울대학교"),
-    KOREA_UNIVERSITY(COLLEGE_CODE.create(), "002", "고려대학교"),
-    YONSEI_UNIVERSITY(COLLEGE_CODE.create(), "003", "연세대학교"),
-    HANYANG_UNIVERSITY(COLLEGE_CODE.create(), "004", "한양대학교"),
-    SOGANG_UNIVERSITY(COLLEGE_CODE.create(), "005", "서강대학교"),
-    SANGMYUNG_UNIVERSITY(COLLEGE_CODE.create(), "006", "상명대학교"),
-    WOMANS_UNIVERSITY(COLLEGE_CODE.create(), "007", "여자대학교"),
-    KYUNGHEE_UNIVERSITY(COLLEGE_CODE.create(), "008", "경희대학교"),
-    ANYANG_UNIVERSITY(COLLEGE_CODE.create(), "009", "안양대학교"),
-    INCHEON_UNIVERSITY(COLLEGE_CODE.create(), "010", "인천대학교"),
-    INHA_UNIVERSITY(COLLEGE_CODE.create(), "011", "인하대학교"),
+    SEOUL_UNIVERSITY(COLLEGE_CODE.create(), "051", "서울대"),
+    KOREA_UNIVERSITY(COLLEGE_CODE.create(), "018", "고려대"),
+    YONSEI_UNIVERSITY(COLLEGE_CODE.create(), "085", "연세대"),
+    HANYANG_UNIVERSITY(COLLEGE_CODE.create(), "131", "한양대"),
+    SOGANG_UNIVERSITY(COLLEGE_CODE.create(), "046", "서강대"),
+    SANGMYUNG_UNIVERSITY(COLLEGE_CODE.create(), "045", "상명대"),
+    WOMANS_UNIVERSITY(COLLEGE_CODE.create(), "055", "서울여대"),
+    KYUNGHEE_UNIVERSITY(COLLEGE_CODE.create(), "016", "경희대"),
+    ANYANG_UNIVERSITY(COLLEGE_CODE.create(), "081", "안양대"),
+    INCHEON_UNIVERSITY(COLLEGE_CODE.create(), "098", "인천대"),
+    INHA_UNIVERSITY(COLLEGE_CODE.create(), "101", "인하대"),
 
     // OTHER CODE
     ;
