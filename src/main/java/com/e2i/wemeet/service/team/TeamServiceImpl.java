@@ -14,6 +14,7 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.service.aws.s3.S3Service;
@@ -82,15 +83,20 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional(readOnly = true)
     @Override
-    public MyTeamDetailResponseDto readTeam(Long memberId) {
+    public MyTeamResponseDto readTeam(Long memberId) {
         Member teamLeader = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
+        if (!teamLeader.hasTeam()) {
+            return MyTeamResponseDto.of(teamLeader.hasTeam());
+        }
+
         List<TeamImageData> teamImages = teamRepository.findTeamWithTeamImages(
             teamLeader.getCurrentTeam().getTeamId());
 
-        return MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages);
+        return MyTeamResponseDto.of(teamLeader.hasTeam(),
+            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages));
     }
 
     @Transactional
