@@ -44,6 +44,7 @@ public enum ErrorCode {
     EXPIRED_MEETING(40033, "expired.meeting"),
     INVALID_CHAT_LINK_FORMAT(40033, "invalid.chat.link.format"),
     ACCEPT_STATUS_IS_NOT_PENDING(40034, "accept.status.is.not.pending"),
+    SUGGESTION_HISTORY_EXISTS(40035, "suggestion.history.exists"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),

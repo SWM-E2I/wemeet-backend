@@ -9,8 +9,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
+@Repository
 public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -25,4 +25,3 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             .fetch();
     }
 }
-

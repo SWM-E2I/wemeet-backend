@@ -184,6 +184,11 @@ public class Member extends BaseTimeEntity {
             .orElseThrow(TeamNotExistsException::new);
     }
 
+    public boolean hasTeam() {
+        return this.team.stream()
+            .anyMatch(t -> t.getDeletedAt() == null);
+    }
+
     public void validateTeamCreation() {
         if (this.team.stream().anyMatch(t -> t.getDeletedAt() == null)) {
             throw new TeamExistsException();
@@ -199,7 +204,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public boolean isProfileImageExists() {
-        return this.profileImage.getBasicUrl() != null;
+        return this.profileImage != null;
     }
 }
 
