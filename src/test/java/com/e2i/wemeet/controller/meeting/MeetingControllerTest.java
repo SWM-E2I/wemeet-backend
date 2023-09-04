@@ -3,7 +3,6 @@ package com.e2i.wemeet.controller.meeting;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -40,7 +39,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -216,8 +214,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
             final Long meetingRequestId = 1L;
             final MeetingRequestAcceptDto request = new MeetingRequestAcceptDto(
                 "https://open.kakao.com/o/S13kdfs1");
-            given(meetingHandleService.acceptRequest(anyString(), anyLong(), anyLong(),
-                any(LocalDateTime.class)))
+            given(meetingHandleService.acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class)))
                 .willReturn(1L);
 
             // when
@@ -234,42 +231,9 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.message").value("Meeting was successfully matched"),
                     jsonPath("$.data").value(1L)
                 );
-            verify(meetingHandleService).acceptRequest(anyString(), anyLong(), anyLong(),
-                any(LocalDateTime.class));
+            verify(meetingHandleService).acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class));
 
             acceptMeetingRequestWriteRestDocs(perform);
-        }
-
-        @DisplayName("형식에 어긋난 카카오톡 오픈채팅방 링크를 전달하면 미팅 신청을 수락할 수 없다.")
-        @WithCustomMockUser
-        @ValueSource(strings = {"https://open.kakao.com/o/1111eeee3",
-            "https://open.kakao.com/o/123as", "https://open.kakao.com/S13kdfs1"})
-        @ParameterizedTest
-        void acceptMeetingRequestWithInvalidChatLink(String chatLink) throws Exception {
-            // given
-            final Long memberId = 1L;
-            final Long meetingRequestId = 1L;
-            final MeetingRequestAcceptDto request = new MeetingRequestAcceptDto(chatLink);
-            given(meetingHandleService.acceptRequest(anyString(), anyLong(), anyLong(),
-                any(LocalDateTime.class)))
-                .willReturn(1L);
-
-            // when
-            ResultActions perform = mockMvc.perform(post("/v1/meeting/accept/" + meetingRequestId)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(request)));
-
-            // then
-            perform
-                .andExpectAll(
-                    status().isOk(),
-                    jsonPath("$.status").value("FAIL"),
-                    jsonPath("$.message").value("카카오 오픈 채팅방 링크 형식에 맞지 않습니다."),
-                    jsonPath("$.data").doesNotExist()
-                );
-            verify(meetingHandleService, times(0)).acceptRequest(anyString(), anyLong(), anyLong(),
-                any(LocalDateTime.class));
         }
 
         @DisplayName("미팅 신청을 거절할 수 있다.")
