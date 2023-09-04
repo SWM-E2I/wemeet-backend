@@ -36,6 +36,10 @@ public record UpdateTeamRequestDto(
     String introduction,
 
     @NotNull
+    @Length(max = 50)
+    String chatLink,
+
+    @NotNull
     @Size(min = 1, max = 3)
     @Valid
     List<TeamMemberRequestDto> members

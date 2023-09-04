@@ -15,7 +15,6 @@ import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.code.CodeRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
-import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
@@ -155,7 +154,7 @@ class TeamServiceTest {
             List<MultipartFile> teamImages = List.of(
                 new MockMultipartFile("test", "test".getBytes()));
 
-            teamLeader.saveProfileImage(new ProfileImage(null, null, null));
+            teamLeader.saveProfileImage(null);
 
             // when
             when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));

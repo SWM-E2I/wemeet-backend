@@ -197,6 +197,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
+                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
                         fieldWithPath("members").type(JsonFieldType.ARRAY)
                             .description("팀원 정보"),
                         fieldWithPath("members[].collegeInfo.collegeCode").type(
@@ -245,6 +247,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
+                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
                         fieldWithPath("members").type(JsonFieldType.ARRAY)
                             .description("팀원 정보"),
                         fieldWithPath("members[].collegeInfo.collegeCode").type(
