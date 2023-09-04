@@ -185,13 +185,15 @@ class TeamServiceTest {
 
             // then
             verify(memberRepository).findById(1L);
-            assertThat(response).isNotNull()
+            assertThat(response.hasTeam()).isTrue();
+            assertThat(response.team()).isNotNull()
                 .extracting("memberNum", "region", "drinkRate", "drinkWithGame",
-                    "additionalActivity", "introduction", "members")
+                    "additionalActivity", "introduction", "members", "chatLink")
                 .contains(team.getMemberNum(), team.getRegion().getName(),
                     team.getDrinkRate().getName(), team.getDrinkWithGame().getName(),
                     team.getAdditionalActivity().getName(), team.getIntroduction(),
-                    List.of(TeamMemberResponseDto.of(TeamMemberFixture.OLIVIA.create())));
+                    List.of(TeamMemberResponseDto.of(TeamMemberFixture.OLIVIA.create())),
+                    team.getChatLink());
         }
 
         @DisplayName("팀이 없는 경우 나의 팀 정보를 조회할 수 없다.")
@@ -203,10 +205,12 @@ class TeamServiceTest {
             // when
             when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
 
+            MyTeamResponseDto response = teamService.readTeam(1L);
+
             // then
-            assertThatThrownBy(() -> teamService.readTeam(1L))
-                .isExactlyInstanceOf(TeamNotExistsException.class);
             verify(memberRepository).findById(1L);
+            assertThat(response.hasTeam()).isFalse();
+            assertThat(response.team()).isNull();
         }
     }
 
