@@ -9,6 +9,7 @@ import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.util.validator.bean.AdditionalActivityValid;
 import com.e2i.wemeet.util.validator.bean.DrinkRateValid;
 import com.e2i.wemeet.util.validator.bean.DrinkWithGameValid;
+import com.e2i.wemeet.util.validator.bean.KakaoOpenChatLinkValid;
 import com.e2i.wemeet.util.validator.bean.RegionValid;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -42,6 +43,10 @@ public record CreateTeamRequestDto(
     String introduction,
 
     @NotNull
+    @KakaoOpenChatLinkValid
+    String chatLink,
+
+    @NotNull
     @Size(min = 1, max = 3)
     @Valid
     List<TeamMemberRequestDto> members
@@ -55,6 +60,7 @@ public record CreateTeamRequestDto(
             .drinkWithGame(DrinkWithGame.valueOf(drinkWithGame))
             .additionalActivity(AdditionalActivity.findBy(additionalActivity))
             .introduction(introduction)
+            .chatLink(chatLink)
             .teamLeader(teamLeader)
             .build();
     }

@@ -70,6 +70,9 @@ public class Team extends BaseTimeEntity {
     @Column(length = 150, nullable = false)
     private String introduction;
 
+    @Column(length = 50, nullable = false)
+    private String chatLink;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_leader_id", updatable = false, nullable = false)
     private Member teamLeader;
@@ -82,7 +85,7 @@ public class Team extends BaseTimeEntity {
     @Builder
     public Team(Integer memberNum, Region region, DrinkRate drinkRate,
         DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity,
-        String introduction, Member teamLeader) {
+        String introduction, String chatLink, Member teamLeader) {
         setTeamLeader(teamLeader);
         this.memberNum = memberNum;
         this.region = region;
@@ -90,6 +93,7 @@ public class Team extends BaseTimeEntity {
         this.drinkWithGame = drinkWithGame;
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
+        this.chatLink = chatLink;
     }
 
     /*
@@ -127,6 +131,7 @@ public class Team extends BaseTimeEntity {
         this.additionalActivity = AdditionalActivity.valueOf(
             updateTeamRequestDto.additionalActivity());
         this.introduction = updateTeamRequestDto.introduction();
+        this.chatLink = updateTeamRequestDto.chatLink();
         this.teamMembers.clear();
     }
 

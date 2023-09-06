@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
-import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.TeamFixture;
@@ -146,7 +146,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     @Test
     void readTeam_Success() throws Exception {
         // given
-        MyTeamDetailResponseDto response = TeamFixture.WOMAN_TEAM.createMyTeamDetailResponseDto();
+        MyTeamResponseDto response = MyTeamResponseDto.of(true,
+            TeamFixture.WOMAN_TEAM.createMyTeamDetailResponseDto());
         when(teamService.readTeam(anyLong())).thenReturn(response);
 
         // when
@@ -158,13 +159,15 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 status().isOk(),
                 jsonPath("$.status").value("SUCCESS"),
                 jsonPath("$.message").value("Get My Team Detail Success"),
-                jsonPath("$.data.memberNum").value(response.memberNum()),
-                jsonPath("$.data.region").value(response.region()),
-                jsonPath("$.data.drinkRate").value(response.drinkRate()),
-                jsonPath("$.data.drinkWithGame").value(
-                    response.drinkWithGame()),
-                jsonPath("$.data.introduction").value(
-                    response.introduction())
+                jsonPath("$.data.team.memberNum").value(response.team().memberNum()),
+                jsonPath("$.data.team.region").value(response.team().region()),
+                jsonPath("$.data.team.drinkRate").value(response.team().drinkRate()),
+                jsonPath("$.data.team.drinkWithGame").value(
+                    response.team().drinkWithGame()),
+                jsonPath("$.data.team.introduction").value(
+                    response.team().introduction()),
+                jsonPath("$.data.team.chatLink").value(
+                    response.team().chatLink())
             );
         verify(teamService).readTeam(anyLong());
 
@@ -197,6 +200,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
+                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
                         fieldWithPath("members").type(JsonFieldType.ARRAY)
                             .description("팀원 정보"),
                         fieldWithPath("members[].collegeInfo.collegeCode").type(
@@ -245,6 +250,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("추가 활동"),
                         fieldWithPath("introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
+                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
                         fieldWithPath("members").type(JsonFieldType.ARRAY)
                             .description("팀원 정보"),
                         fieldWithPath("members[].collegeInfo.collegeCode").type(
@@ -282,35 +289,39 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.memberNum").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.hasTeam").type(JsonFieldType.BOOLEAN)
+                            .description("팀 소속 여부"),
+                        fieldWithPath("data.team.memberNum").type(JsonFieldType.NUMBER)
                             .description("팀 인원수"),
-                        fieldWithPath("data.region").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.region").type(JsonFieldType.STRING)
                             .description("선호 지역"),
-                        fieldWithPath("data.drinkRate").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.drinkRate").type(JsonFieldType.STRING)
                             .description("음주 수치"),
-                        fieldWithPath("data.drinkWithGame").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.drinkWithGame").type(JsonFieldType.STRING)
                             .description("술게임 여부"),
-                        fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.additionalActivity").type(JsonFieldType.STRING)
                             .optional()
                             .description("추가 활동"),
-                        fieldWithPath("data.introduction").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
-                        fieldWithPath("data.members").type(JsonFieldType.ARRAY)
+                        fieldWithPath("data.team.chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
+                        fieldWithPath("data.team.members").type(JsonFieldType.ARRAY)
                             .description("팀원 정보"),
-                        fieldWithPath("data.members[].college").type(
+                        fieldWithPath("data.team.members[].college").type(
                                 JsonFieldType.STRING)
                             .description("팀원 대학교"),
-                        fieldWithPath("data.members[]..collegeType").type(
+                        fieldWithPath("data.team.members[]..collegeType").type(
                                 JsonFieldType.STRING)
                             .description("팀원 학과 타입"),
-                        fieldWithPath("data.members[].admissionYear").type(
+                        fieldWithPath("data.team.members[].admissionYear").type(
                                 JsonFieldType.STRING)
                             .description("팀원 학번"),
-                        fieldWithPath("data.members[].mbti").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.members[].mbti").type(JsonFieldType.STRING)
                             .description("팀원 MBTI"),
-                        fieldWithPath("data.images").type(JsonFieldType.ARRAY)
+                        fieldWithPath("data.team.images").type(JsonFieldType.ARRAY)
                             .description("팀 사진 정보"),
-                        fieldWithPath("data.images[].url").type(JsonFieldType.STRING)
+                        fieldWithPath("data.team.images[].url").type(JsonFieldType.STRING)
                             .description("팀 사진 URL")
                     )
                 ));

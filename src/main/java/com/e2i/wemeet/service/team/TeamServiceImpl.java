@@ -16,6 +16,7 @@ import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
@@ -40,6 +41,9 @@ public class TeamServiceImpl implements TeamService {
     private final CodeRepository codeRepository;
 
     private final S3Service s3Service;
+
+    private static final String HTTPS_ADDRESS = "https://";
+    private static final String AWS_S3_DOMAIN = ".s3.ap-northeast-2.amazonaws.com/";
 
     @Value("${aws.s3.teamImageBucket}")
     private String teamImageBucket;
@@ -86,15 +90,20 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional(readOnly = true)
     @Override
-    public MyTeamDetailResponseDto readTeam(Long memberId) {
+    public MyTeamResponseDto readTeam(Long memberId) {
         Member teamLeader = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
+        if (!teamLeader.hasTeam()) {
+            return MyTeamResponseDto.of(teamLeader.hasTeam());
+        }
+
         List<TeamImageData> teamImages = teamRepository.findTeamImagesByTeamId(
             teamLeader.getCurrentTeam().getTeamId());
 
-        return MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages);
+        return MyTeamResponseDto.of(teamLeader.hasTeam(),
+            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages));
     }
 
     @Transactional

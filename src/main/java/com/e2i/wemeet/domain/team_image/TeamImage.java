@@ -25,7 +25,7 @@ public class TeamImage extends CreateTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamImageId;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 150, nullable = false)
     private String teamImageUrl;
 
     @Column(nullable = false)
