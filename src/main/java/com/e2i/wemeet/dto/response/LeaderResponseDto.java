@@ -18,12 +18,12 @@ public record LeaderResponseDto(
 
 ) {
 
-    public static LeaderResponseDto of(final Member leader, final String collegeName) {
+    public static LeaderResponseDto of(final Member leader) {
         return new LeaderResponseDto(
             leader.getMemberId(),
             leader.getNickname(),
             leader.getMbti(),
-            collegeName,
+            leader.getCollegeInfo().getCollegeCode().getCodeValue(),
             leader.getCollegeInfo().getCollegeType(),
             leader.getCollegeInfo().getAdmissionYear(),
             leader.getProfileImage().getLowUrl(),
@@ -57,4 +57,17 @@ public record LeaderResponseDto(
         );
     }
 
+    @Override
+    public String toString() {
+        return "LeaderResponseDto{" +
+            "leaderId=" + leaderId +
+            ", nickname='" + nickname + '\'' +
+            ", mbti=" + mbti +
+            ", collegeName='" + collegeName + '\'' +
+            ", collegeType=" + collegeType +
+            ", admissionYear='" + admissionYear + '\'' +
+            ", leaderLowProfileImageUrl='" + leaderLowProfileImageUrl + '\'' +
+            ", imageAuth=" + imageAuth +
+            '}';
+    }
 }
