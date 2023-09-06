@@ -10,12 +10,16 @@ import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.domain.team_image.TeamImage;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
+import com.e2i.wemeet.dto.dsl.TeamInformationDto;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
+import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.service.aws.s3.S3Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -87,10 +91,25 @@ public class TeamServiceImpl implements TeamService {
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
-        List<TeamImageData> teamImages = teamRepository.findTeamWithTeamImages(
+        List<TeamImageData> teamImages = teamRepository.findTeamImagesByTeamId(
             teamLeader.getCurrentTeam().getTeamId());
 
         return MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages);
+    }
+
+    @Transactional
+    @Override
+    public TeamDetailResponseDto readByTeamId(Long teamId) {
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(teamId)
+            .orElseThrow(TeamNotFoundException::new);
+        LeaderResponseDto leader = teamRepository.findLeaderByTeamId(teamId)
+            .orElseThrow(TeamNotFoundException::new);
+        List<String> teamImages = teamRepository.findTeamImagesByTeamId(teamId)
+            .stream()
+            .map(TeamImageData::url)
+            .toList();
+
+        return TeamDetailResponseDto.of(teamInformation, leader, teamImages);
     }
 
     @Transactional
