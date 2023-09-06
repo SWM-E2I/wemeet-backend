@@ -40,20 +40,4 @@ public record TeamDetailResponseDto(
         );
     }
 
-    @Override
-    public String toString() {
-        return "TeamDetailResponseDto{" +
-            "teamId=" + teamId +
-            ", isDeleted=" + isDeleted +
-            ", memberNum=" + memberNum +
-            ", region=" + region +
-            ", drinkRate=" + drinkRate +
-            ", drinkWithGame=" + drinkWithGame +
-            ", additionalActivity=" + additionalActivity +
-            ", introduction='" + introduction + '\'' +
-            ", teamImageUrls=" + teamImageUrls +
-            ", teamMembers=" + teamMembers +
-            ", leader=" + leader +
-            '}';
-    }
 }

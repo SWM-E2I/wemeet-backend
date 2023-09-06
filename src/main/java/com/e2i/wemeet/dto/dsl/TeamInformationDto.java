@@ -1,9 +1,11 @@
 package com.e2i.wemeet.dto.dsl;
 
+import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkRate;
 import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
+import com.e2i.wemeet.domain.team_member.TeamMember;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,7 @@ public class TeamInformationDto {
     private final Boolean isDeleted;
 
     @Builder
-    public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate,
+    public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate, List<TeamMember> teamMembers,
         DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction, LocalDateTime deletedAt) {
         this.teamId = teamId;
         this.memberNum = memberNum;
@@ -34,11 +36,32 @@ public class TeamInformationDto {
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
         this.isDeleted = deletedAt != null;
+        setTeamMember(teamMembers);
+    }
+
+    public static TeamInformationDto of(Team team) {
+        return TeamInformationDto.builder()
+            .teamId(team.getTeamId())
+            .memberNum(team.getMemberNum())
+            .region(team.getRegion())
+            .drinkRate(team.getDrinkRate())
+            .drinkWithGame(team.getDrinkWithGame())
+            .additionalActivity(team.getAdditionalActivity())
+            .introduction(team.getIntroduction())
+            .deletedAt(team.getDeletedAt())
+            .teamMembers(team.getTeamMembers())
+            .build();
     }
 
     public void setTeamMembers(List<TeamMemberInformationDto> teamMembers) {
         this.teamMembers = teamMembers.stream()
             .map(TeamMemberInformationDto::toTeamMemberResponseDto)
+            .toList();
+    }
+
+    private void setTeamMember(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers.stream()
+            .map(TeamMemberResponseDto::of)
             .toList();
     }
 }
