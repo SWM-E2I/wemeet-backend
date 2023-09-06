@@ -1,4 +1,4 @@
-package com.e2i.wemeet.domain.like;
+package com.e2i.wemeet.domain.heart;
 
 import com.e2i.wemeet.domain.base.CreateTimeEntity;
 import com.e2i.wemeet.domain.team.Team;
