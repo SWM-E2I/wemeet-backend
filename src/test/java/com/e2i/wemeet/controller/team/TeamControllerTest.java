@@ -1,8 +1,12 @@
 package com.e2i.wemeet.controller.team;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
+import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,15 +22,21 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.team_member.TeamMember;
+import com.e2i.wemeet.dto.dsl.TeamInformationDto;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
+import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.e2i.wemeet.support.fixture.TeamFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

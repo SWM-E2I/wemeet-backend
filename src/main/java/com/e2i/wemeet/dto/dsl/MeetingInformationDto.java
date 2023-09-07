@@ -1,5 +1,6 @@
 package com.e2i.wemeet.dto.dsl;
 
+import com.e2i.wemeet.domain.member.data.CollegeType;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.querydsl.core.annotations.QueryProjection;
@@ -24,11 +25,15 @@ public class MeetingInformationDto {
     private Mbti partnerLeaderMbti;
     private String partnerLeaderLowProfileUrl;
     private String partnerLeaderCollegeName;
+    private CollegeType partnerLeaderCollegeType;
+    private String partnerLeaderAdmissionYear;
+    private Boolean partnerLeaderImageAuth;
 
     @QueryProjection
     public MeetingInformationDto(Long meetingId, LocalDateTime meetingAcceptTime, boolean isOver, LocalDateTime deletedAt, Long teamId,
-        int memberCount, Region region, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti,
-        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName) {
+        int memberCount,
+        Region region, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti, String partnerLeaderLowProfileUrl,
+        String partnerLeaderCollegeName, CollegeType partnerLeaderCollegeType, String partnerLeaderAdmissionYear, Boolean partnerLeaderImageAuth) {
         this.meetingId = meetingId;
         this.meetingAcceptTime = meetingAcceptTime;
         this.isOver = isOver;
@@ -41,6 +46,9 @@ public class MeetingInformationDto {
         this.partnerLeaderMbti = partnerLeaderMbti;
         this.partnerLeaderLowProfileUrl = partnerLeaderLowProfileUrl;
         this.partnerLeaderCollegeName = partnerLeaderCollegeName;
+        this.partnerLeaderCollegeType = partnerLeaderCollegeType;
+        this.partnerLeaderAdmissionYear = partnerLeaderAdmissionYear;
+        this.partnerLeaderImageAuth = partnerLeaderImageAuth;
     }
 
     public boolean isOver() {
