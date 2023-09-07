@@ -77,7 +77,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                     partnerTeamLeader.nickname.as("partnerLeaderNickname"),
                     partnerTeamLeader.mbti.as("partnerLeaderMbti"),
                     partnerTeamLeader.profileImage.lowUrl.as("partnerLeaderLowProfileUrl"),
-                    code.codeValue.as("partnerLeaderCollegeName")
+                    code.codeValue.as("partnerLeaderCollegeName"),
+                    partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
+                    partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
+                    partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
                 ))
             .from(meeting)
             // My Team & Partner Team
@@ -160,7 +163,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 partnerTeamLeader.nickname.as("partnerLeaderNickname"),
                 partnerTeamLeader.mbti.as("partnerLeaderMbti"),
                 partnerTeamLeader.profileImage.lowUrl.as("partnerLeaderLowProfileUrl"),
-                code.codeValue.as("partnerLeaderCollegeName")
+                code.codeValue.as("partnerLeaderCollegeName"),
+                partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
+                partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
             ));
     }
 

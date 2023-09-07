@@ -1,5 +1,7 @@
 package com.e2i.wemeet.support.fixture;
 
+import static com.e2i.wemeet.support.config.ReflectionUtils.setFieldValue;
+
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
@@ -12,11 +14,8 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.TeamMemberRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
-import java.lang.reflect.Field;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
 public enum TeamFixture {
 
     HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
@@ -51,6 +50,14 @@ public enum TeamFixture {
         Team team = createBuilder(teamLeader)
             .build();
         team.addTeamMembers(teamMembers);
+        return team;
+    }
+
+    public Team create_with_id(Member teamLeader, List<TeamMember> teamMembers, Long teamId) {
+        Team team = createBuilder(teamLeader)
+            .build();
+        team.addTeamMembers(teamMembers);
+        setFieldValue(team, "teamId", teamId);
         return team;
     }
 
@@ -134,14 +141,31 @@ public enum TeamFixture {
             .chatLink(this.chatLink);
     }
 
-    private void setTeamId(Team team, Long teamId) {
-        Field field;
-        try {
-            field = team.getClass().getDeclaredField("teamId");
-            field.setAccessible(true);
-            field.set(team, teamId);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+    public Integer getMemberNum() {
+        return memberNum;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public DrinkRate getDrinkRate() {
+        return drinkRate;
+    }
+
+    public DrinkWithGame getDrinkWithGame() {
+        return drinkWithGame;
+    }
+
+    public AdditionalActivity getAdditionalActivity() {
+        return additionalActivity;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public String getChatLink() {
+        return chatLink;
     }
 }
