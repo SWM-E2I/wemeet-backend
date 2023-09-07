@@ -191,10 +191,12 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         // given
         Member kai = KAI.create_with_id(1L);
         List<TeamMember> teamMembers = create_3_man();
-        TeamInformationDto teamInformation = TeamInformationDto.of(HONGDAE_TEAM_1.create_with_id(kai, teamMembers, 1L));
+        TeamInformationDto teamInformation = TeamInformationDto.of(
+            HONGDAE_TEAM_1.create_with_id(kai, teamMembers, 1L));
         LeaderResponseDto leader = LeaderResponseDto.of(kai);
         List<String> imageUrls = List.of("/v1/test1", "/v1/test2", "/v1/test3");
-        final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader, imageUrls);
+        final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader,
+            imageUrls);
         given(teamService.readByTeamId(anyLong()))
             .willReturn(response);
 
@@ -379,7 +381,15 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.team.images").type(JsonFieldType.ARRAY)
                             .description("팀 사진 정보"),
                         fieldWithPath("data.team.images[].url").type(JsonFieldType.STRING)
-                            .description("팀 사진 URL")
+                            .description("팀 사진 URL"),
+                        fieldWithPath("data.team.profileImageURL").type(JsonFieldType.STRING)
+                            .description("팀장 프로필 사진"),
+                        fieldWithPath("data.team.leader.nickname").type(JsonFieldType.STRING)
+                            .description("팀장 닉네임"),
+                        fieldWithPath("data.team.leader.mbti").type(JsonFieldType.STRING)
+                            .description("팀장 MBTI"),
+                        fieldWithPath("data.team.leader.college").type(JsonFieldType.STRING)
+                            .description("팀장 대학교 정보")
                     )
                 ));
     }
@@ -435,7 +445,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("팀장 학과"),
                         fieldWithPath("data.leader.admissionYear").type(JsonFieldType.STRING)
                             .description("팀장 학번"),
-                        fieldWithPath("data.leader.leaderLowProfileImageUrl").type(JsonFieldType.STRING)
+                        fieldWithPath("data.leader.leaderLowProfileImageUrl").type(
+                                JsonFieldType.STRING)
                             .description("팀장 프로필 사진"),
                         fieldWithPath("data.leader.imageAuth").type(JsonFieldType.BOOLEAN)
                             .description("팀장 프로필 사진 인증 여부")
