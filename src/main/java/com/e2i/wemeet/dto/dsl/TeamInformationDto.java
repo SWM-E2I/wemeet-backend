@@ -26,7 +26,7 @@ public class TeamInformationDto {
     private final Boolean isDeleted;
 
     @Builder
-    public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate, List<TeamMember> teamMembers,
+    public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate,
         DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction, LocalDateTime deletedAt) {
         this.teamId = teamId;
         this.memberNum = memberNum;
@@ -36,11 +36,10 @@ public class TeamInformationDto {
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
         this.isDeleted = deletedAt != null;
-        setTeamMember(teamMembers);
     }
 
     public static TeamInformationDto of(Team team) {
-        return TeamInformationDto.builder()
+        TeamInformationDto dto = TeamInformationDto.builder()
             .teamId(team.getTeamId())
             .memberNum(team.getMemberNum())
             .region(team.getRegion())
@@ -49,8 +48,10 @@ public class TeamInformationDto {
             .additionalActivity(team.getAdditionalActivity())
             .introduction(team.getIntroduction())
             .deletedAt(team.getDeletedAt())
-            .teamMembers(team.getTeamMembers())
             .build();
+
+        dto.setTeamMember(team.getTeamMembers());
+        return dto;
     }
 
     public void setTeamMembers(List<TeamMemberInformationDto> teamMembers) {
