@@ -1,8 +1,13 @@
 package com.e2i.wemeet.controller.team;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
+import static com.e2i.wemeet.support.fixture.TeamFixture.WOMAN_TEAM;
+import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,15 +23,20 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.e2i.wemeet.domain.member.Member;
+import com.e2i.wemeet.domain.team_member.TeamMember;
+import com.e2i.wemeet.dto.dsl.TeamInformationDto;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
+import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
+import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
-import com.e2i.wemeet.support.fixture.TeamFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -41,7 +51,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     @Test
     void createTeam_Success() throws Exception {
         // given
-        CreateTeamRequestDto requestDto = TeamFixture.WOMAN_TEAM.createTeamRequestDto_2_members();
+        CreateTeamRequestDto requestDto = WOMAN_TEAM.createTeamRequestDto_2_members();
         String dtoToJson = mapper.writeValueAsString(requestDto);
         MockMultipartFile data = new MockMultipartFile("data", "data", "application/json",
             dtoToJson.getBytes(
@@ -79,7 +89,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     @Test
     void updateTeam_Success() throws Exception {
         // given
-        UpdateTeamRequestDto requestDto = TeamFixture.WOMAN_TEAM.updateTeamRequestDto_2_members();
+        UpdateTeamRequestDto requestDto = WOMAN_TEAM.updateTeamRequestDto_2_members();
         String dtoToJson = mapper.writeValueAsString(requestDto);
         MockMultipartFile data = new MockMultipartFile("data", "data", "application/json",
             dtoToJson.getBytes(
@@ -147,7 +157,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     void readTeam_Success() throws Exception {
         // given
         MyTeamResponseDto response = MyTeamResponseDto.of(true,
-            TeamFixture.WOMAN_TEAM.createMyTeamDetailResponseDto());
+            WOMAN_TEAM.createMyTeamDetailResponseDto());
         when(teamService.readTeam(anyLong())).thenReturn(response);
 
         // when
@@ -174,6 +184,53 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         readTeamWriteRestDocs(perform);
     }
 
+    @DisplayName("팀을 조회할 수 있다.")
+    @WithCustomMockUser(role = "MANAGER")
+    @Test
+    void readTeamById() throws Exception {
+        // given
+        Member kai = KAI.create_with_id(1L);
+        List<TeamMember> teamMembers = create_3_man();
+        TeamInformationDto teamInformation = TeamInformationDto.of(HONGDAE_TEAM_1.create_with_id(kai, teamMembers, 1L));
+        LeaderResponseDto leader = LeaderResponseDto.of(kai);
+        List<String> imageUrls = List.of("/v1/test1", "/v1/test2", "/v1/test3");
+        final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader, imageUrls);
+        given(teamService.readByTeamId(anyLong()))
+            .willReturn(response);
+
+        // when
+        ResultActions perform = mockMvc.perform(
+            get("/v1/team/{teamId}", 1));
+
+        // then
+        perform
+            .andExpectAll(
+                status().isOk(),
+                jsonPath("$.status").value("SUCCESS"),
+                jsonPath("$.message").value("Get Team Detail Success"),
+                jsonPath("$.data.teamId").value(1L),
+                jsonPath("$.data.isDeleted").value(false),
+                jsonPath("$.data.memberNum").value(4),
+                jsonPath("$.data.region").value("HONGDAE"),
+                jsonPath("$.data.drinkRate").value("LOW"),
+                jsonPath("$.data.drinkWithGame").value("ANY"),
+                jsonPath("$.data.additionalActivity").value("CAFE"),
+                jsonPath("$.data.introduction").value("안녕하세요! 반가워요! 홍대팀 1입니다!!"),
+                jsonPath("$.data.teamImageUrls").isArray(),
+                jsonPath("$.data.teamMembers").isArray(),
+                jsonPath("$.data.leader.leaderId").value(1L),
+                jsonPath("$.data.leader.nickname").value("카이"),
+                jsonPath("$.data.leader.mbti").value("INFJ"),
+                jsonPath("$.data.leader.collegeName").value("안양대"),
+                jsonPath("$.data.leader.collegeType").value("SOCIAL"),
+                jsonPath("$.data.leader.admissionYear").value("17"),
+                jsonPath("$.data.leader.leaderLowProfileImageUrl").value("/v1/kai"),
+                jsonPath("$.data.leader.imageAuth").value(false)
+            );
+        verify(teamService).readByTeamId(anyLong());
+
+        readByTeamIdWriteRestDocs(perform);
+    }
 
     private void createTeamWriteRestDocs(ResultActions perform) throws Exception {
         perform
@@ -323,6 +380,65 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("팀 사진 정보"),
                         fieldWithPath("data.team.images[].url").type(JsonFieldType.STRING)
                             .description("팀 사진 URL")
+                    )
+                ));
+    }
+
+    private void readByTeamIdWriteRestDocs(ResultActions perform) throws Exception {
+        perform
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("팀 상세 정보 조회",
+                    ResourceSnippetParameters.builder()
+                        .tag("팀 관련 API")
+                        .summary("팀 상세 정보 조회 API 입니다.")
+                        .description(
+                            """
+                                    팀 ID로 상세정보를 조회합니다.
+                                """),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.teamId").type(JsonFieldType.NUMBER).description("팀 ID"),
+                        fieldWithPath("data.isDeleted").type(JsonFieldType.BOOLEAN)
+                            .description("팀 삭제 여부"),
+                        fieldWithPath("data.memberNum").type(JsonFieldType.NUMBER)
+                            .description("팀 인원수"),
+                        fieldWithPath("data.region").type(JsonFieldType.STRING)
+                            .description("선호 지역"),
+                        fieldWithPath("data.drinkRate").type(JsonFieldType.STRING)
+                            .description("음주 수치"),
+                        fieldWithPath("data.drinkWithGame").type(JsonFieldType.STRING)
+                            .description("술게임 여부"),
+                        fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING)
+                            .description("취미 및 관심사"),
+                        fieldWithPath("data.introduction").type(JsonFieldType.STRING)
+                            .description("팀 소개"),
+                        fieldWithPath("data.teamImageUrls").type(JsonFieldType.ARRAY)
+                            .description("팀 사진 URL"),
+                        fieldWithPath("data.teamMembers[].college").type(JsonFieldType.STRING)
+                            .description("대학교 명"),
+                        fieldWithPath("data.teamMembers[].collegeType").type(JsonFieldType.STRING)
+                            .description("학과"),
+                        fieldWithPath("data.teamMembers[].admissionYear").type(JsonFieldType.STRING)
+                            .description("학번"),
+                        fieldWithPath("data.teamMembers[].mbti").type(JsonFieldType.STRING)
+                            .description("MBTI"),
+                        fieldWithPath("data.leader.leaderId").type(JsonFieldType.NUMBER)
+                            .description("팀장 ID"),
+                        fieldWithPath("data.leader.nickname").type(JsonFieldType.STRING)
+                            .description("팀장 닉네임"),
+                        fieldWithPath("data.leader.mbti").type(JsonFieldType.STRING)
+                            .description("팀장 MBTI"),
+                        fieldWithPath("data.leader.collegeName").type(JsonFieldType.STRING)
+                            .description("팀장 대학교"),
+                        fieldWithPath("data.leader.collegeType").type(JsonFieldType.STRING)
+                            .description("팀장 학과"),
+                        fieldWithPath("data.leader.admissionYear").type(JsonFieldType.STRING)
+                            .description("팀장 학번"),
+                        fieldWithPath("data.leader.leaderLowProfileImageUrl").type(JsonFieldType.STRING)
+                            .description("팀장 프로필 사진"),
+                        fieldWithPath("data.leader.imageAuth").type(JsonFieldType.BOOLEAN)
+                            .description("팀장 프로필 사진 인증 여부")
                     )
                 ));
     }

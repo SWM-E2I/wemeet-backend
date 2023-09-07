@@ -139,5 +139,9 @@ public class Team extends BaseTimeEntity {
         this.deletedAt = deletedAt;
         teamLeader.setRole(Role.USER);
     }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
 }
 

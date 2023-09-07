@@ -1,6 +1,7 @@
 package com.e2i.wemeet.dto.dsl;
 
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
+import com.e2i.wemeet.domain.member.data.CollegeType;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.querydsl.core.annotations.QueryProjection;
@@ -26,11 +27,15 @@ public class MeetingRequestInformationDto {
     private Mbti partnerLeaderMbti;
     private String partnerLeaderLowProfileUrl;
     private String partnerLeaderCollegeName;
+    private CollegeType partnerLeaderCollegeType;
+    private String partnerLeaderAdmissionYear;
+    private Boolean partnerLeaderImageAuth;
 
     @QueryProjection
     public MeetingRequestInformationDto(Long meetingRequestId, LocalDateTime requestSentTime, String message, AcceptStatus acceptStatus, Long teamId,
         int memberCount, Region region, LocalDateTime deletedAt, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti,
-        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName) {
+        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName, CollegeType partnerLeaderCollegeType, String partnerLeaderAdmissionYear,
+        Boolean partnerLeaderImageAuth) {
         this.meetingRequestId = meetingRequestId;
         this.requestSentTime = requestSentTime;
         this.message = message;
@@ -44,6 +49,9 @@ public class MeetingRequestInformationDto {
         this.partnerLeaderMbti = partnerLeaderMbti;
         this.partnerLeaderLowProfileUrl = partnerLeaderLowProfileUrl;
         this.partnerLeaderCollegeName = partnerLeaderCollegeName;
+        this.partnerLeaderCollegeType = partnerLeaderCollegeType;
+        this.partnerLeaderAdmissionYear = partnerLeaderAdmissionYear;
+        this.partnerLeaderImageAuth = partnerLeaderImageAuth;
     }
 
     @Override
