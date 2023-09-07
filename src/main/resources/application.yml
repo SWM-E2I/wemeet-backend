@@ -20,7 +20,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 5MB
-      max-request-size: 10MB
+      max-request-size: 50MB
 
   config:
     import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml
