@@ -10,7 +10,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,15 +67,16 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("좋아요 보내기",
                         ResourceSnippetParameters.builder()
-                            .tag("좋아요 보내기")
+                            .tag("좋아요 관련 API")
                             .summary("상대 팀에게 좋아요를 보냅니다.")
                             .description(
                                 """
                                         상대 팀에게 좋아요를 보냅니다.
                                         하루에 한 번 가능하며, 본인 팀에게는 보낼 수 없습니다.
-                                    """),
-                        pathParameters(
-                            parameterWithName("partnerTeamId").description("상대 팀 아이디")),
+                                    """)
+                            .pathParameters(
+                                parameterWithName("partnerTeamId").description("상대 팀 아이디")
+                            ),
                         responseFields(
                             fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                             fieldWithPath("message").type(JsonFieldType.STRING)
@@ -142,7 +142,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("보낸 좋아요 조회",
                         ResourceSnippetParameters.builder()
-                            .tag("보낸 좋아요 조회")
+                            .tag("좋아요 관련 API")
                             .summary("보낸 좋아요 내역을 조회합니다.")
                             .description(
                                 """
@@ -227,7 +227,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("받은 좋아요 조회",
                         ResourceSnippetParameters.builder()
-                            .tag("받은 좋아요 조회")
+                            .tag("좋아요 관련 API")
                             .summary("받은 좋아요 내역을 조회합니다.")
                             .description(
                                 """

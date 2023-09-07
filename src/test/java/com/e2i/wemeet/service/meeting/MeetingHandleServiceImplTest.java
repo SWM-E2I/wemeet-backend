@@ -28,7 +28,6 @@ import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
 import com.e2i.wemeet.exception.badrequest.ExpiredException;
-import com.e2i.wemeet.exception.badrequest.InvalidDataFormatException;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
@@ -316,14 +315,13 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
                 .getMeetingRequestId();
-            final String chatLink = "https://open.kakao.com/o/1sdfasdf";
             final LocalDateTime now = LocalDateTime.now();
 
             setAuthentication(rim.getMemberId(), "MANAGER");
             final int rimCredit = rim.getCredit();
 
             // when
-            Long meetingId = meetingHandleService.acceptRequest(chatLink, rim.getMemberId(), meetingRequestId, now);
+            Long meetingId = meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequestId, now);
 
             // then
             MeetingRequest findRequest = meetingRequestRepository.findById(meetingRequestId)
@@ -336,8 +334,8 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                     .extracting("acceptStatus", "message")
                     .contains(ACCEPT, BASIC_REQUEST.getMessage()),
                 () -> assertThat(findMeeting).isNotNull()
-                    .extracting("team", "partnerTeam", "chatLink", "isOver")
-                    .contains(kaiTeam, rimTeam, chatLink, false));
+                    .extracting("team", "partnerTeam", "isOver")
+                    .contains(kaiTeam, rimTeam, false));
 
             assertThat(rim.getCredit()).isLessThan(rimCredit);
         }
@@ -354,13 +352,12 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
                 .getMeetingRequestId();
-            final String chatLink = "https://open.kakao.com/o/1sdfasdf";
             final LocalDateTime now = LocalDateTime.now();
 
             setAuthentication(rim.getMemberId(), "MANAGER");
 
             // when
-            meetingHandleService.acceptRequest(chatLink, rim.getMemberId(), meetingRequestId, now);
+            meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequestId, now);
 
             // then
             Integer findCredit = memberRepository.findCreditByMemberId(rim.getMemberId())
@@ -396,27 +393,6 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                     .contains(REJECT, BASIC_REQUEST.getMessage()),
                 () -> assertThat(findMeeting).isEmpty()
             );
-        }
-
-        @DisplayName("카카오톡 오픈 채팅방 링크를 입력하지 않으면 미팅 신청을 수락할 수 없다.")
-        @Test
-        void handleRequestToAcceptWithoutChatLink() {
-            // given
-            final String chatLink = null;
-
-            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
-            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
-            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
-            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
-
-            final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
-                .getMeetingRequestId();
-            final LocalDateTime acceptDateTime = LocalDateTime.now();
-            setAuthentication(rim.getMemberId(), "MANAGER");
-
-            // when & then
-            assertThatThrownBy(() -> meetingHandleService.acceptRequest(chatLink, rim.getMemberId(), meetingRequestId, acceptDateTime))
-                .isExactlyInstanceOf(InvalidDataFormatException.class);
         }
 
         @DisplayName("미팅 신청을 받은 대상이 아니라면 미팅 신청 상태를 변경할 수 없다.")
@@ -467,8 +443,6 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
         @Test
         void handleRequestWithExpiredRequest() {
             // given
-            final String chatLink = null;
-
             Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
             Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
             Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
@@ -479,7 +453,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             setAuthentication(rim.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.acceptRequest(chatLink, rim.getMemberId(), meetingRequest.getMeetingRequestId(), now))
+            assertThatThrownBy(() -> meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequest.getMeetingRequestId(), now))
                 .isExactlyInstanceOf(ExpiredException.class);
 
             assertThat(meetingRequest.getAcceptStatus()).isEqualTo(EXPIRED);

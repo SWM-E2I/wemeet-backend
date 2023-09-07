@@ -2,7 +2,6 @@ package com.e2i.wemeet.controller.meeting;
 
 import com.e2i.wemeet.config.resolver.member.MemberId;
 import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
-import com.e2i.wemeet.dto.request.meeting.MeetingRequestAcceptDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.dto.response.ResponseDto;
@@ -47,12 +46,10 @@ public class MeetingController {
 
     @PostMapping("/accept/{meetingRequestId}")
     public ResponseDto<Long> acceptMeetingRequest(@MemberId Long memberId,
-        @RequestBody @Valid MeetingRequestAcceptDto requestDto,
         @PathVariable Long meetingRequestId) {
-        final String openChatLink = requestDto.kakaoOpenChatLink();
         final LocalDateTime acceptDateTime = LocalDateTime.now();
 
-        Long meetingId = meetingHandleService.acceptRequest(openChatLink, memberId, meetingRequestId, acceptDateTime);
+        Long meetingId = meetingHandleService.acceptRequest(memberId, meetingRequestId, acceptDateTime);
 
         return ResponseDto.success("Meeting was successfully matched", meetingId);
     }
