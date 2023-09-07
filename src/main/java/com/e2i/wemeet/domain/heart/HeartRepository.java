@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface HeartRepository extends JpaRepository<Heart, Long> {
+public interface HeartRepository extends JpaRepository<Heart, Long>, HeartCustomRepository {
 
     @Query("select h from Heart h where h.team.teamId = :teamId and h.createdAt between :startTime and :endTime")
     Optional<Heart> findTodayHeart(@Param("teamId") Long teamId,

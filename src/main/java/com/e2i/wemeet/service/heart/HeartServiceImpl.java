@@ -63,7 +63,7 @@ public class HeartServiceImpl implements HeartService {
             .checkMemberValid();
 
         Team team = member.getCurrentTeam();
-        List<HeartTeamData> sentHeartTeam = teamRepository.findSentHeart(team.getTeamId(),
+        List<HeartTeamData> sentHeartTeam = heartRepository.findSentHeart(team.getTeamId(),
             requestTime);
 
         return SentHeartResponseDto.of(sentHeartTeam);
@@ -78,7 +78,7 @@ public class HeartServiceImpl implements HeartService {
             .checkMemberValid();
 
         Team team = member.getCurrentTeam();
-        List<HeartTeamData> receivedHeartTeam = teamRepository.findReceivedHeart(
+        List<HeartTeamData> receivedHeartTeam = heartRepository.findReceivedHeart(
             team.getTeamId(), requestTime);
 
         return ReceivedHeartResponseDto.of(receivedHeartTeam);
