@@ -85,7 +85,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Transactional
     @CostAuthorize(type = MEETING_ACCEPT, role = Role.MANAGER)
     @Override
-    public Long acceptRequest(final String openChatLink, final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
+    public Long acceptRequest(final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)
             .orElseThrow(MeetingRequestNotFound::new)
             .checkValid();
@@ -96,7 +96,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         // 이벤트 발행
         eventPublisher.publishEvent(SpendEvent.of(MEETING_ACCEPT, memberLeaderId));
 
-        return saveMeeting(openChatLink, meetingRequest).getMeetingId();
+        return saveMeeting(meetingRequest).getMeetingId();
     }
 
     @Transactional
@@ -113,11 +113,10 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         return REJECT;
     }
 
-    private Meeting saveMeeting(final String openChatLink, final MeetingRequest meetingRequest) {
+    private Meeting saveMeeting(final MeetingRequest meetingRequest) {
         Meeting meeting = Meeting.builder()
             .team(meetingRequest.getTeam())
             .partnerTeam(meetingRequest.getPartnerTeam())
-            .chatLink(openChatLink)
             .build();
         return meetingRepository.save(meeting);
     }

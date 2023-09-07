@@ -27,6 +27,7 @@ public enum TeamFixture {
         AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!",
         "https://open.kakao.com/o/dksh7wbo");
 
+
     private final Integer memberNum;
     private final Region region;
     private final DrinkRate drinkRate;
