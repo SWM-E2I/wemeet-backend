@@ -20,12 +20,13 @@ import lombok.Getter;
 public enum TeamFixture {
 
     HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
-        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!", "https://open.kakao.com/0/1234"),
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!", "https://open.kakao.com/o/ajsds1ik"),
     WOMAN_TEAM(2, Region.SINCHON, DrinkRate.LOW, DrinkWithGame.ANY,
-        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!", "https://open.kakao.com/0/5678"),
+        AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!", "https://open.kakao.com/o/djsi23di"),
     WOMAN_TEAM_2(2, Region.HONGDAE, DrinkRate.MIDDLE, DrinkWithGame.BEGINNER,
         AdditionalActivity.SHOW, "안녕하세요! 반가워요! 여자 2인 팀입니다!!!!!!!!!!",
-        "https://open.kakao.com/0/4738");
+        "https://open.kakao.com/o/dksh7wbo");
+
 
     private final Integer memberNum;
     private final Region region;

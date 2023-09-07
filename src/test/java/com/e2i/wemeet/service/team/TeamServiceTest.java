@@ -26,7 +26,7 @@ import com.e2i.wemeet.domain.team_image.TeamImage;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
-import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
+import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.exception.badrequest.ProfileImageNotExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
@@ -181,17 +181,19 @@ class TeamServiceTest {
             // when
             when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
 
-            MyTeamDetailResponseDto response = teamService.readTeam(1L);
+            MyTeamResponseDto response = teamService.readTeam(1L);
 
             // then
             verify(memberRepository).findById(1L);
-            assertThat(response).isNotNull()
+            assertThat(response.hasTeam()).isTrue();
+            assertThat(response.team()).isNotNull()
                 .extracting("memberNum", "region", "drinkRate", "drinkWithGame",
-                    "additionalActivity", "introduction", "members")
+                    "additionalActivity", "introduction", "members", "chatLink")
                 .contains(team.getMemberNum(), team.getRegion().getName(),
                     team.getDrinkRate().getName(), team.getDrinkWithGame().getName(),
                     team.getAdditionalActivity().getName(), team.getIntroduction(),
-                    List.of(TeamMemberResponseDto.of(TeamMemberFixture.OLIVIA.create())));
+                    List.of(TeamMemberResponseDto.of(TeamMemberFixture.OLIVIA.create())),
+                    team.getChatLink());
         }
 
         @DisplayName("팀이 없는 경우 나의 팀 정보를 조회할 수 없다.")
@@ -203,10 +205,12 @@ class TeamServiceTest {
             // when
             when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
 
+            MyTeamResponseDto response = teamService.readTeam(1L);
+
             // then
-            assertThatThrownBy(() -> teamService.readTeam(1L))
-                .isExactlyInstanceOf(TeamNotExistsException.class);
             verify(memberRepository).findById(1L);
+            assertThat(response.hasTeam()).isFalse();
+            assertThat(response.team()).isNull();
         }
     }
 

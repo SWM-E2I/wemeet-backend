@@ -15,6 +15,7 @@ public record MyTeamDetailResponseDto(
     String drinkWithGame,
     String additionalActivity,
     String introduction,
+    String chatLink,
     List<TeamImageDto> images,
     List<TeamMemberResponseDto> members
 ) {
@@ -30,6 +31,7 @@ public record MyTeamDetailResponseDto(
             .drinkWithGame(team.getDrinkWithGame().getName())
             .additionalActivity(additionalActivity.map(AdditionalActivity::getName).orElse(null))
             .introduction(team.getIntroduction())
+            .chatLink(team.getChatLink())
             .images(
                 teamImages.stream()
                     .map(teamImage -> TeamImageDto.of(teamImage.url()))
@@ -40,5 +42,4 @@ public record MyTeamDetailResponseDto(
                     .toList())
             .build();
     }
-
 }
