@@ -103,7 +103,7 @@ public class TeamServiceImpl implements TeamService {
             teamLeader.getCurrentTeam().getTeamId());
 
         return MyTeamResponseDto.of(teamLeader.hasTeam(),
-            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages));
+            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages, teamLeader));
     }
 
     @Transactional
