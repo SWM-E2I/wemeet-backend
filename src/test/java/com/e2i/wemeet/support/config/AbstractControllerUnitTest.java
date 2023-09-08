@@ -3,11 +3,13 @@ package com.e2i.wemeet.support.config;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 import com.e2i.wemeet.controller.TokenController;
+import com.e2i.wemeet.controller.heart.HeartController;
 import com.e2i.wemeet.controller.meeting.MeetingController;
 import com.e2i.wemeet.controller.member.MemberController;
 import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.service.code.CodeService;
+import com.e2i.wemeet.service.heart.HeartService;
 import com.e2i.wemeet.service.meeting.MeetingHandleService;
 import com.e2i.wemeet.service.meeting.MeetingListService;
 import com.e2i.wemeet.service.member.MemberService;
@@ -40,7 +42,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
     TeamController.class,
     MemberController.class,
     MeetingController.class,
-    SuggestionController.class
+    SuggestionController.class,
+    HeartController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -69,6 +72,9 @@ public abstract class AbstractControllerUnitTest {
 
     @MockBean
     protected SuggestionService suggestionService;
+
+    @MockBean
+    protected HeartService heartService;
 
 
     protected MockMvc mockMvc;

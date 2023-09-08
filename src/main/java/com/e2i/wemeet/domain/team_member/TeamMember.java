@@ -51,9 +51,5 @@ public class TeamMember extends BaseTimeEntity {
             team.getTeamMembers().add(this);
         }
     }
-
-    public String getCollegeName() {
-        return this.collegeInfo.getCollegeCode().getCodeValue();
-    }
 }
 
