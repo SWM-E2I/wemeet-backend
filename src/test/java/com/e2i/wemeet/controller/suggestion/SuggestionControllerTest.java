@@ -116,6 +116,8 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                         .description(
                             """
                                     오늘의 추천 정보를 반환합니다.
+                                    하루 3개의 추천 팀 정보를 받아올 수 있습니다.
+                                    (오후 11:11 갱신)
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -153,6 +155,7 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                         .description(
                             """
                                     오늘의 추천을 받았는지에 대한 정보를 확인할 수 있습니다.
+                                    추천을 받았다면, isReceivedSuggestion은 true이고 추천 팀 정보가 반환됩니다.
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),

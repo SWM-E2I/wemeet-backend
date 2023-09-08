@@ -15,10 +15,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +33,7 @@ import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.Schema;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -241,38 +240,69 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         .summary("팀 생성 API 입니다.")
                         .description(
                             """
-                                    팀 생성을 진행합니다.
-                                """),
-                    requestParts(
-                        partWithName("images").description("사진 파일"),
-                        partWithName("data").description("팀 생성 요청 데이터")
-                    ),
-                    requestPartFields("data",
-                        fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
-                        fieldWithPath("drinkRate").type(JsonFieldType.STRING)
-                            .description("음주 수치"),
-                        fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
-                            .description("술게임 여부"),
-                        fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
-                            .description("추가 활동"),
-                        fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("팀 소개"),
-                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
-                            .description("카카오톡 오픈 채팅방 링크"),
-                        fieldWithPath("members").type(JsonFieldType.ARRAY)
-                            .description("팀원 정보"),
-                        fieldWithPath("members[].collegeInfo.collegeCode").type(
-                                JsonFieldType.STRING)
-                            .description("대학 코드"),
-                        fieldWithPath("members[].collegeInfo.collegeType").type(
-                                JsonFieldType.STRING)
-                            .description("팀원 학과 타입"),
-                        fieldWithPath("members[].collegeInfo.admissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("팀원 학번"),
-                        fieldWithPath("members[].mbti").type(JsonFieldType.STRING)
-                            .description("팀원 MBTI")
-                    ),
+                                    팀을 생성합니다.
+                                    multipart/form-data 데이터로 보내주어야함 (data는 json!)
+                                    part - 'images': 사진 파일
+                                    part - 'data': 팀 수정 요청 데이터
+                                    
+                                    성공 시 AccessToken & RefreshToken 재발급되어 Header에 함께 전송됨
+                                    사용자 권한 변경 USER -> MANAGER
+                                    
+                                    "data" : {
+                                    	"region" : String, // HONGDAE, GANGNAM, SINCHON, GUNDAE 중 하나
+                                    	"drinkRate" : String, // ZERO, LOW, MIDDLE, HIGH
+                                    	"drinkWithGame" : String, // ANY, MASTER, BEGINNER, HATER 중 하나
+                                    	"additionalActivity" : String, // nullable // SHOW, SPORTS, UNIQUE_EXPERIENCE, OUTDOOR_ACTIVITY, CAFE 중 하나
+                                    	"introduction" : String, // 150 제한\s
+                                    	"members" : [ // 사이즈 최소 1, 최대 3
+                                    							{
+                                    								"collegeInfo": {
+                                    									"collegeCode": String, // College CODE 값을 전달 ex) CE-001\s
+                                    									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
+                                    									"admissionYear" : String,\s
+                                    								},
+                                    								"mbti" : String // 잘 모를 경우 "XXXX"
+                                    							},\s
+                                    							{
+                                    								"collegeInfo": {
+                                    									"collegeCode": String, // College CODE 값을 전달 ex) CE-001\s
+                                    									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
+                                    									"admissionYear" : String,\s
+                                    								},
+                                    								"mbti" : String // 잘 모를 경우 "XXXX"
+                                    							}	
+                                    					],
+                                    	"chatLink" : String, //not null
+                                    },
+                                    
+                                    "images": File[], // 최소 1장, 최대 10장
+                                """)
+                        .requestFields(
+                            fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
+                            fieldWithPath("drinkRate").type(JsonFieldType.STRING)
+                                .description("음주 수치"),
+                            fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
+                                .description("술게임 여부"),
+                            fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
+                                .description("추가 활동"),
+                            fieldWithPath("introduction").type(JsonFieldType.STRING)
+                                .description("팀 소개"),
+                            fieldWithPath("chatLink").type(JsonFieldType.STRING)
+                                .description("카카오톡 오픈 채팅방 링크"),
+                            fieldWithPath("members").type(JsonFieldType.ARRAY)
+                                .description("팀원 정보"),
+                            fieldWithPath("members[].collegeInfo.collegeCode").type(
+                                    JsonFieldType.STRING)
+                                .description("대학 코드"),
+                            fieldWithPath("members[].collegeInfo.collegeType").type(
+                                    JsonFieldType.STRING)
+                                .description("팀원 학과 타입"),
+                            fieldWithPath("members[].collegeInfo.admissionYear").type(
+                                    JsonFieldType.STRING)
+                                .description("팀원 학번"),
+                            fieldWithPath("members[].mbti").type(JsonFieldType.STRING)
+                                .description("팀원 MBTI")
+                        ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -291,38 +321,69 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         .summary("팀 수정 API 입니다.")
                         .description(
                             """
-                                    팀 정보 수정을 진행합니다.
-                                """),
-                    requestParts(
-                        partWithName("images").description("사진 파일"),
-                        partWithName("data").description("팀 수정 요청 데이터")
-                    ),
-                    requestPartFields("data",
-                        fieldWithPath("region").type(JsonFieldType.STRING).description("선호 지역"),
-                        fieldWithPath("drinkRate").type(JsonFieldType.STRING)
-                            .description("음주 수치"),
-                        fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
-                            .description("술게임 여부"),
-                        fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
-                            .description("추가 활동"),
-                        fieldWithPath("introduction").type(JsonFieldType.STRING)
-                            .description("팀 소개"),
-                        fieldWithPath("chatLink").type(JsonFieldType.STRING)
-                            .description("카카오톡 오픈 채팅방 링크"),
-                        fieldWithPath("members").type(JsonFieldType.ARRAY)
-                            .description("팀원 정보"),
-                        fieldWithPath("members[].collegeInfo.collegeCode").type(
-                                JsonFieldType.STRING)
-                            .description("대학 코드"),
-                        fieldWithPath("members[].collegeInfo.collegeType").type(
-                                JsonFieldType.STRING)
-                            .description("팀원 학과 타입"),
-                        fieldWithPath("members[].collegeInfo.admissionYear").type(
-                                JsonFieldType.STRING)
-                            .description("팀원 학번"),
-                        fieldWithPath("members[].mbti").type(JsonFieldType.STRING)
-                            .description("팀원 MBTI")
-                    ),
+                                    나의 팀 정보를 수정합니다.
+                                    multipart/form-data 데이터로 보내주어야함 (data는 json!)
+                                    part - 'images': 사진 파일
+                                    part - 'data': 팀 수정 요청 데이터
+                                    
+                                    :: 팀 생성과 동일!
+                                    
+                                    "data" : {
+                                    	"region" : String, // HONGDAE, GANGNAM, SINCHON, GUNDAE 중 하나
+                                    	"drinkRate" : String, // ZERO, LOW, MIDDLE, HIGH
+                                    	"drinkWithGame" : String, // ANY, MASTER, BEGINNER, HATER 중 하나
+                                    	"additionalActivity" : String, // nullable // SHOW, SPORTS, UNIQUE_EXPERIENCE, OUTDOOR_ACTIVITY, CAFE 중 하나
+                                    	"introduction" : String, // 150 제한\s
+                                    	"members" : [ // 사이즈 최소 1, 최대 3
+                                    							{
+                                    								"collegeInfo": {
+                                    									"collegeCode": String, // College CODE 값을 전달 ex) CE-001\s
+                                    									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
+                                    									"admissionYear" : String,\s
+                                    								},
+                                    								"mbti" : String // 잘 모를 경우 "XXXX"
+                                    							},\s
+                                    							{
+                                    								"collegeInfo": {
+                                    									"collegeCode": String, // College CODE 값을 전달 ex) CE-001\s
+                                    									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
+                                    									"admissionYear" : String,\s
+                                    								},
+                                    								"mbti" : String // 잘 모를 경우 "XXXX"
+                                    							}	
+                                    					],
+                                    	"chatLink" : String, //not null
+                                    },
+                                    
+                                    "images": File[], // 최소 1장, 최대 10장
+                                """)
+                        .requestFields(
+                            fieldWithPath("images").description("사진 파일"),
+                            fieldWithPath("data.region").type(JsonFieldType.STRING).description("선호 지역"),
+                            fieldWithPath("data.drinkRate").type(JsonFieldType.STRING)
+                                .description("음주 수치"),
+                            fieldWithPath("data.drinkWithGame").type(JsonFieldType.STRING)
+                                .description("술게임 여부"),
+                            fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING).optional()
+                                .description("추가 활동"),
+                            fieldWithPath("data.introduction").type(JsonFieldType.STRING)
+                                .description("팀 소개"),
+                            fieldWithPath("data.chatLink").type(JsonFieldType.STRING)
+                                .description("카카오톡 오픈 채팅방 링크"),
+                            fieldWithPath("data.members").type(JsonFieldType.ARRAY)
+                                .description("팀원 정보"),
+                            fieldWithPath("data.members[].collegeInfo.collegeCode").type(
+                                    JsonFieldType.STRING)
+                                .description("대학 코드"),
+                            fieldWithPath("data.members[].collegeInfo.collegeType").type(
+                                    JsonFieldType.STRING)
+                                .description("팀원 학과 타입"),
+                            fieldWithPath("data.members[].collegeInfo.admissionYear").type(
+                                    JsonFieldType.STRING)
+                                .description("팀원 학번"),
+                            fieldWithPath("data.members[].mbti").type(JsonFieldType.STRING)
+                                .description("팀원 MBTI")
+                        ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -338,10 +399,10 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 MockMvcRestDocumentationWrapper.document("마이 팀 조회",
                     ResourceSnippetParameters.builder()
                         .tag("팀 관련 API")
-                        .summary("팀 조회 API 입니다.")
+                        .summary("내 팀 정보를 조회합니다.")
                         .description(
                             """
-                                    팀 정보 조회 진행합니다.
+                                    내 팀 정보를 조회합니다.
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -387,14 +448,14 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     private void readByTeamIdWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
-                MockMvcRestDocumentationWrapper.document("팀 상세 정보 조회",
+                MockMvcRestDocumentationWrapper.document(
+                    "팀 상세 정보 조회",
                     ResourceSnippetParameters.builder()
                         .tag("팀 관련 API")
                         .summary("팀 상세 정보 조회 API 입니다.")
-                        .description(
-                            """
-                                    팀 ID로 상세정보를 조회합니다.
-                                """),
+                        .description("팀 ID로 상세정보를 조회합니다.")
+                        .requestSchema(Schema.schema("AccessToken"))
+                        .pathParameters(parameterWithName("teamId").description("팀 ID")),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -454,7 +515,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             """
                                     현재 속한 팀을 삭제합니다.
                                     팀과 관련된 모든 정보가 삭제됩니다.
-                                  
+                                    성공 시 AccessToken & RefershToken 재발급되어 Header에 함께 전송됨
+                                    사용자 권한 변경 MANAGER -> USER
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
