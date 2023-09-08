@@ -119,7 +119,7 @@ public enum TeamFixture {
                 List.of(TeamMemberFixture.OLIVER.create())),
             List.of(TeamImageData.builder()
                 .url("testUrl")
-                .build()));
+                .build()), MemberFixture.RIM.create());
     }
 
     private Team.TeamBuilder createBuilder(final Member teamLeader) {
