@@ -14,7 +14,7 @@ public record TeamMemberResponseDto(
 
     public static TeamMemberResponseDto of(TeamMember teamMember) {
         return TeamMemberResponseDto.builder()
-            .college(teamMember.getCollegeName())
+            .college(teamMember.getCollegeInfo().getCollegeCode().getCodeValue())
             .collegeType(teamMember.getCollegeInfo().getCollegeType().getDescription())
             .admissionYear(teamMember.getCollegeInfo().getAdmissionYear())
             .mbti(teamMember.getMbti())

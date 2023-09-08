@@ -39,6 +39,8 @@ public enum ErrorCode {
     PROFILE_IMAGE_NOT_EXISTS(40030, "profile.image.not.exists"),
     INVALID_MESSAGE_FORMAT(40031, "invalid.message.format"),
     CHAT_LINK_NOT_EXIST(40032, "chat.link.not.exist"),
+    HEART_ALREADY_EXISTS(40033, "heart.already.exists"),
+    NOT_SEND_TO_OWN_TEAM(40034, "not.send.to.own.team"),
     EXPIRED(40033, "expired"),
     EXPIRED_MEETING_REQUEST(40033, "expired.meeting.request"),
     EXPIRED_MEETING(40033, "expired.meeting"),

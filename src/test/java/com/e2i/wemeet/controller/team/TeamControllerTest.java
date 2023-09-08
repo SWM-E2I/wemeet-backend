@@ -448,14 +448,14 @@ class TeamControllerTest extends AbstractControllerUnitTest {
     private void readByTeamIdWriteRestDocs(ResultActions perform) throws Exception {
         perform
             .andDo(
-                MockMvcRestDocumentationWrapper.document(
-                    "팀 상세 정보 조회",
+                MockMvcRestDocumentationWrapper.document("팀 상세 정보 조회",
                     ResourceSnippetParameters.builder()
                         .tag("팀 관련 API")
                         .summary("팀 상세 정보 조회 API 입니다.")
-                        .description("팀 ID로 상세정보를 조회합니다.")
-                        .requestSchema(Schema.schema("AccessToken"))
-                        .pathParameters(parameterWithName("teamId").description("팀 ID")),
+                        .description(
+                            """
+                                    팀 ID로 상세정보를 조회합니다.
+                                """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),

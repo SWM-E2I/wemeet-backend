@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `meeting`
     `partner_team_id` bigint      NOT NULL,
     `created_at`      datetime(6) NOT NULL,
     `modified_at`     datetime(6),
+    `chat_link`       varchar(50) NOT NULL,
     `is_over`         tinyint DEFAULT 0,
     PRIMARY KEY (`meeting_id`),
     FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`) ON DELETE CASCADE,
