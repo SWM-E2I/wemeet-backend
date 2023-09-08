@@ -24,10 +24,12 @@ public class TeamInformationDto {
     private final AdditionalActivity additionalActivity;
     private final String introduction;
     private final Boolean isDeleted;
+    private final Boolean isLiked;
 
     @Builder
     public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate,
-        DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction, LocalDateTime deletedAt) {
+        DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction,
+        LocalDateTime deletedAt, Long heartId) {
         this.teamId = teamId;
         this.memberNum = memberNum;
         this.region = region;
@@ -36,11 +38,13 @@ public class TeamInformationDto {
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
         this.isDeleted = deletedAt != null;
+        this.isLiked = heartId != null;
     }
 
     public static TeamInformationDto of(Team team) {
         TeamInformationDto dto = TeamInformationDto.builder()
             .teamId(team.getTeamId())
+            .heartId(1L)
             .memberNum(team.getMemberNum())
             .region(team.getRegion())
             .drinkRate(team.getDrinkRate())
