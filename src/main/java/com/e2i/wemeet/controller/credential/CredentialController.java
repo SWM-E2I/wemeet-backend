@@ -35,7 +35,6 @@ public class CredentialController {
         return ResponseDto.success("휴대폰 인증 번호 발급 성공");
     }
 
-    // todo: 대학 - 메일 연동 작업 필요
     @PostMapping("/mail/request")
     public ResponseDto<Void> requestAuthMail(@RequestBody MailCredentialRequestDto requestDto) {
         requestDto.validateMail();
