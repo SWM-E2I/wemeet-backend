@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: LOCAL server
-  - url: http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com
+  - url: http://ec2-52-78-215-171.ap-northeast-2.compute.amazonaws.com:8080
     description: Develop Server
   - url: http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com
     description: Production Server
@@ -714,7 +714,7 @@ paths:
               examples:
                 팀 상세 정보 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Team Detail Success\"\
-                    ,\"data\":{\"teamId\":1,\"isDeleted\":false,\"memberNum\":4,\"\
+                    ,\"data\":{\"teamId\":1,\"isDeleted\":false,\"isLiked\":true,\"memberNum\":4,\"\
                     region\":\"HONGDAE\",\"drinkRate\":\"LOW\",\"drinkWithGame\":\"\
                     ANY\",\"additionalActivity\":\"CAFE\",\"introduction\":\"안녕하세요\
                     ! 반가워요! 홍대팀 1입니다!!\",\"teamImageUrls\":[\"/v1/test1\",\"/v1/test2\"\
@@ -1558,6 +1558,9 @@ components:
             isDeleted:
               type: boolean
               description: 팀 삭제 여부
+            isLiked:
+              type: boolean
+              description: 좋아요 여부
             drinkRate:
               type: string
               description: 음주 수치

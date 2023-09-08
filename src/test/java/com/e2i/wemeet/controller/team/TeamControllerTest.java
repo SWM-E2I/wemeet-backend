@@ -16,7 +16,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +32,6 @@ import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.epages.restdocs.apispec.Schema;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -194,7 +192,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         LeaderResponseDto leader = LeaderResponseDto.of(kai);
         List<String> imageUrls = List.of("/v1/test1", "/v1/test2", "/v1/test3");
         final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader, imageUrls);
-        given(teamService.readByTeamId(anyLong()))
+        given(teamService.readByTeamId(anyLong(), anyLong()))
             .willReturn(response);
 
         // when
@@ -209,6 +207,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.message").value("Get Team Detail Success"),
                 jsonPath("$.data.teamId").value(1L),
                 jsonPath("$.data.isDeleted").value(false),
+                jsonPath("$.data.isLiked").value(true),
                 jsonPath("$.data.memberNum").value(4),
                 jsonPath("$.data.region").value("HONGDAE"),
                 jsonPath("$.data.drinkRate").value("LOW"),
@@ -226,7 +225,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.leader.leaderLowProfileImageUrl").value("/v1/kai"),
                 jsonPath("$.data.leader.imageAuth").value(false)
             );
-        verify(teamService).readByTeamId(anyLong());
+        verify(teamService).readByTeamId(anyLong(), anyLong());
 
         readByTeamIdWriteRestDocs(perform);
     }
@@ -462,6 +461,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.teamId").type(JsonFieldType.NUMBER).description("팀 ID"),
                         fieldWithPath("data.isDeleted").type(JsonFieldType.BOOLEAN)
                             .description("팀 삭제 여부"),
+                        fieldWithPath("data.isLiked").type(JsonFieldType.BOOLEAN)
+                            .description("팀 좋아요 여부"),
                         fieldWithPath("data.memberNum").type(JsonFieldType.NUMBER)
                             .description("팀 인원수"),
                         fieldWithPath("data.region").type(JsonFieldType.STRING)

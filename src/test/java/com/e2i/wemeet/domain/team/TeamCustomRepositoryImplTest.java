@@ -4,12 +4,16 @@ import static com.e2i.wemeet.domain.member.data.Mbti.ENFJ;
 import static com.e2i.wemeet.domain.member.data.Mbti.ENFP;
 import static com.e2i.wemeet.domain.member.data.Mbti.ESFJ;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
 import static com.e2i.wemeet.support.fixture.TeamImagesFixture.BASIC_TEAM_IMAGE;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
+import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_woman;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
+import com.e2i.wemeet.domain.heart.Heart;
+import com.e2i.wemeet.domain.heart.HeartRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
@@ -35,6 +39,9 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private HeartRepository heartRepository;
 
     @DisplayName("팀 ID로 팀 사진 url을 조회할 수 있다.")
     @Test
@@ -92,13 +99,59 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
         Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kaiTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), kaiTeam.getTeamId())
             .orElseThrow(TeamNotFoundException::new);
 
         //then
         assertThat(teamInformation)
-            .extracting("teamId", "memberNum", "region", "isDeleted")
-            .contains(kaiTeam.getTeamId(), kaiTeam.getMemberNum(), kaiTeam.getRegion(), kaiTeam.isDeleted());
+            .extracting("teamId", "memberNum", "region", "isDeleted", "isLiked")
+            .contains(kaiTeam.getTeamId(), kaiTeam.getMemberNum(), kaiTeam.getRegion(), kaiTeam.isDeleted(), false);
+        assertThat(teamInformation.getTeamMembers()).hasSize(3)
+            .extracting("college", "collegeType", "admissionYear", "mbti")
+            .contains(
+                tuple("고려대", "ENGINEERING", "18", ENFJ),
+                tuple("고려대", "ENGINEERING", "18", ENFP),
+                tuple("인하대", "ENGINEERING", "22", ESFJ)
+            );
+    }
+
+    @DisplayName("좋아요 내역을 조회할 수 있다.")
+    @Test
+    void findHeart() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        heartRepository.save(Heart.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build());
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+            .orElseThrow(TeamNotFoundException::new);
+
+        //then
+        assertThat(teamInformation.getIsLiked()).isTrue();
+    }
+
+    @DisplayName("팀이 없어도 다른 팀 상세정보를 조회할 수 있다.")
+    @Test
+    void findTeamInformationWithoutTeam() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(rim.getMemberId(), kaiTeam.getTeamId())
+            .orElseThrow(TeamNotFoundException::new);
+      
+        // then
+        assertThat(teamInformation)
+            .extracting("teamId", "memberNum", "region", "isDeleted", "isLiked")
+            .contains(kaiTeam.getTeamId(), kaiTeam.getMemberNum(), kaiTeam.getRegion(), kaiTeam.isDeleted(), false);
         assertThat(teamInformation.getTeamMembers()).hasSize(3)
             .extracting("college", "collegeType", "admissionYear", "mbti")
             .contains(
