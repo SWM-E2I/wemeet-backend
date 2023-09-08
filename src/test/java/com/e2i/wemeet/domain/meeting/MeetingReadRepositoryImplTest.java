@@ -22,7 +22,7 @@ import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
-import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
+import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -75,7 +75,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
             // when & then
             assertThatThrownBy(() -> meetingReadRepository.findTeamReferenceByLeaderId(kai.getMemberId()))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
         @DisplayName("올바른 팀 ID로 프록시 팀을 찾을 수 있다.")
@@ -100,7 +100,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
             // when & then
             assertThatThrownBy(() -> meetingReadRepository.findTeamReferenceById(invalidTeamId))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
         @DisplayName("리더의 ID로 팀 ID를 찾을 수 있다.")
@@ -127,7 +127,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
 
             // when
             assertThatThrownBy(() -> meetingReadRepository.findTeamIdByLeaderId(invalidLeaderId))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
     }

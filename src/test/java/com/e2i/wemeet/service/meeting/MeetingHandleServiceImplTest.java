@@ -29,7 +29,7 @@ import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
 import com.e2i.wemeet.exception.badrequest.ExpiredException;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
-import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
+import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
@@ -146,7 +146,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             // when & then
             assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
         @DisplayName("미팅을 신청하는 팀이 삭제되었다면 미팅을 신청할 수 없다.")
@@ -276,7 +276,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             // when & then
             assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
         @DisplayName("쪽지의 길이가 50자 이상이라면 미팅을 신청할 수 없다.")
@@ -436,7 +436,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             // when & then
             assertThatThrownBy(() -> meetingHandleService.rejectRequest(seyun.getMemberId(), meetingRequestId, rejectDateTime))
-                .isExactlyInstanceOf(TeamNotFoundException.class);
+                .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
         @DisplayName("미팅 요청이 3일 이상 되었다면 미팅 신청 상태를 변경할 수 없다.")
