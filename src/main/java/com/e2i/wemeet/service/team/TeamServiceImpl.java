@@ -108,8 +108,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional
     @Override
-    public TeamDetailResponseDto readByTeamId(Long teamId) {
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(teamId)
+    public TeamDetailResponseDto readByTeamId(final Long memberId, final Long teamId) {
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId, teamId)
             .orElseThrow(TeamNotFoundException::new);
         LeaderResponseDto leader = teamRepository.findLeaderByTeamId(teamId)
             .orElseThrow(TeamNotFoundException::new);

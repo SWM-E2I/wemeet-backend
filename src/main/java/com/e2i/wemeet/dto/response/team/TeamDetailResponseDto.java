@@ -11,6 +11,7 @@ import java.util.List;
 public record TeamDetailResponseDto(
     Long teamId,
     Boolean isDeleted,
+    Boolean isLiked,
     Integer memberNum,
     Region region,
     DrinkRate drinkRate,
@@ -28,6 +29,7 @@ public record TeamDetailResponseDto(
         return new TeamDetailResponseDto(
             teamInformationDto.getTeamId(),
             teamInformationDto.getIsDeleted(),
+            teamInformationDto.getIsLiked(),
             teamInformationDto.getMemberNum(),
             teamInformationDto.getRegion(),
             teamInformationDto.getDrinkRate(),

@@ -38,7 +38,7 @@ public class TestTokenInjectionController {
         return ResponseDto.success("member register and access token injection success", member);
     }
 
-    // 특정 유저의
+    // 특정 유저의 access token 을 발급한다.
     @PostMapping("/test/access/{memberId}")
     public ResponseDto<Void> getAccessToken(@PathVariable Long memberId, HttpServletResponse response) {
         Member member = memberRepository.findById(memberId)

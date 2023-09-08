@@ -13,8 +13,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +26,7 @@ import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.Schema;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -186,11 +185,11 @@ class MemberControllerTest extends AbstractControllerUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("회원 탈퇴",
                     ResourceSnippetParameters.builder()
-                        .tag("회원 탈퇴 API")
+                        .tag("회원 관련 API")
                         .summary("회원 탈퇴 API 입니다.")
                         .description(
                             """
-                                    회원 탈퇴를 수행합니다. (deleteAt)
+                                    회원 탈퇴를 수행합니다. (deleteAt 컬럼에 현재 시간을 기록합니다.)
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -265,10 +264,10 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                 MockMvcRestDocumentationWrapper.document("회원 상세 정보 조회",
                     ResourceSnippetParameters.builder()
                         .tag("회원 관련 API")
-                        .summary("회원 상세 정보 조회 API 입니다.")
+                        .summary("로그인된 사용자의 정보를 조회합니다")
                         .description(
                             """
-                                    회원에 대한 상세 정보를 조회합니다.
+                                    AccessToken 을 통해 로그인된 사용자의 상세 정보를 조회합니다.
                                 """),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -298,10 +297,11 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                 MockMvcRestDocumentationWrapper.document("회원 상세 정보 수정",
                     ResourceSnippetParameters.builder()
                         .tag("회원 관련 API")
-                        .summary("회원 상세 정보 수정 API 입니다.")
+                        .summary("회원 상세 정보를 수정합니다")
                         .description(
                             """
                                     회원의 상세 정보를 수정합니다.
+                                    nickname 과 mbti 를 수정할 수 있습니다.
                                 """),
                     requestFields(
                         fieldWithPath("nickname").type(JsonFieldType.STRING)
@@ -326,10 +326,10 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         .summary("회원 Role 정보 조회 API 입니다.")
                         .description(
                             """
-                                    회원의 Role 정보를 조회합니다.
-                                    팀장 여부와 팀 소속 여부를 조회할 수 있습니다.
-                                """),
-                    responseFields(
+                                    사용자의 팀장 여부와 팀 소속 여부를 조회할 수 있습니다.
+                                """
+                        )
+                    , responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.isManager").type(JsonFieldType.BOOLEAN)
@@ -349,15 +349,26 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         .summary("회원 프로필 등록 API 입니다.")
                         .description(
                             """
-                                   회원의 프로필 사진을 등록합니다.
-                                """),
-                    requestParts(
-                        partWithName("file").description("프로필 이미지 파일")),
+                                    회원의 프로필 사진을 등록합니다.
+                                    multipart/form-data 형식으로 요청해야 합니다.
+                                    예시)
+                                    {
+                                        "file": "test"
+                                    }
+                                """)
+                        .requestSchema(Schema.schema("member-profile-image-upload-request"))
+                        .responseSchema(Schema.schema("member-profile-image-upload"))
+                        .requestFields(
+                            fieldWithPath("file").type(JsonFieldType.STRING)
+                                .description("프로필 이미지 파일")
+                        ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data").type(JsonFieldType.NULL)
                             .description("data에는 아무 값도 반환되지 않습니다")
-                    )));
+                    )
+                )
+            );
     }
 }

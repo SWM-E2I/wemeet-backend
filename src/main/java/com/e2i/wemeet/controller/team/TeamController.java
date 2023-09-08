@@ -57,8 +57,8 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}")
-    public ResponseDto<TeamDetailResponseDto> readTeamById(@PathVariable Long teamId) {
-        TeamDetailResponseDto result = teamService.readByTeamId(teamId);
+    public ResponseDto<TeamDetailResponseDto> readTeamById(@MemberId Long memberId, @PathVariable Long teamId) {
+        TeamDetailResponseDto result = teamService.readByTeamId(memberId, teamId);
 
         return ResponseDto.success("Get Team Detail Success", result);
     }

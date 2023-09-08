@@ -2,7 +2,10 @@ package com.e2i.wemeet.config.security.filter;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,7 +101,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("Refresh Token",
                     ResourceSnippetParameters.builder()
-                        .tag("토큰 갱신 요청")
+                        .tag("토큰 관련 API")
                         .summary("RefreshToken 을 사용하여 Access, Refresh Token을 갱신합니다.")
                         .description(
                             """
@@ -106,22 +109,22 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
                                     Access Token과 Refresh Token 을 Header 에 넘겨주어야합니다.
                                     Access Token 은 유저의 값을 받아오는 용도이기 때문에 만료된 상태여도 상관 없습니다.
                                 """
-                        )
-                        .requestHeaders(
-                            headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token"),
-                            headerWithName(JwtEnv.REFRESH.getKey()).description("Refresh Token")
-                        )
-                        .responseHeaders(
-                            headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token"),
-                            headerWithName(JwtEnv.REFRESH.getKey()).description("Refresh Token")
-                        )
-                        .responseFields(
-                            fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                            fieldWithPath("message").type(JsonFieldType.STRING)
-                                .description("응답 메시지"),
-                            fieldWithPath("data").type(JsonFieldType.NULL)
-                                .description("data 는 null 입니다.")
-                        )
+                        ),
+                    requestHeaders(
+                        headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token"),
+                        headerWithName(JwtEnv.REFRESH.getKey()).description("Refresh Token")
+                    ),
+                    responseHeaders(
+                        headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token"),
+                        headerWithName(JwtEnv.REFRESH.getKey()).description("Refresh Token")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                        fieldWithPath("message").type(JsonFieldType.STRING)
+                            .description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.NULL)
+                            .description("data 는 null 입니다.")
+                    )
                 ));
     }
 }

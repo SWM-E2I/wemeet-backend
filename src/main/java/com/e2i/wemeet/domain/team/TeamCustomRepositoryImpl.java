@@ -1,6 +1,7 @@
 package com.e2i.wemeet.domain.team;
 
 import static com.e2i.wemeet.domain.code.QCode.code;
+import static com.e2i.wemeet.domain.heart.QHeart.heart;
 import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
@@ -58,7 +59,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long teamId) {
+    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long memberLeaderId, final Long teamId) {
+        com.e2i.wemeet.domain.team.QTeam myTeam = new com.e2i.wemeet.domain.team.QTeam("myTeam");
         TeamInformationDto teamInformationDto = Optional.ofNullable(queryFactory
                 .select(Projections.constructor(TeamInformationDto.class,
                     team.teamId,
@@ -68,9 +70,15 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     team.drinkWithGame,
                     team.additionalActivity,
                     team.introduction,
-                    team.deletedAt
+                    team.deletedAt,
+                    heart.heartId
                 ))
                 .from(team)
+                .leftJoin(myTeam).on(myTeam.teamLeader.memberId.eq(memberLeaderId))
+                .leftJoin(heart).on(
+                    heart.team.eq(myTeam),
+                    heart.partnerTeam.teamId.eq(teamId)
+                )
                 .where(team.teamId.eq(teamId))
                 .fetchOne())
             .orElseThrow(TeamNotFoundException::new);

@@ -45,7 +45,7 @@ class TokenControllerTest extends AbstractControllerUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("PERSIST LOGIN 요청",
                     ResourceSnippetParameters.builder()
-                        .tag("Persist Login API")
+                        .tag("토큰 관련 API")
                         .summary("AccessToken 을 통해 유저의 상태 정보를 반환합니다.")
                         .description(
                             """

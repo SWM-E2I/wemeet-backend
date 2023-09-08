@@ -1,0 +1,25 @@
+paths:
+  /test/access/{memberId}:
+    post:
+      tags:
+        - Admin API
+      summary: 유저의 ID로 Access Token을 발급합니다.
+      description: 유저의 ID로 Access Token을 발급합니다. 응답으로 'AccessToken' 헤더에 토큰이 반환됩니다.
+      operationId: getAccessToken
+      parameters:
+        - name: memberId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            AccessToken:
+              description: 재생성된 Access Token
+              schema:
+                type: string
+              examples:
+                value: Bearer asdnfoavnoacklasdnvwnefowlansdfaovvz

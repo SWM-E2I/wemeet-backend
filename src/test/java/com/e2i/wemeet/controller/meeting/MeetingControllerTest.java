@@ -12,6 +12,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,7 +23,6 @@ import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.dto.dsl.MeetingInformationDto;
 import com.e2i.wemeet.dto.dsl.MeetingRequestInformationDto;
-import com.e2i.wemeet.dto.request.meeting.MeetingRequestAcceptDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
@@ -32,6 +32,7 @@ import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -84,7 +85,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
         void sendMeetingRequestWithMessage() throws Exception {
             // given
             final Long memberId = 1L;
-            final String message = "a".repeat(50);
+            final String message = "안녕하세요!! 재밌게 놀아봐요ㅎㅎ";
             final SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(
                 1L, message);
             willDoNothing()
@@ -152,12 +153,13 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("쪽지와 미팅 신청",
                         ResourceSnippetParameters.builder()
-                            .tag("쪽지와 함께 미팅 신청")
+                            .tag("미팅 관련 API")
                             .summary("상대 이성 팀에게 쪽지와 함께 미팅을 신청합니다.")
                             .description(
                                 """
                                         상대 이성 팀에게 쪽지와 함께 미팅을 신청합니다.
                                         지정된 개수 만큼의 크레딧이 소모됩니다. (12)
+                                        메시지는 최대 50자까지 입력할 수 있습니다.
                                     """),
                         requestFields(
                             fieldWithPath("partnerTeamId").type(JsonFieldType.NUMBER)
@@ -180,7 +182,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("미팅 신청",
                         ResourceSnippetParameters.builder()
-                            .tag("미팅 신청")
+                            .tag("미팅 관련 API")
                             .summary("상대 이성 팀에게 미팅을 신청합니다.")
                             .description(
                                 """
@@ -213,16 +215,13 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
             // given
             final Long memberId = 1L;
             final Long meetingRequestId = 1L;
-            final MeetingRequestAcceptDto request = new MeetingRequestAcceptDto(
-                "https://open.kakao.com/o/S13kdfs1");
             given(meetingHandleService.acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class)))
                 .willReturn(1L);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/meeting/accept/" + meetingRequestId)
+            ResultActions perform = mockMvc.perform(post("/v1/meeting/accept/{meetingRequestId}", meetingRequestId)
                 .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(request)));
+                .contentType(MediaType.APPLICATION_JSON));
 
             // then
             perform
@@ -248,7 +247,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .willReturn(AcceptStatus.REJECT);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/meeting/reject/" + meetingRequestId)
+            ResultActions perform = mockMvc.perform(post("/v1/meeting/reject/{meetingRequestId}", meetingRequestId)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -271,24 +270,25 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("미팅 신청 수락",
                         ResourceSnippetParameters.builder()
-                            .tag("미팅 신청 수락")
+                            .tag("미팅 관련 API")
                             .summary("미팅 신청을 수락합니다.")
                             .description(
                                 """
                                         상대 이성 팀으로부터 받은 미팅 신청을 수락합니다.
                                         지정된 개수 만큼의 크레딧이 소모됩니다. (5)
-                                    """),
-                        requestFields(
-                            fieldWithPath("kakaoOpenChatLink").type(JsonFieldType.STRING)
-                                .description("미팅 성사 후 대화를 나눌 카카오톡 채팅방")
-                        ),
-                        responseFields(
-                            fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                            fieldWithPath("message").type(JsonFieldType.STRING)
-                                .description("응답 메시지"),
-                            fieldWithPath("data").type(JsonFieldType.NUMBER)
-                                .description("미팅 ID가 반환됩니다.")
-                        )
+                                        data 에는 미팅 ID가 반환됩니다.
+                                    """)
+                            .pathParameters(
+                                parameterWithName("meetingRequestId").description("미팅 신청 ID")
+                            )
+                            .responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                    .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.NUMBER)
+                                    .description("미팅 ID가 반환됩니다.")
+                            )
+                            .responseSchema(Schema.schema("meeting-accepted-response"))
                     ));
         }
 
@@ -297,19 +297,22 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("미팅 신청 거절",
                         ResourceSnippetParameters.builder()
-                            .tag("미팅 신청 거절")
+                            .tag("미팅 관련 API")
                             .summary("미팅 신청을 거절합니다.")
                             .description(
                                 """
                                         상대 이성 팀으로부터 받은 미팅 신청을 거절합니다.
-                                    """),
-                        responseFields(
-                            fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                            fieldWithPath("message").type(JsonFieldType.STRING)
-                                .description("응답 메시지"),
-                            fieldWithPath("data").type(JsonFieldType.STRING)
-                                .description("거절 상태가 반환됩니다.")
-                        )
+                                    """)
+                            .pathParameters(
+                                parameterWithName("meetingRequestId").description("미팅 신청 ID")
+                            )
+                            .responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                    .description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING)
+                                    .description("거절 상태가 반환됩니다.")
+                            )
                     ));
         }
 
@@ -508,12 +511,13 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("성사된 미팅 리스트 조회",
                         ResourceSnippetParameters.builder()
-                            .tag("성사된 미팅 리스트 조회")
+                            .tag("미팅 관련 API")
                             .summary("성사된 미팅 리스트를 조회합니다.")
                             .description(
                                 """
                                         성사된 미팅 리스트를 조회합니다.
                                         상대 팀이 삭제되었거나, 미팅 유효기간이 만료된 경우에는 리스트에 포함되지 않습니다.
+                                        최신순으로 정렬되어 반환됩니다.
                                     """),
                         responseFields(
                             fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
@@ -560,17 +564,20 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("보낸 신청 리스트 조회",
                         ResourceSnippetParameters.builder()
-                            .tag("보낸 신청 리스트 조회")
-                            .summary("보낸 신청 리스트를 조회합니다.")
+                            .tag("미팅 관련 API")
+                            .summary("보낸 미팅 신청 리스트를 조회합니다.")
                             .description(
                                 """
-                                        보낸 신청 리스트를 조회합니다.
+                                        보낸 미팅 신청 리스트를 조회합니다.
                                         상대 팀이 삭제되었거나, 미팅 유효기간이 만료된 경우에는 리스트에 포함되지 않습니다.
+                                        최신순으로 정렬되어 반환됩니다.
                                     """),
                         responseFields(
                             fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                             fieldWithPath("message").type(JsonFieldType.STRING)
                                 .description("응답 메시지"),
+                            fieldWithPath("data").type(JsonFieldType.ARRAY)
+                                .description("보낸 미팅 신청 목록 [배열로 반환]"),
                             fieldWithPath("data[].meetingRequestId").type(JsonFieldType.NUMBER)
                                 .description("미팅 신청 ID"),
                             fieldWithPath("data[].acceptStatus").type(JsonFieldType.STRING)

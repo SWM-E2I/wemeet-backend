@@ -1,8 +1,6 @@
 package com.e2i.wemeet.controller.credential;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -170,15 +168,11 @@ class CredentialControllerTest extends AbstractIntegrationTest {
                 MockMvcRestDocumentationWrapper.document("이메일 인증번호 검증",
                     ResourceSnippetParameters.builder()
                         .tag("인증 관련 API")
-                        .summary("이메일 인증번호가 일치하는지 검증하는 API 입니다.")
+                        .summary("이메일 인증번호가 일치하는지 검증합니다")
                         .description(
                             """
-                                    Mail 인증 번호를 확인하는 API 입니다.
-                                    Header에 AccessToken이 필요합니다.
+                                    이메일로 전송했던 인증 번호가 일치하는지 검증합니다.
                                 """),
-                    requestHeaders(
-                        headerWithName("AccessToken").description("액세스 토큰")
-                    ),
                     requestFields(
                         fieldWithPath("mail").type(JsonFieldType.STRING).description("메일 주소"),
                         fieldWithPath("authCode").type(JsonFieldType.STRING).description("인증 번호")

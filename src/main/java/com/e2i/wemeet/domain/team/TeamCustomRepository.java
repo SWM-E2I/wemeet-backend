@@ -21,6 +21,6 @@ public interface TeamCustomRepository {
     /*
      * 팀 정보 조회
      * */
-    Optional<TeamInformationDto> findTeamInformationByTeamId(Long teamId);
+    Optional<TeamInformationDto> findTeamInformationByTeamId(Long memberLeaderId, Long teamId);
 
 }
