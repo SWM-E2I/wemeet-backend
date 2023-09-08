@@ -20,7 +20,7 @@ public interface MeetingHandleService {
     /*
      * 미팅 신청 수락
      * */
-    Long acceptRequest(Long memberId, Long meetingRequestId, LocalDateTime acceptDateTime);
+    Long acceptRequest(String openChatLink, Long memberId, Long meetingRequestId, LocalDateTime acceptDateTime);
 
     /*
      * 미팅 신청 거절

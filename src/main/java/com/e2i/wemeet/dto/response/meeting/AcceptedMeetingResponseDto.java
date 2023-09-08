@@ -2,7 +2,6 @@ package com.e2i.wemeet.dto.response.meeting;
 
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.dto.dsl.MeetingInformationDto;
-import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

@@ -206,9 +206,5 @@ public class Member extends BaseTimeEntity {
     public boolean isProfileImageExists() {
         return this.profileImage != null;
     }
-
-    public String getCollegeName() {
-        return this.collegeInfo.getCollegeCode().getCodeValue();
-    }
 }
 

@@ -3,7 +3,6 @@ package com.e2i.wemeet.security.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,12 +16,10 @@ import org.springframework.web.servlet.HandlerMapping;
 public class DispatcherServletEndPointChecker implements HttpRequestEndPointChecker {
 
     private final DispatcherServlet dispatcherServlet;
-    private final Pattern pattern = Pattern.compile("/h2-console.*");
 
     @Override
     public boolean isEndPointExist(HttpServletRequest request) {
-        if (StringUtils.hasText(request.getRequestURI()) && pattern.matcher(request.getRequestURI())
-            .matches()) {
+        if (StringUtils.hasText(request.getRequestURI()) && request.getRequestURI().equals("/h2-console")) {
             return true;
         }
 
