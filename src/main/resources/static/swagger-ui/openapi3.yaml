@@ -422,6 +422,95 @@ paths:
                 Refresh Token:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"RefreshToken 을 재발급\
                     하는데 성공했습니다.\",\"data\":null}"
+  /v1/heart/received:
+    get:
+      tags:
+        - 좋아요 관련 API
+      summary: 받은 좋아요 내역을 조회합니다.
+      description: |2
+           나의 팀이 받은 좋아요 내역을 조회합니다.
+            팀이 없는 경우 조회되지 않습니다.
+      operationId: 받은 좋아요 조회
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-heart-received1518558698'
+              examples:
+                받은 좋아요 조회:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Get Received Heart\
+                    \ Detail Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"\
+                    region\":\"신촌\",\"profileImageURL\":\"https://test.image.com\"\
+                    ,\"mainImageURL\":\"https://test.image.com\",\"receivedTime\"\
+                    :\"2023-09-08T16:21:20.625815\",\"leader\":{\"nickname\":\"팀장님\
+                    \",\"mbti\":\"ENFP\",\"college\":\"서울대\"}}]}"
+  /v1/heart/sent:
+    get:
+      tags:
+        - 좋아요 관련 API
+      summary: 보낸 좋아요 내역을 조회합니다.
+      description: |2
+           내가 보낸 좋아요 내역을 조회합니다.
+            팀이 없는 경우 조회되지 않습니다.
+      operationId: 보낸 좋아요 조회
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-heart-sent-306379489'
+              examples:
+                보낸 좋아요 조회:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Get Sent Heart Detail\
+                    \ Success\",\"data\":{\"teamId\":1,\"memberNum\":3,\"region\"\
+                    :\"신촌\",\"profileImageURL\":\"https://test.image.com\",\"mainImageURL\"\
+                    :\"https://test.image.com\",\"sentTime\":\"2023-09-08T16:21:20.558074\"\
+                    ,\"leader\":{\"nickname\":\"팀장님\",\"mbti\":\"ENFP\",\"college\"\
+                    :\"서울대\"}}}"
+  /v1/heart/{partnerTeamId}:
+    post:
+      tags:
+        - 좋아요 관련 API
+      summary: 상대 팀에게 좋아요를 보냅니다.
+      description: |2
+            상대 팀에게 좋아요를 보냅니다.
+            하루에 한 번 가능하며, 본인 팀에게는 보낼 수 없습니다.
+      operationId: 좋아요 보내기
+      security:
+        - AccessToken: [ ]
+      parameters:
+        - name: partnerTeamId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/v1-heart-partnerTeamId486549215'
+            examples:
+              좋아요 보내기:
+                value: _csrf=vZ1KjC03mZYevF1ugCD1zTfXkpXc2wjV4SiMdCiAjBo573Fz2ah4uBkAoKYz3mQN5g3B9ASxv_e_6zn41xq6Fk7ivHsOjhBD
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-1162606117'
+              examples:
+                좋아요 보내기:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Send Heart Success\"\
+                    ,\"data\":null}"
   /v1/meeting/accepted:
     get:
       tags:
@@ -925,12 +1014,56 @@ components:
         partnerTeamId:
           type: number
           description: 상대 이성 팀 ID
+    v1-heart-partnerTeamId486549215:
+      type: object
     v1-auth-phone-issue-817510993:
       type: object
       properties:
         target:
           type: string
           description: 휴대폰 번호
+    v1-heart-sent-306379489:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            leader:
+              type: object
+              properties:
+                college:
+                  type: string
+                  description: 상대 팀 팀장 대학교
+                nickname:
+                  type: string
+                  description: 상대 팀 팀장 닉네임
+                mbti:
+                  type: string
+                  description: 상대 팀 팀장 MBTI
+            mainImageURL:
+              type: string
+              description: 상대 팀 메인 이미지 URL
+            teamId:
+              type: number
+              description: 상대 팀 아이디
+            sentTime:
+              type: string
+              description: 좋아요 보낸 시간
+            memberNum:
+              type: number
+              description: 상대 팀 인원 수
+            region:
+              type: string
+              description: 상대 팀 선호 지역
+            profileImageURL:
+              type: string
+              description: 상대 팀 팀장 프로필 이미지 URL
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-suggestion-check652744771:
       type: object
       properties:
@@ -975,6 +1108,50 @@ components:
             isReceivedSuggestion:
               type: boolean
               description: 오늘의 추천 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-heart-received1518558698:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              leader:
+                type: object
+                properties:
+                  college:
+                    type: string
+                    description: 상대 팀 팀장 대학교
+                  nickname:
+                    type: string
+                    description: 상대 팀 팀장 닉네임
+                  mbti:
+                    type: string
+                    description: 상대 팀 팀장 MBTI
+              mainImageURL:
+                type: string
+                description: 상대 팀 메인 이미지 URL
+              receivedTime:
+                type: string
+                description: 좋아요 받은 시간
+              teamId:
+                type: number
+                description: 상대 팀 아이디
+              memberNum:
+                type: number
+                description: 상대 팀 인원 수
+              region:
+                type: string
+                description: 상대 팀 선호 지역
+              profileImageURL:
+                type: string
+                description: 상대 팀 팀장 프로필 이미지 URL
         message:
           type: string
           description: 응답 메시지
