@@ -1,8 +1,10 @@
 package com.e2i.wemeet.dto.response.team;
 
+import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
+import com.e2i.wemeet.dto.response.suggestion.TeamLeaderResponseDto;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
@@ -16,11 +18,14 @@ public record MyTeamDetailResponseDto(
     String additionalActivity,
     String introduction,
     String chatLink,
+    String profileImageURL,
     List<TeamImageDto> images,
-    List<TeamMemberResponseDto> members
+    List<TeamMemberResponseDto> members,
+    TeamLeaderResponseDto leader
 ) {
 
-    public static MyTeamDetailResponseDto of(Team team, List<TeamImageData> teamImages) {
+    public static MyTeamDetailResponseDto of(Team team, List<TeamImageData> teamImages,
+        Member teamLeader) {
         Optional<AdditionalActivity> additionalActivity = Optional.ofNullable(
             team.getAdditionalActivity());
 
@@ -32,6 +37,12 @@ public record MyTeamDetailResponseDto(
             .additionalActivity(additionalActivity.map(AdditionalActivity::getName).orElse(null))
             .introduction(team.getIntroduction())
             .chatLink(team.getChatLink())
+            .profileImageURL(teamLeader.getProfileImage().getLowUrl())
+            .leader(TeamLeaderResponseDto.builder()
+                .nickname(teamLeader.getNickname())
+                .mbti(teamLeader.getMbti().name())
+                .college(teamLeader.getCollegeInfo().getCollegeCode().getCodeValue()).build()
+            )
             .images(
                 teamImages.stream()
                     .map(teamImage -> TeamImageDto.of(teamImage.url()))

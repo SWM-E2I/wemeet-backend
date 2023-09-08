@@ -103,7 +103,7 @@ public class TeamServiceImpl implements TeamService {
             teamLeader.getCurrentTeam().getTeamId());
 
         return MyTeamResponseDto.of(teamLeader.hasTeam(),
-            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages));
+            MyTeamDetailResponseDto.of(teamLeader.getCurrentTeam(), teamImages, teamLeader));
     }
 
     @Transactional
@@ -147,7 +147,7 @@ public class TeamServiceImpl implements TeamService {
 
             teamImageRepository.save(TeamImage.builder()
                 .team(team)
-                .teamImageUrl(imagePath)
+                .teamImageUrl(HTTPS_ADDRESS + teamImageBucket + AWS_S3_DOMAIN + imagePath)
                 .sequence(sequence + 1)
                 .build());
         }

@@ -188,12 +188,12 @@ class TeamServiceTest {
             assertThat(response.hasTeam()).isTrue();
             assertThat(response.team()).isNotNull()
                 .extracting("memberNum", "region", "drinkRate", "drinkWithGame",
-                    "additionalActivity", "introduction", "members", "chatLink")
+                    "additionalActivity", "introduction", "members", "chatLink", "profileImageURL")
                 .contains(team.getMemberNum(), team.getRegion().getName(),
                     team.getDrinkRate().getName(), team.getDrinkWithGame().getName(),
                     team.getAdditionalActivity().getName(), team.getIntroduction(),
                     List.of(TeamMemberResponseDto.of(TeamMemberFixture.OLIVIA.create())),
-                    team.getChatLink());
+                    team.getChatLink(), teamLeader.getProfileImage().getLowUrl());
         }
 
         @DisplayName("팀이 없는 경우 나의 팀 정보를 조회할 수 없다.")
