@@ -19,7 +19,7 @@ import com.e2i.wemeet.dto.dsl.TeamCheckProxyDto;
 import com.e2i.wemeet.dto.response.meeting.AcceptedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.ReceivedMeetingResponseDto;
 import com.e2i.wemeet.dto.response.meeting.SentMeetingResponseDto;
-import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
+import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -191,7 +191,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
     private Long getTeamIdWithCheckValid(final Optional<TeamCheckProxyDto> teamCheckProxy) {
         return teamCheckProxy
-            .orElseThrow(TeamNotFoundException::new)
+            .orElseThrow(TeamNotExistsException::new)
             .checkValid()
             .getTeamId();
     }
