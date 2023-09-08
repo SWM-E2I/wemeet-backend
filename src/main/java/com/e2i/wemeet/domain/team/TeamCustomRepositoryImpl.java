@@ -1,7 +1,7 @@
 package com.e2i.wemeet.domain.team;
 
 import static com.e2i.wemeet.domain.code.QCode.code;
-import static com.e2i.wemeet.domain.like.QHeart.heart;
+import static com.e2i.wemeet.domain.heart.QHeart.heart;
 import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;

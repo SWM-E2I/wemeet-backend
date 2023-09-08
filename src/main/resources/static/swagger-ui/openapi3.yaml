@@ -492,14 +492,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/v1-heart-partnerTeamId486549215'
-            examples:
-              좋아요 보내기:
-                value: _csrf=vZ1KjC03mZYevF1ugCD1zTfXkpXc2wjV4SiMdCiAjBo573Fz2ah4uBkAoKYz3mQN5g3B9ASxv_e_6zn41xq6Fk7ivHsOjhBD
       responses:
         "200":
           description: "200"

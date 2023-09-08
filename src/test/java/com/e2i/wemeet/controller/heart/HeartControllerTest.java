@@ -10,7 +10,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,8 +45,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                 .given(heartService).sendHeart(memberId, partnerTeamId, requestTime);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/heart/{partnerTeamId}", partnerTeamId)
-                .with(csrf()));
+            ResultActions perform = mockMvc.perform(post("/v1/heart/{partnerTeamId}", partnerTeamId));
 
             // then
             perform
