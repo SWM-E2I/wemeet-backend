@@ -10,6 +10,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,6 +72,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                                 """
                                         상대 팀에게 좋아요를 보냅니다.
                                         하루에 한 번 가능하며, 본인 팀에게는 보낼 수 없습니다.
+
                                     """)
                             .pathParameters(
                                 parameterWithName("partnerTeamId").description("상대 팀 아이디")

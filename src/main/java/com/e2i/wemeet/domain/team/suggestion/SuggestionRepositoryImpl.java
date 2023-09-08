@@ -40,7 +40,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
             .select(Projections.constructor(SuggestionTeamData.class, team,
                 teamImage.teamImageUrl.as("teamMainImageUrl"),
                 Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                    member.profileImage.basicUrl.as("profileImageUrl"),
+                    member.profileImage.lowUrl.as("profileImageUrl"),
                     member.collegeInfo.collegeCode.codeValue.as("college"))))
             .from(team)
             .join(team.teamLeader, member)
@@ -69,7 +69,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
             .select(Projections.constructor(SuggestionTeamData.class, team,
                 teamImage.teamImageUrl.as("teamMainImageUrl"),
                 Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                    member.profileImage.basicUrl.as("profileImageUrl"),
+                    member.profileImage.lowUrl.as("profileImageUrl"),
                     member.collegeInfo.collegeCode.codeValue.as("college"))))
             .from(team)
             .join(team.teamLeader, member)
@@ -111,7 +111,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                 Projections.constructor(SuggestionHistoryData.class, team.teamId, team.memberNum,
                     team.region, teamImage.teamImageUrl.as("teamMainImageUrl"), history.isLiked,
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                        member.profileImage.basicUrl.as("profileImageUrl"),
+                        member.profileImage.lowUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"))))
             .from(history)
             .join(team)
