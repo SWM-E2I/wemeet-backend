@@ -16,6 +16,7 @@ import com.e2i.wemeet.security.provider.SmsUserDetailsService;
 import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
+import com.e2i.wemeet.service.admin.TokenAuthorizationService;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -69,13 +70,15 @@ public class SecurityBeanConfig {
     public RefreshTokenProcessingFilter refreshTokenProcessingFilter(
         RedisTemplate<String, String> redisTemplate, RefreshTokenHandler refreshTokenHandler,
         TokenInjector tokenInjector, ObjectMapper objectMapper,
-        AccessTokenHandler accessTokenHandler) {
+        AccessTokenHandler accessTokenHandler,
+        TokenAuthorizationService tokenAuthorizationService) {
         return new RefreshTokenProcessingFilter(redisTemplate, refreshTokenHandler, tokenInjector,
-            objectMapper, accessTokenHandler);
+            objectMapper, accessTokenHandler, tokenAuthorizationService);
     }
 
     @Bean
-    public RequestEndPointCheckFilter requestEndPointCheckFilter(DispatcherServlet dispatcherServlet) {
+    public RequestEndPointCheckFilter requestEndPointCheckFilter(
+        DispatcherServlet dispatcherServlet) {
         return new RequestEndPointCheckFilter(httpRequestEndPointChecker(dispatcherServlet));
     }
 
@@ -148,13 +151,15 @@ public class SecurityBeanConfig {
 
     // Credit 개수를 확인하는 AuthorizationManager
     @Bean
-    public CostAuthorizationManager authorizationManager(MemberRepository memberRepository, CostRepository costRepository) {
+    public CostAuthorizationManager authorizationManager(MemberRepository memberRepository,
+        CostRepository costRepository) {
         return new CostAuthorizationManager(memberRepository, costRepository, roleHierarchy());
     }
 
     // 요청을 처리할 수 있는 핸들러가 있는지 판별하는 컴포넌트
     @Bean
-    public HttpRequestEndPointChecker httpRequestEndPointChecker(DispatcherServlet dispatcherServlet) {
+    public HttpRequestEndPointChecker httpRequestEndPointChecker(
+        DispatcherServlet dispatcherServlet) {
         return new DispatcherServletEndPointChecker(dispatcherServlet);
     }
 }

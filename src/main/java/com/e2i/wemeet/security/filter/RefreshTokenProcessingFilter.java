@@ -2,6 +2,7 @@ package com.e2i.wemeet.security.filter;
 
 import static org.springframework.http.HttpMethod.POST;
 
+import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.response.ResponseDto;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
 import com.e2i.wemeet.security.token.JwtEnv;
@@ -9,6 +10,7 @@ import com.e2i.wemeet.security.token.Payload;
 import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
+import com.e2i.wemeet.service.admin.TokenAuthorizationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,16 +41,20 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
     private final AccessTokenHandler accessTokenHandler;
 
+    private final TokenAuthorizationService tokenAuthorizationService;
+
     public RefreshTokenProcessingFilter(RedisTemplate<String, String> redisTemplate,
         RefreshTokenHandler refreshTokenHandler,
         TokenInjector tokenInjector, ObjectMapper objectMapper,
-        AccessTokenHandler accessTokenHandler) {
+        AccessTokenHandler accessTokenHandler,
+        TokenAuthorizationService tokenAuthorizationService) {
         this.filterRequestMatcher = new AntPathRequestMatcher(REFRESH_REQUEST_URL, POST.name());
         this.redisTemplate = redisTemplate;
         this.refreshTokenHandler = refreshTokenHandler;
         this.tokenInjector = tokenInjector;
         this.objectMapper = objectMapper;
         this.accessTokenHandler = accessTokenHandler;
+        this.tokenAuthorizationService = tokenAuthorizationService;
     }
 
     @Override
@@ -71,6 +77,10 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         Payload payload = getPayload(request);
 
         validateRefreshToken(request, payload);
+
+        Role role = tokenAuthorizationService.getMemberRoleByMemberId(payload.getMemberId());
+        payload = new Payload(payload.getMemberId(), role.name());
+        
         tokenInjector.injectToken(response, payload);
 
         writeResponse(response, payload);
