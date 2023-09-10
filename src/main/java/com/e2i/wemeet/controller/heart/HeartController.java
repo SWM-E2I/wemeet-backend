@@ -30,11 +30,11 @@ public class HeartController {
 
         return ResponseDto.success("Send Heart Success");
     }
-    
+
     @GetMapping("/sent")
-    public ResponseDto<SentHeartResponseDto> getSentHeart(@MemberId Long memberId) {
+    public ResponseDto<List<SentHeartResponseDto>> getSentHeart(@MemberId Long memberId) {
         LocalDateTime requestTime = LocalDateTime.now();
-        SentHeartResponseDto result = heartService.getSentHeart(memberId, requestTime);
+        List<SentHeartResponseDto> result = heartService.getSentHeart(memberId, requestTime);
 
         return ResponseDto.success("Get Sent Heart Detail Success", result);
     }

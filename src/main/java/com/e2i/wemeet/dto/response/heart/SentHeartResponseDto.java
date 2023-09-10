@@ -29,10 +29,11 @@ public record SentHeartResponseDto(
             ).build();
     }
 
-    public static SentHeartResponseDto of(List<HeartTeamData> data) {
+    public static List<SentHeartResponseDto> of(List<HeartTeamData> data) {
         if (data == null || data.isEmpty()) {
-            return null;
+            return List.of();
         }
-        return SentHeartResponseDto.of(data.get(0));
+
+        return data.stream().map(SentHeartResponseDto::of).toList();
     }
 }
