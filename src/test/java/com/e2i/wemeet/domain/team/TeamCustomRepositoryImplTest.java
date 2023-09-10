@@ -14,6 +14,9 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 import com.e2i.wemeet.domain.heart.Heart;
 import com.e2i.wemeet.domain.heart.HeartRepository;
+import com.e2i.wemeet.domain.meeting.MeetingRequest;
+import com.e2i.wemeet.domain.meeting.MeetingRequestRepository;
+import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
@@ -25,6 +28,8 @@ import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +47,9 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
 
     @Autowired
     private HeartRepository heartRepository;
+
+    @Autowired
+    private MeetingRequestRepository meetingRequestRepository;
 
     @DisplayName("팀 ID로 팀 사진 url을 조회할 수 있다.")
     @Test
@@ -136,6 +144,53 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
         assertThat(teamInformation.getIsLiked()).isTrue();
     }
 
+    @DisplayName("미팅 신청 현황을 조회할 수 있다.")
+    @EnumSource
+    @ParameterizedTest
+    void findMeetingRequestStatus(AcceptStatus acceptStatus) {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        MeetingRequest meetingRequest = MeetingRequest.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build();
+        meetingRequest.changeStatus(acceptStatus);
+
+        meetingRequestRepository.save(meetingRequest);
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+            .orElseThrow(TeamNotFoundException::new);
+
+        System.out.println("teamInformation = " + teamInformation);
+
+        //then
+        assertThat(teamInformation.getMeetingRequestStatus()).isEqualTo(acceptStatus);
+    }
+
+    @DisplayName("미팅 신청내역이 없을 경우 null이 반환된다.")
+    @Test
+    void findMeetingRequestStatusWithoutRequest() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+            .orElseThrow(TeamNotFoundException::new);
+
+        System.out.println("teamInformation = " + teamInformation);
+
+        //then
+        assertThat(teamInformation.getMeetingRequestStatus()).isNull();
+    }
+
     @DisplayName("팀이 없어도 다른 팀 상세정보를 조회할 수 있다.")
     @Test
     void findTeamInformationWithoutTeam() {
@@ -147,7 +202,7 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
         //when
         TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(rim.getMemberId(), kaiTeam.getTeamId())
             .orElseThrow(TeamNotFoundException::new);
-      
+
         // then
         assertThat(teamInformation)
             .extracting("teamId", "memberNum", "region", "isDeleted", "isLiked")
