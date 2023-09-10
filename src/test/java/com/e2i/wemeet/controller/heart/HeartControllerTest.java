@@ -111,7 +111,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     .build())
                 .build();
 
-            given(heartService.getSentHeart(anyLong(), any())).willReturn(result);
+            given(heartService.getSentHeart(anyLong(), any())).willReturn(List.of(result));
 
             // when
             ResultActions perform = mockMvc.perform(get("/v1/heart/sent"));
@@ -122,14 +122,14 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     status().isOk(),
                     jsonPath("$.status").value("SUCCESS"),
                     jsonPath("$.message").value("Get Sent Heart Detail Success"),
-                    jsonPath("$.data.teamId").value(1L),
-                    jsonPath("$.data.region").value("신촌"),
-                    jsonPath("$.data.memberNum").value(3),
-                    jsonPath("$.data.mainImageURL").value("https://test.image.com"),
-                    jsonPath("$.data.profileImageURL").value("https://test.image.com"),
-                    jsonPath("$.data.leader.nickname").value("팀장님"),
-                    jsonPath("$.data.leader.college").value("서울대"),
-                    jsonPath("$.data.leader.mbti").value("ENFP")
+                    jsonPath("$.data[0].teamId").value(1L),
+                    jsonPath("$.data[0].region").value("신촌"),
+                    jsonPath("$.data[0].memberNum").value(3),
+                    jsonPath("$.data[0].mainImageURL").value("https://test.image.com"),
+                    jsonPath("$.data[0].profileImageURL").value("https://test.image.com"),
+                    jsonPath("$.data[0].leader.nickname").value("팀장님"),
+                    jsonPath("$.data[0].leader.college").value("서울대"),
+                    jsonPath("$.data[0].leader.mbti").value("ENFP")
                 );
             verify(heartService).getSentHeart(anyLong(), any());
 
@@ -152,23 +152,23 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                             fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                             fieldWithPath("message").type(JsonFieldType.STRING)
                                 .description("응답 메시지"),
-                            fieldWithPath("data.teamId").type(JsonFieldType.NUMBER)
+                            fieldWithPath("data[].teamId").type(JsonFieldType.NUMBER)
                                 .description("상대 팀 아이디"),
-                            fieldWithPath("data.region").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].region").type(JsonFieldType.STRING)
                                 .description("상대 팀 선호 지역"),
-                            fieldWithPath("data.memberNum").type(JsonFieldType.NUMBER)
+                            fieldWithPath("data[].memberNum").type(JsonFieldType.NUMBER)
                                 .description("상대 팀 인원 수"),
-                            fieldWithPath("data.mainImageURL").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].mainImageURL").type(JsonFieldType.STRING)
                                 .description("상대 팀 메인 이미지 URL"),
-                            fieldWithPath("data.profileImageURL").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].profileImageURL").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 프로필 이미지 URL"),
-                            fieldWithPath("data.sentTime").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].sentTime").type(JsonFieldType.STRING)
                                 .description("좋아요 보낸 시간"),
-                            fieldWithPath("data.leader.nickname").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].leader.nickname").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 닉네임"),
-                            fieldWithPath("data.leader.college").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].leader.college").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 대학교"),
-                            fieldWithPath("data.leader.mbti").type(JsonFieldType.STRING)
+                            fieldWithPath("data[].leader.mbti").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 MBTI")
                         )));
         }
