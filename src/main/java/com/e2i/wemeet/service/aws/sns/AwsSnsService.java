@@ -25,6 +25,7 @@ public class AwsSnsService implements SmsCredentialService {
 
     private final SnsClient snsClient;
     private final RedisTemplate<String, String> redisTemplate;
+    private final String PHONE_CREDENTIAL_MESSAGE_PREFIX = "위밋(We:meet) 인증 번호 ";
 
     @Override
     public void issue(String receiveTarget) {
@@ -52,7 +53,7 @@ public class AwsSnsService implements SmsCredentialService {
     private void sendSms(String phoneNumber, String message) {
         try {
             PublishRequest request = PublishRequest.builder()
-                .message(message)
+                .message(PHONE_CREDENTIAL_MESSAGE_PREFIX + message)
                 .phoneNumber(phoneNumber)
                 .build();
 
