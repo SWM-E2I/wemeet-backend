@@ -175,21 +175,23 @@ class HeartServiceTest extends AbstractServiceTest {
                 .build());
 
             // when
-            SentHeartResponseDto result = heartService.getSentHeart(member.getMemberId(),
+            List<SentHeartResponseDto> result = heartService.getSentHeart(member.getMemberId(),
                 LocalDateTime.now());
 
             // then
             assertThat(result).isNotNull();
-            assertThat(result.teamId()).isEqualTo(partnerTeam.getTeamId());
-            assertThat(result.memberNum()).isEqualTo(partnerTeam.getMemberNum());
-            assertThat(result.region()).isEqualTo(partnerTeam.getRegion().getName());
-            assertThat(result.profileImageURL()).isEqualTo(partner.getProfileImage().getBasicUrl());
-            assertThat(result.mainImageURL()).isEqualTo(BASIC_TEAM_IMAGE.getTeamImages().get(0));
-            assertThat(result.sentTime()).isNotNull();
-            assertThat(result.leader()).isNotNull();
-            assertThat(result.leader().nickname()).isEqualTo(partner.getNickname());
-            assertThat(result.leader().mbti()).isEqualTo(partner.getMbti().name());
-            assertThat(result.leader().college()).isEqualTo(
+            assertThat(result.get(0).teamId()).isEqualTo(partnerTeam.getTeamId());
+            assertThat(result.get(0).memberNum()).isEqualTo(partnerTeam.getMemberNum());
+            assertThat(result.get(0).region()).isEqualTo(partnerTeam.getRegion().getName());
+            assertThat(result.get(0).profileImageURL()).isEqualTo(
+                partner.getProfileImage().getBasicUrl());
+            assertThat(result.get(0).mainImageURL()).isEqualTo(
+                BASIC_TEAM_IMAGE.getTeamImages().get(0));
+            assertThat(result.get(0).sentTime()).isNotNull();
+            assertThat(result.get(0).leader()).isNotNull();
+            assertThat(result.get(0).leader().nickname()).isEqualTo(partner.getNickname());
+            assertThat(result.get(0).leader().mbti()).isEqualTo(partner.getMbti().name());
+            assertThat(result.get(0).leader().college()).isEqualTo(
                 partner.getCollegeInfo().getCollegeCode().getCodeValue());
         }
 
