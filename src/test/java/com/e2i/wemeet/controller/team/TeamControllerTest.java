@@ -210,6 +210,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.teamId").value(1L),
                 jsonPath("$.data.isDeleted").value(false),
                 jsonPath("$.data.isLiked").value(true),
+                jsonPath("$.data.meetingRequestStatus").value("PENDING"),
+                jsonPath("$.data.memberHasTeam").value(true),
                 jsonPath("$.data.memberNum").value(4),
                 jsonPath("$.data.region").value("HONGDAE"),
                 jsonPath("$.data.drinkRate").value("LOW"),
@@ -473,6 +475,18 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("팀 삭제 여부"),
                         fieldWithPath("data.isLiked").type(JsonFieldType.BOOLEAN)
                             .description("팀 좋아요 여부"),
+                        fieldWithPath("data.meetingRequestStatus").type(JsonFieldType.STRING)
+                            .description(
+                                """
+                                        미팅 요청 상태
+                                        ACCEPT (미팅 성사됨),
+                                        PENDING (요청 대기중),
+                                        REJECT (요청 거절당함),
+                                        EXPIRED (요청 만료됨),
+                                        null (요청 내역 없음) 중 하나
+                                    """),
+                        fieldWithPath("data.memberHasTeam").type(JsonFieldType.BOOLEAN)
+                            .description("요청을 한 유저가 팀에 속해있는지 여부를 반환합니다."),
                         fieldWithPath("data.memberNum").type(JsonFieldType.NUMBER)
                             .description("팀 인원수"),
                         fieldWithPath("data.region").type(JsonFieldType.STRING)
