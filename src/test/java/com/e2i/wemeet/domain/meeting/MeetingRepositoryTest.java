@@ -58,4 +58,20 @@ class MeetingRepositoryTest extends AbstractRepositoryUnitTest {
             .extracting(Meeting::getIsOver)
             .contains(true, true);
     }
+
+    @DisplayName("팀장의 핸드폰 번호를 조회할 수 있다.")
+    @Test
+    void findTeamLeaderPhoneNumber() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        teamRepository.delete(kaiTeam);
+        Team kaiTeamSecond = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        // when
+        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(kaiTeamSecond.getTeamId());
+
+        // then
+        assertThat(leaderPhoneNumber).isEqualTo(KAI.getPhoneNumber());
+    }
 }
