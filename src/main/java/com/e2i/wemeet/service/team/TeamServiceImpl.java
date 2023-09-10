@@ -41,12 +41,13 @@ public class TeamServiceImpl implements TeamService {
     private final CodeRepository codeRepository;
 
     private final S3Service s3Service;
-
-    private static final String HTTPS_ADDRESS = "https://";
-    private static final String AWS_S3_DOMAIN = ".s3.ap-northeast-2.amazonaws.com/";
+    
 
     @Value("${aws.s3.teamImageBucket}")
     private String teamImageBucket;
+
+    @Value("${aws.cloudFront.teamImageDomain}")
+    private String teamImageDomain;
 
     @Transactional
     @Override
@@ -109,7 +110,8 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public TeamDetailResponseDto readByTeamId(final Long memberId, final Long teamId) {
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId, teamId)
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId,
+                teamId)
             .orElseThrow(TeamNotFoundException::new);
         LeaderResponseDto leader = teamRepository.findLeaderByTeamId(teamId)
             .orElseThrow(TeamNotFoundException::new);
@@ -147,7 +149,7 @@ public class TeamServiceImpl implements TeamService {
 
             teamImageRepository.save(TeamImage.builder()
                 .team(team)
-                .teamImageUrl(HTTPS_ADDRESS + teamImageBucket + AWS_S3_DOMAIN + imagePath)
+                .teamImageUrl(teamImageDomain + imagePath)
                 .sequence(sequence + 1)
                 .build());
         }
