@@ -702,14 +702,15 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-team-teamId1852923051'
+                $ref: '#/components/schemas/v1-team-teamDetailResponse'
               examples:
                 팀 상세 정보 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Team Detail Success\"\
-                    ,\"data\":{\"teamId\":1,\"isDeleted\":false,\"isLiked\":true,\"memberNum\":4,\"\
-                    region\":\"HONGDAE\",\"drinkRate\":\"LOW\",\"drinkWithGame\":\"\
-                    ANY\",\"additionalActivity\":\"CAFE\",\"introduction\":\"안녕하세요\
-                    ! 반가워요! 홍대팀 1입니다!!\",\"teamImageUrls\":[\"/v1/test1\",\"/v1/test2\"\
+                    ,\"data\":{\"teamId\":1,\"isDeleted\":false,\"isLiked\":true,\"\
+                    meetingRequestStatus\":\"PENDING\",\"memberHasTeam\":true,\"memberNum\"\
+                    :4,\"region\":\"HONGDAE\",\"drinkRate\":\"LOW\",\"drinkWithGame\"\
+                    :\"ANY\",\"additionalActivity\":\"CAFE\",\"introduction\":\"안녕\
+                    하세요! 반가워요! 홍대팀 1입니다!!\",\"teamImageUrls\":[\"/v1/test1\",\"/v1/test2\"\
                     ,\"/v1/test3\"],\"teamMembers\":[{\"college\":\"고려대\",\"collegeType\"\
                     :\"자연공학\",\"admissionYear\":\"18\",\"mbti\":\"ENFJ\"},{\"college\"\
                     :\"고려대\",\"collegeType\":\"자연공학\",\"admissionYear\":\"18\",\"\
@@ -1272,6 +1273,110 @@ components:
               profileImageURL:
                 type: string
                 description: 추천 팀 팀장 프로필 이미지
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-team-teamDetailResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            leader:
+              type: object
+              properties:
+                collegeName:
+                  type: string
+                  description: 팀장 대학교
+                leaderLowProfileImageUrl:
+                  type: string
+                  description: 팀장 프로필 사진
+                collegeType:
+                  type: string
+                  description: 팀장 학과
+                admissionYear:
+                  type: string
+                  description: 팀장 학번
+                nickname:
+                  type: string
+                  description: 팀장 닉네임
+                mbti:
+                  type: string
+                  description: 팀장 MBTI
+                imageAuth:
+                  type: boolean
+                  description: 팀장 프로필 사진 인증 여부
+                leaderId:
+                  type: number
+                  description: 팀장 ID
+            isLiked:
+              type: boolean
+              description: 팀 좋아요 여부
+            additionalActivity:
+              type: string
+              description: 취미 및 관심사
+            teamMembers:
+              type: array
+              items:
+                type: object
+                properties:
+                  college:
+                    type: string
+                    description: 대학교 명
+                  collegeType:
+                    type: string
+                    description: 학과
+                  admissionYear:
+                    type: string
+                    description: 학번
+                  mbti:
+                    type: string
+                    description: MBTI
+            memberNum:
+              type: number
+              description: 팀 인원수
+            drinkWithGame:
+              type: string
+              description: 술게임 여부
+            isDeleted:
+              type: boolean
+              description: 팀 삭제 여부
+            drinkRate:
+              type: string
+              description: 음주 수치
+            teamId:
+              type: number
+              description: 팀 ID
+            memberHasTeam:
+              type: boolean
+              description: 요청을 한 유저가 팀에 속해있는지 여부를 반환합니다.
+            meetingRequestStatus:
+              type: string
+              description: |2
+                    미팅 요청 상태
+                    ACCEPT (미팅 성사됨),
+                    PENDING (요청 대기중),
+                    REJECT (요청 거절당함),
+                    EXPIRED (요청 만료됨),
+                    null (요청 내역 없음) 중 하나
+            region:
+              type: string
+              description: 선호 지역
+            introduction:
+              type: string
+              description: 팀 소개
+            teamImageUrls:
+              type: array
+              description: 팀 사진 URL
+              items:
+                oneOf:
+                  - type: object
+                  - type: boolean
+                  - type: string
+                  - type: number
         message:
           type: string
           description: 응답 메시지
