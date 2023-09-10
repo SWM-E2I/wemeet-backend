@@ -21,11 +21,11 @@ import software.amazon.awssdk.services.sns.model.SnsException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AwsSnsService implements SmsCredentialService {
+public class AwsSmsCredentialService implements SmsCredentialService {
 
     private final SnsClient snsClient;
     private final RedisTemplate<String, String> redisTemplate;
-    private final String PHONE_CREDENTIAL_MESSAGE_PREFIX = "위밋(We:meet) 인증 번호 ";
+    private final String PHONE_CREDENTIAL_MESSAGE_PREFIX = "[위밋] 인증 번호 ";
 
     @Override
     public void issue(String receiveTarget) {
