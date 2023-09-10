@@ -7,6 +7,7 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.exception.notfound.CostNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
+import com.e2i.wemeet.service.meeting.MeetingEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -25,6 +26,11 @@ public class CostService {
     private final MemberRepository memberRepository;
     private final CostRepository costRepository;
     private final CostHistoryRepository costHistoryRepository;
+
+    @EventListener(classes = MeetingEvent.class)
+    public void meetingSpend(final MeetingEvent event) {
+        spend(event.spendEvent());
+    }
 
     @EventListener(classes = SpendEvent.class)
     public void spend(final SpendEvent event) {

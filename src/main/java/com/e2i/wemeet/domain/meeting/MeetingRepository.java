@@ -20,4 +20,15 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long>, Meeting
     @Query("select mt from Meeting mt where mt.meetingId in :meetingIdList")
     List<Meeting> findByMeetingIdIn(@Param("meetingIdList") Collection<Long> meetingIdList);
 
+    /*
+     * 팀장의 핸드폰 번호 조회
+     * */
+    @Query("""
+        select m.phoneNumber
+        from Member m
+        join Team t on t.teamLeader.memberId = m.memberId and t.deletedAt is null
+        where t.teamId = :teamId
+        """)
+    String findLeaderPhoneNumberById(@Param("teamId") final Long teamId);
+
 }
