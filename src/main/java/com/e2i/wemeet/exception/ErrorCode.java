@@ -77,6 +77,7 @@ public enum ErrorCode {
     UNAUTHORIZED_MEMBER_PROFILE(40305, "unauthorized.member.profile"),
     UNAUTHORIZED_PROFILE_IMAGE(40306, "unauthorized.profile.image"),
     UNAUTHORIZED_UNIV(40307, "unauthorized.univ"),
+    NOT_EQUAL_ROLE_TO_TOKEN(40308, "not.equal.role.to.token"),
 
     DATA_ACCESS(40400, "data.access"),
 

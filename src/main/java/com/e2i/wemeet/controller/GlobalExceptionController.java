@@ -4,6 +4,7 @@ import static com.e2i.wemeet.exception.ErrorCode.DATA_ACCESS;
 import static com.e2i.wemeet.exception.ErrorCode.HTTP_MESSAGE_NOT_READABLE;
 import static com.e2i.wemeet.exception.ErrorCode.METHOD_ARGUMENT_NOT_VALID;
 import static com.e2i.wemeet.exception.ErrorCode.MISSING_REQUEST_PARAMETER;
+import static com.e2i.wemeet.exception.ErrorCode.NOT_EQUAL_ROLE_TO_TOKEN;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED_ROLE;
 import static com.e2i.wemeet.exception.ErrorCode.UNEXPECTED_INTERNAL;
 import static com.e2i.wemeet.exception.ErrorCode.VALIDATION_ERROR;
@@ -15,6 +16,7 @@ import com.e2i.wemeet.exception.badrequest.DuplicatedValueException;
 import com.e2i.wemeet.exception.badrequest.InvalidValueException;
 import com.e2i.wemeet.exception.internal.InternalServerException;
 import com.e2i.wemeet.exception.notfound.NotFoundException;
+import com.e2i.wemeet.exception.token.NotEqualRoleToTokenException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -132,16 +134,31 @@ public class GlobalExceptionController {
             .body(ErrorResponse.fail(code, message));
     }
 
+    @ExceptionHandler(NotEqualRoleToTokenException.class)
+    public ResponseEntity<ErrorResponse> handleNotEqualRoleException(
+        final NotEqualRoleToTokenException e) {
+        final int code = NOT_EQUAL_ROLE_TO_TOKEN.getCode();
+        final String message = messageSourceAccessor.getMessage(
+            NOT_EQUAL_ROLE_TO_TOKEN.getMessageKey());
+
+        log.info(UNAUTHORIZED_LOG_FORMAT, e.getClass().getSimpleName(), code, message);
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse.fail(code, message));
+    }
+
     // SQL 관련 예외 핸들링 + sql & sql 예외 원인 Logging
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleDatabaseAccessException(final DataAccessException e) {
+    public ResponseEntity<ErrorResponse> handleDatabaseAccessException(
+        final DataAccessException e) {
         final int code = DATA_ACCESS.getCode();
 
         String message = messageSourceAccessor.getMessage(DATA_ACCESS.getMessageKey());
         if (e.getCause() instanceof JDBCException sqlException) {
             String sql = sqlException.getSQL();
             String sqlMessage = sqlException.getErrorMessage().split("SQL statement:")[0];
-            log.warn(SQL_ERROR_LOG_FORMAT, sqlException.getSQLException().getClass().getName(), sql, sqlMessage);
+            log.warn(SQL_ERROR_LOG_FORMAT, sqlException.getSQLException().getClass().getName(), sql,
+                sqlMessage);
         } else {
             log.info(ERROR_LOG_FORMAT, e.getClass().getName(), code, message);
         }
@@ -183,7 +200,8 @@ public class GlobalExceptionController {
         final String message = messageSourceAccessor.getMessage(
             VALIDATION_ERROR.getMessageKey());
 
-        log.info(ERROR_LOG_FORMAT + ", causeMessage: {}", e.getClass().getName(), code, message, e.getCause().getMessage());
+        log.info(ERROR_LOG_FORMAT + ", causeMessage: {}", e.getClass().getName(), code, message,
+            e.getCause().getMessage());
         return ResponseEntity
             .ok()
             .body(ErrorResponse.fail(code, message));

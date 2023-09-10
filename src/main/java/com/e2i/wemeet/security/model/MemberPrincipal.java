@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
@@ -52,9 +53,15 @@ public class MemberPrincipal implements UserDetails {
     public boolean isRegistered() {
         return this.authorities.stream()
             .map(GrantedAuthority::getAuthority)
-            .filter(authorities -> authorities.equals(Role.getRoleAttachedPrefix(Role.GUEST.name())))
+            .filter(
+                authorities -> authorities.equals(Role.getRoleAttachedPrefix(Role.GUEST.name())))
             .findFirst()
             .orElseGet(() -> null) == null;
+    }
+
+    public boolean hasManagerRole() {
+        return AuthorityUtils.authorityListToSet(getAuthorities())
+            .contains(Role.getRoleAttachedPrefix(Role.MANAGER.name()));
     }
 
     public Long getMemberId() {
@@ -117,7 +124,8 @@ public class MemberPrincipal implements UserDetails {
             return false;
         }
         MemberPrincipal that = (MemberPrincipal) o;
-        return Objects.equals(memberId, that.memberId) && Objects.equals(authorities, that.authorities);
+        return Objects.equals(memberId, that.memberId) && Objects.equals(authorities,
+            that.authorities);
     }
 
     @Override

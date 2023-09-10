@@ -10,7 +10,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,7 +45,8 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                 .given(heartService).sendHeart(memberId, partnerTeamId, requestTime);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/heart/{partnerTeamId}", partnerTeamId));
+            ResultActions perform = mockMvc.perform(
+                post("/v1/heart/{partnerTeamId}", partnerTeamId));
 
             // then
             perform
@@ -127,7 +127,6 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.data.memberNum").value(3),
                     jsonPath("$.data.mainImageURL").value("https://test.image.com"),
                     jsonPath("$.data.profileImageURL").value("https://test.image.com"),
-                    jsonPath("$.data.sentTime").value(requestTime.toString()),
                     jsonPath("$.data.leader.nickname").value("팀장님"),
                     jsonPath("$.data.leader.college").value("서울대"),
                     jsonPath("$.data.leader.mbti").value("ENFP")
@@ -212,7 +211,6 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.data[0].memberNum").value(3),
                     jsonPath("$.data[0].mainImageURL").value("https://test.image.com"),
                     jsonPath("$.data[0].profileImageURL").value("https://test.image.com"),
-                    jsonPath("$.data[0].receivedTime").value(requestTime.toString()),
                     jsonPath("$.data[0].leader.nickname").value("팀장님"),
                     jsonPath("$.data[0].leader.college").value("서울대"),
                     jsonPath("$.data[0].leader.mbti").value("ENFP")

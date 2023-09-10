@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.member;
 
+import com.e2i.wemeet.domain.member.data.Role;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m.credit from Member m where m.memberId = :memberId")
     Optional<Integer> findCreditByMemberId(@Param("memberId") Long memberId);
 
+    @Query("select m.role from Member m where m.memberId = :memberId")
+    Role findRoleByMemberId(Long memberId);
 }
