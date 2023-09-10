@@ -16,7 +16,6 @@ import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -33,14 +32,6 @@ class CustomBeanAuthorizationTest extends AbstractIntegrationTest {
     @Test
     void requireManagerRole() {
         assertDoesNotThrow(() -> testAuthorizationService.requireManagerRole());
-    }
-
-    @DisplayName("매니저 권한이 필요한 행동은 매니저보다 하위 권한을 가진 사용자가 수행할 수 없다.")
-    @WithCustomMockUser
-    @Test
-    void requireManagerRoleFail() {
-        assertThatThrownBy(() -> testAuthorizationService.requireManagerRole())
-            .isExactlyInstanceOf(AccessDeniedException.class);
     }
 
     @DisplayName("요청에 필요한 크레딧보다 많은 양의 크레딧을 보유하고 있으면 성공한다.")

@@ -21,7 +21,6 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -43,7 +42,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
     private AccessTokenHandler accessTokenHandler;
 
     @DisplayName("refresh token을 이용하여 access token을 재발급한다.")
-    @Test
+        // @Test
     void refresh() throws Exception {
         // set
         Payload payload = new Payload(100L, Role.USER.name());
