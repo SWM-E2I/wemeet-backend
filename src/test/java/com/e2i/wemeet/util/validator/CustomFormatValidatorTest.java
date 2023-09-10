@@ -36,6 +36,27 @@ class CustomFormatValidatorTest {
             .isThrownBy(() -> CustomFormatValidator.validateEmailFormat(email));
     }
 
+    @DisplayName("주어진 입력 값이 이메일 형식에 맞으면 예외가 발생하지 않는다.")
+    @CsvSource({
+        "sign32@gmail.com, false",
+        "adsnvaosdv@avcksv, false",
+        "dfadsf-ad, false",
+        "sdfign12772@naver.com, false",
+        "sign773@gs.anyang.ac.kr, true",
+        "aovnaidsv123@korea.ac.kr, true",
+    })
+    @ParameterizedTest
+    void validateEmailFormat(String email, boolean expected) {
+        // when
+        if (expected) {
+            assertThatNoException()
+                .isThrownBy(() -> CustomFormatValidator.validateEmailFormat(email));
+        } else {
+            assertThatThrownBy(() -> CustomFormatValidator.validateEmailFormat(email))
+                .isExactlyInstanceOf(InvalidDataFormatException.class);
+        }
+    }
+
     @DisplayName("주어진 입력 값이 이메일 형식에 맞지 않으면 예외가 발생한다.")
     @ValueSource(strings = {"sign@!@#aver.cvav.com", "sign0121@naver.com"})
     @ParameterizedTest
@@ -117,4 +138,5 @@ class CustomFormatValidatorTest {
                 .isExactlyInstanceOf(InvalidDataFormatException.class);
         }
     }
+
 }
