@@ -2,6 +2,7 @@ package com.e2i.wemeet.domain.team;
 
 import static com.e2i.wemeet.domain.code.QCode.code;
 import static com.e2i.wemeet.domain.heart.QHeart.heart;
+import static com.e2i.wemeet.domain.meeting.QMeetingRequest.meetingRequest;
 import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
@@ -71,13 +72,19 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     team.additionalActivity,
                     team.introduction,
                     team.deletedAt,
-                    heart.heartId
+                    meetingRequest.acceptStatus,
+                    heart.heartId,
+                    myTeam.teamId
                 ))
                 .from(team)
                 .leftJoin(myTeam).on(myTeam.teamLeader.memberId.eq(memberLeaderId))
                 .leftJoin(heart).on(
                     heart.team.eq(myTeam),
                     heart.partnerTeam.teamId.eq(teamId)
+                )
+                .leftJoin(meetingRequest).on(
+                    meetingRequest.team.eq(myTeam),
+                    meetingRequest.partnerTeam.teamId.eq(teamId)
                 )
                 .where(team.teamId.eq(teamId))
                 .fetchOne())

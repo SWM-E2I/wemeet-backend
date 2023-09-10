@@ -1,5 +1,6 @@
 package com.e2i.wemeet.dto.dsl;
 
+import com.e2i.wemeet.domain.meeting.data.AcceptStatus;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.data.AdditionalActivity;
 import com.e2i.wemeet.domain.team.data.DrinkRate;
@@ -24,12 +25,14 @@ public class TeamInformationDto {
     private final AdditionalActivity additionalActivity;
     private final String introduction;
     private final Boolean isDeleted;
+    private final AcceptStatus meetingRequestStatus;
     private final Boolean isLiked;
+    private final Boolean memberHasTeam;
 
     @Builder
     public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate,
         DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction,
-        LocalDateTime deletedAt, Long heartId) {
+        LocalDateTime deletedAt, AcceptStatus meetingRequestStatus, Long heartId, Long requestMemberTeamId) {
         this.teamId = teamId;
         this.memberNum = memberNum;
         this.region = region;
@@ -38,7 +41,9 @@ public class TeamInformationDto {
         this.additionalActivity = additionalActivity;
         this.introduction = introduction;
         this.isDeleted = deletedAt != null;
+        this.meetingRequestStatus = meetingRequestStatus;
         this.isLiked = heartId != null;
+        this.memberHasTeam = requestMemberTeamId != null;
     }
 
     public static TeamInformationDto of(Team team) {
@@ -52,6 +57,8 @@ public class TeamInformationDto {
             .additionalActivity(team.getAdditionalActivity())
             .introduction(team.getIntroduction())
             .deletedAt(team.getDeletedAt())
+            .meetingRequestStatus(AcceptStatus.PENDING)
+            .requestMemberTeamId(1L)
             .build();
 
         dto.setTeamMember(team.getTeamMembers());
@@ -68,5 +75,23 @@ public class TeamInformationDto {
         this.teamMembers = teamMembers.stream()
             .map(TeamMemberResponseDto::of)
             .toList();
+    }
+
+    @Override
+    public String toString() {
+        return "TeamInformationDto{" +
+            "teamId=" + teamId +
+            ", teamMembers=" + teamMembers +
+            ", memberNum=" + memberNum +
+            ", region=" + region +
+            ", drinkRate=" + drinkRate +
+            ", drinkWithGame=" + drinkWithGame +
+            ", additionalActivity=" + additionalActivity +
+            ", introduction='" + introduction + '\'' +
+            ", isDeleted=" + isDeleted +
+            ", meetingRequestStatus=" + meetingRequestStatus +
+            ", isLiked=" + isLiked +
+            ", memberHasTeam=" + memberHasTeam +
+            '}';
     }
 }
