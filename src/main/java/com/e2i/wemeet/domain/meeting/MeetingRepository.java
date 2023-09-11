@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.meeting;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -30,5 +31,17 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long>, Meeting
         where t.teamId = :teamId
         """)
     String findLeaderPhoneNumberById(@Param("teamId") final Long teamId);
+
+    /*
+     * 미팅이 이미 존재하는지 조회
+     * */
+    @Query("""
+        select mt.createdAt from Meeting mt
+        join mt.partnerTeam pt
+        join mt.team t
+        join MeetingRequest mr on mr.partnerTeam = pt and mr.team = t
+        where mr.meetingRequestId = :meetingRequestId
+        """)
+    List<LocalDateTime> findCreatedAtByMeetingRequestId(@Param("meetingRequestId") final Long meetingRequestId);
 
 }
