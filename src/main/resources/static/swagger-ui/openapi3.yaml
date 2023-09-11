@@ -379,6 +379,8 @@ paths:
         \ 갱신합니다. \n\n    Access Token과 Refresh Token 을 Header 에 넘겨주어야합니다.\n    Access\
         \ Token 은 유저의 값을 받아오는 용도이기 때문에 만료된 상태여도 상관 없습니다.\n"
       operationId: Refresh Token
+      security:
+        - AccessToken: [ ]
       parameters:
         - name: AccessToken
           in: header
