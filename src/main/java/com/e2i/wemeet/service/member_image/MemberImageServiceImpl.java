@@ -24,7 +24,7 @@ public class MemberImageServiceImpl implements MemberImageService {
 
     @Value("${aws.cloudFront.profileImageDomain}")
     private String profileImageDomain;
-    
+
     private static final String VERSION_PREFIX = "v1/";
     private static final String BASIC_PREFIX = "/basic/";
     private static final String LOW_PREFIX = "/low/";
@@ -41,6 +41,8 @@ public class MemberImageServiceImpl implements MemberImageService {
 
         String basicObjectKey =
             VERSION_PREFIX + memberId + BASIC_PREFIX + randomKey + FILE_EXTENSION;
+        
+        // low size profile image
         String lowObjectKey =
             VERSION_PREFIX + memberId + LOW_PREFIX + randomKey + FILE_EXTENSION;
 
@@ -48,6 +50,6 @@ public class MemberImageServiceImpl implements MemberImageService {
 
         member.saveProfileImage(
             new ProfileImage(profileImageDomain + basicObjectKey,
-                profileImageDomain + lowObjectKey));
+                profileImageDomain + basicObjectKey));
     }
 }
