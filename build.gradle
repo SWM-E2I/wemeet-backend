@@ -101,7 +101,7 @@ openapi3 {
                 description = "LOCAL server"
             },
             {
-                url = "http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com"
+                url = "http://ec2-52-78-215-171.ap-northeast-2.compute.amazonaws.com:8080"
                 description = "Develop Server"
             },
             {

@@ -10,6 +10,8 @@ import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.REJECT;
 import static com.e2i.wemeet.exception.ErrorCode.ACCEPT_STATUS_IS_NOT_PENDING;
 import static com.e2i.wemeet.exception.ErrorCode.EXPIRED_MEETING_REQUEST;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED;
+import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingAcceptMessage;
+import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingRequestMessage;
 import static com.e2i.wemeet.util.validator.CustomExpirationValidator.isExpiredOfDays;
 
 import com.e2i.wemeet.domain.meeting.Meeting;
@@ -26,7 +28,6 @@ import com.e2i.wemeet.exception.badrequest.ExpiredException;
 import com.e2i.wemeet.exception.notfound.MeetingRequestNotFound;
 import com.e2i.wemeet.security.manager.CostAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
-import com.e2i.wemeet.service.cost.SpendEvent;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        eventPublisher.publishEvent(SpendEvent.of(MEETING_REQUEST, memberLeaderId));
+        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
     }
 
     @Transactional
@@ -79,7 +80,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        eventPublisher.publishEvent(SpendEvent.of(MEETING_REQUEST_WITH_MESSAGE, memberLeaderId));
+        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
     }
 
     @Transactional
@@ -93,8 +94,10 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         validateAbleToHandlingMeetingRequest(acceptDateTime, memberLeaderId, meetingRequest);
         meetingRequest.changeStatus(ACCEPT);
 
-        // 이벤트 발행
-        eventPublisher.publishEvent(SpendEvent.of(MEETING_ACCEPT, memberLeaderId));
+        // 미팅 성사 이벤트 발행
+        Team myTeam = meetingRequest.getTeam();
+        String leaderNickname = meetingRequest.getPartnerTeam().getTeamLeader().getNickname();
+        publishMeetingEvent(getMeetingAcceptMessage(leaderNickname), memberLeaderId, myTeam);
 
         return saveMeeting(meetingRequest).getMeetingId();
     }
@@ -153,6 +156,14 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         if (!Objects.equals(leaderTeamId, partnerTeamId)) {
             throw new BadRequestException(UNAUTHORIZED);
         }
+    }
+
+    // 미팅 이벤트 발행
+    private void publishMeetingEvent(final String message, final Long memberLeaderId, final Team targetTeam) {
+        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(targetTeam.getTeamId());
+        eventPublisher.publishEvent(
+            MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST, memberLeaderId)
+        );
     }
 
 }
