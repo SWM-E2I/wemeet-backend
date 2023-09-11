@@ -10,7 +10,6 @@ import com.e2i.wemeet.dto.dsl.HeartTeamData;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,16 +19,11 @@ import org.springframework.stereotype.Repository;
 public class HeartCustomRepositoryImpl implements HeartCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-    private static final LocalTime boundaryTime = LocalTime.of(23, 11);
 
     @Override
     public List<HeartTeamData> findSentHeart(Long teamId,
         LocalDateTime requestedTime) {
-        LocalDateTime boundaryDateTime = requestedTime.with(boundaryTime);
-
-        if (requestedTime.isBefore(boundaryDateTime)) {
-            boundaryDateTime = boundaryDateTime.minusDays(1);
-        }
+        LocalDateTime beforeTime = requestedTime.minusDays(1);
 
         return queryFactory
             .select(
@@ -50,7 +44,7 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
             .on(teamImage.team.teamId.eq(heart.partnerTeam.teamId))
             .where(team.teamId.eq(teamId))
             .where(team.deletedAt.isNull())
-            .where(heart.createdAt.between(boundaryDateTime, requestedTime))
+            .where(heart.createdAt.between(beforeTime, requestedTime))
             .where(teamImage.sequence.eq(1))
             .fetch();
     }
@@ -58,11 +52,7 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
     @Override
     public List<HeartTeamData> findReceivedHeart(Long teamId,
         LocalDateTime requestedTime) {
-        LocalDateTime boundaryDateTime = requestedTime.with(boundaryTime);
-
-        if (requestedTime.isBefore(boundaryDateTime)) {
-            boundaryDateTime = boundaryDateTime.minusDays(1);
-        }
+        LocalDateTime beforeTime = requestedTime.minusDays(1);
 
         return queryFactory
             .select(
@@ -82,7 +72,7 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
             .on(teamImage.team.teamId.eq(heart.team.teamId))
             .where(team.teamId.eq(teamId))
             .where(team.deletedAt.isNull())
-            .where(heart.createdAt.between(boundaryDateTime, requestedTime))
+            .where(heart.createdAt.between(beforeTime, requestedTime))
             .where(teamImage.sequence.eq(1))
             .fetch();
     }
