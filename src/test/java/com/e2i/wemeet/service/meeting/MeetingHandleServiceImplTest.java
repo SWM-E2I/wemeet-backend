@@ -2,8 +2,11 @@ package com.e2i.wemeet.service.meeting;
 
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.ACCEPT;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.EXPIRED;
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.REJECT;
+import static com.e2i.wemeet.support.fixture.MeetingFixture.BASIC_MEETING;
 import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.BASIC_REQUEST;
+import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.WITH_OUT_MESSAGE;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.MemberFixture.SEYUN;
@@ -27,11 +30,14 @@ import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
+import com.e2i.wemeet.exception.badrequest.DuplicateMeetingRequestException;
 import com.e2i.wemeet.exception.badrequest.ExpiredException;
+import com.e2i.wemeet.exception.badrequest.MeetingAlreadyExistException;
 import com.e2i.wemeet.exception.badrequest.TeamHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedRoleException;
+import com.e2i.wemeet.support.config.ReflectionUtils;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
@@ -87,7 +93,61 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             assertThat(meetingRequests).hasSize(1)
                 .extracting("team", "partnerTeam", "acceptStatus", "message")
                 .contains(
-                    tuple(kaiTeam, rimTeam, AcceptStatus.PENDING, null)
+                    tuple(kaiTeam, rimTeam, PENDING, null)
+                );
+            assertThat(kai.getCredit()).isLessThan(kaiCredit);
+        }
+
+        @DisplayName("이미 미팅 신청을 보낸 팀이라면 미팅을 신청할 수 없다.")
+        @Test
+        void preventDuplicateMeetingRequest() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            meetingRequestRepository.save(WITH_OUT_MESSAGE.create(kaiTeam, rimTeam));
+
+            SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            // when & then
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+                .isExactlyInstanceOf(DuplicateMeetingRequestException.class);
+
+            MeetingRequest meetingRequest = WITH_OUT_MESSAGE.create(kaiTeam, rimTeam);
+            meetingRequest.changeStatus(REJECT);
+            meetingRequestRepository.save(meetingRequest);
+        }
+
+        @DisplayName("이미 미팅 신청을 보낸 팀이더라도, 해당 신청 상태가 '대기중'이 아니라면 미팅 신청을 보낼 수 있다.")
+        @Test
+        void preventDuplicateMeetingRequestBeforeRequestExpired() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            MeetingRequest meetingRequest = WITH_OUT_MESSAGE.create(kaiTeam, rimTeam);
+            meetingRequest.changeStatus(REJECT);
+            meetingRequestRepository.save(meetingRequest);
+
+            SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            final int kaiCredit = kai.getCredit();
+
+            // when
+            meetingHandleService.sendRequest(request, kai.getMemberId());
+
+            // then
+            List<MeetingRequest> meetingRequests = meetingRequestRepository.findAllByTeamAndAcceptStatus(kaiTeam, PENDING);
+            assertThat(meetingRequests).hasSize(1)
+                .extracting("team", "partnerTeam", "acceptStatus", "message")
+                .contains(
+                    tuple(kaiTeam, rimTeam, PENDING, null)
                 );
             assertThat(kai.getCredit()).isLessThan(kaiCredit);
         }
@@ -212,7 +272,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             assertThat(meetingRequests).hasSize(1)
                 .extracting("team", "partnerTeam", "acceptStatus", "message")
                 .contains(
-                    tuple(kaiTeam, rimTeam, AcceptStatus.PENDING, message)
+                    tuple(kaiTeam, rimTeam, PENDING, message)
                 );
             assertThat(kai.getCredit()).isLessThan(kaiCredit);
         }
@@ -339,6 +399,69 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             assertThat(rim.getCredit()).isLessThan(rimCredit);
         }
+
+        @DisplayName("받았던 미팅 신청을 여러번 수락할 수 없다.")
+        @Test
+        void handleRequestToAcceptTwice() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam))
+                .getMeetingRequestId();
+            final LocalDateTime now = LocalDateTime.now();
+
+            setAuthentication(rim.getMemberId(), "MANAGER");
+
+            // when
+            meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequestId, now);
+
+            // then
+            assertThatThrownBy(() -> meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequestId, now))
+                .isExactlyInstanceOf(MeetingAlreadyExistException.class);
+        }
+
+        @DisplayName("이전에 같은 팀과의 만료된 미팅 이력이 있더라도 미팅을 수락할 수 있다.")
+        @Test
+        void handleRequestToAcceptBeforeExpiredMeeting() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            // 만료된 미팅 생성
+            meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam));
+            Meeting meeting = meetingRepository.save(BASIC_MEETING.create(kaiTeam, rimTeam));
+            final LocalDateTime meetingAcceptTime = LocalDateTime.of(2021, 8, 15, 13, 0);
+            ReflectionUtils.setFieldValueToSuperClassField(meeting, "createdAt", meetingAcceptTime);
+            entityManager.flush();
+            entityManager.clear();
+
+            final Long meetingRequestId = meetingRequestRepository.save(BASIC_REQUEST.create(kaiTeam, rimTeam)).getMeetingRequestId();
+            final LocalDateTime now = LocalDateTime.now();
+            setAuthentication(rim.getMemberId(), "MANAGER");
+
+            // when
+            Long meetingId = meetingHandleService.acceptRequest(rim.getMemberId(), meetingRequestId, now);
+
+            // then
+            MeetingRequest findRequest = meetingRequestRepository.findById(meetingRequestId)
+                .orElseThrow();
+            Meeting findMeeting = meetingRepository.findById(meetingId)
+                .orElseThrow();
+
+            assertAll(
+                () -> assertThat(findRequest).isNotNull()
+                    .extracting("acceptStatus", "message")
+                    .contains(ACCEPT, BASIC_REQUEST.getMessage()),
+                () -> assertThat(findMeeting).isNotNull()
+                    .extracting("team", "partnerTeam", "isOver")
+                    .contains(kaiTeam, rimTeam, false));
+        }
+
 
         @DisplayName("미팅 신청을 수락하면 크레딧이 차감된다.")
         @Test
