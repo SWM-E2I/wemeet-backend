@@ -697,14 +697,15 @@ paths:
                     meetingRequestStatus\":\"PENDING\",\"memberHasTeam\":true,\"memberNum\"\
                     :4,\"region\":\"HONGDAE\",\"drinkRate\":\"LOW\",\"drinkWithGame\"\
                     :\"ANY\",\"additionalActivity\":\"CAFE\",\"introduction\":\"안녕\
-                    하세요! 반가워요! 홍대팀 1입니다!!\",\"teamImageUrls\":[\"/v1/test1\",\"/v1/test2\"\
-                    ,\"/v1/test3\"],\"teamMembers\":[{\"college\":\"고려대\",\"collegeType\"\
-                    :\"자연공학\",\"admissionYear\":\"18\",\"mbti\":\"ENFJ\"},{\"college\"\
-                    :\"고려대\",\"collegeType\":\"자연공학\",\"admissionYear\":\"18\",\"\
-                    mbti\":\"ENFP\"},{\"college\":\"인하대\",\"collegeType\":\"자연공학\"\
-                    ,\"admissionYear\":\"22\",\"mbti\":\"ESFJ\"}],\"leader\":{\"leaderId\"\
-                    :1,\"nickname\":\"카이\",\"mbti\":\"INFJ\",\"collegeName\":\"안양대\
-                    \",\"collegeType\":\"SOCIAL\",\"admissionYear\":\"17\",\"leaderLowProfileImageUrl\"\
+                    하세요! 반가워요! 홍대팀 1입니다!!\",\"chatLink\":\"https://open.kakao.com/o/ajsds1ik\"\
+                    ,\"teamImageUrls\":[\"/v1/test1\",\"/v1/test2\",\"/v1/test3\"\
+                    ],\"teamMembers\":[{\"college\":\"고려대\",\"collegeType\":\"자연공학\
+                    \",\"admissionYear\":\"18\",\"mbti\":\"ENFJ\"},{\"college\":\"\
+                    고려대\",\"collegeType\":\"자연공학\",\"admissionYear\":\"18\",\"mbti\"\
+                    :\"ENFP\"},{\"college\":\"인하대\",\"collegeType\":\"자연공학\",\"admissionYear\"\
+                    :\"22\",\"mbti\":\"ESFJ\"}],\"leader\":{\"leaderId\":1,\"nickname\"\
+                    :\"카이\",\"mbti\":\"INFJ\",\"collegeName\":\"안양대\",\"collegeType\"\
+                    :\"SOCIAL\",\"admissionYear\":\"17\",\"leaderLowProfileImageUrl\"\
                     :\"/v1/kai\",\"imageAuth\":false}}}"
   /v1/auth/mail/request:
     post:
@@ -1557,6 +1558,9 @@ components:
             teamId:
               type: number
               description: 팀 ID
+            chatLink:
+              type: string
+              description: 카카오톡 오픈 채팅방 링크
             memberHasTeam:
               type: boolean
               description: 요청을 한 유저가 팀에 속해있는지 여부를 반환합니다.

@@ -112,8 +112,8 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
 
         //then
         assertThat(teamInformation)
-            .extracting("teamId", "memberNum", "region", "isDeleted", "isLiked")
-            .contains(kaiTeam.getTeamId(), kaiTeam.getMemberNum(), kaiTeam.getRegion(), kaiTeam.isDeleted(), false);
+            .extracting("teamId", "memberNum", "region", "isDeleted", "isLiked", "chatLink")
+            .contains(kaiTeam.getTeamId(), kaiTeam.getMemberNum(), kaiTeam.getRegion(), kaiTeam.isDeleted(), false, HONGDAE_TEAM_1.getChatLink());
         assertThat(teamInformation.getTeamMembers()).hasSize(3)
             .extracting("college", "collegeType", "admissionYear", "mbti")
             .contains(

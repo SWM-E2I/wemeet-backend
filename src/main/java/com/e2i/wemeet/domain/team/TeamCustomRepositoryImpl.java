@@ -65,6 +65,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         TeamInformationDto teamInformationDto = Optional.ofNullable(queryFactory
                 .select(Projections.constructor(TeamInformationDto.class,
                     team.teamId,
+                    team.chatLink,
                     team.memberNum,
                     team.region,
                     team.drinkRate,

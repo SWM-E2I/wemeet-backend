@@ -21,6 +21,7 @@ public record TeamDetailResponseDto(
     DrinkWithGame drinkWithGame,
     AdditionalActivity additionalActivity,
     String introduction,
+    String chatLink,
     List<String> teamImageUrls,
     List<TeamMemberResponseDto> teamMembers,
     LeaderResponseDto leader
@@ -41,6 +42,7 @@ public record TeamDetailResponseDto(
             teamInformationDto.getDrinkWithGame(),
             teamInformationDto.getAdditionalActivity(),
             teamInformationDto.getIntroduction(),
+            teamInformationDto.getChatLink(),
             teamImageUrls,
             teamInformationDto.getTeamMembers(),
             leader
