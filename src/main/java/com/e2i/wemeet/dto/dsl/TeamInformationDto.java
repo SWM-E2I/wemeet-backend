@@ -17,6 +17,7 @@ import lombok.Getter;
 public class TeamInformationDto {
 
     private final Long teamId;
+    private final String chatLink;
     private List<TeamMemberResponseDto> teamMembers;
     private final Integer memberNum;
     private final Region region;
@@ -30,10 +31,11 @@ public class TeamInformationDto {
     private final Boolean memberHasTeam;
 
     @Builder
-    public TeamInformationDto(Long teamId, Integer memberNum, Region region, DrinkRate drinkRate,
+    public TeamInformationDto(Long teamId, String chatLink, Integer memberNum, Region region, DrinkRate drinkRate,
         DrinkWithGame drinkWithGame, AdditionalActivity additionalActivity, String introduction,
         LocalDateTime deletedAt, AcceptStatus meetingRequestStatus, Long heartId, Long requestMemberTeamId) {
         this.teamId = teamId;
+        this.chatLink = chatLink;
         this.memberNum = memberNum;
         this.region = region;
         this.drinkRate = drinkRate;
