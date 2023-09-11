@@ -218,6 +218,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.drinkWithGame").value("ANY"),
                 jsonPath("$.data.additionalActivity").value("CAFE"),
                 jsonPath("$.data.introduction").value("안녕하세요! 반가워요! 홍대팀 1입니다!!"),
+                jsonPath("$.data.chatLink").value(HONGDAE_TEAM_1.getChatLink()),
                 jsonPath("$.data.teamImageUrls").isArray(),
                 jsonPath("$.data.teamMembers").isArray(),
                 jsonPath("$.data.leader.leaderId").value(1L),
@@ -499,6 +500,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                             .description("취미 및 관심사"),
                         fieldWithPath("data.introduction").type(JsonFieldType.STRING)
                             .description("팀 소개"),
+                        fieldWithPath("data.chatLink").type(JsonFieldType.STRING)
+                            .description("카카오톡 오픈 채팅방 링크"),
                         fieldWithPath("data.teamImageUrls").type(JsonFieldType.ARRAY)
                             .description("팀 사진 URL"),
                         fieldWithPath("data.teamMembers[].college").type(JsonFieldType.STRING)

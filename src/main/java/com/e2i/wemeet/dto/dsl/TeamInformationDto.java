@@ -51,6 +51,7 @@ public class TeamInformationDto {
     public static TeamInformationDto of(Team team) {
         TeamInformationDto dto = TeamInformationDto.builder()
             .teamId(team.getTeamId())
+            .chatLink(team.getChatLink())
             .heartId(1L)
             .memberNum(team.getMemberNum())
             .region(team.getRegion())
