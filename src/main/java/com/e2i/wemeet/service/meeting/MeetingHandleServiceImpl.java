@@ -10,6 +10,7 @@ import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.REJECT;
 import static com.e2i.wemeet.exception.ErrorCode.ACCEPT_STATUS_IS_NOT_PENDING;
 import static com.e2i.wemeet.exception.ErrorCode.EXPIRED_MEETING_REQUEST;
 import static com.e2i.wemeet.exception.ErrorCode.UNAUTHORIZED;
+import static com.e2i.wemeet.service.meeting.MeetingListServiceImpl.MEETING_EXPIRE_DAY;
 import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingAcceptMessage;
 import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingRequestMessage;
 import static com.e2i.wemeet.util.validator.CustomExpirationValidator.isExpiredOfDays;
@@ -24,7 +25,9 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingRequestDto;
 import com.e2i.wemeet.dto.request.meeting.SendMeetingWithMessageRequestDto;
 import com.e2i.wemeet.exception.badrequest.BadRequestException;
+import com.e2i.wemeet.exception.badrequest.DuplicateMeetingRequestException;
 import com.e2i.wemeet.exception.badrequest.ExpiredException;
+import com.e2i.wemeet.exception.badrequest.MeetingAlreadyExistException;
 import com.e2i.wemeet.exception.notfound.MeetingRequestNotFound;
 import com.e2i.wemeet.security.manager.CostAuthorize;
 import com.e2i.wemeet.security.manager.IsManager;
@@ -52,6 +55,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
+        checkDuplicateMeetingRequest(team, partnerTeam);
 
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
@@ -70,6 +74,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     public void sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
+        checkDuplicateMeetingRequest(team, partnerTeam);
 
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
@@ -90,6 +95,7 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)
             .orElseThrow(MeetingRequestNotFound::new)
             .checkValid();
+        checkDuplicateMeetingAccept(meetingRequestId, acceptDateTime);
 
         validateAbleToHandlingMeetingRequest(acceptDateTime, memberLeaderId, meetingRequest);
         meetingRequest.changeStatus(ACCEPT);
@@ -164,6 +170,24 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         eventPublisher.publishEvent(
             MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST, memberLeaderId)
         );
+    }
+
+    // 중복된 미팅 요청인지 검증
+    private void checkDuplicateMeetingRequest(Team team, Team partnerTeam) {
+        meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(team.getTeamId(), partnerTeam.getTeamId())
+            .ifPresent(meetingRequestId -> {
+                throw new DuplicateMeetingRequestException();
+            });
+    }
+
+    // 미팅 수락 요청이 중복인지 검증
+    private void checkDuplicateMeetingAccept(Long meetingRequestId, LocalDateTime acceptDateTime) {
+        meetingRepository.findCreatedAtByMeetingRequestId(meetingRequestId).stream()
+            .filter(createdAt -> !isExpiredOfDays(createdAt, acceptDateTime, MEETING_EXPIRE_DAY))
+            .findAny()
+            .ifPresent(createdAt -> {
+                throw new MeetingAlreadyExistException();
+            });
     }
 
 }
