@@ -30,6 +30,9 @@ public record ReceivedHeartResponseDto(
     }
 
     public static List<ReceivedHeartResponseDto> of(List<HeartTeamData> data) {
+        if (data == null || data.isEmpty()) {
+            return List.of();
+        }
         return data.stream().map(ReceivedHeartResponseDto::of).toList();
     }
 }

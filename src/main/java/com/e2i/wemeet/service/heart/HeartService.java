@@ -9,7 +9,7 @@ public interface HeartService {
 
     void sendHeart(Long memberId, Long partnerTeamId, LocalDateTime requestTime);
 
-    SentHeartResponseDto getSentHeart(Long memberId, LocalDateTime requestTime);
+    List<SentHeartResponseDto> getSentHeart(Long memberId, LocalDateTime requestTime);
 
     List<ReceivedHeartResponseDto> getReceivedHeart(Long memberId, LocalDateTime requestTime);
 }

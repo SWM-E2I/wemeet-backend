@@ -57,7 +57,7 @@ public class HeartServiceImpl implements HeartService {
 
     @Transactional(readOnly = true)
     @Override
-    public SentHeartResponseDto getSentHeart(Long memberId, LocalDateTime requestTime) {
+    public List<SentHeartResponseDto> getSentHeart(Long memberId, LocalDateTime requestTime) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
