@@ -440,7 +440,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 );
             verify(meetingListService).getSentRequestList(anyLong(), any(LocalDateTime.class));
 
-            getMeetingListWriteRestDocs(perform);
+            getSentMeetingListWriteRestDocs(perform);
         }
 
         @DisplayName("받은 미팅 신청 리스트를 조회할 수 있다.")
@@ -503,7 +503,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 );
             verify(meetingListService).getReceiveRequestList(anyLong(), any(LocalDateTime.class));
 
-            getMeetingListWriteRestDocs(perform);
+            getReceivedMeetingListWriteRestDocs(perform);
         }
 
         private void getAcceptMeetingListWriteRestDocs(ResultActions perform) throws Exception {
@@ -559,7 +559,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     ));
         }
 
-        private void getMeetingListWriteRestDocs(ResultActions perform) throws Exception {
+        private void getSentMeetingListWriteRestDocs(ResultActions perform) throws Exception {
             perform
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("보낸 신청 리스트 조회",
@@ -605,7 +605,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                             fieldWithPath("data[].leader.collegeName").type(JsonFieldType.STRING)
                                 .description("팀장 대학교 이름"),
                             fieldWithPath("data[].leader.leaderLowProfileImageUrl").type(
-                                JsonFieldType.STRING).description("팀장 저화질 프로필 이미지 URL"),
+                                JsonFieldType.STRING).description("팀장 프로필 이미지 URL"),
                             fieldWithPath("data[].leader.collegeType").type(JsonFieldType.STRING)
                                 .description("팀장 학과"),
                             fieldWithPath("data[].leader.admissionYear").type(JsonFieldType.STRING)
@@ -620,6 +620,66 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     ));
         }
 
+        private void getReceivedMeetingListWriteRestDocs(ResultActions perform) throws Exception {
+            perform
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("받은 미팅 신청 리스트 조회",
+                        ResourceSnippetParameters.builder()
+                            .tag("미팅 관련 API")
+                            .summary("받은 미팅 신청 리스트를 조회합니다.")
+                            .description(
+                                """
+                                        우리 팀이 받은 미팅 신청 리스트를 조회합니다.
+                                        상대 팀이 삭제되었거나, 미팅 유효기간이 만료된 경우에는 리스트에 포함되지 않습니다.
+                                        최신순으로 정렬되어 반환됩니다.
+                                    """),
+                        responseFields(
+                            fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                            fieldWithPath("message").type(JsonFieldType.STRING)
+                                .description("응답 메시지"),
+                            fieldWithPath("data").type(JsonFieldType.ARRAY)
+                                .description("보낸 미팅 신청 목록 [배열로 반환]"),
+                            fieldWithPath("data[].meetingRequestId").type(JsonFieldType.NUMBER)
+                                .description("미팅 신청 ID"),
+                            fieldWithPath("data[].acceptStatus").type(JsonFieldType.STRING)
+                                .description("응답 상태"),
+                            fieldWithPath("data[].requestTime").type(JsonFieldType.STRING)
+                                .description("미팅 신청 시간"),
+                            fieldWithPath("data[].partnerTeamDeleted").type(JsonFieldType.BOOLEAN)
+                                .description("상대 팀 삭제 여부"),
+                            fieldWithPath("data[].teamId").type(JsonFieldType.NUMBER)
+                                .description("팀 ID"),
+                            fieldWithPath("data[].memberCount").type(JsonFieldType.NUMBER)
+                                .description("팀 인원 수"),
+                            fieldWithPath("data[].region").type(JsonFieldType.STRING)
+                                .description("지역"),
+                            fieldWithPath("data[].message").type(JsonFieldType.STRING)
+                                .description("쪽지 내용"),
+                            fieldWithPath("data[].teamProfileImageUrl").type(JsonFieldType.ARRAY)
+                                .description("팀 프로필 이미지 URL"),
+                            fieldWithPath("data[].leader.leaderId").type(JsonFieldType.NUMBER)
+                                .description("팀장 ID"),
+                            fieldWithPath("data[].leader.nickname").type(JsonFieldType.STRING)
+                                .description("팀장 닉네임"),
+                            fieldWithPath("data[].leader.mbti").type(JsonFieldType.STRING)
+                                .description("팀장 MBTI"),
+                            fieldWithPath("data[].leader.collegeName").type(JsonFieldType.STRING)
+                                .description("팀장 대학교 이름"),
+                            fieldWithPath("data[].leader.leaderLowProfileImageUrl").type(
+                                JsonFieldType.STRING).description("팀장 프로필 이미지 URL"),
+                            fieldWithPath("data[].leader.collegeType").type(JsonFieldType.STRING)
+                                .description("팀장 학과"),
+                            fieldWithPath("data[].leader.admissionYear").type(JsonFieldType.STRING)
+                                .description("팀장 학번"),
+                            fieldWithPath("data[].leader.imageAuth").type(JsonFieldType.BOOLEAN)
+                                .description("팀장 프로필 인증 여부"),
+                            fieldWithPath("data[].pending").type(JsonFieldType.BOOLEAN)
+                                .description("미팅 신청 대기 여부"),
+                            fieldWithPath("data[].deleted").type(JsonFieldType.BOOLEAN)
+                                .description("미팅 신청 삭제 여부")
+                        )
+                    ));
+        }
 
     }
 
