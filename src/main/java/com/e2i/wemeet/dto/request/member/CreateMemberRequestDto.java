@@ -44,7 +44,7 @@ public record CreateMemberRequestDto(
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo.toCollegeInfo(collegeCode))
             .mbti(Mbti.valueOf(this.mbti))
-            .credit(10)
+            .credit(40)
             .imageAuth(false)
             .role(Role.USER)
             .build();
