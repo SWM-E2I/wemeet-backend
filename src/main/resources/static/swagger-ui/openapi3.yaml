@@ -19,6 +19,8 @@ paths:
       summary: 유저의 ID로 Access Token을 발급합니다.
       description: 유저의 ID로 Access Token을 발급합니다. 응답으로 'AccessToken' 헤더에 토큰이 반환됩니다.
       operationId: getAccessToken
+      security:
+        - AccessToken: [ ]
       parameters:
         - name: memberId
           in: path
@@ -36,6 +38,27 @@ paths:
                 type: string
               examples:
                 value: Bearer asdnfoavnoacklasdnvwnefowlansdfaovvz
+  /v1/credit:
+    get:
+      tags:
+        - 크레딧 관련 API
+      summary: 로그인한 사용자의 크레딧을 조회합니다
+      description: |2
+            로그인한 사용자의 크레딧을 조회합니다.
+      operationId: 크레딧 조회
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-credit1610375099'
+              examples:
+                크레딧 조회:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Getting User's Credit\
+                    \ Success\",\"data\":30}"
   /v1/meeting:
     post:
       tags:
@@ -209,7 +232,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-team455789247'
+                $ref: '#/components/schemas/v1-team-1407123040'
               examples:
                 마이 팀 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get My Team Detail\
@@ -217,50 +240,35 @@ paths:
                     :2,\"region\":\"신촌\",\"drinkRate\":\"술은 기분 좋을 정도로만\",\"drinkWithGame\"\
                     :\"상관 없어\",\"additionalActivity\":\"카페/맛집\",\"introduction\":\"\
                     안녕하세요! 반가워요! 여자 2인 팀입니다!\",\"chatLink\":\"https://open.kakao.com/o/djsi23di\"\
-                    ,\"images\":[{\"url\":\"testUrl\"}],\"members\":[{\"college\"\
-                    :\"인하대\",\"collegeType\":\"자연공학\",\"admissionYear\":\"22\",\"\
-                    mbti\":\"INTJ\"}]}}}"
+                    ,\"profileImageURL\":\"/v1/rim\",\"images\":[{\"url\":\"testUrl\"\
+                    }],\"members\":[{\"college\":\"인하대\",\"collegeType\":\"자연공학\"\
+                    ,\"admissionYear\":\"22\",\"mbti\":\"INTJ\"}],\"leader\":{\"nickname\"\
+                    :\"째림\",\"mbti\":\"ISFJ\",\"college\":\"서울여대\"}}}}"
     put:
       tags:
         - 팀 관련 API
       summary: 팀 수정 API 입니다.
-      description: |2
-            나의 팀 정보를 수정합니다.
-            multipart/form-data 데이터로 보내주어야함 (data는 json!)
-            part - 'images': 사진 파일
-            part - 'data': 팀 수정 요청 데이터
-
-            :: 팀 생성과 동일!
-      
-            // Multipart Form Data
-            "data" : {
-            	"region" : String, // HONGDAE, GANGNAM, SINCHON, GUNDAE 중 하나
-            	"drinkRate" : String, // ZERO, LOW, MIDDLE, HIGH
-            	"drinkWithGame" : String, // ANY, MASTER, BEGINNER, HATER 중 하나
-            	"additionalActivity" : String, // nullable // SHOW, SPORTS, UNIQUE_EXPERIENCE, OUTDOOR_ACTIVITY, CAFE 중 하나
-            	"introduction" : String, // 150 제한 
-            	"members" : [ // 사이즈 최소 1, 최대 3
-            							{
-            								"collegeInfo": {
-            									"collegeCode": String, // College CODE 값을 전달 ex) CE-001 
-            									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
-            									"admissionYear" : String, 
-            								},
-            								"mbti" : String // 잘 모를 경우 "XXXX"
-            							}, 
-            							{
-            								"collegeInfo": {
-            									"collegeCode": String, // College CODE 값을 전달 ex) CE-001 
-            									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
-            									"admissionYear" : String, 
-            								},
-            								"mbti" : String // 잘 모를 경우 "XXXX"
-            							}	
-            					],
-            	"chatLink" : String, //not null
-            },
-
-            "images": File[], // 최소 1장, 최대 10장
+      description: "    나의 팀 정보를 수정합니다.\n    multipart/form-data 데이터로 보내주어야함 (data는\
+        \ json!)\n    part - 'images': 사진 파일\n    part - 'data': 팀 수정 요청 데이터\n\n \
+        \   :: 팀 생성과 동일!\n\n    \"data\" : {\n    \t\"region\" : String, // HONGDAE,\
+        \ GANGNAM, SINCHON, GUNDAE 중 하나\n    \t\"drinkRate\" : String, // ZERO, LOW,\
+        \ MIDDLE, HIGH\n    \t\"drinkWithGame\" : String, // ANY, MASTER, BEGINNER,\
+        \ HATER 중 하나\n    \t\"additionalActivity\" : String, // nullable // SHOW,\
+        \ SPORTS, UNIQUE_EXPERIENCE, OUTDOOR_ACTIVITY, CAFE 중 하나\n    \t\"introduction\"\
+        \ : String, // 150 제한 \n    \t\"members\" : [ // 사이즈 최소 1, 최대 3\n    \t\t\t\
+        \t\t\t\t{\n    \t\t\t\t\t\t\t\t\"collegeInfo\": {\n    \t\t\t\t\t\t\t\t\t\"\
+        collegeCode\": String, // College CODE 값을 전달 ex) CE-001 \n    \t\t\t\t\t\t\
+        \t\t\t\"collegeType\": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION,\
+        \ MEDICINE 중 하나\n    \t\t\t\t\t\t\t\t\t\"admissionYear\" : String, \n    \t\
+        \t\t\t\t\t\t\t},\n    \t\t\t\t\t\t\t\t\"mbti\" : String // 잘 모를 경우 \"XXXX\"\
+        \n    \t\t\t\t\t\t\t}, \n    \t\t\t\t\t\t\t{\n    \t\t\t\t\t\t\t\t\"collegeInfo\"\
+        : {\n    \t\t\t\t\t\t\t\t\t\"collegeCode\": String, // College CODE 값을 전달\
+        \ ex) CE-001 \n    \t\t\t\t\t\t\t\t\t\"collegeType\": String, // ETC, SOCIAL,\
+        \ ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나\n    \t\t\t\t\t\t\t\t\t\"admissionYear\"\
+        \ : String, \n    \t\t\t\t\t\t\t\t},\n    \t\t\t\t\t\t\t\t\"mbti\" : String\
+        \ // 잘 모를 경우 \"XXXX\"\n    \t\t\t\t\t\t\t}\n    \t\t\t\t\t],\n    \t\"chatLink\"\
+        \ : String, //not null\n    },\n\n    \"images\": File[], // 최소 1장, 최대 10장\
+        \n"
       operationId: 팀 수정
       security:
         - AccessToken: [ ]
@@ -279,44 +287,28 @@ paths:
       tags:
         - 팀 관련 API
       summary: 팀 생성 API 입니다.
-      description: |2
-            팀을 생성합니다.
-            multipart/form-data 데이터로 보내주어야함 (data는 json!)
-            part - 'images': 사진 파일
-            part - 'data': 팀 수정 요청 데이터
-
-            성공 시 AccessToken & RefreshToken 재발급되어 Header에 함께 전송됨
-            사용자 권한 변경 USER -> MANAGER
-      
-            // Multipart Form Data
-            "data" : {
-            	"region" : String, // HONGDAE, GANGNAM, SINCHON, GUNDAE 중 하나
-            	"drinkRate" : String, // ZERO, LOW, MIDDLE, HIGH
-            	"drinkWithGame" : String, // ANY, MASTER, BEGINNER, HATER 중 하나
-            	"additionalActivity" : String, // nullable // SHOW, SPORTS, UNIQUE_EXPERIENCE, OUTDOOR_ACTIVITY, CAFE 중 하나
-            	"introduction" : String, // 150 제한 
-            	"members" : [ // 사이즈 최소 1, 최대 3
-            							{
-            								"collegeInfo": {
-            									"collegeCode": String, // College CODE 값을 전달 ex) CE-001 
-            									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
-            									"admissionYear" : String, 
-            								},
-            								"mbti" : String // 잘 모를 경우 "XXXX"
-            							}, 
-            							{
-            								"collegeInfo": {
-            									"collegeCode": String, // College CODE 값을 전달 ex) CE-001 
-            									"collegeType": String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나
-            									"admissionYear" : String, 
-            								},
-            								"mbti" : String // 잘 모를 경우 "XXXX"
-            							}	
-            					],
-            	"chatLink" : String, //not null
-            },
-
-            "images": File[], // 최소 1장, 최대 10장
+      description: "    팀을 생성합니다.\n    multipart/form-data 데이터로 보내주어야함 (data는 json!)\n\
+        \    part - 'images': 사진 파일\n    part - 'data': 팀 수정 요청 데이터\n\n    성공 시 AccessToken\
+        \ & RefreshToken 재발급되어 Header에 함께 전송됨\n    사용자 권한 변경 USER -> MANAGER\n\n \
+        \   \"data\" : {\n    \t\"region\" : String, // HONGDAE, GANGNAM, SINCHON,\
+        \ GUNDAE 중 하나\n    \t\"drinkRate\" : String, // ZERO, LOW, MIDDLE, HIGH\n\
+        \    \t\"drinkWithGame\" : String, // ANY, MASTER, BEGINNER, HATER 중 하나\n\
+        \    \t\"additionalActivity\" : String, // nullable // SHOW, SPORTS, UNIQUE_EXPERIENCE,\
+        \ OUTDOOR_ACTIVITY, CAFE 중 하나\n    \t\"introduction\" : String, // 150 제한\
+        \ \n    \t\"members\" : [ // 사이즈 최소 1, 최대 3\n    \t\t\t\t\t\t\t{\n    \t\t\
+        \t\t\t\t\t\t\"collegeInfo\": {\n    \t\t\t\t\t\t\t\t\t\"collegeCode\": String,\
+        \ // College CODE 값을 전달 ex) CE-001 \n    \t\t\t\t\t\t\t\t\t\"collegeType\"\
+        : String, // ETC, SOCIAL, ENGINEERING, ARTS, EDUCATION, MEDICINE 중 하나\n  \
+        \  \t\t\t\t\t\t\t\t\t\"admissionYear\" : String, \n    \t\t\t\t\t\t\t\t},\n\
+        \    \t\t\t\t\t\t\t\t\"mbti\" : String // 잘 모를 경우 \"XXXX\"\n    \t\t\t\t\t\
+        \t\t}, \n    \t\t\t\t\t\t\t{\n    \t\t\t\t\t\t\t\t\"collegeInfo\": {\n   \
+        \ \t\t\t\t\t\t\t\t\t\"collegeCode\": String, // College CODE 값을 전달 ex) CE-001\
+        \ \n    \t\t\t\t\t\t\t\t\t\"collegeType\": String, // ETC, SOCIAL, ENGINEERING,\
+        \ ARTS, EDUCATION, MEDICINE 중 하나\n    \t\t\t\t\t\t\t\t\t\"admissionYear\"\
+        \ : String, \n    \t\t\t\t\t\t\t\t},\n    \t\t\t\t\t\t\t\t\"mbti\" : String\
+        \ // 잘 모를 경우 \"XXXX\"\n    \t\t\t\t\t\t\t}\n    \t\t\t\t\t],\n    \t\"chatLink\"\
+        \ : String, //not null\n    },\n\n    \"images\": File[], // 최소 1장, 최대 10장\
+        \n"
       operationId: 팀 생성
       security:
         - AccessToken: [ ]
@@ -378,50 +370,6 @@ paths:
                     hasMainProfileImage\":true,\"basicProfileImage\":\"basicUrl\"\
                     ,\"lowProfileImage\":\"lowUrl\",\"profileImageAuthenticated\"\
                     :true,\"hasTeam\":true}}"
-  /v1/auth/refresh:
-    post:
-      tags:
-        - 토큰 관련 API
-      summary: "RefreshToken 을 사용하여 Access, Refresh Token을 갱신합니다."
-      description: "    Access Token & RefreshToken 을 사용하여 Access, Refresh Token을\
-        \ 갱신합니다. \n\n    Access Token과 Refresh Token 을 Header 에 넘겨주어야합니다.\n    Access\
-        \ Token 은 유저의 값을 받아오는 용도이기 때문에 만료된 상태여도 상관 없습니다.\n"
-      operationId: Refresh Token
-      parameters:
-        - name: AccessToken
-          in: header
-          description: Access Token
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk0MTE4MDU0LCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.-yScAzM2LLWk1PAozAb4lngTQNkg3e0ZsH1WAd0DeV8OS-76RL0uboZoihcpti56V7R_YFZE5jkroKhS2eOmaA
-        - name: RefreshToken
-          in: header
-          description: Refresh Token
-          required: true
-          schema:
-            type: string
-          example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5NjcwODI1NH0.Z92HyodG0DUSSpEtuKAVw7S3OGwNJczj6Gxufcw_ga1EAv0a-EjhlaUzVybYJww_IMiWF7j27s5CNDxVHNdP2A
-      responses:
-        "200":
-          description: "200"
-          headers:
-            AccessToken:
-              description: Access Token
-              schema:
-                type: string
-            RefreshToken:
-              description: Refresh Token
-              schema:
-                type: string
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/v1-member-1162606117'
-              examples:
-                Refresh Token:
-                  value: "{\"status\":\"SUCCESS\",\"message\":\"RefreshToken 을 재발급\
-                    하는데 성공했습니다.\",\"data\":null}"
   /v1/heart/received:
     get:
       tags:
@@ -446,7 +394,7 @@ paths:
                     \ Detail Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"\
                     region\":\"신촌\",\"profileImageURL\":\"https://test.image.com\"\
                     ,\"mainImageURL\":\"https://test.image.com\",\"receivedTime\"\
-                    :\"2023-09-08T16:21:20.625815\",\"leader\":{\"nickname\":\"팀장님\
+                    :\"2023-09-11T17:37:55.821759\",\"leader\":{\"nickname\":\"팀장님\
                     \",\"mbti\":\"ENFP\",\"college\":\"서울대\"}}]}"
   /v1/heart/sent:
     get:
@@ -471,7 +419,7 @@ paths:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Sent Heart Detail\
                     \ Success\",\"data\":{\"teamId\":1,\"memberNum\":3,\"region\"\
                     :\"신촌\",\"profileImageURL\":\"https://test.image.com\",\"mainImageURL\"\
-                    :\"https://test.image.com\",\"sentTime\":\"2023-09-08T16:21:20.558074\"\
+                    :\"https://test.image.com\",\"sentTime\":\"2023-09-11T17:37:55.775483\"\
                     ,\"leader\":{\"nickname\":\"팀장님\",\"mbti\":\"ENFP\",\"college\"\
                     :\"서울대\"}}}"
   /v1/heart/{partnerTeamId}:
@@ -479,7 +427,7 @@ paths:
       tags:
         - 좋아요 관련 API
       summary: 상대 팀에게 좋아요를 보냅니다.
-      description: |2
+      description: |2+
             상대 팀에게 좋아요를 보냅니다.
             하루에 한 번 가능하며, 본인 팀에게는 보낼 수 없습니다.
       operationId: 좋아요 보내기
@@ -526,18 +474,18 @@ paths:
                 성사된 미팅 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get accepted meeting\
                     \ list success\",\"data\":[{\"meetingId\":1,\"teamId\":1,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-08T04:50:56.397339\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-11T17:37:55.982963\"\
                     ,\"teamProfileImageUrl\":[\"https://profile1.com\"],\"leader\"\
                     :{\"leaderId\":1,\"nickname\":\"채원\",\"mbti\":\"INFP\",\"collegeName\"\
                     :\"고려대학교\",\"collegeType\":\"ENGINEERING\",\"admissionYear\":\"\
                     2022\",\"leaderLowProfileImageUrl\":\"https://profile.com\",\"\
-                    imageAuth\":true},\"expired\":false,\"deleted\":false},{\"meetingId\"\
+                    imageAuth\":true},\"deleted\":false,\"expired\":false},{\"meetingId\"\
                     :2,\"teamId\":2,\"memberCount\":2,\"region\":\"HONGDAE\",\"meetingAcceptTime\"\
-                    :\"2023-09-08T04:50:56.397399\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
+                    :\"2023-09-11T17:37:55.983017\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
                     ],\"leader\":{\"leaderId\":2,\"nickname\":\"째림\",\"mbti\":\"INFJ\"\
                     ,\"collegeName\":\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\"\
                     :\"2019\",\"leaderLowProfileImageUrl\":\"https://profile.com\"\
-                    ,\"imageAuth\":true},\"expired\":false,\"deleted\":false}]}"
+                    ,\"imageAuth\":true},\"deleted\":false,\"expired\":false}]}"
   /v1/meeting/message:
     post:
       tags:
@@ -573,6 +521,44 @@ paths:
     get:
       tags:
         - 미팅 관련 API
+      summary: 받은 미팅 신청 리스트를 조회합니다.
+      description: |2
+            우리 팀이 받은 미팅 신청 리스트를 조회합니다.
+            상대 팀이 삭제되었거나, 미팅 유효기간이 만료된 경우에는 리스트에 포함되지 않습니다.
+            최신순으로 정렬되어 반환됩니다.
+      operationId: 받은 미팅 신청 리스트 조회
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-meeting-received9272768'
+              examples:
+                받은 미팅 신청 리스트 조회:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Get receive meeting\
+                    \ request list success\",\"data\":[{\"meetingRequestId\":1,\"\
+                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-11T17:37:56.01846\"\
+                    ,\"partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"\
+                    region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
+                    :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
+                    :\"채원\",\"mbti\":\"INFP\",\"collegeName\":\"고려대학교\",\"collegeType\"\
+                    :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
+                    :\"https://profile.com\",\"imageAuth\":true},\"deleted\":false,\"\
+                    pending\":true},{\"meetingRequestId\":2,\"acceptStatus\":\"PENDING\"\
+                    ,\"requestTime\":\"2023-09-11T17:37:56.018466\",\"partnerTeamDeleted\"\
+                    :false,\"teamId\":2,\"memberCount\":4,\"region\":\"HONGDAE\",\"\
+                    message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
+                    ],\"leader\":{\"leaderId\":2,\"nickname\":\"쨰림\",\"mbti\":\"INFJ\"\
+                    ,\"collegeName\":\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\"\
+                    :\"2019\",\"leaderLowProfileImageUrl\":\"https://profile.com\"\
+                    ,\"imageAuth\":true},\"deleted\":false,\"pending\":true}]}"
+  /v1/meeting/sent:
+    get:
+      tags:
+        - 미팅 관련 API
       summary: 보낸 미팅 신청 리스트를 조회합니다.
       description: |2
             보낸 미팅 신청 리스트를 조회합니다.
@@ -587,20 +573,20 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-received-506855140'
+                $ref: '#/components/schemas/v1-meeting-received9272768'
               examples:
                 보낸 신청 리스트 조회:
-                  value: "{\"status\":\"SUCCESS\",\"message\":\"Get receive meeting\
-                    \ request list success\",\"data\":[{\"meetingRequestId\":1,\"\
-                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-08T04:50:56.425424\"\
-                    ,\"partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"\
-                    region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Get sent meeting request\
+                    \ list success\",\"data\":[{\"meetingRequestId\":1,\"acceptStatus\"\
+                    :\"PENDING\",\"requestTime\":\"2023-09-11T17:37:55.921896\",\"\
+                    partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"region\"\
+                    :\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
                     :\"채원\",\"mbti\":\"INFP\",\"collegeName\":\"고려대학교\",\"collegeType\"\
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true},\"deleted\":false,\"\
                     pending\":true},{\"meetingRequestId\":2,\"acceptStatus\":\"PENDING\"\
-                    ,\"requestTime\":\"2023-09-08T04:50:56.425429\",\"partnerTeamDeleted\"\
+                    ,\"requestTime\":\"2023-09-11T17:37:55.921966\",\"partnerTeamDeleted\"\
                     :false,\"teamId\":2,\"memberCount\":4,\"region\":\"HONGDAE\",\"\
                     message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
                     ],\"leader\":{\"leaderId\":2,\"nickname\":\"쨰림\",\"mbti\":\"INFJ\"\
@@ -685,7 +671,8 @@ paths:
       tags:
         - 팀 관련 API
       summary: 팀 상세 정보 조회 API 입니다.
-      description: 팀 ID로 상세정보를 조회합니다.
+      description: |2
+            팀 ID로 상세정보를 조회합니다.
       operationId: 팀 상세 정보 조회
       security:
         - AccessToken: [ ]
@@ -702,7 +689,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-team-teamDetailResponse'
+                $ref: '#/components/schemas/v1-team-teamId1238987508'
               examples:
                 팀 상세 정보 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Team Detail Success\"\
@@ -766,7 +753,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-mail-validate521266742'
             examples:
               이메일 인증번호 검증:
-                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"984807\"\
+                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"725768\"\
                   }"
       responses:
         "200":
@@ -822,7 +809,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-phone-validate1564587931'
             examples:
               휴대폰 인증번호 검증:
-                value: "{\"phone\":\"+821088990011\",\"credential\":\"839144\"}"
+                value: "{\"phone\":\"+821088990011\",\"credential\":\"868922\"}"
       responses:
         "200":
           description: "200"
@@ -900,6 +887,87 @@ components:
       name: AccessToken
       in: header
   schemas:
+    v1-team-1407123040:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            team:
+              type: object
+              properties:
+                leader:
+                  type: object
+                  properties:
+                    college:
+                      type: string
+                      description: 팀장 대학교 정보
+                    nickname:
+                      type: string
+                      description: 팀장 닉네임
+                    mbti:
+                      type: string
+                      description: 팀장 MBTI
+                images:
+                  type: array
+                  description: 팀 사진 정보
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: 팀 사진 URL
+                drinkWithGame:
+                  type: string
+                  description: 술게임 여부
+                members:
+                  type: array
+                  description: 팀원 정보
+                  items:
+                    type: object
+                    properties:
+                      college:
+                        type: string
+                        description: 팀원 대학교
+                      collegeType:
+                        type: string
+                        description: 팀원 학과 타입
+                      admissionYear:
+                        type: string
+                        description: 팀원 학번
+                      mbti:
+                        type: string
+                        description: 팀원 MBTI
+                drinkRate:
+                  type: string
+                  description: 음주 수치
+                additionalActivity:
+                  type: string
+                  description: 추가 활동
+                chatLink:
+                  type: string
+                  description: 카카오톡 오픈 채팅방 링크
+                region:
+                  type: string
+                  description: 선호 지역
+                memberNum:
+                  type: number
+                  description: 팀 인원수
+                profileImageURL:
+                  type: string
+                  description: 팀장 프로필 사진
+                introduction:
+                  type: string
+                  description: 팀 소개
+            hasTeam:
+              type: boolean
+              description: 팀 소속 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-auth-mail-validate2112268002:
       type: object
       properties:
@@ -921,6 +989,296 @@ components:
         mail:
           type: string
           description: 메일 주소
+    v1-credit1610375099:
+      type: object
+      properties:
+        data:
+          type: number
+          description: 사용자의 크레딧 개수가 반환됩니다.
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-meeting-374462745:
+      type: object
+      properties:
+        partnerTeamId:
+          type: number
+          description: 상대 이성 팀 ID
+    v1-auth-phone-validate1303346532:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            role:
+              type: array
+              items:
+                type: object
+                properties:
+                  authority:
+                    type: string
+                    description: 회원 권한
+            isRegistered:
+              type: boolean
+              description: 회원 가입 여부
+          description: 회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-meeting-message-738424585:
+      type: object
+      properties:
+        partnerTeamId:
+          type: number
+          description: 상대 이성 팀 ID
+        message:
+          type: string
+          description: 쪽지 내용 (최대 50자)
+    v1-member-role-1164682728:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            isManager:
+              type: boolean
+              description: 팀장 여부
+            hasTeam:
+              type: boolean
+              description: 팀 소속 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-meeting-received9272768:
+      type: object
+      properties:
+        data:
+          type: array
+          description: "보낸 미팅 신청 목록 [배열로 반환]"
+          items:
+            type: object
+            properties:
+              requestTime:
+                type: string
+                description: 미팅 신청 시간
+              leader:
+                type: object
+                properties:
+                  collegeName:
+                    type: string
+                    description: 팀장 대학교 이름
+                  leaderLowProfileImageUrl:
+                    type: string
+                    description: 팀장 프로필 이미지 URL
+                  collegeType:
+                    type: string
+                    description: 팀장 학과
+                  admissionYear:
+                    type: string
+                    description: 팀장 학번
+                  nickname:
+                    type: string
+                    description: 팀장 닉네임
+                  mbti:
+                    type: string
+                    description: 팀장 MBTI
+                  imageAuth:
+                    type: boolean
+                    description: 팀장 프로필 인증 여부
+                  leaderId:
+                    type: number
+                    description: 팀장 ID
+              deleted:
+                type: boolean
+                description: 미팅 신청 삭제 여부
+              partnerTeamDeleted:
+                type: boolean
+                description: 상대 팀 삭제 여부
+              pending:
+                type: boolean
+                description: 미팅 신청 대기 여부
+              memberCount:
+                type: number
+                description: 팀 인원 수
+              teamId:
+                type: number
+                description: 팀 ID
+              meetingRequestId:
+                type: number
+                description: 미팅 신청 ID
+              acceptStatus:
+                type: string
+                description: 응답 상태
+              message:
+                type: string
+                description: 쪽지 내용
+              region:
+                type: string
+                description: 지역
+              teamProfileImageUrl:
+                type: array
+                description: 팀 프로필 이미지 URL
+                items:
+                  oneOf:
+                    - type: object
+                    - type: boolean
+                    - type: string
+                    - type: number
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-suggestion-1113310091:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              leader:
+                type: object
+                properties:
+                  college:
+                    type: string
+                    description: 추천 팀 팀장 대학교
+                  nickname:
+                    type: string
+                    description: 추천 팀 팀장 닉네임
+                  mbti:
+                    type: string
+                    description: 추천 팀 팀장 MBTI
+              mainImageURL:
+                type: string
+                description: 추천 팀 대표 이미지
+              teamId:
+                type: number
+                description: 추천 팀 아이디
+              region:
+                type: string
+                description: 추천 팀 선호 지역
+              memberNum:
+                type: number
+                description: 추천 팀 인원수
+              profileImageURL:
+                type: string
+                description: 추천 팀 팀장 프로필 이미지
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-auth-persist667894108:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            basicProfileImage:
+              type: string
+              description: 팀의 존재 여부를 반환합니다.
+            emailAuthenticated:
+              type: boolean
+              description: 이메일 인증 여부를 반환합니다.
+            nickname:
+              type: string
+              description: 사용자의 닉네임을 반환합니다.
+            hasMainProfileImage:
+              type: boolean
+              description: 프로필 이미지 인증 여부를 반환합니다.
+            profileImageAuthenticated:
+              type: boolean
+              description: 선호도 조사 여부를 반환합니다.
+            hasTeam:
+              type: boolean
+              description: 프로필 이미지의 등록 여부를 반환합니다.
+            lowProfileImage:
+              type: string
+              description: 팀의 존재 여부를 반환합니다.
+          description: 응답 데이터
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    meeting-accepted-response:
+      title: meeting-accepted-response
+      type: object
+    v1-auth-phone-validate1564587931:
+      type: object
+      properties:
+        credential:
+          type: string
+          description: 인증 번호
+        phone:
+          type: string
+          description: 휴대폰 번호
+    v1-meeting-reject-meetingRequestId486549215:
+      type: object
+    v1-member-88903508:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 닉네임
+        mbti:
+          type: string
+          description: 본인 MBTI
+    v1-heart-sent-306379489:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            leader:
+              type: object
+              properties:
+                college:
+                  type: string
+                  description: 상대 팀 팀장 대학교
+                nickname:
+                  type: string
+                  description: 상대 팀 팀장 닉네임
+                mbti:
+                  type: string
+                  description: 상대 팀 팀장 MBTI
+            mainImageURL:
+              type: string
+              description: 상대 팀 메인 이미지 URL
+            teamId:
+              type: number
+              description: 상대 팀 아이디
+            sentTime:
+              type: string
+              description: 좋아요 보낸 시간
+            memberNum:
+              type: number
+              description: 상대 팀 인원 수
+            region:
+              type: string
+              description: 상대 팀 선호 지역
+            profileImageURL:
+              type: string
+              description: 상대 팀 팀장 프로필 이미지 URL
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-auth-mail-validate521266742:
       type: object
       properties:
@@ -1001,62 +1359,56 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-meeting-374462745:
-      type: object
-      properties:
-        partnerTeamId:
-          type: number
-          description: 상대 이성 팀 ID
-    v1-heart-partnerTeamId486549215:
-      type: object
-    v1-auth-phone-issue-817510993:
-      type: object
-      properties:
-        target:
-          type: string
-          description: 휴대폰 번호
-    v1-heart-sent-306379489:
+    v1-heart-received1518558698:
       type: object
       properties:
         data:
-          type: object
-          properties:
-            leader:
-              type: object
-              properties:
-                college:
-                  type: string
-                  description: 상대 팀 팀장 대학교
-                nickname:
-                  type: string
-                  description: 상대 팀 팀장 닉네임
-                mbti:
-                  type: string
-                  description: 상대 팀 팀장 MBTI
-            mainImageURL:
-              type: string
-              description: 상대 팀 메인 이미지 URL
-            teamId:
-              type: number
-              description: 상대 팀 아이디
-            sentTime:
-              type: string
-              description: 좋아요 보낸 시간
-            memberNum:
-              type: number
-              description: 상대 팀 인원 수
-            region:
-              type: string
-              description: 상대 팀 선호 지역
-            profileImageURL:
-              type: string
-              description: 상대 팀 팀장 프로필 이미지 URL
+          type: array
+          items:
+            type: object
+            properties:
+              leader:
+                type: object
+                properties:
+                  college:
+                    type: string
+                    description: 상대 팀 팀장 대학교
+                  nickname:
+                    type: string
+                    description: 상대 팀 팀장 닉네임
+                  mbti:
+                    type: string
+                    description: 상대 팀 팀장 MBTI
+              mainImageURL:
+                type: string
+                description: 상대 팀 메인 이미지 URL
+              receivedTime:
+                type: string
+                description: 좋아요 받은 시간
+              teamId:
+                type: number
+                description: 상대 팀 아이디
+              memberNum:
+                type: number
+                description: 상대 팀 인원 수
+              region:
+                type: string
+                description: 상대 팀 선호 지역
+              profileImageURL:
+                type: string
+                description: 상대 팀 팀장 프로필 이미지 URL
         message:
           type: string
           description: 응답 메시지
         status:
           type: string
           description: 응답 상태
+    v1-auth-phone-issue-817510993:
+      type: object
+      properties:
+        target:
+          type: string
+          description: 휴대폰 번호
     v1-suggestion-check652744771:
       type: object
       properties:
@@ -1107,74 +1459,6 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-heart-received1518558698:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              leader:
-                type: object
-                properties:
-                  college:
-                    type: string
-                    description: 상대 팀 팀장 대학교
-                  nickname:
-                    type: string
-                    description: 상대 팀 팀장 닉네임
-                  mbti:
-                    type: string
-                    description: 상대 팀 팀장 MBTI
-              mainImageURL:
-                type: string
-                description: 상대 팀 메인 이미지 URL
-              receivedTime:
-                type: string
-                description: 좋아요 받은 시간
-              teamId:
-                type: number
-                description: 상대 팀 아이디
-              memberNum:
-                type: number
-                description: 상대 팀 인원 수
-              region:
-                type: string
-                description: 상대 팀 선호 지역
-              profileImageURL:
-                type: string
-                description: 상대 팀 팀장 프로필 이미지 URL
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-auth-phone-validate1303346532:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            role:
-              type: array
-              items:
-                type: object
-                properties:
-                  authority:
-                    type: string
-                    description: 회원 권한
-            isRegistered:
-              type: boolean
-              description: 회원 가입 여부
-          description: 회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
     v1-member1256817410:
       type: object
       properties:
@@ -1202,84 +1486,7 @@ components:
         mbti:
           type: string
           description: 본인 MBTI
-    v1-meeting-message-738424585:
-      type: object
-      properties:
-        partnerTeamId:
-          type: number
-          description: 상대 이성 팀 ID
-        message:
-          type: string
-          description: 쪽지 내용 (최대 50자)
-    v1-member-role-1164682728:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            isManager:
-              type: boolean
-              description: 팀장 여부
-            hasTeam:
-              type: boolean
-              description: 팀 소속 여부
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-member-1162606117:
-      type: object
-      properties:
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-suggestion-1113310091:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              leader:
-                type: object
-                properties:
-                  college:
-                    type: string
-                    description: 추천 팀 팀장 대학교
-                  nickname:
-                    type: string
-                    description: 추천 팀 팀장 닉네임
-                  mbti:
-                    type: string
-                    description: 추천 팀 팀장 MBTI
-              mainImageURL:
-                type: string
-                description: 추천 팀 대표 이미지
-              teamId:
-                type: number
-                description: 추천 팀 아이디
-              region:
-                type: string
-                description: 추천 팀 선호 지역
-              memberNum:
-                type: number
-                description: 추천 팀 인원수
-              profileImageURL:
-                type: string
-                description: 추천 팀 팀장 프로필 이미지
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-team-teamDetailResponse:
+    v1-team-teamId1238987508:
       type: object
       properties:
         data:
@@ -1383,34 +1590,9 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-auth-persist667894108:
+    v1-member-1162606117:
       type: object
       properties:
-        data:
-          type: object
-          properties:
-            basicProfileImage:
-              type: string
-              description: 팀의 존재 여부를 반환합니다.
-            emailAuthenticated:
-              type: boolean
-              description: 이메일 인증 여부를 반환합니다.
-            nickname:
-              type: string
-              description: 사용자의 닉네임을 반환합니다.
-            hasMainProfileImage:
-              type: boolean
-              description: 프로필 이미지 인증 여부를 반환합니다.
-            profileImageAuthenticated:
-              type: boolean
-              description: 선호도 조사 여부를 반환합니다.
-            hasTeam:
-              type: boolean
-              description: 프로필 이미지의 등록 여부를 반환합니다.
-            lowProfileImage:
-              type: string
-              description: 팀의 존재 여부를 반환합니다.
-          description: 응답 데이터
         message:
           type: string
           description: 응답 메시지
@@ -1421,153 +1603,6 @@ components:
       title: member-profile-image-upload
       type: object
       properties:
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-team455789247:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            team:
-              type: object
-              properties:
-                images:
-                  type: array
-                  description: 팀 사진 정보
-                  items:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        description: 팀 사진 URL
-                drinkWithGame:
-                  type: string
-                  description: 술게임 여부
-                members:
-                  type: array
-                  description: 팀원 정보
-                  items:
-                    type: object
-                    properties:
-                      college:
-                        type: string
-                        description: 팀원 대학교
-                      collegeType:
-                        type: string
-                        description: 팀원 학과 타입
-                      admissionYear:
-                        type: string
-                        description: 팀원 학번
-                      mbti:
-                        type: string
-                        description: 팀원 MBTI
-                drinkRate:
-                  type: string
-                  description: 음주 수치
-                additionalActivity:
-                  type: string
-                  description: 추가 활동
-                chatLink:
-                  type: string
-                  description: 카카오톡 오픈 채팅방 링크
-                region:
-                  type: string
-                  description: 선호 지역
-                memberNum:
-                  type: number
-                  description: 팀 인원수
-                introduction:
-                  type: string
-                  description: 팀 소개
-            hasTeam:
-              type: boolean
-              description: 팀 소속 여부
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-meeting-received-506855140:
-      type: object
-      properties:
-        data:
-          type: array
-          description: "보낸 미팅 신청 목록 [배열로 반환]"
-          items:
-            type: object
-            properties:
-              requestTime:
-                type: string
-                description: 미팅 신청 시간
-              leader:
-                type: object
-                properties:
-                  collegeName:
-                    type: string
-                    description: 팀장 대학교 이름
-                  leaderLowProfileImageUrl:
-                    type: string
-                    description: 팀장 저화질 프로필 이미지 URL
-                  collegeType:
-                    type: string
-                    description: 팀장 학과
-                  admissionYear:
-                    type: string
-                    description: 팀장 학번
-                  nickname:
-                    type: string
-                    description: 팀장 닉네임
-                  mbti:
-                    type: string
-                    description: 팀장 MBTI
-                  imageAuth:
-                    type: boolean
-                    description: 팀장 프로필 인증 여부
-                  leaderId:
-                    type: number
-                    description: 팀장 ID
-              deleted:
-                type: boolean
-                description: 미팅 신청 삭제 여부
-              partnerTeamDeleted:
-                type: boolean
-                description: 상대 팀 삭제 여부
-              pending:
-                type: boolean
-                description: 미팅 신청 대기 여부
-              memberCount:
-                type: number
-                description: 팀 인원 수
-              teamId:
-                type: number
-                description: 팀 ID
-              meetingRequestId:
-                type: number
-                description: 미팅 신청 ID
-              acceptStatus:
-                type: string
-                description: 응답 상태
-              message:
-                type: string
-                description: 쪽지 내용
-              region:
-                type: string
-                description: 지역
-              teamProfileImageUrl:
-                type: array
-                description: 팀 프로필 이미지 URL
-                items:
-                  oneOf:
-                    - type: object
-                    - type: boolean
-                    - type: string
-                    - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1613,118 +1648,3 @@ components:
         status:
           type: string
           description: 응답 상태
-    meeting-accepted-response:
-      title: meeting-accepted-response
-      type: object
-    v1-team-teamId1852923051:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            leader:
-              type: object
-              properties:
-                collegeName:
-                  type: string
-                  description: 팀장 대학교
-                leaderLowProfileImageUrl:
-                  type: string
-                  description: 팀장 프로필 사진
-                collegeType:
-                  type: string
-                  description: 팀장 학과
-                admissionYear:
-                  type: string
-                  description: 팀장 학번
-                nickname:
-                  type: string
-                  description: 팀장 닉네임
-                mbti:
-                  type: string
-                  description: 팀장 MBTI
-                imageAuth:
-                  type: boolean
-                  description: 팀장 프로필 사진 인증 여부
-                leaderId:
-                  type: number
-                  description: 팀장 ID
-            drinkWithGame:
-              type: string
-              description: 술게임 여부
-            isDeleted:
-              type: boolean
-              description: 팀 삭제 여부
-            isLiked:
-              type: boolean
-              description: 좋아요 여부
-            drinkRate:
-              type: string
-              description: 음주 수치
-            teamId:
-              type: number
-              description: 팀 ID
-            additionalActivity:
-              type: string
-              description: 취미 및 관심사
-            teamMembers:
-              type: array
-              items:
-                type: object
-                properties:
-                  college:
-                    type: string
-                    description: 대학교 명
-                  collegeType:
-                    type: string
-                    description: 학과
-                  admissionYear:
-                    type: string
-                    description: 학번
-                  mbti:
-                    type: string
-                    description: MBTI
-            region:
-              type: string
-              description: 선호 지역
-            memberNum:
-              type: number
-              description: 팀 인원수
-            introduction:
-              type: string
-              description: 팀 소개
-            teamImageUrls:
-              type: array
-              description: 팀 사진 URL
-              items:
-                oneOf:
-                  - type: object
-                  - type: boolean
-                  - type: string
-                  - type: number
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-auth-phone-validate1564587931:
-      type: object
-      properties:
-        credential:
-          type: string
-          description: 인증 번호
-        phone:
-          type: string
-          description: 휴대폰 번호
-    v1-meeting-reject-meetingRequestId486549215:
-      type: object
-    v1-member-88903508:
-      type: object
-      properties:
-        nickname:
-          type: string
-          description: 닉네임
-        mbti:
-          type: string
-          description: 본인 MBTI
