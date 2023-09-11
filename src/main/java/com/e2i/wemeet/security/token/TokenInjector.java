@@ -53,9 +53,9 @@ public class TokenInjector {
     private void saveRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
-        // get Key from payload (Ex) "memberId-1-USER"
+        // get Key from payload (Ex) "memberId-1"
         String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
-        Duration refreshTokenDuration = Duration.ofMillis(JwtEnv.REFRESH.getExpirationTimeToMillis());
+        Duration refreshTokenDuration = JwtEnv.REFRESH.getExpirationTime();
 
         operations.set(redisKey, refreshToken, refreshTokenDuration);
     }
