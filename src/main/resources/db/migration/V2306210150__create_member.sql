@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `member`
     `image_auth`            tinyint DEFAULT 0,
     `basic_url`             varchar(150),
     `low_url`               varchar(150),
+    `allow_marketing`       tinyint NOT NULL DEFAULT 1,
     `created_at`            datetime(6),
     `modified_at`           datetime(6),
     `deleted_at`            datetime(6),
