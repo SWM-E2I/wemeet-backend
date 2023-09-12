@@ -19,6 +19,7 @@ import com.e2i.wemeet.exception.notfound.NotFoundException;
 import com.e2i.wemeet.exception.token.NotEqualRoleToTokenException;
 import com.e2i.wemeet.exception.unauthorized.UnAuthorizedException;
 import jakarta.validation.ValidationException;
+import java.lang.reflect.UndeclaredThrowableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.JDBCException;
@@ -148,7 +149,7 @@ public class GlobalExceptionController {
     }
 
     // SQL 관련 예외 핸들링 + sql & sql 예외 원인 Logging
-    @ExceptionHandler(DataAccessException.class)
+    @ExceptionHandler({DataAccessException.class, UndeclaredThrowableException.class})
     public ResponseEntity<ErrorResponse> handleDatabaseAccessException(
         final DataAccessException e) {
         final int code = DATA_ACCESS.getCode();

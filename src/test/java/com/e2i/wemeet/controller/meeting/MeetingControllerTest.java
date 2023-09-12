@@ -4,7 +4,6 @@ import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -55,10 +54,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
         @Test
         void sendMeetingRequest() throws Exception {
             // given
-            final Long memberId = 1L;
             final SendMeetingRequestDto request = new SendMeetingRequestDto(1L);
-            willDoNothing()
-                .given(meetingHandleService).sendRequest(request, memberId);
 
             // when
             ResultActions perform = mockMvc.perform(post("/v1/meeting")
@@ -74,7 +70,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.message").value("Send meeting request success"),
                     jsonPath("$.data").doesNotExist()
                 );
-            verify(meetingHandleService).sendRequest(request, memberId);
+            verify(meetingHandleService).sendRequest(any(), any(), any());
 
             sendMeetingRequestWriteRestDocs(perform);
         }
@@ -84,12 +80,9 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
         @Test
         void sendMeetingRequestWithMessage() throws Exception {
             // given
-            final Long memberId = 1L;
             final String message = "안녕하세요!! 재밌게 놀아봐요ㅎㅎ";
             final SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(
                 1L, message);
-            willDoNothing()
-                .given(meetingHandleService).sendRequestWithMessage(request, memberId);
 
             // when
             ResultActions perform = mockMvc.perform(post("/v1/meeting/message")
@@ -105,7 +98,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.message").value("Send meeting request with message success"),
                     jsonPath("$.data").doesNotExist()
                 );
-            verify(meetingHandleService).sendRequestWithMessage(request, memberId);
+            verify(meetingHandleService).sendRequestWithMessage(any(), any(), any());
 
             sendMeetingRequestWithMessageWriteRestDocs(perform);
         }
@@ -118,8 +111,6 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
             final Long memberId = 1L;
             final SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(
                 1L, message);
-            willDoNothing()
-                .given(meetingHandleService).sendRequestWithMessage(request, memberId);
 
             // when
             ResultActions perform = mockMvc.perform(post("/v1/meeting/message")
@@ -135,7 +126,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.message").value("서버에서 예상치 못한 예외가 발생했습니다"),
                     jsonPath("$.data").doesNotExist()
                 );
-            verify(meetingHandleService, times(0)).sendRequestWithMessage(request, memberId);
+            verify(meetingHandleService, times(0)).sendRequestWithMessage(any(), any(), any());
         }
 
         public static Stream<String> provideMessagesForMeetingRequest() {

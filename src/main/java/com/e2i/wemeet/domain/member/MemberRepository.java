@@ -19,5 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Integer> findCreditByMemberId(@Param("memberId") Long memberId);
 
     @Query("select m.role from Member m where m.memberId = :memberId")
-    Role findRoleByMemberId(Long memberId);
+    Optional<Role> findRoleByMemberId(@Param("memberId") Long memberId);
+
 }

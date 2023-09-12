@@ -1,10 +1,11 @@
 package com.e2i.wemeet.util.aspect;
 
+import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
+import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.token.NotEqualRoleToTokenException;
 import com.e2i.wemeet.security.model.MemberPrincipal;
-import com.e2i.wemeet.service.admin.TokenAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class TokenValidationAspect {
 
-    private final TokenAuthorizationService tokenAuthorizationService;
+    private final MemberRepository memberRepository;
 
     @Before("@annotation(com.e2i.wemeet.security.manager.IsManager)")
     public void checkCustomAuthorization() {
@@ -27,7 +28,8 @@ public class TokenValidationAspect {
         if (!principal.hasManagerRole()) {
             Long memberId = principal.getMemberId();
 
-            Role memberRole = tokenAuthorizationService.getMemberRoleByMemberId(memberId);
+            Role memberRole = memberRepository.findRoleByMemberId(memberId)
+                .orElseThrow(MemberNotFoundException::new);
             if (memberRole.name().equals(Role.MANAGER.name())) {
                 throw new NotEqualRoleToTokenException();
             } else {

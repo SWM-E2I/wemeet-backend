@@ -52,40 +52,41 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Transactional
     @CostAuthorize(type = MEETING_REQUEST, role = Role.MANAGER)
     @Override
-    public void sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId) {
+    public Long sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId, final LocalDateTime meetingRequestTime) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
-        checkDuplicateMeetingRequest(team, partnerTeam);
+        checkDuplicateMeetingRequest(team, partnerTeam, meetingRequestTime);
 
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
             .partnerTeam(partnerTeam)
             .build();
-
-        meetingRequestRepository.save(meetingRequest);
+        MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
         publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
+        return request.getMeetingRequestId();
     }
 
     @Transactional
     @CostAuthorize(type = MEETING_REQUEST_WITH_MESSAGE, role = Role.MANAGER)
     @Override
-    public void sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId) {
+    public Long sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId,
+        final LocalDateTime meetingRequestTime) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
-        checkDuplicateMeetingRequest(team, partnerTeam);
+        checkDuplicateMeetingRequest(team, partnerTeam, meetingRequestTime);
 
         MeetingRequest meetingRequest = MeetingRequest.builder()
             .team(team)
             .partnerTeam(partnerTeam)
             .message(requestDto.message())
             .build();
-
-        meetingRequestRepository.save(meetingRequest);
+        MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
         publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
+        return request.getMeetingRequestId();
     }
 
     @Transactional
@@ -173,8 +174,9 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     // 중복된 미팅 요청인지 검증
-    private void checkDuplicateMeetingRequest(Team team, Team partnerTeam) {
+    private void checkDuplicateMeetingRequest(Team team, Team partnerTeam, LocalDateTime meetingRequestTime) {
         meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(team.getTeamId(), partnerTeam.getTeamId())
+            .filter(meetingRequestCreatedAt -> !isExpiredOfDays(meetingRequestCreatedAt, meetingRequestTime, MEETING_REQUEST_EXPIRE_DAY))
             .ifPresent(meetingRequestId -> {
                 throw new DuplicateMeetingRequestException();
             });

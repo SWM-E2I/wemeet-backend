@@ -4,6 +4,7 @@ import com.e2i.wemeet.dto.request.team.CreateTeamRequestDto;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,7 @@ public interface TeamService {
     /*
      * 팀 상세 조회
      */
-    TeamDetailResponseDto readByTeamId(Long memberId, Long teamId);
+    TeamDetailResponseDto readByTeamId(Long memberId, Long teamId, LocalDateTime readTime);
 
     /*
      * 팀 삭제

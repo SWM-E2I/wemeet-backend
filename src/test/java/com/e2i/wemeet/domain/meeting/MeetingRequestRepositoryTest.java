@@ -19,6 +19,7 @@ import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +78,7 @@ class MeetingRequestRepositoryTest extends AbstractRepositoryUnitTest {
         meetingRequestRepository.save(WITH_OUT_MESSAGE.create(kaiTeam, rimTeam));
 
         // when
-        Optional<Long> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
+        Optional<LocalDateTime> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
 
         // then
         assertThat(findId).isPresent();
@@ -94,7 +95,7 @@ class MeetingRequestRepositoryTest extends AbstractRepositoryUnitTest {
         Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
 
         // when
-        Optional<Long> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
+        Optional<LocalDateTime> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
 
         // then
         assertThat(findId).isEmpty();
@@ -115,7 +116,7 @@ class MeetingRequestRepositoryTest extends AbstractRepositoryUnitTest {
         meetingRequestRepository.save(meetingRequest);
 
         // when
-        Optional<Long> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
+        Optional<LocalDateTime> findId = meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(kaiTeam.getTeamId(), rimTeam.getTeamId());
 
         // then
         assertThat(findId).isEmpty();

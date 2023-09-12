@@ -2,15 +2,17 @@ package com.e2i.wemeet.security.filter;
 
 import static org.springframework.http.HttpMethod.POST;
 
+import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.Role;
 import com.e2i.wemeet.dto.response.ResponseDto;
+import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.token.RefreshTokenMismatchException;
+import com.e2i.wemeet.exception.token.RefreshTokenNotExistException;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;
 import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
-import com.e2i.wemeet.service.admin.TokenAuthorizationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /*
@@ -40,21 +43,20 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private final TokenInjector tokenInjector;
     private final ObjectMapper objectMapper;
     private final AccessTokenHandler accessTokenHandler;
-
-    private final TokenAuthorizationService tokenAuthorizationService;
+    private final MemberRepository memberRepository;
 
     public RefreshTokenProcessingFilter(RedisTemplate<String, String> redisTemplate,
         RefreshTokenHandler refreshTokenHandler,
         TokenInjector tokenInjector, ObjectMapper objectMapper,
         AccessTokenHandler accessTokenHandler,
-        TokenAuthorizationService tokenAuthorizationService) {
+        MemberRepository memberRepository) {
         this.filterRequestMatcher = new AntPathRequestMatcher(REFRESH_REQUEST_URL, POST.name());
         this.redisTemplate = redisTemplate;
         this.refreshTokenHandler = refreshTokenHandler;
         this.tokenInjector = tokenInjector;
         this.objectMapper = objectMapper;
         this.accessTokenHandler = accessTokenHandler;
-        this.tokenAuthorizationService = tokenAuthorizationService;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -75,13 +77,14 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private void reIssueToken(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
         Payload payload = getPayload(request);
+        Role role = memberRepository.findRoleByMemberId(payload.getMemberId())
+            .orElseThrow(MemberNotFoundException::new);
+
         validateRefreshToken(request, payload);
+        Payload newPayloadForToken = new Payload(payload.getMemberId(), role.name());
 
-        Role role = tokenAuthorizationService.getMemberRoleByMemberId(payload.getMemberId());
-        payload = new Payload(payload.getMemberId(), role.name());
-
-        tokenInjector.injectToken(response, payload);
-        writeResponse(response, payload);
+        tokenInjector.injectToken(response, newPayloadForToken);
+        writeResponse(response, newPayloadForToken);
     }
 
     private Payload getPayload(HttpServletRequest request) {
@@ -108,6 +111,10 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
         // get Key from payload (Ex) "memberId-1"
         String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
         String savedRefresh = operations.get(redisKey);
+
+        if (!StringUtils.hasText(savedRefresh)) {
+            throw new RefreshTokenNotExistException();
+        }
 
         boolean tokenEquals = refreshToken.equals(savedRefresh);
         if (tokenEquals) {

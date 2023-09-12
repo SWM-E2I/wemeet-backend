@@ -21,6 +21,7 @@ import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
 import com.e2i.wemeet.support.module.AbstractIntegrationTest;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
         String refreshToken = refreshTokenHandler.createToken(payload);
         String accessToken = accessTokenHandler.createToken(payload);
         given(memberRepository.findRoleByMemberId(anyLong()))
-            .willReturn(Role.USER);
+            .willReturn(Optional.of(Role.USER));
 
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
@@ -88,7 +89,7 @@ class RefreshTokenProcessingFilterTest extends AbstractIntegrationTest {
         String refreshToken = refreshTokenHandler.createToken(payload);
         String accessToken = accessTokenHandler.createToken(payload);
         given(memberRepository.findRoleByMemberId(anyLong()))
-            .willReturn(Role.USER);
+            .willReturn(Optional.of(Role.USER));
 
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
