@@ -21,6 +21,11 @@ public class SmsUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         Optional<Member> member = memberRepository.findByPhoneNumber(username);
 
+        if (member.isPresent() && member.get().getDeletedAt() != null) {
+            memberRepository.delete(member.get());
+            member = Optional.empty();
+        }
+
         // SMS 인증을 요청한 사용자가 회원가입이 되어있지 않을 경우
         return member.map(MemberPrincipal::new)
             .orElseGet(MemberPrincipal::new);

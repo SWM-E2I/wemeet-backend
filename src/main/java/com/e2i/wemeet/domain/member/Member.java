@@ -77,6 +77,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer credit;
 
+    @Column(nullable = false)
+    private Boolean allowMarketing;
+
     @Embedded
     private ProfileImage profileImage;
 
@@ -93,7 +96,7 @@ public class Member extends BaseTimeEntity {
     @Builder
     public Member(String nickname, Gender gender, String phoneNumber, String email,
         CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean imageAuth,
-        ProfileImage profileImage, Role role) {
+        Boolean allowMarketing, ProfileImage profileImage, Role role) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -101,6 +104,7 @@ public class Member extends BaseTimeEntity {
         this.collegeInfo = collegeInfo;
         this.mbti = mbti;
         this.credit = credit;
+        this.allowMarketing = allowMarketing;
         this.profileImage = profileImage;
         this.role = role;
     }

@@ -5,6 +5,7 @@ import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
 import com.e2i.wemeet.domain.member.data.Role;
+import com.e2i.wemeet.util.validator.bean.BooleanTypeValid;
 import com.e2i.wemeet.util.validator.bean.GenderValid;
 import com.e2i.wemeet.util.validator.bean.MbtiValid;
 import com.e2i.wemeet.util.validator.bean.NicknameValid;
@@ -33,7 +34,11 @@ public record CreateMemberRequestDto(
 
     @NotNull
     @MbtiValid
-    String mbti
+    String mbti,
+
+    @NotNull
+    @BooleanTypeValid
+    Boolean allowMarketing
 
 ) {
 
@@ -44,6 +49,7 @@ public record CreateMemberRequestDto(
             .phoneNumber(this.phoneNumber)
             .collegeInfo(this.collegeInfo.toCollegeInfo(collegeCode))
             .mbti(Mbti.valueOf(this.mbti))
+            .allowMarketing(this.allowMarketing)
             .credit(40)
             .imageAuth(false)
             .role(Role.USER)

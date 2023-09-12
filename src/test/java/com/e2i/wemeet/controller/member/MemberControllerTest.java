@@ -247,7 +247,9 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                             .description("학과 (ENGINEERING)"),
                         fieldWithPath("collegeInfo.admissionYear").type(JsonFieldType.STRING)
                             .description("학번 (17)"),
-                        fieldWithPath("mbti").type(JsonFieldType.STRING).description("본인 MBTI")
+                        fieldWithPath("mbti").type(JsonFieldType.STRING).description("본인 MBTI"),
+                        fieldWithPath("allowMarketing").type(JsonFieldType.BOOLEAN)
+                            .description("마케팅 수신 동의 여부")
                     ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
