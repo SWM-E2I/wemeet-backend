@@ -86,7 +86,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final int kaiCredit = kai.getCredit();
 
             // when
-            meetingHandleService.sendRequest(request, kai.getMemberId());
+            meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now());
 
             // then
             List<MeetingRequest> meetingRequests = meetingRequestRepository.findAll();
@@ -111,9 +111,10 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
 
             SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
             setAuthentication(kai.getMemberId(), "MANAGER");
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(DuplicateMeetingRequestException.class);
 
             MeetingRequest meetingRequest = WITH_OUT_MESSAGE.create(kaiTeam, rimTeam);
@@ -140,7 +141,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final int kaiCredit = kai.getCredit();
 
             // when
-            meetingHandleService.sendRequest(request, kai.getMemberId());
+            meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now());
 
             // then
             List<MeetingRequest> meetingRequests = meetingRequestRepository.findAllByTeamAndAcceptStatus(kaiTeam, PENDING);
@@ -149,6 +150,37 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                 .contains(
                     tuple(kaiTeam, rimTeam, PENDING, null)
                 );
+            assertThat(kai.getCredit()).isLessThan(kaiCredit);
+        }
+
+        @DisplayName("미팅 신청의 유효 기간이 지났고 Pending 상태인 데이터 외의 다른 이력이 없다면 미팅을 신청할 수 있다")
+        @Test
+        void existAfterExpirationDaysPendingRequest() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            MeetingRequest meetingRequest = WITH_OUT_MESSAGE.create(kaiTeam, rimTeam);
+            meetingRequestRepository.save(meetingRequest);
+            final LocalDateTime meetingAcceptTime = LocalDateTime.of(2021, 8, 15, 13, 0);
+            ReflectionUtils.setFieldValueToSuperClassField(meetingRequest, "createdAt", meetingAcceptTime);
+
+            SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            final int kaiCredit = kai.getCredit();
+
+            // when
+            Long meetingRequestId = meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now());
+
+            // then
+            MeetingRequest meetingRequests = meetingRequestRepository.findById(meetingRequestId)
+                .orElseThrow();
+            assertThat(meetingRequests)
+                .extracting("team", "partnerTeam", "acceptStatus", "message")
+                .contains(kaiTeam, rimTeam, PENDING, null);
             assertThat(kai.getCredit()).isLessThan(kaiCredit);
         }
 
@@ -163,10 +195,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
 
             SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(CreditNotEnoughException.class);
         }
 
@@ -184,7 +217,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when
-            meetingHandleService.sendRequest(request, kai.getMemberId());
+            meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now());
 
             // then
             Integer findCredit = memberRepository.findCreditByMemberId(kai.getMemberId())
@@ -205,7 +238,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now()))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
@@ -220,10 +253,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             rimTeam.delete(LocalDateTime.of(2023, 8, 15, 13, 0));
 
             SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(TeamHasBeenDeletedException.class);
         }
 
@@ -236,10 +270,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
 
             SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "USER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(UnAuthorizedRoleException.class);
         }
 
@@ -262,10 +297,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final int kaiCredit = kai.getCredit();
 
             SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when
-            meetingHandleService.sendRequestWithMessage(request, kai.getMemberId());
+            meetingHandleService.sendRequestWithMessage(request, kai.getMemberId(), meetingRequestTime);
 
             // then
             List<MeetingRequest> meetingRequests = meetingRequestRepository.findAll();
@@ -290,10 +326,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final String message = "안녕하세요";
 
             SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(CreditNotEnoughException.class);
         }
 
@@ -310,10 +347,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final String message = "안녕하세요";
 
             SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when
-            meetingHandleService.sendRequestWithMessage(request, kai.getMemberId());
+            meetingHandleService.sendRequestWithMessage(request, kai.getMemberId(), meetingRequestTime);
 
             // then
             Integer findCredit = memberRepository.findCreditByMemberId(kai.getMemberId())
@@ -332,10 +370,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final String message = "안녕하세요";
 
             SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
         }
 
@@ -351,10 +390,11 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
             final String message = "안녕하세요 저는 ~~ 살고있는 ~~ 입니다. 저희는 높은 텐션을 가지고 있어서 재밌게 놀 수 있을 것 같아요!";
 
             SendMeetingWithMessageRequestDto request = new SendMeetingWithMessageRequestDto(rimTeam.getTeamId(), message);
+            LocalDateTime meetingRequestTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");
 
             // when & then
-            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId()))
+            assertThatThrownBy(() -> meetingHandleService.sendRequestWithMessage(request, kai.getMemberId(), meetingRequestTime))
                 .isExactlyInstanceOf(UndeclaredThrowableException.class);
         }
 

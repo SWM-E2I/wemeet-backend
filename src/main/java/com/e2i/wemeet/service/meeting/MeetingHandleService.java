@@ -10,12 +10,12 @@ public interface MeetingHandleService {
     /*
      * 미팅 신청
      * */
-    void sendRequest(SendMeetingRequestDto requestDto, Long memberId);
+    Long sendRequest(SendMeetingRequestDto requestDto, Long memberId, LocalDateTime meetingRequestTime);
 
     /*
      * 쪽지와 함께 미팅 신청
      * */
-    void sendRequestWithMessage(SendMeetingWithMessageRequestDto requestDto, Long memberId);
+    Long sendRequestWithMessage(SendMeetingWithMessageRequestDto requestDto, Long memberId, LocalDateTime meetingRequestTime);
 
     /*
      * 미팅 신청 수락

@@ -31,7 +31,8 @@ public class MeetingController {
 
     @PostMapping
     public ResponseDto<Void> sendMeetingRequest(@MemberId Long memberId, @RequestBody @Valid SendMeetingRequestDto requestDto) {
-        meetingHandleService.sendRequest(requestDto, memberId);
+        LocalDateTime meetingRequestTime = LocalDateTime.now();
+        meetingHandleService.sendRequest(requestDto, memberId, meetingRequestTime);
 
         return ResponseDto.success("Send meeting request success");
     }
@@ -39,7 +40,8 @@ public class MeetingController {
     @PostMapping("/message")
     public ResponseDto<Void> sendMeetingRequestWithMessage(@MemberId Long memberId,
         @RequestBody @Valid SendMeetingWithMessageRequestDto requestDto) {
-        meetingHandleService.sendRequestWithMessage(requestDto, memberId);
+        LocalDateTime meetingRequestTime = LocalDateTime.now();
+        meetingHandleService.sendRequestWithMessage(requestDto, memberId, meetingRequestTime);
 
         return ResponseDto.success("Send meeting request with message success");
     }
