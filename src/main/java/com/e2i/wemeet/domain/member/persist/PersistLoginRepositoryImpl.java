@@ -28,7 +28,7 @@ public class PersistLoginRepositoryImpl implements PersistLoginRepository {
             ))
             .from(member)
             .leftJoin(member.team, team)
-            .where(member.memberId.eq(memberId))
+            .on(member.memberId.eq(memberId).and(team.deletedAt.isNull()))
             .fetchOne();
 
         if (findPersistData == null) {
