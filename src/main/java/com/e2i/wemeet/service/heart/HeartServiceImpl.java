@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class HeartServiceImpl implements HeartService {
 
+    public static final int HEART_EXPIRE_DAY = 1;
     private static final LocalTime boundaryTime = LocalTime.of(23, 11);
     private final HeartRepository heartRepository;
     private final MemberRepository memberRepository;
@@ -87,7 +88,7 @@ public class HeartServiceImpl implements HeartService {
     private void checkTodayHeart(Long teamId, LocalDateTime requestTime) {
         LocalDateTime boundaryDateTime = requestTime.with(boundaryTime);
         if (requestTime.isBefore(boundaryDateTime)) {
-            boundaryDateTime = boundaryDateTime.minusDays(1);
+            boundaryDateTime = boundaryDateTime.minusDays(HEART_EXPIRE_DAY);
         }
 
         heartRepository.findTodayHeart(teamId, boundaryDateTime, requestTime)

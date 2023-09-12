@@ -41,7 +41,7 @@ public class TeamServiceImpl implements TeamService {
     private final CodeRepository codeRepository;
 
     private final S3Service s3Service;
-    
+
 
     @Value("${aws.s3.teamImageBucket}")
     private String teamImageBucket;
@@ -109,9 +109,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional
     @Override
-    public TeamDetailResponseDto readByTeamId(final Long memberId, final Long teamId) {
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId,
-                teamId)
+    public TeamDetailResponseDto readByTeamId(final Long memberId, final Long teamId, final LocalDateTime readTime) {
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId, teamId, readTime)
             .orElseThrow(TeamNotFoundException::new);
         LeaderResponseDto leader = teamRepository.findLeaderByTeamId(teamId)
             .orElseThrow(TeamNotFoundException::new);

@@ -24,6 +24,7 @@ import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +62,11 @@ class TeamServiceImplTest extends AbstractServiceTest {
             .build());
 
         teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(kaiTeam));
+        final LocalDateTime readTime = LocalDateTime.now();
         setAuthentication(kai.getMemberId(), "MANAGER");
 
         // when
-        TeamDetailResponseDto responseDto = teamService.readByTeamId(rim.getMemberId(), kaiTeam.getTeamId());
+        TeamDetailResponseDto responseDto = teamService.readByTeamId(rim.getMemberId(), kaiTeam.getTeamId(), readTime);
 
         // then
         assertThat(responseDto)

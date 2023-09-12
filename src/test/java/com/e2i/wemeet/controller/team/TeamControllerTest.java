@@ -1,5 +1,6 @@
 package com.e2i.wemeet.controller.team;
 
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
@@ -33,6 +34,7 @@ import com.e2i.wemeet.support.fixture.TeamFixture;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -189,12 +191,12 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         Member kai = KAI.create_with_id(1L);
         List<TeamMember> teamMembers = create_3_man();
         TeamInformationDto teamInformation = TeamInformationDto.of(
-            HONGDAE_TEAM_1.create_with_id(kai, teamMembers, 1L));
+            HONGDAE_TEAM_1.create_with_id(kai, teamMembers, 1L), 1L, 1L, PENDING);
         LeaderResponseDto leader = LeaderResponseDto.of(kai);
         List<String> imageUrls = List.of("/v1/test1", "/v1/test2", "/v1/test3");
 
         final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader, imageUrls);
-        given(teamService.readByTeamId(anyLong(), anyLong()))
+        given(teamService.readByTeamId(anyLong(), anyLong(), any(LocalDateTime.class)))
             .willReturn(response);
 
         // when
@@ -230,7 +232,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data.leader.leaderLowProfileImageUrl").value("/v1/kai"),
                 jsonPath("$.data.leader.imageAuth").value(false)
             );
-        verify(teamService).readByTeamId(anyLong(), anyLong());
+        verify(teamService).readByTeamId(anyLong(), anyLong(), any(LocalDateTime.class));
 
         readByTeamIdWriteRestDocs(perform);
     }

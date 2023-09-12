@@ -7,6 +7,8 @@ import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
 import static com.e2i.wemeet.domain.team_member.QTeamMember.teamMember;
+import static com.e2i.wemeet.service.heart.HeartServiceImpl.HEART_EXPIRE_DAY;
+import static com.e2i.wemeet.service.meeting.MeetingHandleServiceImpl.MEETING_REQUEST_EXPIRE_DAY;
 
 import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.dto.dsl.TeamInformationDto;
@@ -14,7 +16,9 @@ import com.e2i.wemeet.dto.dsl.TeamMemberInformationDto;
 import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +64,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long memberLeaderId, final Long teamId) {
+    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long memberLeaderId, final Long teamId, final LocalDateTime readTime) {
         com.e2i.wemeet.domain.team.QTeam myTeam = new com.e2i.wemeet.domain.team.QTeam("myTeam");
         TeamInformationDto teamInformationDto = Optional.ofNullable(queryFactory
                 .select(Projections.constructor(TeamInformationDto.class,
@@ -73,20 +77,29 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     team.additionalActivity,
                     team.introduction,
                     team.deletedAt,
-                    meetingRequest.acceptStatus,
-                    heart.heartId,
+                    // 미팅 요청 조회
+                    JPAExpressions
+                        .select(meetingRequest.acceptStatus)
+                        .from(meetingRequest)
+                        .where(meetingRequest.team.eq(myTeam),
+                            meetingRequest.partnerTeam.eq(team),
+                            meetingRequest.createdAt.goe(readTime.minusDays(MEETING_REQUEST_EXPIRE_DAY))
+                        )
+                        .orderBy(meetingRequest.createdAt.desc())
+                        .limit(1),
+                    // 좋아요 표시 여부 조회
+                    JPAExpressions
+                        .select(heart.heartId)
+                        .from(heart)
+                        .where(heart.team.eq(myTeam),
+                            heart.partnerTeam.eq(team),
+                            heart.createdAt.goe(readTime.minusDays(HEART_EXPIRE_DAY))
+                        )
+                        .limit(1),
                     myTeam.teamId
                 ))
                 .from(team)
                 .leftJoin(myTeam).on(myTeam.teamLeader.memberId.eq(memberLeaderId))
-                .leftJoin(heart).on(
-                    heart.team.eq(myTeam),
-                    heart.partnerTeam.teamId.eq(teamId)
-                )
-                .leftJoin(meetingRequest).on(
-                    meetingRequest.team.eq(myTeam),
-                    meetingRequest.partnerTeam.teamId.eq(teamId)
-                )
                 .where(team.teamId.eq(teamId))
                 .fetchOne())
             .orElseThrow(TeamNotFoundException::new);

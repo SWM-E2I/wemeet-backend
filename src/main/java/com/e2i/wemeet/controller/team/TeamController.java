@@ -10,6 +10,7 @@ import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
 import com.e2i.wemeet.security.manager.IsManager;
 import com.e2i.wemeet.service.team.TeamService;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,7 +59,8 @@ public class TeamController {
 
     @GetMapping("/{teamId}")
     public ResponseDto<TeamDetailResponseDto> readTeamById(@MemberId Long memberId, @PathVariable Long teamId) {
-        TeamDetailResponseDto result = teamService.readByTeamId(memberId, teamId);
+        final LocalDateTime readTime = LocalDateTime.now();
+        TeamDetailResponseDto result = teamService.readByTeamId(memberId, teamId, readTime);
 
         return ResponseDto.success("Get Team Detail Success", result);
     }

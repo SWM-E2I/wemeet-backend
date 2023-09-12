@@ -1,8 +1,11 @@
 package com.e2i.wemeet.domain.team;
 
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.ACCEPT;
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.EXPIRED;
 import static com.e2i.wemeet.domain.member.data.Mbti.ENFJ;
 import static com.e2i.wemeet.domain.member.data.Mbti.ENFP;
 import static com.e2i.wemeet.domain.member.data.Mbti.ESFJ;
+import static com.e2i.wemeet.support.config.ReflectionUtils.setFieldValueToSuperClassField;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
@@ -25,6 +28,7 @@ import com.e2i.wemeet.dto.dsl.TeamInformationDto;
 import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
 import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -105,9 +109,10 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
         //given
         Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
         Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        LocalDateTime readTime = LocalDateTime.now();
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), kaiTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), kaiTeam.getTeamId(), readTime)
             .orElseThrow(TeamNotFoundException::new);
 
         //then
@@ -135,13 +140,45 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             .team(kaiTeam)
             .partnerTeam(rimTeam)
             .build());
+        LocalDateTime readTime = LocalDateTime.now();
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId(), readTime)
             .orElseThrow(TeamNotFoundException::new);
 
         //then
         assertThat(teamInformation.getIsLiked()).isTrue();
+    }
+
+    @DisplayName("좋아요를 여러번 눌렀어도, 해당 좋아요 이력들이 유효한 기간이 지났다면 isLiked 가 false 가 된다")
+    @Test
+    void findHeartRecent() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        Heart heart1 = heartRepository.save(Heart.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build());
+        setFieldValueToSuperClassField(heart1, "createdAt", LocalDateTime.now().minusDays(10));
+        Heart heart2 = heartRepository.save(Heart.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build());
+        setFieldValueToSuperClassField(heart2, "createdAt", LocalDateTime.now().minusDays(11));
+        LocalDateTime readTime = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId(), readTime)
+            .orElseThrow(TeamNotFoundException::new);
+
+        //then
+        assertThat(teamInformation.getIsLiked()).isFalse();
     }
 
     @DisplayName("미팅 신청 현황을 조회할 수 있다.")
@@ -159,17 +196,49 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
             .partnerTeam(rimTeam)
             .build();
         meetingRequest.changeStatus(acceptStatus);
-
         meetingRequestRepository.save(meetingRequest);
+        LocalDateTime readTime = LocalDateTime.now();
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId(), readTime)
             .orElseThrow(TeamNotFoundException::new);
-
-        System.out.println("teamInformation = " + teamInformation);
 
         //then
         assertThat(teamInformation.getMeetingRequestStatus()).isEqualTo(acceptStatus);
+    }
+
+    @DisplayName("가장 최신의 미팅 신청 현황을 조회할 수 있다.")
+    @Test
+    void findMeetingRequestExpired() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+
+        MeetingRequest meetingRequest2 = MeetingRequest.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build();
+        meetingRequest2.changeStatus(EXPIRED);
+        meetingRequestRepository.save(meetingRequest2);
+        setFieldValueToSuperClassField(meetingRequest2, "createdAt", LocalDateTime.now().minusDays(10));
+
+        MeetingRequest meetingRequest = MeetingRequest.builder()
+            .team(kaiTeam)
+            .partnerTeam(rimTeam)
+            .build();
+        meetingRequest.changeStatus(ACCEPT);
+        meetingRequestRepository.save(meetingRequest);
+
+        LocalDateTime readTime = LocalDateTime.now();
+
+        //when
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId(), readTime)
+            .orElseThrow(TeamNotFoundException::new);
+
+        //then
+        assertThat(teamInformation.getMeetingRequestStatus()).isEqualTo(ACCEPT);
     }
 
     @DisplayName("미팅 신청내역이 없을 경우 null이 반환된다.")
@@ -180,27 +249,27 @@ class TeamCustomRepositoryImplTest extends AbstractRepositoryUnitTest {
         Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
         Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
         Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        LocalDateTime readTime = LocalDateTime.now();
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(kai.getMemberId(), rimTeam.getTeamId(), readTime)
             .orElseThrow(TeamNotFoundException::new);
-
-        System.out.println("teamInformation = " + teamInformation);
 
         //then
         assertThat(teamInformation.getMeetingRequestStatus()).isNull();
     }
 
-    @DisplayName("팀이 없어도 다른 팀 상세정보를 조회할 수 있다.")
+    @DisplayName("팀이 없어도 다른 팀 상세 정보를 조회할 수 있다.")
     @Test
     void findTeamInformationWithoutTeam() {
         // given
         Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
         Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
         Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        LocalDateTime readTime = LocalDateTime.now();
 
         //when
-        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(rim.getMemberId(), kaiTeam.getTeamId())
+        TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(rim.getMemberId(), kaiTeam.getTeamId(), readTime)
             .orElseThrow(TeamNotFoundException::new);
 
         // then

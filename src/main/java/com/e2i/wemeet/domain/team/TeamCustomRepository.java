@@ -3,6 +3,7 @@ package com.e2i.wemeet.domain.team;
 import com.e2i.wemeet.domain.team.data.TeamImageData;
 import com.e2i.wemeet.dto.dsl.TeamInformationDto;
 import com.e2i.wemeet.dto.response.LeaderResponseDto;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,6 @@ public interface TeamCustomRepository {
     /*
      * 팀 정보 조회
      * */
-    Optional<TeamInformationDto> findTeamInformationByTeamId(Long memberLeaderId, Long teamId);
+    Optional<TeamInformationDto> findTeamInformationByTeamId(Long memberLeaderId, Long teamId, LocalDateTime readTime);
 
 }

@@ -48,11 +48,11 @@ public class TeamInformationDto {
         this.memberHasTeam = requestMemberTeamId != null;
     }
 
-    public static TeamInformationDto of(Team team) {
+    public static TeamInformationDto of(Team team, Long heartId, Long requestMemberTeamId, AcceptStatus status) {
         TeamInformationDto dto = TeamInformationDto.builder()
             .teamId(team.getTeamId())
             .chatLink(team.getChatLink())
-            .heartId(1L)
+            .heartId(heartId)
             .memberNum(team.getMemberNum())
             .region(team.getRegion())
             .drinkRate(team.getDrinkRate())
@@ -60,8 +60,8 @@ public class TeamInformationDto {
             .additionalActivity(team.getAdditionalActivity())
             .introduction(team.getIntroduction())
             .deletedAt(team.getDeletedAt())
-            .meetingRequestStatus(AcceptStatus.PENDING)
-            .requestMemberTeamId(1L)
+            .meetingRequestStatus(status)
+            .requestMemberTeamId(requestMemberTeamId)
             .build();
 
         dto.setTeamMember(team.getTeamMembers());
