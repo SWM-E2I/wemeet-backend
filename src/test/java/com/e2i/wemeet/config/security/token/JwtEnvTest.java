@@ -21,8 +21,7 @@ class JwtEnvTest {
         String[] separate = redisKeyForRefresh.split("-");
         assertAll(
             () -> assertThat(separate[0]).isEqualTo("memberId"),
-            () -> assertThat(separate[1]).isEqualTo(String.valueOf(1L)),
-            () -> assertThat(separate[2]).isEqualTo(Role.USER.name())
+            () -> assertThat(separate[1]).isEqualTo(String.valueOf(1L))
         );
     }
 }

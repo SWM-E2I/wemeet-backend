@@ -74,7 +74,7 @@ class MeetingListServiceImplTest extends AbstractServiceTest {
             Team chaewonTeam = teamRepository.save(HONGDAE_TEAM_1.create(chaewon, create_3_woman()));
 
             meetingRepository.save(BASIC_MEETING.create(kaiTeam, rimTeam));
-            meetingRepository.save(SECOND_MEETING.create(kaiTeam, chaewonTeam));
+            meetingRepository.save(SECOND_MEETING.create(chaewonTeam, kaiTeam));
 
             final LocalDateTime findDateTime = LocalDateTime.now();
             setAuthentication(kai.getMemberId(), "MANAGER");

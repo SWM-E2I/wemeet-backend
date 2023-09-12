@@ -370,6 +370,52 @@ paths:
                     hasMainProfileImage\":true,\"basicProfileImage\":\"basicUrl\"\
                     ,\"lowProfileImage\":\"lowUrl\",\"profileImageAuthenticated\"\
                     :true,\"hasTeam\":true}}"
+  /v1/auth/refresh:
+    post:
+      tags:
+        - 토큰 관련 API
+      summary: "RefreshToken 을 사용하여 AccessToken과 Refresh Token을 갱신합니다."
+      description: "    Access Token & RefreshToken 을 사용하여 AccessToken, Refresh Token을\
+        \ 갱신합니다. \n\n    Access Token과 Refresh Token 을 Header 에 넘겨주어야합니다.\n    Access\
+        \ Token 은 유저의 값을 받아오는 용도이기 때문에 만료된 상태여도 상관 없습니다.\n"
+      operationId: Refresh Token
+      security:
+        - AccessToken: [ ]
+      parameters:
+        - name: AccessToken
+          in: header
+          description: Access Token
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk0NDU5NjY5LCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.ADf0nclZd-hqQ9GY-20Oy_rh2uvvLMXvzz51KvnAgjsYjZ0ALVxd6kdI1NazGS0qA3JZpdh8qPDTxP5xkHb6uw
+        - name: RefreshToken
+          in: header
+          description: Refresh Token
+          required: true
+          schema:
+            type: string
+          example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5NzA0OTg2OX0.btOHRe7aOR54MawGo3uTG54NDI_Ma3D1wcMnWz1mF4puR8BjKnO80a4R4c-N3Z2Cs25EjgJAly_SdJ5cLtclRg
+      responses:
+        "200":
+          description: "200"
+          headers:
+            AccessToken:
+              description: 새로 생성된 Access Token
+              schema:
+                type: string
+            RefreshToken:
+              description: 새로 생성된 Refresh Token
+              schema:
+                type: string
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-1162606117'
+              examples:
+                Refresh Token:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"RefreshToken 을 재발급\
+                    하는데 성공했습니다.\",\"data\":null}"
   /v1/heart/received:
     get:
       tags:
