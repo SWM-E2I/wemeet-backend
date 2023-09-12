@@ -16,7 +16,6 @@ import com.e2i.wemeet.security.provider.SmsUserDetailsService;
 import com.e2i.wemeet.security.token.TokenInjector;
 import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.security.token.handler.RefreshTokenHandler;
-import com.e2i.wemeet.service.admin.TokenAuthorizationService;
 import com.e2i.wemeet.service.credential.sms.SmsCredentialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -71,9 +70,9 @@ public class SecurityBeanConfig {
         RedisTemplate<String, String> redisTemplate, RefreshTokenHandler refreshTokenHandler,
         TokenInjector tokenInjector, ObjectMapper objectMapper,
         AccessTokenHandler accessTokenHandler,
-        TokenAuthorizationService tokenAuthorizationService) {
+        MemberRepository memberRepository) {
         return new RefreshTokenProcessingFilter(redisTemplate, refreshTokenHandler, tokenInjector,
-            objectMapper, accessTokenHandler, tokenAuthorizationService);
+            objectMapper, accessTokenHandler, memberRepository);
     }
 
     @Bean

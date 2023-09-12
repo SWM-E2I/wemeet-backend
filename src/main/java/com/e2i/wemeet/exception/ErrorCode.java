@@ -70,6 +70,7 @@ public enum ErrorCode {
     ACCESS_TOKEN_NOT_FOUND(40207, "access.token.not.found"),
     MEETING_REQUEST_NOT_FOUND(40208, "meeting.request.not.found"),
     MEETING_NOT_FOUND(40209, "meeting.not.found"),
+    REFRESH_TOKEN_NOT_EXIST(40210, "refresh.token.not.exist"),
 
     UNAUTHORIZED(40300, "unauthorized"),
     UNAUTHORIZED_ROLE(40301, "unauthorized.role"),
