@@ -21,20 +21,20 @@ import java.lang.reflect.Field;
 public enum MemberFixture {
     KAI("카이", Gender.MAN, "+821011112222", "2017e7024@gs.anyang.ac.kr",
         ANYANG.create(), Mbti.INFJ, 100, false,
-        "/v1/asdf", "/v1/kai", Role.USER),
+        "/v1/asdf", "/v1/kai", true, Role.USER),
     RIM("째림", Gender.WOMAN, "+821098764444", "2019a24@woman.ac.kr",
         WOMAN.create(), Mbti.ISFJ, 100, false,
-        "/v1/asdf", "/v1/rim", Role.USER),
+        "/v1/asdf", "/v1/rim", true, Role.USER),
     SEYUN("떼윤", Gender.MAN, "+821090908888", "2020a234@korea.ac.kr",
         KOREA.create(), Mbti.ENFJ, 100, false,
-        "/v1/asdf", "/v1/sey", Role.USER),
+        "/v1/asdf", "/v1/sey", true, Role.USER),
     JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@korea.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
-        "/v1/asdf", "/v1/jeong", Role.USER),
+        "/v1/asdf", "/v1/jeong", true, Role.USER),
 
     CHAEWON("채원", Gender.WOMAN, "+821089071365", "2020p13@woman.ac.kr",
         WOMAN.create(), Mbti.ISTJ, 100, false,
-        "/v1/asdf", "/v1/chaechae", Role.USER);
+        "/v1/asdf", "/v1/chaechae", true, Role.USER);
 
     private final String nickname;
     private final Gender gender;
@@ -46,11 +46,12 @@ public enum MemberFixture {
     private final Boolean imageAuth;
     private final String basicUrl;
     private final String lowUrl;
+    private final Boolean allowMarketing;
     private final Role role;
 
     MemberFixture(String nickname, Gender gender, String phoneNumber, String email,
         CollegeInfo collegeInfo, Mbti mbti, Integer credit,
-        Boolean imageAuth, String basicUrl, String lowUrl, Role role) {
+        Boolean imageAuth, String basicUrl, String lowUrl, Boolean allowMarketing, Role role) {
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -61,6 +62,7 @@ public enum MemberFixture {
         this.imageAuth = imageAuth;
         this.basicUrl = basicUrl;
         this.lowUrl = lowUrl;
+        this.allowMarketing = allowMarketing;
         this.role = role;
     }
 
@@ -153,6 +155,7 @@ public enum MemberFixture {
             .mbti(this.mbti)
             .credit(this.credit)
             .profileImage(new ProfileImage(this.basicUrl, this.lowUrl, this.imageAuth))
+            .allowMarketing(this.allowMarketing)
             .role(this.role);
     }
 
@@ -165,6 +168,7 @@ public enum MemberFixture {
             .gender(this.gender.name())
             .mbti(this.mbti.name())
             .collegeInfo(collegeInfoRequestDto)
+            .allowMarketing(this.allowMarketing)
             .build();
     }
 
@@ -177,6 +181,7 @@ public enum MemberFixture {
             .gender(this.gender.name())
             .mbti(this.mbti.name())
             .collegeInfo(collegeInfoRequestDto)
+            .allowMarketing(this.allowMarketing)
             .build();
     }
 
