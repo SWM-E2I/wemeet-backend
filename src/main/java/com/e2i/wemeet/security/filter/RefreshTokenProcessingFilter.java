@@ -75,14 +75,12 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private void reIssueToken(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
         Payload payload = getPayload(request);
-
         validateRefreshToken(request, payload);
 
         Role role = tokenAuthorizationService.getMemberRoleByMemberId(payload.getMemberId());
         payload = new Payload(payload.getMemberId(), role.name());
-        
-        tokenInjector.injectToken(response, payload);
 
+        tokenInjector.injectToken(response, payload);
         writeResponse(response, payload);
     }
 
@@ -107,7 +105,7 @@ public class RefreshTokenProcessingFilter extends OncePerRequestFilter {
     private boolean matchesRefreshTokenInRedis(Payload payload, String refreshToken) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
 
-        // get Key from payload (Ex) "memberId-1-USER"
+        // get Key from payload (Ex) "memberId-1"
         String redisKey = JwtEnv.getRedisKeyForRefresh(payload);
         String savedRefresh = operations.get(redisKey);
 

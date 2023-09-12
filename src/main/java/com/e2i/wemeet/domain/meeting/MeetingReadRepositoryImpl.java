@@ -64,24 +64,23 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
     // 성사된 미팅 조회
     @Override
     public List<AcceptedMeetingResponseDto> findAcceptedMeetingList(final Long memberId) {
-        List<MeetingInformationDto> meetingList = queryFactory.select(
-                new QMeetingInformationDto(
-                    meeting.meetingId,
-                    meeting.createdAt.as("meetingAcceptTime"),
-                    meeting.isOver,
-                    partnerTeam.deletedAt,
-                    partnerTeam.teamId,
-                    partnerTeam.memberNum.as("memberCount"),
-                    partnerTeam.region,
-                    partnerTeamLeader.memberId.as("partnerLeaderId"),
-                    partnerTeamLeader.nickname.as("partnerLeaderNickname"),
-                    partnerTeamLeader.mbti.as("partnerLeaderMbti"),
-                    partnerTeamLeader.profileImage.lowUrl.as("partnerLeaderLowProfileUrl"),
-                    code.codeValue.as("partnerLeaderCollegeName"),
-                    partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
-                    partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                    partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
-                ))
+        // 내가 미팅 신청하고 성사되었을 때 목록
+        List<MeetingInformationDto> meetingList = findMeetingInformationWhatIRequested(memberId);
+
+        // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
+        meetingList.addAll(findMeetingInformationWhatIReceived(memberId));
+
+        return meetingList.stream()
+            .map(meetingInformation -> AcceptedMeetingResponseDto.of(
+                meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
+            ))
+            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
+            .toList();
+    }
+
+    // 내가 미팅 신청하고 성사되었을 때 목록
+    private List<MeetingInformationDto> findMeetingInformationWhatIRequested(Long memberId) {
+        return selectMeetingInformationDto()
             .from(meeting)
             // My Team & Partner Team
             .join(meeting.team, team).on(team.deletedAt.isNull())
@@ -93,13 +92,43 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
             .where(member.memberId.eq(memberId))
             .fetch();
+    }
 
-        return meetingList.stream()
-            .map(meetingInformation -> AcceptedMeetingResponseDto.of(
-                meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
-            ))
-            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
-            .toList();
+    // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
+    private List<MeetingInformationDto> findMeetingInformationWhatIReceived(Long memberId) {
+        return selectMeetingInformationDto()
+            .from(meeting)
+            // My Team & Partner Team
+            .join(meeting.team, partnerTeam)
+            .join(meeting.partnerTeam, team).on(team.deletedAt.isNull())
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(member.memberId.eq(memberId))
+            .fetch();
+    }
+
+    private JPAQuery<MeetingInformationDto> selectMeetingInformationDto() {
+        return queryFactory.select(
+            new QMeetingInformationDto(
+                meeting.meetingId,
+                meeting.createdAt.as("meetingAcceptTime"),
+                meeting.isOver,
+                partnerTeam.deletedAt,
+                partnerTeam.teamId,
+                partnerTeam.memberNum.as("memberCount"),
+                partnerTeam.region,
+                partnerTeamLeader.memberId.as("partnerLeaderId"),
+                partnerTeamLeader.nickname.as("partnerLeaderNickname"),
+                partnerTeamLeader.mbti.as("partnerLeaderMbti"),
+                partnerTeamLeader.profileImage.lowUrl.as("partnerLeaderLowProfileUrl"),
+                code.codeValue.as("partnerLeaderCollegeName"),
+                partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
+                partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+            ));
     }
 
     // 보낸 미팅 신청 조회

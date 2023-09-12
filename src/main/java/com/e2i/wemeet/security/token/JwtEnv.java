@@ -9,7 +9,7 @@ public enum JwtEnv {
     ACCESS("AccessToken", Duration.ofMinutes(30)),
     REFRESH("RefreshToken", Duration.ofDays(30));
 
-    private static final String REDIS_KEY = "memberId-%d-%s";
+    private static final String REDIS_KEY = "memberId-%d";
     private final String key;
     private final Duration expirationTime;
 
@@ -22,11 +22,15 @@ public enum JwtEnv {
         return key;
     }
 
+    public Duration getExpirationTime() {
+        return expirationTime;
+    }
+
     public long getExpirationTimeToMillis() {
         return this.expirationTime.toMillis();
     }
 
     public static String getRedisKeyForRefresh(final Payload payload) {
-        return String.format(REDIS_KEY, payload.getMemberId(), payload.getRole());
+        return String.format(REDIS_KEY, payload.getMemberId());
     }
 }

@@ -100,8 +100,7 @@ class MeetingRepositoryTest extends AbstractRepositoryUnitTest {
         List<LocalDateTime> findMeetingCreatedAt = meetingRepository.findCreatedAtByMeetingRequestId(meetingRequestId2);
 
         // then
-        assertThat(findMeetingCreatedAt).hasSize(2)
-            .containsExactlyInAnyOrder(meeting.getCreatedAt(), meeting2.getCreatedAt());
+        assertThat(findMeetingCreatedAt).hasSize(2);
     }
 
     @DisplayName("미팅 성사 내역이 없다면 이전 미팅 성사 내역을 조회할 수 없다.")

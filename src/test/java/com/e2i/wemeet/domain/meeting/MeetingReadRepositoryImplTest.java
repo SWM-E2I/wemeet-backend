@@ -152,7 +152,7 @@ class MeetingReadRepositoryImplTest extends AbstractRepositoryUnitTest {
             teamImageRepository.saveAll(SECOND_TEAM_IMAGE.createTeamImages(chaewonTeam));
 
             meetingRepository.save(BASIC_MEETING.create(kaiTeam, rimTeam));
-            meetingRepository.save(BASIC_MEETING.create(kaiTeam, chaewonTeam));
+            meetingRepository.save(BASIC_MEETING.create(chaewonTeam, kaiTeam));
 
             // when
             List<AcceptedMeetingResponseDto> meetingList = meetingReadRepository.findAcceptedMeetingList(kai.getMemberId());
