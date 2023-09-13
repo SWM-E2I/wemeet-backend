@@ -4,6 +4,8 @@ import com.e2i.wemeet.domain.base.BaseTimeEntity;
 import com.e2i.wemeet.domain.base.converter.CryptoConverter;
 import com.e2i.wemeet.domain.base.converter.GenderConverter;
 import com.e2i.wemeet.domain.base.converter.MbtiConverter;
+import com.e2i.wemeet.domain.cost.CostHistory;
+import com.e2i.wemeet.domain.history.History;
 import com.e2i.wemeet.domain.member.data.CollegeInfo;
 import com.e2i.wemeet.domain.member.data.Gender;
 import com.e2i.wemeet.domain.member.data.Mbti;
@@ -92,6 +94,13 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<CostHistory> costHistory = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<History> history = new ArrayList<>();
+
 
     @Builder
     public Member(String nickname, Gender gender, String phoneNumber, String email,

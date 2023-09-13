@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `team_member`
     `modified_at`           datetime(6),
     `team_id`               bigint  NOT NULL,
     PRIMARY KEY (`team_member_id`),
-    FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`)
+    FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`) ON DELETE CASCADE
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;

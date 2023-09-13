@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `team`
     `deleted_at`          datetime(6),
     `team_leader_id`      bigint,
     PRIMARY KEY (`team_id`),
-    FOREIGN KEY (`team_leader_id`) REFERENCES member (`member_id`) ON DELETE SET NULL
+    FOREIGN KEY (`team_leader_id`) REFERENCES member (`member_id`) ON DELETE CASCADE
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
