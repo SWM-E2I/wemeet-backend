@@ -99,7 +99,10 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     myTeam.teamId
                 ))
                 .from(team)
-                .leftJoin(myTeam).on(myTeam.teamLeader.memberId.eq(memberLeaderId))
+                .leftJoin(myTeam).on(
+                    myTeam.teamLeader.memberId.eq(memberLeaderId),
+                    myTeam.deletedAt.isNull()
+                )
                 .where(team.teamId.eq(teamId))
                 .fetchOne())
             .orElseThrow(TeamNotFoundException::new);

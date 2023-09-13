@@ -129,7 +129,7 @@ paths:
               회원가입:
                 value: "{\"nickname\":\"카이\",\"gender\":\"MAN\",\"phoneNumber\":\"\
                   +821011112222\",\"collegeInfo\":{\"collegeCode\":\"CE-081\",\"collegeType\"\
-                  :\"SOCIAL\",\"admissionYear\":\"17\"},\"mbti\":\"INFJ\"}"
+                  :\"SOCIAL\",\"admissionYear\":\"17\"},\"mbti\":\"INFJ\", \"allowMarketing\":\"true\"}"
       responses:
         "200":
           description: "200"
@@ -1533,6 +1533,9 @@ components:
         mbti:
           type: string
           description: 본인 MBTI
+        allowMarketing:
+          type: boolean
+          description: 마케팅 수신 동의 여부
     v1-team-teamId1238987508:
       type: object
       properties:
