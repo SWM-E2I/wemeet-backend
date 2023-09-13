@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class SmsUserDetailsService implements UserDetailsService {
@@ -17,6 +18,7 @@ public class SmsUserDetailsService implements UserDetailsService {
     /*
      * username == phone
      */
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         Optional<Member> member = memberRepository.findByPhoneNumber(username);
