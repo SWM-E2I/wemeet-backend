@@ -33,25 +33,30 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
         List<Long> suggestionHistory = queryFactory
             .select(history.team.teamId)
             .from(history)
-            .where(history.member.memberId.eq(memberId))
+            .where(
+                history.member.memberId.eq(memberId),
+                history.member.deletedAt.isNull()
+            )
             .fetch();
 
         return queryFactory
             .select(Projections.constructor(SuggestionTeamData.class, team,
-                teamImage.teamImageUrl.as("teamMainImageUrl"),
-                Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                    member.profileImage.lowUrl.as("profileImageUrl"),
-                    member.collegeInfo.collegeCode.codeValue.as("college"))))
+                    teamImage.teamImageUrl.as("teamMainImageUrl"),
+                    Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
+                        member.profileImage.lowUrl.as("profileImageUrl"),
+                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                )
+            )
             .from(team)
-            .join(team.teamLeader, member)
-            .on(team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage)
-            .on(teamImage.team.teamId.eq(team.teamId))
-            .where(team.deletedAt.isNull())
-            .where(team.gender.ne(gender))
-            .where(team.teamId.notIn(suggestionHistory))
-            .where(team.memberNum.eq(memberNum))
-            .where(teamImage.sequence.eq(1))
+            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
+            .where(
+                team.deletedAt.isNull(),
+                team.gender.ne(gender),
+                team.teamId.notIn(suggestionHistory),
+                team.memberNum.eq(memberNum),
+                teamImage.sequence.eq(1)
+            )
             .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(SUGGESTION_TEAM_LIMIT)
             .fetch();
@@ -62,24 +67,29 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
         List<Long> suggestionHistory = queryFactory
             .select(history.team.teamId)
             .from(history)
-            .where(history.member.memberId.eq(memberId))
+            .where(
+                history.member.memberId.eq(memberId),
+                history.member.deletedAt.isNull()
+            )
             .fetch();
 
         return queryFactory
             .select(Projections.constructor(SuggestionTeamData.class, team,
-                teamImage.teamImageUrl.as("teamMainImageUrl"),
-                Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                    member.profileImage.lowUrl.as("profileImageUrl"),
-                    member.collegeInfo.collegeCode.codeValue.as("college"))))
+                    teamImage.teamImageUrl.as("teamMainImageUrl"),
+                    Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
+                        member.profileImage.lowUrl.as("profileImageUrl"),
+                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                )
+            )
             .from(team)
-            .join(team.teamLeader, member)
-            .on(team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage)
-            .on(teamImage.team.teamId.eq(team.teamId))
-            .where(team.deletedAt.isNull())
-            .where(team.gender.ne(gender))
-            .where(team.teamId.notIn(suggestionHistory))
-            .where(teamImage.sequence.eq(1))
+            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
+            .where(
+                team.deletedAt.isNull(),
+                team.gender.ne(gender),
+                team.teamId.notIn(suggestionHistory),
+                teamImage.sequence.eq(1)
+            )
             .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(SUGGESTION_TEAM_LIMIT)
             .fetch();
@@ -112,18 +122,19 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                     team.region, teamImage.teamImageUrl.as("teamMainImageUrl"), history.isLiked,
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.lowUrl.as("profileImageUrl"),
-                        member.collegeInfo.collegeCode.codeValue.as("college"))))
+                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                )
+            )
             .from(history)
-            .join(team)
-            .on(history.team.teamId.eq(team.teamId))
-            .join(team.teamLeader, member)
-            .on(team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage)
-            .on(teamImage.team.teamId.eq(team.teamId))
-            .where(history.member.memberId.eq(memberId))
-            .where(history.createdAt.between(boundaryDateTime, requestedTime))
-            .where(team.deletedAt.isNull())
-            .where(teamImage.sequence.eq(1))
+            .join(team).on(history.team.teamId.eq(team.teamId))
+            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
+            .where(
+                history.member.memberId.eq(memberId),
+                history.createdAt.between(boundaryDateTime, requestedTime),
+                team.deletedAt.isNull(),
+                teamImage.sequence.eq(1)
+            )
             .fetch();
     }
 }

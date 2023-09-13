@@ -90,7 +90,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeam.teamLeader, partnerTeamLeader)
             // Partner Team Leader College
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(member.memberId.eq(memberId))
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
             .fetch();
     }
 
@@ -106,7 +109,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeam.teamLeader, partnerTeamLeader)
             // Partner Team Leader College
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(member.memberId.eq(memberId))
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
             .fetch();
     }
 
@@ -144,7 +150,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeam.teamLeader, partnerTeamLeader)
             // Partner Team Leader College
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(member.memberId.eq(memberId))
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
             .fetch();
 
         return meetingRequestList.stream()
@@ -167,7 +176,10 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeam.teamLeader, partnerTeamLeader)
             // Partner Team Leader College
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(member.memberId.eq(memberId))
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
             .fetch();
 
         return meetingReceivedList.stream()
@@ -201,9 +213,11 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
     private List<String> findTeamProfileImageUrl(final Long teamId) {
         return queryFactory.select(teamImage.teamImageUrl)
-            .from(team)
-            .join(teamImage).on(team.teamId.eq(teamImage.team.teamId))
-            .where(team.teamId.eq(teamId))
+            .from(teamImage)
+            .join(teamImage.team, team)
+            .where(
+                team.teamId.eq(teamId)
+            )
             .orderBy(teamImage.sequence.asc())
             .fetch();
     }
@@ -213,8 +227,12 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             queryFactory
                 .select(new QTeamCheckProxyDto(team.teamId, team.deletedAt))
                 .from(team)
-                .where(team.teamLeader.memberId.eq(leaderId))
-                .fetchFirst()
+                .where(
+                    team.teamLeader.memberId.eq(leaderId),
+                    team.teamLeader.deletedAt.isNull(),
+                    team.deletedAt.isNull()
+                )
+                .fetchOne()
         );
     }
 
@@ -231,7 +249,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 .select(new QTeamCheckProxyDto(team.teamId, team.deletedAt))
                 .from(team)
                 .where(team.teamId.eq(teamId))
-                .fetchFirst()
+                .fetchOne()
         );
     }
 }
