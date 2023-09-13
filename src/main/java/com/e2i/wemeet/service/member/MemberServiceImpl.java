@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void updateMember(Long memberId, UpdateMemberRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void deleteMember(Long memberId, LocalDateTime deletedAt) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 

@@ -41,7 +41,7 @@ class MemberImageServiceTest {
         MultipartFile multipartFile = new MockMultipartFile("file", "test.jpg", "image/jpg",
             "test data".getBytes());
 
-        when(memberRepository.findById(memberId))
+        when(memberRepository.findByMemberId(memberId))
             .thenReturn(Optional.of(kai));
         doNothing().when(s3Service).upload(any(MultipartFile.class), anyString(), any());
 

@@ -136,14 +136,14 @@ class MemberServiceTest {
             // given
             Member kai = KAI.create_with_id(1L);
             UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "ESTJ");
-            when(memberRepository.findById(1L))
+            when(memberRepository.findByMemberId(1L))
                 .thenReturn(Optional.of(kai));
 
             // when
             memberService.updateMember(1L, updateRequest);
 
             // then
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             assertThat(kai.getNickname()).isEqualTo("기우미우");
             assertThat(kai.getMbti()).isEqualTo(Mbti.ESTJ);
         }
@@ -154,13 +154,13 @@ class MemberServiceTest {
             // given
             final Long invalidId = 999L;
             UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "ESTJ");
-            when(memberRepository.findById(invalidId))
+            when(memberRepository.findByMemberId(invalidId))
                 .thenThrow(MemberNotFoundException.class);
 
             // when & then
             assertThatThrownBy(() -> memberService.updateMember(invalidId, updateRequest))
                 .isExactlyInstanceOf(MemberNotFoundException.class);
-            verify(memberRepository).findById(invalidId);
+            verify(memberRepository).findByMemberId(invalidId);
         }
 
         @DisplayName("수정한 MBTI가 존재하지 않다면 MBTI를 수정할 수 없다.")
@@ -169,13 +169,13 @@ class MemberServiceTest {
             // given
             Member kai = KAI.create_with_id(1L);
             UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto("기우미우", "PAQS");
-            when(memberRepository.findById(1L))
+            when(memberRepository.findByMemberId(1L))
                 .thenReturn(Optional.of(kai));
 
             // when & then
             assertThatThrownBy(() -> memberService.updateMember(1L, updateRequest))
                 .isExactlyInstanceOf(InvalidMbtiException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
 
         @DisplayName("닉네임의 길이가 10자가 넘어간다면 닉네임을 수정할 수 없다.")
@@ -186,13 +186,13 @@ class MemberServiceTest {
             Member kai = KAI.create_with_id(1L);
             UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto(overTenLengthNickname,
                 "ESTJ");
-            when(memberRepository.findById(1L))
+            when(memberRepository.findByMemberId(1L))
                 .thenThrow(DataException.class);
 
             // when & then
             assertThatThrownBy(() -> memberService.updateMember(1L, updateRequest))
                 .isExactlyInstanceOf(DataException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
     }
 
@@ -276,7 +276,7 @@ class MemberServiceTest {
             Member kai = KAI.create_with_id(1L);
 
             // when
-            when(memberRepository.findById(1L))
+            when(memberRepository.findByMemberId(1L))
                 .thenReturn(Optional.of(kai));
             LocalDateTime deletedTime = LocalDateTime.now();
             memberService.deleteMember(1L, deletedTime);
@@ -292,7 +292,7 @@ class MemberServiceTest {
             final Long invalidId = 999L;
 
             // when
-            when(memberRepository.findById(invalidId))
+            when(memberRepository.findByMemberId(invalidId))
                 .thenThrow(MemberNotFoundException.class);
             LocalDateTime deletedTime = LocalDateTime.now();
 
@@ -309,7 +309,7 @@ class MemberServiceTest {
             ReflectionUtils.setFieldValue(kai, "deletedAt", LocalDateTime.now());
 
             // when
-            when(memberRepository.findById(1L))
+            when(memberRepository.findByMemberId(1L))
                 .thenReturn(Optional.of(kai));
 
             LocalDateTime deletedTime = LocalDateTime.now();

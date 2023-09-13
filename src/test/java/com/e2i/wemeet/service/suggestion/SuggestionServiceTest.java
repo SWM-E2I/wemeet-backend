@@ -71,7 +71,7 @@ class SuggestionServiceTest {
                 .team(team)
                 .build();
 
-            when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+            when(memberRepository.findByMemberId(1L)).thenReturn(Optional.of(member));
             when(teamRepository.findHistory(1L, requestTime)).thenReturn(Collections.emptyList());
             when(teamRepository.findSuggestionTeamForUser(member.getMemberId(), member.getGender()))
                 .thenReturn(List.of(data));
@@ -79,7 +79,7 @@ class SuggestionServiceTest {
             List<SuggestionResponseDto> result = suggestionService.readSuggestion(
                 member.getMemberId(), requestTime);
 
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             verify(teamRepository).findHistory(1L, requestTime);
             verify(teamRepository).findSuggestionTeamForUser(member.getMemberId(),
                 member.getGender());
@@ -99,7 +99,7 @@ class SuggestionServiceTest {
             Member member = MemberFixture.RIM.create_with_id(1L);
             LocalDateTime requestTime = LocalDateTime.now();
 
-            when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+            when(memberRepository.findByMemberId(1L)).thenReturn(Optional.of(member));
             when(teamRepository.findHistory(1L, requestTime)).thenReturn(List.of(
                 History.builder().build()));
 
@@ -107,7 +107,7 @@ class SuggestionServiceTest {
                 suggestionService.readSuggestion(1L, requestTime);
             }).isInstanceOf(SuggestionHistoryExistsException.class);
 
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             verify(teamRepository).findHistory(1L, requestTime);
         }
     }
@@ -122,7 +122,7 @@ class SuggestionServiceTest {
             Member member = MemberFixture.RIM.create_with_id(1L);
             LocalDateTime requestTime = LocalDateTime.now();
 
-            when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+            when(memberRepository.findByMemberId(1L)).thenReturn(Optional.of(member));
             when(teamRepository.findHistory(1L, requestTime)).thenReturn(Collections.emptyList());
 
             CheckSuggestionResponseDto response = suggestionService.checkTodaySuggestionHistory(
@@ -148,7 +148,7 @@ class SuggestionServiceTest {
                 .member(member)
                 .build();
 
-            when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
+            when(memberRepository.findByMemberId(1L)).thenReturn(Optional.of(member));
             when(teamRepository.findHistory(1L, requestTime)).thenReturn(List.of(history));
             when(teamRepository.findSuggestionHistoryTeam(member.getMemberId(), requestTime))
                 .thenReturn(List.of(

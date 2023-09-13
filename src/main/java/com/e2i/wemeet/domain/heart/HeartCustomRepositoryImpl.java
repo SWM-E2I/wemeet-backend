@@ -36,16 +36,15 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
                         member.profileImage.basicUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"))))
             .from(heart)
-            .join(team)
-            .on(heart.team.teamId.eq(team.teamId))
-            .join(heart.partnerTeam.teamLeader, member)
-            .on(heart.partnerTeam.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage)
-            .on(teamImage.team.teamId.eq(heart.partnerTeam.teamId))
-            .where(team.teamId.eq(teamId))
-            .where(team.deletedAt.isNull())
-            .where(heart.createdAt.between(beforeTime, requestedTime))
-            .where(teamImage.sequence.eq(1))
+            .join(team).on(heart.team.teamId.eq(team.teamId))
+            .join(heart.partnerTeam.teamLeader, member).on(heart.partnerTeam.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(heart.partnerTeam.teamId))
+            .where(
+                team.teamId.eq(teamId),
+                team.deletedAt.isNull(),
+                heart.createdAt.between(beforeTime, requestedTime),
+                teamImage.sequence.eq(1)
+            )
             .fetch();
     }
 
@@ -64,16 +63,15 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
                         member.profileImage.basicUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"))))
             .from(heart)
-            .join(team)
-            .on(heart.partnerTeam.teamId.eq(team.teamId))
-            .join(heart.team.teamLeader, member)
-            .on(heart.team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage)
-            .on(teamImage.team.teamId.eq(heart.team.teamId))
-            .where(team.teamId.eq(teamId))
-            .where(team.deletedAt.isNull())
-            .where(heart.createdAt.between(beforeTime, requestedTime))
-            .where(teamImage.sequence.eq(1))
+            .join(team).on(heart.partnerTeam.teamId.eq(team.teamId))
+            .join(heart.team.teamLeader, member).on(heart.team.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(heart.team.teamId))
+            .where(
+                team.teamId.eq(teamId),
+                team.deletedAt.isNull(),
+                heart.createdAt.between(beforeTime, requestedTime),
+                teamImage.sequence.eq(1)
+            )
             .fetch();
     }
 }

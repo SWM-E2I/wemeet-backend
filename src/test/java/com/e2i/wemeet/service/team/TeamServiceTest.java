@@ -89,7 +89,7 @@ class TeamServiceTest {
                 TeamMemberFixture.create_1_woman());
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
             when(codeRepository.findByCodePk(codePk))
                 .thenReturn(Optional.of(code));
             when(codeRepository.findByCodePk(codePk))
@@ -117,12 +117,12 @@ class TeamServiceTest {
             TeamFixture.WOMAN_TEAM.create(teamLeader, TeamMemberFixture.create_3_woman());
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             // then
             assertThatThrownBy(() -> teamService.createTeam(1L, requestDto, teamImages))
                 .isExactlyInstanceOf(TeamExistsException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
 
         @DisplayName("대학생 인증이 안된 사용자라면 팀을 생성할 수 없다.")
@@ -137,12 +137,12 @@ class TeamServiceTest {
             teamLeader.saveEmail(null);
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             // then
             assertThatThrownBy(() -> teamService.createTeam(1L, requestDto, teamImages))
                 .isExactlyInstanceOf(UnAuthorizedUnivException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
 
         @DisplayName("사진 등록이 안된 사용자라면 팀을 생성할 수 없다.")
@@ -157,12 +157,12 @@ class TeamServiceTest {
             teamLeader.saveProfileImage(null);
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             // then
             assertThatThrownBy(() -> teamService.createTeam(1L, requestDto, teamImages))
                 .isExactlyInstanceOf(ProfileImageNotExistsException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
     }
 
@@ -179,12 +179,12 @@ class TeamServiceTest {
                 TeamMemberFixture.create_1_woman());
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             MyTeamResponseDto response = teamService.readTeam(1L);
 
             // then
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             assertThat(response.hasTeam()).isTrue();
             assertThat(response.team()).isNotNull()
                 .extracting("memberNum", "region", "drinkRate", "drinkWithGame",
@@ -203,12 +203,12 @@ class TeamServiceTest {
             Member teamLeader = MemberFixture.RIM.create_with_id(1L);
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             MyTeamResponseDto response = teamService.readTeam(1L);
 
             // then
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             assertThat(response.hasTeam()).isFalse();
             assertThat(response.team()).isNull();
         }
@@ -234,7 +234,7 @@ class TeamServiceTest {
             CodePk codePk = CodePk.of(requestDto.members().get(0).collegeInfo().collegeCode());
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
             when(codeRepository.findByCodePk(codePk))
                 .thenReturn(Optional.of(code));
             when(codeRepository.findByCodePk(codePk))
@@ -243,7 +243,7 @@ class TeamServiceTest {
             teamService.updateTeam(1L, requestDto, teamImages);
 
             // then
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             verify(codeRepository, times(requestDto.members().size())).findByCodePk(codePk);
             verify(teamImageRepository, times(teamImages.size())).save(any(TeamImage.class));
 
@@ -267,12 +267,12 @@ class TeamServiceTest {
                 new MockMultipartFile("test", "test".getBytes()));
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
 
             // then
             assertThatThrownBy(() -> teamService.updateTeam(1L, requestDto, teamImages))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
     }
 
@@ -289,12 +289,11 @@ class TeamServiceTest {
                 TeamMemberFixture.create_1_woman());
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
-
+            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
             teamService.deleteTeam(1L);
 
             // then
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
             assertThat(team.getDeletedAt()).isNotNull();
             assertThat(teamLeader.getRole()).isEqualTo(Role.USER);
         }
@@ -307,12 +306,13 @@ class TeamServiceTest {
             Member teamLeader = MemberFixture.RIM.create_with_id(1L);
 
             // when
-            when(memberRepository.findById(anyLong())).thenReturn(Optional.of(teamLeader));
+            when(memberRepository.findByMemberId(anyLong()))
+                .thenReturn(Optional.of(teamLeader));
 
             // then
             assertThatThrownBy(() -> teamService.deleteTeam(1L))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
-            verify(memberRepository).findById(1L);
+            verify(memberRepository).findByMemberId(1L);
         }
     }
 }

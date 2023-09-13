@@ -278,6 +278,28 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                 .isExactlyInstanceOf(UnAuthorizedRoleException.class);
         }
 
+        @DisplayName("삭제된 팀에게는 요청을 보낼 수 없다.")
+        @Test
+        void failRequestToDeletedTeam() {
+            // given
+            Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+            Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+            Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+            LocalDateTime deleteTime = LocalDateTime.of(2023, 9, 10, 13, 0);
+            rimTeam.delete(deleteTime);
+            entityManager.flush();
+            entityManager.clear();
+
+            SendMeetingRequestDto request = new SendMeetingRequestDto(rimTeam.getTeamId());
+            setAuthentication(kai.getMemberId(), "MANAGER");
+
+            // when
+            assertThatThrownBy(() -> meetingHandleService.sendRequest(request, kai.getMemberId(), LocalDateTime.now()))
+                .isExactlyInstanceOf(TeamHasBeenDeletedException.class);
+        }
+
     }
 
     @DisplayName("쪽지와 함께 미팅 신청 테스트")
