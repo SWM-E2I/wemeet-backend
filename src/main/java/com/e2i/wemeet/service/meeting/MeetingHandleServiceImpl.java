@@ -52,7 +52,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Transactional
     @CostAuthorize(type = MEETING_REQUEST, role = Role.MANAGER)
     @Override
-    public Long sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId, final LocalDateTime meetingRequestTime) {
+    public Long sendRequest(final SendMeetingRequestDto requestDto, final Long memberLeaderId,
+        final LocalDateTime meetingRequestTime) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
         checkDuplicateMeetingRequest(team, partnerTeam, meetingRequestTime);
@@ -71,7 +72,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Transactional
     @CostAuthorize(type = MEETING_REQUEST_WITH_MESSAGE, role = Role.MANAGER)
     @Override
-    public Long sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto, final Long memberLeaderId,
+    public Long sendRequestWithMessage(final SendMeetingWithMessageRequestDto requestDto,
+        final Long memberLeaderId,
         final LocalDateTime meetingRequestTime) {
         Team team = meetingRepository.findTeamReferenceByLeaderId(memberLeaderId);
         Team partnerTeam = meetingRepository.findTeamReferenceById(requestDto.partnerTeamId());
@@ -85,15 +87,17 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
+        publishMeetingWithMessageEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
         return request.getMeetingRequestId();
     }
 
     @Transactional
     @CostAuthorize(type = MEETING_ACCEPT, role = Role.MANAGER)
     @Override
-    public Long acceptRequest(final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime acceptDateTime) {
-        MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(meetingRequestId)
+    public Long acceptRequest(final Long memberLeaderId, final Long meetingRequestId,
+        final LocalDateTime acceptDateTime) {
+        MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchTeamAndPartnerTeam(
+                meetingRequestId)
             .orElseThrow(MeetingRequestNotFound::new)
             .checkValid();
         checkDuplicateMeetingAccept(meetingRequestId, acceptDateTime);
@@ -112,8 +116,10 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     @Transactional
     @IsManager
     @Override
-    public AcceptStatus rejectRequest(final Long memberLeaderId, final Long meetingRequestId, final LocalDateTime rejectDateTime) {
-        MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchPartnerTeam(meetingRequestId)
+    public AcceptStatus rejectRequest(final Long memberLeaderId, final Long meetingRequestId,
+        final LocalDateTime rejectDateTime) {
+        MeetingRequest meetingRequest = meetingRequestRepository.findByIdFetchPartnerTeam(
+                meetingRequestId)
             .orElseThrow(MeetingRequestNotFound::new)
             .checkValid();
 
@@ -132,7 +138,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     // 미팅 상태를 변경할 수 있는지 검증
-    private void validateAbleToHandlingMeetingRequest(final LocalDateTime now, final Long memberLeaderId, MeetingRequest meetingRequest) {
+    private void validateAbleToHandlingMeetingRequest(final LocalDateTime now,
+        final Long memberLeaderId, MeetingRequest meetingRequest) {
         final LocalDateTime meetingRequestDateTime = meetingRequest.getCreatedAt();
 
         validateHasAuthorizationToChangeStatus(memberLeaderId, meetingRequest);
@@ -148,7 +155,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     // 미팅 요청이 만료되었는지 검증
-    private void validateIsExpired(LocalDateTime now, MeetingRequest meetingRequest, LocalDateTime meetingRequestDateTime) {
+    private void validateIsExpired(LocalDateTime now, MeetingRequest meetingRequest,
+        LocalDateTime meetingRequestDateTime) {
         if (isExpiredOfDays(meetingRequestDateTime, now, MEETING_REQUEST_EXPIRE_DAY)) {
             meetingRequest.changeStatus(EXPIRED);
             throw new ExpiredException(EXPIRED_MEETING_REQUEST);
@@ -156,7 +164,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     // 미팅 요청을 받은 사용자인지 검증
-    private void validateHasAuthorizationToChangeStatus(Long memberLeaderId, MeetingRequest meetingRequest) {
+    private void validateHasAuthorizationToChangeStatus(Long memberLeaderId,
+        MeetingRequest meetingRequest) {
         Long leaderTeamId = meetingRepository.findTeamIdByLeaderId(memberLeaderId);
         Long partnerTeamId = meetingRequest.getPartnerTeam().getTeamId();
 
@@ -166,17 +175,34 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
     }
 
     // 미팅 이벤트 발행
-    private void publishMeetingEvent(final String message, final Long memberLeaderId, final Team targetTeam) {
-        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(targetTeam.getTeamId());
+    private void publishMeetingEvent(final String message, final Long memberLeaderId,
+        final Team targetTeam) {
+        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(
+            targetTeam.getTeamId());
         eventPublisher.publishEvent(
             MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST, memberLeaderId)
         );
     }
 
+    // 미팅 이벤트 발행
+    private void publishMeetingWithMessageEvent(final String message, final Long memberLeaderId,
+        final Team targetTeam) {
+        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(
+            targetTeam.getTeamId());
+        eventPublisher.publishEvent(
+            MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST_WITH_MESSAGE,
+                memberLeaderId)
+        );
+    }
+
+
     // 중복된 미팅 요청인지 검증
-    private void checkDuplicateMeetingRequest(Team team, Team partnerTeam, LocalDateTime meetingRequestTime) {
-        meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(team.getTeamId(), partnerTeam.getTeamId())
-            .filter(meetingRequestCreatedAt -> !isExpiredOfDays(meetingRequestCreatedAt, meetingRequestTime, MEETING_REQUEST_EXPIRE_DAY))
+    private void checkDuplicateMeetingRequest(Team team, Team partnerTeam,
+        LocalDateTime meetingRequestTime) {
+        meetingRequestRepository.findIdByTeamIdAndPartnerTeamId(team.getTeamId(),
+                partnerTeam.getTeamId())
+            .filter(meetingRequestCreatedAt -> !isExpiredOfDays(meetingRequestCreatedAt,
+                meetingRequestTime, MEETING_REQUEST_EXPIRE_DAY))
             .ifPresent(meetingRequestId -> {
                 throw new DuplicateMeetingRequestException();
             });
@@ -191,5 +217,4 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
                 throw new MeetingAlreadyExistException();
             });
     }
-
 }
