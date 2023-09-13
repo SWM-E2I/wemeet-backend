@@ -33,7 +33,7 @@ public class HeartServiceImpl implements HeartService {
     @Transactional
     @Override
     public void sendHeart(Long memberId, Long partnerTeamId, LocalDateTime requestTime) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -59,7 +59,7 @@ public class HeartServiceImpl implements HeartService {
     @Transactional(readOnly = true)
     @Override
     public List<SentHeartResponseDto> getSentHeart(Long memberId, LocalDateTime requestTime) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -74,7 +74,7 @@ public class HeartServiceImpl implements HeartService {
     @Override
     public List<ReceivedHeartResponseDto> getReceivedHeart(Long memberId,
         LocalDateTime requestTime) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 

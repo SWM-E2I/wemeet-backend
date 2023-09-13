@@ -33,7 +33,7 @@ public class MemberImageServiceImpl implements MemberImageService {
     @Override
     @Transactional
     public void uploadProfileImage(Long memberId, MultipartFile file) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -41,7 +41,7 @@ public class MemberImageServiceImpl implements MemberImageService {
 
         String basicObjectKey =
             VERSION_PREFIX + memberId + BASIC_PREFIX + randomKey + FILE_EXTENSION;
-        
+
         // low size profile image
         String lowObjectKey =
             VERSION_PREFIX + memberId + LOW_PREFIX + randomKey + FILE_EXTENSION;

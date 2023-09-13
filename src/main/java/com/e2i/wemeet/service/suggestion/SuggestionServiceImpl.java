@@ -30,7 +30,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Transactional
     @Override
     public List<SuggestionResponseDto> readSuggestion(Long memberId, LocalDateTime requestTime) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -49,7 +49,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
         LocalDateTime requestTime) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 

@@ -53,7 +53,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void createTeam(final Long memberId, CreateTeamRequestDto createTeamRequestDto,
         List<MultipartFile> images) {
-        Member teamLeader = memberRepository.findById(memberId)
+        Member teamLeader = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
         teamLeader.validateTeamCreation();
@@ -73,7 +73,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void updateTeam(final Long memberId, UpdateTeamRequestDto updateTeamRequestDto,
         List<MultipartFile> images) {
-        Member teamLeader = memberRepository.findById(memberId)
+        Member teamLeader = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -92,7 +92,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional(readOnly = true)
     @Override
     public MyTeamResponseDto readTeam(Long memberId) {
-        Member teamLeader = memberRepository.findById(memberId)
+        Member teamLeader = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 
@@ -125,7 +125,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void deleteTeam(Long memberId) {
-        Member teamLeader = memberRepository.findById(memberId)
+        Member teamLeader = memberRepository.findByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new)
             .checkMemberValid();
 

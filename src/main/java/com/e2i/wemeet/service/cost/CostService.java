@@ -37,7 +37,7 @@ public class CostService {
         Integer cost = costRepository.findValueByType(event.type().name())
             .orElseThrow(CostNotFoundException::new);
 
-        Member member = memberRepository.findById(event.memberId())
+        Member member = memberRepository.findByMemberId(event.memberId())
             .orElseThrow(MemberNotFoundException::new);
 
         member.useCredit(cost);
@@ -48,7 +48,7 @@ public class CostService {
 
     @EventListener(classes = EarnEvent.class)
     public void earn(final EarnEvent event) {
-        Member member = memberRepository.findById(event.memberId())
+        Member member = memberRepository.findByMemberId(event.memberId())
             .orElseThrow(MemberNotFoundException::new);
 
         member.addCredit(event.value());
@@ -62,7 +62,7 @@ public class CostService {
         Integer cost = costRepository.findValueByType(event.type().name())
             .orElseThrow(CostNotFoundException::new);
 
-        Member member = memberRepository.findById(event.memberId())
+        Member member = memberRepository.findByMemberId(event.memberId())
             .orElseThrow(MemberNotFoundException::new);
 
         member.addCredit(cost);
