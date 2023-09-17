@@ -58,6 +58,7 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: sub/prod/application-db.yml
   sql:
     init:
       mode: never
