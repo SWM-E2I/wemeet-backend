@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `history`
     `member_id`               bigint  NOT NULL,
     `team_id`               bigint  NOT NULL,
     PRIMARY KEY (`history_id`),
-    FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`),
+    FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`) ON DELETE CASCADE,
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`) ON DELETE CASCADE
     )
     ENGINE = InnoDB
