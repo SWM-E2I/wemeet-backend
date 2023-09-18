@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,12 @@ public class AwsSesService implements EmailCredentialService {
     private final SesClient sesClient;
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberRepository memberRepository;
-    private static final String TEMPLATE_NAME = "certifyEmailTemplate";
+    @Value("${aws.ses.templateName}")
+    private String templateName;
 
-    private static final String SOURCE_EMAIL = "qkrdbsk28@naver.com";
 
+    @Value("${aws.ses.sourceEmail}")
+    private String sourceEmail;
 
     @Override
     public void issue(String receiveTarget) {
@@ -94,9 +97,9 @@ public class AwsSesService implements EmailCredentialService {
     private SendTemplatedEmailRequest createEmailRequest(String email, String message) {
         try {
             return SendTemplatedEmailRequest.builder()
-                .source(SOURCE_EMAIL)
+                .source(sourceEmail)
                 .destination(d -> d.toAddresses(email))
-                .template(TEMPLATE_NAME)
+                .template(templateName)
                 .templateData(this.toJson(message))
                 .build();
         } catch (JsonProcessingException e) {
