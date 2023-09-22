@@ -137,4 +137,34 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
             )
             .fetch();
     }
+
+    @Override
+    public List<SuggestionTeamData> findTempTeam(Long memberId) {
+        List<Long> suggestionHistory = queryFactory
+            .select(history.team.teamId)
+            .from(history)
+            .where(
+                history.member.memberId.eq(memberId),
+                history.member.deletedAt.isNull()
+            )
+            .fetch();
+
+        return queryFactory
+            .select(Projections.constructor(SuggestionTeamData.class, team,
+                    teamImage.teamImageUrl.as("teamMainImageUrl"),
+                    Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
+                        member.profileImage.lowUrl.as("profileImageUrl"),
+                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                )
+            )
+            .from(team)
+            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
+            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
+            .where(
+                team.deletedAt.isNull(),
+                team.teamId.eq(8L),
+                teamImage.sequence.eq(1)
+            )
+            .fetch();
+    }
 }

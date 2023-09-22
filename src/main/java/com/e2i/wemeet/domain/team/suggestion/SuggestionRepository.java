@@ -31,4 +31,7 @@ public interface SuggestionRepository {
      * 추천 히스토리 팀 정보 조회
      * */
     List<SuggestionHistoryData> findSuggestionHistoryTeam(Long memberId, LocalDateTime requestTime);
+
+    // 사전 예약
+    List<SuggestionTeamData> findTempTeam(Long memberId);
 }

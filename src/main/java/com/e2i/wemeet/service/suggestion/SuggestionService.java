@@ -12,9 +12,15 @@ public interface SuggestionService {
      * */
     List<SuggestionResponseDto> readSuggestion(Long memberId, LocalDateTime requestTime);
 
+
     /*
      * 오늘의 추천 여부 확인
      * */
     CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
         LocalDateTime requestTime);
+
+    /*
+     * 사전 예약 정보 노출
+     * */
+    List<SuggestionResponseDto> tempSuggestion(Long memberId, LocalDateTime requestTime);
 }

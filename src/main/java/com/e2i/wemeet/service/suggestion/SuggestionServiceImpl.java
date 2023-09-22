@@ -45,6 +45,26 @@ public class SuggestionServiceImpl implements SuggestionService {
         return SuggestionResponseDto.of(suggestionTeamList);
     }
 
+    @Transactional
+    @Override
+    public List<SuggestionResponseDto> tempSuggestion(Long memberId, LocalDateTime requestTime) {
+        Member member = memberRepository.findByMemberId(memberId)
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
+
+        // 이미 추천을 받은 경우
+        if (!teamRepository.findHistory(memberId, requestTime).isEmpty()) {
+            throw new SuggestionHistoryExistsException();
+        }
+
+        List<SuggestionTeamData> suggestionTeamList = teamRepository.findTempTeam(
+            member.getMemberId());
+        saveHistory(suggestionTeamList, member);
+
+        return SuggestionResponseDto.of(suggestionTeamList);
+    }
+
+
     @Transactional(readOnly = true)
     @Override
     public CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
