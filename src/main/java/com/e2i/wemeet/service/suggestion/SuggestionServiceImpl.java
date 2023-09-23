@@ -88,13 +88,6 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     private List<SuggestionTeamData> getSuggestionTeamData(Member member) {
-        if (member.hasTeam()) {
-            // 팀이 있는 경우
-            return teamRepository.findSuggestionTeamForTeamLeader(member.getMemberId(),
-                member.getCurrentTeam().getMemberNum(), member.getCurrentTeam().getGender());
-        }
-
-        // 팀이 없는 경우
         return teamRepository.findSuggestionTeamForUser(member.getMemberId(), member.getGender());
     }
 }
