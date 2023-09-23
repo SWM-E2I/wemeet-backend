@@ -7,6 +7,7 @@ import com.e2i.wemeet.controller.credit.CreditController;
 import com.e2i.wemeet.controller.heart.HeartController;
 import com.e2i.wemeet.controller.meeting.MeetingController;
 import com.e2i.wemeet.controller.member.MemberController;
+import com.e2i.wemeet.controller.member.RecommendController;
 import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.service.code.CodeService;
@@ -15,6 +16,7 @@ import com.e2i.wemeet.service.heart.HeartService;
 import com.e2i.wemeet.service.meeting.MeetingHandleService;
 import com.e2i.wemeet.service.meeting.MeetingListService;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member.RecommendService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.service.suggestion.SuggestionService;
 import com.e2i.wemeet.service.team.TeamService;
@@ -46,7 +48,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
     MeetingController.class,
     SuggestionController.class,
     HeartController.class,
-    CreditController.class
+    CreditController.class,
+    RecommendController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -81,6 +84,9 @@ public abstract class AbstractControllerUnitTest {
 
     @MockBean
     protected CreditService creditService;
+
+    @MockBean
+    protected RecommendService recommendService;
 
 
     protected MockMvc mockMvc;
