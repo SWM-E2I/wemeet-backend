@@ -49,7 +49,8 @@ public class CostService {
     @EventListener(classes = EarnEvent.class)
     public void earn(final EarnEvent event) {
         Member member = memberRepository.findByMemberId(event.memberId())
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new)
+            .checkMemberValid();
 
         member.addCredit(event.value());
 

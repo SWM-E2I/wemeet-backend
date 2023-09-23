@@ -51,7 +51,6 @@ public record CreateMemberRequestDto(
             .mbti(Mbti.valueOf(this.mbti))
             .allowMarketing(this.allowMarketing)
             .credit(40)
-            .imageAuth(false)
             .role(Role.USER)
             .build();
     }
