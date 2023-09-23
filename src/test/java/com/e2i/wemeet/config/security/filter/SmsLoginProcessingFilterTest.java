@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @Profile("prod")
 @DisplayName("SMS 인증 테스트")
@@ -76,6 +77,8 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(toJson(loginRequestDto))
                 );
+
+                perform.andDo(MockMvcResultHandlers.print());
 
                 // then
                 perform.andExpectAll(
@@ -189,6 +192,8 @@ class SmsLoginProcessingFilterTest extends AbstractIntegrationTest {
                             .description("회원 아이디"),
                         fieldWithPath("data.isRegistered")
                             .description("회원 가입 여부"),
+                        fieldWithPath("data.withdrawal")
+                            .description("회원 탈퇴 여부"),
                         fieldWithPath("data.role[].authority").type(JsonFieldType.STRING)
                             .description("회원 권한")
                     )
