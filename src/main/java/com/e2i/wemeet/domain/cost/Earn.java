@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Earn {
     EVENT("이벤트"),
+    RECOMMEND("친구에게 추천하여 가입"),
     ADVERTISEMENT("광고 시청");
 
     private final String detail;

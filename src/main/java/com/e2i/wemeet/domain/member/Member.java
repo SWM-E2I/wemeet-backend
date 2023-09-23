@@ -15,6 +15,7 @@ import com.e2i.wemeet.domain.team.Team;
 import com.e2i.wemeet.dto.request.member.UpdateMemberRequestDto;
 import com.e2i.wemeet.exception.badrequest.MemberHasBeenDeletedException;
 import com.e2i.wemeet.exception.badrequest.ProfileImageNotExistsException;
+import com.e2i.wemeet.exception.badrequest.RecommenderAlreadyExist;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
 import com.e2i.wemeet.exception.unauthorized.CreditNotEnoughException;
@@ -228,6 +229,9 @@ public class Member extends BaseTimeEntity {
     }
 
     public void registerRecommender(final String recommenderPhone) {
+        if (this.recommenderPhone != null) {
+            throw new RecommenderAlreadyExist();
+        }
         this.recommenderPhone = recommenderPhone;
     }
 }
