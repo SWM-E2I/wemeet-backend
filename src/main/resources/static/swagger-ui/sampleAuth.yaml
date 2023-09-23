@@ -1,0 +1,26 @@
+paths:
+  /api/v1/samples/{sampleId}:
+    get:
+      # API 에 추가
+      security:
+        - AccessToken: [ ]
+      # AccessToken 제외 목록
+      # 1. 회원 가입
+      # 2. 핸드폰 인증 관련
+
+      # parameter
+      parameters:
+        - name: fixture
+          in: query
+          description: ""
+          required: true
+          schema:
+            type: string
+
+components:
+  # api 문서 아래의 components 태그 바로 아래에 추가
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header

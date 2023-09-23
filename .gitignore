@@ -38,3 +38,7 @@ out/
 
 ### MacOS ##
 .DS_Store
+
+### env ###
+env.properties
+src/main/generated
