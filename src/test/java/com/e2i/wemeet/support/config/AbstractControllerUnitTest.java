@@ -10,6 +10,7 @@ import com.e2i.wemeet.controller.member.MemberController;
 import com.e2i.wemeet.controller.member.RecommendController;
 import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
+import com.e2i.wemeet.controller.team.TeamImageController;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.credit.CreditService;
 import com.e2i.wemeet.service.heart.HeartService;
@@ -19,6 +20,7 @@ import com.e2i.wemeet.service.member.MemberService;
 import com.e2i.wemeet.service.member.RecommendService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.service.suggestion.SuggestionService;
+import com.e2i.wemeet.service.team.TeamImageService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.service.token.TokenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,7 +51,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
     SuggestionController.class,
     HeartController.class,
     CreditController.class,
-    RecommendController.class
+    RecommendController.class,
+    TeamImageController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -87,6 +90,9 @@ public abstract class AbstractControllerUnitTest {
 
     @MockBean
     protected RecommendService recommendService;
+
+    @MockBean
+    protected TeamImageService teamImageService;
 
 
     protected MockMvc mockMvc;
