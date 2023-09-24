@@ -686,6 +686,36 @@ paths:
                 회원 Role 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Member Role Success\"\
                     ,\"data\":{\"isManager\":true,\"hasTeam\":true}}"
+  /v1/recommend:
+    post:
+      tags:
+        - 회원 관련 API
+      summary: 추천인을 등록합니다.
+      description: |2
+            위밋을 추천해준 추천인의 전화번호를 입력하여 추천인으로 등록합니다.
+            계정당 1번만 가능하고 추천인 상대에게 20코인을 지급합니다.
+      operationId: 추천인 등록
+      security:
+        - AccessToken: [ ]
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/v1-recommend-330443167'
+            examples:
+              추천인 등록:
+                value: "{\"phoneNumber\":\"+821012345678\"}"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-1162606117'
+              examples:
+                추천인 등록:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Recommend Success\"\
+                    ,\"data\":null}"
   /v1/suggestion/check:
     get:
       tags:
@@ -753,6 +783,94 @@ paths:
                     :\"카이\",\"mbti\":\"INFJ\",\"collegeName\":\"안양대\",\"collegeType\"\
                     :\"SOCIAL\",\"admissionYear\":\"17\",\"leaderLowProfileImageUrl\"\
                     :\"/v1/kai\",\"imageAuth\":false}}}"
+  /v1/team/image:
+    put:
+      tags:
+        - 팀 관련 API
+      summary: 팀 이미지를 업데이트합니다.
+
+      description: |2
+            팀 이미지를 업데이트합니다.
+            기존 이미지를 모두 삭제한 뒤, 새로운 이미지를 저장합니다.
+      
+            - multipart/form-data 데이터로 보내주어야함 (data는 json!)
+            - "images": File[], // 최소 1장, 최대 10장
+      operationId: 팀 이미지 업데이트
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-team-image-453865333'
+              examples:
+                팀 이미지 업데이트:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Team Image Update\
+                    \ Success\",\"data\":[\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/1.jpg\"\
+                    ,\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/2.jpg\"\
+                    ,\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/3.jpg\"\
+                    ]}"
+    post:
+      tags:
+        - 팀 관련 API
+      summary: 팀 이미지를 업로드합니다.
+      description: |2
+              팀 이미지를 업로드 합니다.
+              새로 업로드하는 이미지는 기존 이미지 뒤에 위치합니다.
+              한 팀당 최대 10개의 이미지를 업로드 할 수 있습니다.
+      
+              - multipart/form-data 데이터로 보내주어야함 (data는 json!)
+              - "images": File[], // 기존 이미지 + 업로드 이미지 개수가 10개를 넘지 않아야 함
+      operationId: 팀 이미지 업로드
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-team-image-453865333'
+              examples:
+                팀 이미지 업로드:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Team Image Upload\
+                    \ Success\",\"data\":[\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/1.jpg\"\
+                    ,\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/2.jpg\"\
+                    ,\"https://wemeet-bucket.s3.ap-northeast-2.amazonaws.com/teams/1/3.jpg\"\
+                    ]}"
+    delete:
+      tags:
+        - 팀 관련 API
+      summary: 팀 이미지를 삭제합니다.
+      description: |2
+            팀 이미지를 삭제합니다.
+            삭제할 url을 전달받아, 해당 이미지를 팀에서 삭제합니다.
+      operationId: 팀 이미지 삭제
+      security:
+        - AccessToken: [ ]
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/v1-team-image486549215'
+            examples:
+              팀 이미지 삭제:
+                value: "{\"deleteImageUrls\":[\"https://image.s3.ap-northeast-2.amazonaws.com/v1/teams/1.png\"\
+                  ,\"https://image.s3.ap-northeast-2.amazonaws.com/v1/teams/2.png\"\
+                  ]}"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-1162606117'
+              examples:
+                팀 이미지 삭제:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Delete Team Image\
+                    \ Success\",\"data\":null}"
   /v1/auth/mail/request:
     post:
       tags:
@@ -856,19 +974,19 @@ paths:
               $ref: '#/components/schemas/v1-auth-phone-validate1564587931'
             examples:
               휴대폰 인증번호 검증:
-                value: "{\"phone\":\"+821088990011\",\"credential\":\"868922\"}"
+                value: "{\"phone\":\"+821088990011\",\"credential\":\"155201\"}"
       responses:
         "200":
           description: "200"
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-auth-phone-validate1303346532'
+                $ref: '#/components/schemas/v1-auth-phone-validate-214253953'
               examples:
                 휴대폰 인증번호 검증:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"인증에 성공하였습니다.\",\"\
-                    data\":{\"memberId\":null,\"isRegistered\":false,\"role\":[{\"\
-                    authority\":\"ROLE_GUEST\"}]}}"
+                    data\":{\"memberId\":null,\"isRegistered\":false,\"withdrawal\"\
+                    :false,\"role\":[{\"authority\":\"ROLE_GUEST\"}]}}"
   /v1/meeting/accept/{meetingRequestId}:
     post:
       tags:
@@ -1326,6 +1444,33 @@ components:
         status:
           type: string
           description: 응답 상태
+    v1-auth-phone-validate-214253953:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            role:
+              type: array
+              items:
+                type: object
+                properties:
+                  authority:
+                    type: string
+                    description: 회원 권한
+            isRegistered:
+              type: boolean
+              description: 회원 가입 여부
+            withdrawal:
+              type: boolean
+              description: 회원 탈퇴 여부
+          description: 회원 가입이 되어있지 않은 사용자의 경우 null로 채워서 반환됨
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-auth-mail-validate521266742:
       type: object
       properties:
@@ -1536,6 +1681,26 @@ components:
         allowMarketing:
           type: boolean
           description: 마케팅 수신 동의 여부
+    v1-team-image486549215:
+      type: object
+    v1-team-image-453865333:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 업로드된 이미지 URL 목록을 반환합니다.
+          items:
+            oneOf:
+              - type: object
+              - type: boolean
+              - type: string
+              - type: number
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-team-teamId1238987508:
       type: object
       properties:
@@ -1652,6 +1817,12 @@ components:
         status:
           type: string
           description: 응답 상태
+    v1-recommend-330443167:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: 위밋을 추천해준 추천인 전화번호 (+82101234xxxx)
     member-profile-image-upload:
       title: member-profile-image-upload
       type: object
