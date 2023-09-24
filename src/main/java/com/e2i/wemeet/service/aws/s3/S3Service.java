@@ -8,4 +8,9 @@ public interface S3Service {
      * S3 오브젝트 업로드
      * */
     void upload(MultipartFile multipartFile, String objectKey, String bucket);
+
+    /*
+     * S3 오브젝트 삭제
+     * */
+    void delete(String bucket, String targetObjectKeyPrefix);
 }
