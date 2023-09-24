@@ -18,9 +18,4 @@ public interface SuggestionService {
      * */
     CheckSuggestionResponseDto checkTodaySuggestionHistory(Long memberId,
         LocalDateTime requestTime);
-
-    /*
-     * 사전 예약 정보 노출
-     * */
-    List<SuggestionResponseDto> tempSuggestion(Long memberId, LocalDateTime requestTime);
 }

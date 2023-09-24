@@ -26,41 +26,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
     private final JPAQueryFactory queryFactory;
     private static final int SUGGESTION_TEAM_LIMIT = 3;
     private static final LocalTime boundaryTime = LocalTime.of(23, 11);
-
-    @Override
-    public List<SuggestionTeamData> findSuggestionTeamForTeamLeader(Long memberId, int memberNum,
-        Gender gender) {
-        List<Long> suggestionHistory = queryFactory
-            .select(history.team.teamId)
-            .from(history)
-            .where(
-                history.member.memberId.eq(memberId),
-                history.member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return queryFactory
-            .select(Projections.constructor(SuggestionTeamData.class, team,
-                    teamImage.teamImageUrl.as("teamMainImageUrl"),
-                    Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                        member.profileImage.lowUrl.as("profileImageUrl"),
-                        member.collegeInfo.collegeCode.codeValue.as("college"))
-                )
-            )
-            .from(team)
-            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
-            .where(
-                team.deletedAt.isNull(),
-                team.gender.ne(gender),
-                team.teamId.notIn(suggestionHistory),
-                team.memberNum.eq(memberNum),
-                teamImage.sequence.eq(1)
-            )
-            .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
-            .limit(SUGGESTION_TEAM_LIMIT)
-            .fetch();
-    }
+    
 
     @Override
     public List<SuggestionTeamData> findSuggestionTeamForUser(Long memberId, Gender gender) {
@@ -133,36 +99,6 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                 history.member.memberId.eq(memberId),
                 history.createdAt.between(boundaryDateTime, requestedTime),
                 team.deletedAt.isNull(),
-                teamImage.sequence.eq(1)
-            )
-            .fetch();
-    }
-
-    @Override
-    public List<SuggestionTeamData> findTempTeam(Long memberId) {
-        List<Long> suggestionHistory = queryFactory
-            .select(history.team.teamId)
-            .from(history)
-            .where(
-                history.member.memberId.eq(memberId),
-                history.member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return queryFactory
-            .select(Projections.constructor(SuggestionTeamData.class, team,
-                    teamImage.teamImageUrl.as("teamMainImageUrl"),
-                    Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
-                        member.profileImage.lowUrl.as("profileImageUrl"),
-                        member.collegeInfo.collegeCode.codeValue.as("college"))
-                )
-            )
-            .from(team)
-            .join(team.teamLeader, member).on(team.teamLeader.memberId.eq(member.memberId))
-            .join(teamImage).on(teamImage.team.teamId.eq(team.teamId))
-            .where(
-                team.deletedAt.isNull(),
-                team.teamId.eq(8L),
                 teamImage.sequence.eq(1)
             )
             .fetch();
