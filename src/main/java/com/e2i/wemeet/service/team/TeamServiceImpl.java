@@ -134,6 +134,9 @@ public class TeamServiceImpl implements TeamService {
 
 
     private void updateTeamImages(List<MultipartFile> images, Team team) {
+        if (images.isEmpty()) {
+            return;
+        }
         teamImageRepository.deleteAllByTeamTeamId(team.getTeamId());
         uploadTeamImages(images, team);
     }
