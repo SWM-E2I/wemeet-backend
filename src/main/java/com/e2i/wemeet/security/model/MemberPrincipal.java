@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 public class MemberPrincipal implements UserDetails {
 
     private final Long memberId;
+    private final boolean withdrawal;
 
     /*
      * Authority 는 인가 정책을 적용할 때 필요함
@@ -27,21 +28,25 @@ public class MemberPrincipal implements UserDetails {
 
     public MemberPrincipal() {
         this.memberId = null;
+        this.withdrawal = false;
         this.authorities = List.of(Role.GUEST::getRoleAttachedPrefix);
     }
 
     public MemberPrincipal(final Member member) {
         this.memberId = member.getMemberId();
+        this.withdrawal = member.getDeletedAt() != null;
         this.authorities = getAuthorities(member.getRole().name());
     }
 
     public MemberPrincipal(final Payload payload) {
         this.memberId = payload.getMemberId();
+        this.withdrawal = false;
         this.authorities = getAuthorities(payload.getRole());
     }
 
     public MemberPrincipal(final Long memberId, final String role) {
         this.memberId = memberId;
+        this.withdrawal = false;
         this.authorities = getAuthorities(role);
     }
 
@@ -57,6 +62,10 @@ public class MemberPrincipal implements UserDetails {
                 authorities -> authorities.equals(Role.getRoleAttachedPrefix(Role.GUEST.name())))
             .findFirst()
             .orElseGet(() -> null) == null;
+    }
+
+    public boolean isWithdrawal() {
+        return this.withdrawal;
     }
 
     public boolean hasManagerRole() {

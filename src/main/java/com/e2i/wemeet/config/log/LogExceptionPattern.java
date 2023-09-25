@@ -12,11 +12,13 @@ public abstract class LogExceptionPattern {
     public static final Pattern SWAGGER_UI_RESOURCE_PATTERN = Pattern.compile("^/static/dist.*");
     public static final Pattern SWAGGER_SPECIFICATION_PATTERN = Pattern.compile("^/static/swagger-ui.*");
     public static final Pattern SWAGGER_API_PATTERN = Pattern.compile("^/api-docs.*");
+    public static final Pattern H2_CONSOLE_PATTERN = Pattern.compile("^/h2-console.*");
 
     public static final List<Pattern> LOG_EXCEPTION_LIST = List.of(
         SWAGGER_SPECIFICATION_PATTERN,
         SWAGGER_UI_RESOURCE_PATTERN,
-        SWAGGER_API_PATTERN
+        SWAGGER_API_PATTERN,
+        H2_CONSOLE_PATTERN
     );
 
     public static boolean isMatchedExceptionUrls(final String requestUrl) {

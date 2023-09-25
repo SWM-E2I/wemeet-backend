@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -60,6 +61,7 @@ public abstract class AbstractIntegrationTest {
     void setup(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         DispatcherServlet dispatcherServlet = MockMvcBuilders.webAppContextSetup(context)
             .apply(documentationConfiguration(restDocumentation))
+            .alwaysDo(MockMvcResultHandlers.print())
             .build().getDispatcherServlet();
 
         httpRequestEndPointChecker = new DispatcherServletEndPointChecker(dispatcherServlet);
