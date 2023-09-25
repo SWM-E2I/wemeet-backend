@@ -25,6 +25,3 @@ CREATE TABLE IF NOT EXISTS `member`
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
-
-ALTER TABLE `member`
-    ADD `recommender_phone` char(24) AFTER `deleted_at`;
