@@ -8,7 +8,8 @@ public record TeamLeaderData(
     String nickname,
     Mbti mbti,
     String profileImageUrl,
-    String college
+    String college,
+    String admissionYear
 ) {
 
 }
