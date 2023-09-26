@@ -58,6 +58,9 @@ dependencies {
     implementation 'software.amazon.awssdk:ses:2.20.86'
     implementation 'software.amazon.awssdk:s3:2.20.82'
 
+    // REST - Assured
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
