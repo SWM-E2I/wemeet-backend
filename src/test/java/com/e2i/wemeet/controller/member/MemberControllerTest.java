@@ -288,7 +288,9 @@ class MemberControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.profileImage.basicUrl").type(JsonFieldType.STRING)
                             .description("회원 개인 프로필 사진 원본"),
                         fieldWithPath("data.profileImage.lowUrl").type(JsonFieldType.STRING)
-                            .description("회원 개인 프로필 사진 저해상도")
+                            .description("회원 개인 프로필 사진 저해상도"),
+                        fieldWithPath("data.authUnivStatus").type(JsonFieldType.BOOLEAN)
+                            .description("대학 인증 여부")
                     )
                 ));
     }

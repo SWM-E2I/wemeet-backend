@@ -214,8 +214,9 @@ class MemberServiceTest {
             MemberDetailResponseDto memberDetailResponseDto = memberService.readMemberDetail(
                 kai.getMemberId());
             assertThat(memberDetailResponseDto).isNotNull()
-                .extracting("nickname", "college", "collegeType", "mbti", "admissionYear")
-                .contains(kai.getNickname(), "안양대", "인문사회", Mbti.INFJ, "17");
+                .extracting("nickname", "college", "collegeType", "mbti", "admissionYear",
+                    "authUnivStatus")
+                .contains(kai.getNickname(), "안양대", "인문사회", Mbti.INFJ, "17", true);
         }
 
         @DisplayName("회원 ID가 잘못되었을 경우, 회원 정보를 조회할 수 없다.")
