@@ -108,6 +108,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     .nickname("팀장님")
                     .college("서울대")
                     .mbti("ENFP")
+                    .admissionYear("19")
                     .build())
                 .build();
 
@@ -129,7 +130,8 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.data[0].profileImageURL").value("https://test.image.com"),
                     jsonPath("$.data[0].leader.nickname").value("팀장님"),
                     jsonPath("$.data[0].leader.college").value("서울대"),
-                    jsonPath("$.data[0].leader.mbti").value("ENFP")
+                    jsonPath("$.data[0].leader.mbti").value("ENFP"),
+                    jsonPath("$.data[0].leader.admissionYear").value("19")
                 );
             verify(heartService).getSentHeart(anyLong(), any());
 
@@ -169,7 +171,9 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                             fieldWithPath("data[].leader.college").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 대학교"),
                             fieldWithPath("data[].leader.mbti").type(JsonFieldType.STRING)
-                                .description("상대 팀 팀장 MBTI")
+                                .description("상대 팀 팀장 MBTI"),
+                            fieldWithPath("data[].leader.admissionYear").type(JsonFieldType.STRING)
+                                .description("상대 팀 팀장 학번")
                         )));
         }
 
@@ -192,6 +196,7 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     .nickname("팀장님")
                     .college("서울대")
                     .mbti("ENFP")
+                    .admissionYear("19")
                     .build())
                 .build();
 
@@ -213,7 +218,8 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.data[0].profileImageURL").value("https://test.image.com"),
                     jsonPath("$.data[0].leader.nickname").value("팀장님"),
                     jsonPath("$.data[0].leader.college").value("서울대"),
-                    jsonPath("$.data[0].leader.mbti").value("ENFP")
+                    jsonPath("$.data[0].leader.mbti").value("ENFP"),
+                    jsonPath("$.data[0].leader.admissionYear").value("19")
                 );
             verify(heartService).getReceivedHeart(anyLong(), any());
 
@@ -253,7 +259,9 @@ class HeartControllerTest extends AbstractControllerUnitTest {
                             fieldWithPath("data[].leader.college").type(JsonFieldType.STRING)
                                 .description("상대 팀 팀장 대학교"),
                             fieldWithPath("data[].leader.mbti").type(JsonFieldType.STRING)
-                                .description("상대 팀 팀장 MBTI")
+                                .description("상대 팀 팀장 MBTI"),
+                            fieldWithPath("data[].leader.admissionYear").type(JsonFieldType.STRING)
+                                .description("상대 팀 팀장 학번")
                         )));
         }
     }

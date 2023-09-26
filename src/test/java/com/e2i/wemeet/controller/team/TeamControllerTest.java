@@ -195,7 +195,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         LeaderResponseDto leader = LeaderResponseDto.of(kai);
         List<String> imageUrls = List.of("/v1/test1", "/v1/test2", "/v1/test3");
 
-        final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader, imageUrls);
+        final TeamDetailResponseDto response = TeamDetailResponseDto.of(teamInformation, leader,
+            imageUrls);
         given(teamService.readByTeamId(anyLong(), anyLong(), any(LocalDateTime.class)))
             .willReturn(response);
 
@@ -289,7 +290,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                                 .description("음주 수치"),
                             fieldWithPath("drinkWithGame").type(JsonFieldType.STRING)
                                 .description("술게임 여부"),
-                            fieldWithPath("additionalActivity").type(JsonFieldType.STRING).optional()
+                            fieldWithPath("additionalActivity").type(JsonFieldType.STRING)
+                                .optional()
                                 .description("추가 활동"),
                             fieldWithPath("introduction").type(JsonFieldType.STRING)
                                 .description("팀 소개"),
@@ -365,12 +367,14 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                                 """)
                         .requestFields(
                             fieldWithPath("images").description("사진 파일"),
-                            fieldWithPath("data.region").type(JsonFieldType.STRING).description("선호 지역"),
+                            fieldWithPath("data.region").type(JsonFieldType.STRING)
+                                .description("선호 지역"),
                             fieldWithPath("data.drinkRate").type(JsonFieldType.STRING)
                                 .description("음주 수치"),
                             fieldWithPath("data.drinkWithGame").type(JsonFieldType.STRING)
                                 .description("술게임 여부"),
-                            fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING).optional()
+                            fieldWithPath("data.additionalActivity").type(JsonFieldType.STRING)
+                                .optional()
                                 .description("추가 활동"),
                             fieldWithPath("data.introduction").type(JsonFieldType.STRING)
                                 .description("팀 소개"),
@@ -454,7 +458,9 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.team.leader.mbti").type(JsonFieldType.STRING)
                             .description("팀장 MBTI"),
                         fieldWithPath("data.team.leader.college").type(JsonFieldType.STRING)
-                            .description("팀장 대학교 정보")
+                            .description("팀장 대학교 정보"),
+                        fieldWithPath("data.team.leader.admissionYear").type(JsonFieldType.STRING)
+                            .description("팀장 학번")
                     )
                 ));
     }

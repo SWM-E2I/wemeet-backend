@@ -26,7 +26,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
     private final JPAQueryFactory queryFactory;
     private static final int SUGGESTION_TEAM_LIMIT = 3;
     private static final LocalTime boundaryTime = LocalTime.of(23, 11);
-    
+
 
     @Override
     public List<SuggestionTeamData> findSuggestionTeamForUser(Long memberId, Gender gender) {
@@ -44,7 +44,8 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                     teamImage.teamImageUrl.as("teamMainImageUrl"),
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.lowUrl.as("profileImageUrl"),
-                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                        member.collegeInfo.collegeCode.codeValue.as("college"),
+                        member.collegeInfo.admissionYear.as("admissionYear"))
                 )
             )
             .from(team)
@@ -88,7 +89,8 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                     team.region, teamImage.teamImageUrl.as("teamMainImageUrl"), history.isLiked,
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.lowUrl.as("profileImageUrl"),
-                        member.collegeInfo.collegeCode.codeValue.as("college"))
+                        member.collegeInfo.collegeCode.codeValue.as("college"),
+                        member.collegeInfo.admissionYear.as("admissionYear"))
                 )
             )
             .from(history)
