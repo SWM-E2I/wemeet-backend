@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 public class SuggestionRepositoryImpl implements SuggestionRepository {
 
     private final JPAQueryFactory queryFactory;
-    private static final int SUGGESTION_TEAM_LIMIT = 3;
+    private static final int SUGGESTION_TEAM_LIMIT = 2;
     private static final LocalTime boundaryTime = LocalTime.of(23, 11);
 
 
