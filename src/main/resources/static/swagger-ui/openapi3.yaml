@@ -73,14 +73,14 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-member-1446441168'
+                $ref: '#/components/schemas/v1-member-995118165'
               examples:
                 회원 상세 정보 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Member-detail\
                     \ Success\",\"data\":{\"nickname\":\"카이\",\"gender\":\"MAN\",\"\
                     mbti\":\"INFJ\",\"college\":\"안양대\",\"collegeType\":\"인문사회\",\"\
                     admissionYear\":\"17\",\"profileImage\":{\"basicUrl\":\"/v1/asdf\"\
-                    ,\"lowUrl\":\"/v1/kai\"},\"authUnivStatus\":true}}"
+                    ,\"lowUrl\":\"/v1/kai\"},\"emailAuthenticated\":true}}"
     post:
       tags:
       - 회원 관련 API
@@ -199,14 +199,14 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-suggestion1268563556'
+                $ref: '#/components/schemas/v1-suggestion1159884028'
               examples:
                 오늘의 추천 받기:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Suggestion Success\"\
                     ,\"data\":[{\"teamId\":1,\"memberNum\":2,\"region\":\"홍대\",\"\
                     profileImageURL\":\"testImageUrl.jpg\",\"mainImageURL\":\"testImageUrl.jpg\"\
                     ,\"leader\":{\"nickname\":\"짱구\",\"mbti\":\"ENFP\",\"college\"\
-                    :\"서울대학교\",\"admissionYear\":\"19\"}}]}"
+                    :\"서울대학교\",\"admissionYear\":\"19\",\"emailAuthenticated\":true}}]}"
   /v1/team:
     get:
       tags:
@@ -221,7 +221,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-team-730309747'
+                $ref: '#/components/schemas/v1-team1017300237'
               examples:
                 마이 팀 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get My Team Detail\
@@ -233,7 +233,7 @@ paths:
                     }],\"members\":[{\"college\":\"인하대\",\"collegeType\":\"자연공학\"\
                     ,\"admissionYear\":\"22\",\"mbti\":\"INTJ\"}],\"leader\":{\"nickname\"\
                     :\"째림\",\"mbti\":\"ISFJ\",\"college\":\"서울여대\",\"admissionYear\"\
-                    :\"23\"}}}}"
+                    :\"23\",\"emailAuthenticated\":true}}}}"
     put:
       tags:
       - 팀 관련 API
@@ -368,14 +368,14 @@ paths:
         required: true
         schema:
           type: string
-        example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk1NzQ3MjgyLCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.GXKT9RCL6e_94xeBOsPQuh7aBj6LwFvsj17NQ7VAJBOiQzyfDk4PkuqjTa-TAqDRgf6YpyC670voHm__DRP-0A
+        example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk1ODE3NzczLCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9._zTVKoaeQTfv4wPq2PMLGT0pTCqD3x2xbLjOdYiz579irv-Fa9v-hpcK3Qpm88B5v2-N28840CQ3Ko0qpLpXQQ
       - name: RefreshToken
         in: header
         description: Refresh Token
         required: true
         schema:
           type: string
-        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5ODMzNzQ4MX0.DrGtnNqj2CCbkz-kYg9x2enHXt8STg4eEnRsQvO_qfPpbKAume4g-H6pAJ2uk-ake6FQXbUmDisqtTQBd9QfhA
+        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5ODQwNzk3M30.jGzhlJ522p0fJkls5ihAZRQG4K7NQvrpOCX1DCdHKN0h77Ylhy4oG-Cxs9DMPepm10WuGYUpkvqF292gFSh5Hg
       responses:
         "200":
           description: "200"
@@ -411,16 +411,16 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-heart-received-357166144'
+                $ref: '#/components/schemas/v1-heart-received2038359125'
               examples:
                 받은 좋아요 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Received Heart\
                     \ Detail Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"\
                     region\":\"신촌\",\"profileImageURL\":\"https://test.image.com\"\
                     ,\"mainImageURL\":\"https://test.image.com\",\"receivedTime\"\
-                    :\"2023-09-27T01:25:02.737115\",\"leader\":{\"nickname\":\"팀장님\
+                    :\"2023-09-27T20:59:51.500162\",\"leader\":{\"nickname\":\"팀장님\
                     \",\"mbti\":\"ENFP\",\"college\":\"서울대\",\"admissionYear\":\"\
-                    19\"}}]}"
+                    19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/sent:
     get:
       tags:
@@ -436,15 +436,15 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-heart-sent-1774975502'
+                $ref: '#/components/schemas/v1-heart-sent1644510391'
               examples:
                 보낸 좋아요 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Sent Heart Detail\
                     \ Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"region\"\
                     :\"신촌\",\"profileImageURL\":\"https://test.image.com\",\"mainImageURL\"\
-                    :\"https://test.image.com\",\"sentTime\":\"2023-09-27T01:25:02.459979\"\
+                    :\"https://test.image.com\",\"sentTime\":\"2023-09-27T20:59:51.244415\"\
                     ,\"leader\":{\"nickname\":\"팀장님\",\"mbti\":\"ENFP\",\"college\"\
-                    :\"서울대\",\"admissionYear\":\"19\"}}]}"
+                    :\"서울대\",\"admissionYear\":\"19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/{partnerTeamId}:
     post:
       tags:
@@ -489,23 +489,25 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-accepted487111904'
+                $ref: '#/components/schemas/v1-meeting-accepted499303008'
               examples:
                 성사된 미팅 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get accepted meeting\
                     \ list success\",\"data\":[{\"meetingId\":1,\"teamId\":1,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-27T01:25:03.408546\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-27T20:59:52.113967\"\
                     ,\"teamProfileImageUrl\":[\"https://profile1.com\"],\"leader\"\
                     :{\"leaderId\":1,\"nickname\":\"채원\",\"mbti\":\"INFP\",\"collegeName\"\
                     :\"고려대학교\",\"collegeType\":\"ENGINEERING\",\"admissionYear\":\"\
                     2022\",\"leaderLowProfileImageUrl\":\"https://profile.com\",\"\
-                    imageAuth\":true},\"expired\":false,\"deleted\":false},{\"meetingId\"\
-                    :2,\"teamId\":2,\"memberCount\":2,\"region\":\"HONGDAE\",\"meetingAcceptTime\"\
-                    :\"2023-09-27T01:25:03.408693\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
-                    ],\"leader\":{\"leaderId\":2,\"nickname\":\"째림\",\"mbti\":\"INFJ\"\
-                    ,\"collegeName\":\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\"\
-                    :\"2019\",\"leaderLowProfileImageUrl\":\"https://profile.com\"\
-                    ,\"imageAuth\":true},\"expired\":false,\"deleted\":false}]}"
+                    imageAuth\":true,\"emailAuthenticated\":false},\"expired\":false,\"\
+                    deleted\":false},{\"meetingId\":2,\"teamId\":2,\"memberCount\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-27T20:59:52.114124\"\
+                    ,\"teamProfileImageUrl\":[\"https://profile2.com\"],\"leader\"\
+                    :{\"leaderId\":2,\"nickname\":\"째림\",\"mbti\":\"INFJ\",\"collegeName\"\
+                    :\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\":\"2019\"\
+                    ,\"leaderLowProfileImageUrl\":\"https://profile.com\",\"imageAuth\"\
+                    :true,\"emailAuthenticated\":false},\"expired\":false,\"deleted\"\
+                    :false}]}"
   /v1/meeting/message:
     post:
       tags:
@@ -551,26 +553,27 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-received9272768'
+                $ref: '#/components/schemas/v1-meeting-received792022336'
               examples:
                 받은 미팅 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get receive meeting\
                     \ request list success\",\"data\":[{\"meetingRequestId\":1,\"\
-                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T01:25:03.520855\"\
+                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:52.217267\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
                     :\"채원\",\"mbti\":\"INFP\",\"collegeName\":\"고려대학교\",\"collegeType\"\
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
-                    :\"https://profile.com\",\"imageAuth\":true},\"deleted\":false,\"\
-                    pending\":true},{\"meetingRequestId\":2,\"acceptStatus\":\"PENDING\"\
-                    ,\"requestTime\":\"2023-09-27T01:25:03.520861\",\"partnerTeamDeleted\"\
-                    :false,\"teamId\":2,\"memberCount\":4,\"region\":\"HONGDAE\",\"\
-                    message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
-                    ],\"leader\":{\"leaderId\":2,\"nickname\":\"쨰림\",\"mbti\":\"INFJ\"\
-                    ,\"collegeName\":\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\"\
-                    :\"2019\",\"leaderLowProfileImageUrl\":\"https://profile.com\"\
-                    ,\"imageAuth\":true},\"deleted\":false,\"pending\":true}]}"
+                    :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
+                    :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:52.217284\"\
+                    ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
+                    region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
+                    :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
+                    :\"쨰림\",\"mbti\":\"INFJ\",\"collegeName\":\"서울대학교\",\"collegeType\"\
+                    :\"ARTS\",\"admissionYear\":\"2019\",\"leaderLowProfileImageUrl\"\
+                    :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
+                    :true},\"deleted\":false,\"pending\":true}]}"
   /v1/meeting/sent:
     get:
       tags:
@@ -587,26 +590,27 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-received9272768'
+                $ref: '#/components/schemas/v1-meeting-received792022336'
               examples:
                 보낸 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get sent meeting request\
                     \ list success\",\"data\":[{\"meetingRequestId\":1,\"acceptStatus\"\
-                    :\"PENDING\",\"requestTime\":\"2023-09-27T01:25:03.10594\",\"\
+                    :\"PENDING\",\"requestTime\":\"2023-09-27T20:59:51.802963\",\"\
                     partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"region\"\
                     :\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
                     :\"채원\",\"mbti\":\"INFP\",\"collegeName\":\"고려대학교\",\"collegeType\"\
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
-                    :\"https://profile.com\",\"imageAuth\":true},\"deleted\":false,\"\
-                    pending\":true},{\"meetingRequestId\":2,\"acceptStatus\":\"PENDING\"\
-                    ,\"requestTime\":\"2023-09-27T01:25:03.107743\",\"partnerTeamDeleted\"\
-                    :false,\"teamId\":2,\"memberCount\":4,\"region\":\"HONGDAE\",\"\
-                    message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\":[\"https://profile2.com\"\
-                    ],\"leader\":{\"leaderId\":2,\"nickname\":\"쨰림\",\"mbti\":\"INFJ\"\
-                    ,\"collegeName\":\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\"\
-                    :\"2019\",\"leaderLowProfileImageUrl\":\"https://profile.com\"\
-                    ,\"imageAuth\":true},\"deleted\":false,\"pending\":true}]}"
+                    :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
+                    :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:51.803127\"\
+                    ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
+                    region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
+                    :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
+                    :\"쨰림\",\"mbti\":\"INFJ\",\"collegeName\":\"서울대학교\",\"collegeType\"\
+                    :\"ARTS\",\"admissionYear\":\"2019\",\"leaderLowProfileImageUrl\"\
+                    :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
+                    :true},\"deleted\":false,\"pending\":true}]}"
   /v1/member/profile-image:
     post:
       tags:
@@ -665,7 +669,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-suggestion-check44146952'
+                $ref: '#/components/schemas/v1-suggestion-check-1067270736'
               examples:
                 오늘의 추천 여부 확인:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Check Suggestion Success\"\
@@ -673,7 +677,7 @@ paths:
                     :1,\"isLiked\":false,\"memberNum\":2,\"region\":\"홍대\",\"profileImageURL\"\
                     :\"testImageUrl.jpg\",\"mainImageURL\":\"testImageUrl.jpg\",\"\
                     leader\":{\"nickname\":\"짱구\",\"mbti\":\"ENFP\",\"college\":\"\
-                    서울대학교\",\"admissionYear\":\"19\"}}]}}"
+                    서울대학교\",\"admissionYear\":\"19\",\"emailAuthenticated\":true}}]}}"
   /v1/team/image:
     put:
       tags:
@@ -776,7 +780,7 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-team-teamId2056589331'
+                $ref: '#/components/schemas/v1-team-teamId700704606'
               examples:
                 팀 상세 정보 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Team Detail Success\"\
@@ -793,7 +797,7 @@ paths:
                     :\"22\",\"mbti\":\"ESFJ\"}],\"leader\":{\"leaderId\":1,\"nickname\"\
                     :\"카이\",\"mbti\":\"INFJ\",\"collegeName\":\"안양대\",\"collegeType\"\
                     :\"SOCIAL\",\"admissionYear\":\"17\",\"leaderLowProfileImageUrl\"\
-                    :\"/v1/kai\",\"imageAuth\":false}}}"
+                    :\"/v1/kai\",\"imageAuth\":false,\"emailAuthenticated\":true}}}"
   /v1/auth/mail/request:
     post:
       tags:
@@ -837,7 +841,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-mail-validate521266742'
             examples:
               이메일 인증번호 검증:
-                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"940349\"\
+                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"465910\"\
                   }"
       responses:
         "200":
@@ -893,7 +897,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-phone-validate1564587931'
             examples:
               휴대폰 인증번호 검증:
-                value: "{\"phone\":\"+821088990011\",\"credential\":\"771376\"}"
+                value: "{\"phone\":\"+821088990011\",\"credential\":\"552196\"}"
       responses:
         "200":
           description: "200"
@@ -974,6 +978,48 @@ components:
         status:
           type: string
           description: 응답 상태
+    v1-member-995118165:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            college:
+              type: string
+              description: 대학교명
+            gender:
+              type: string
+              description: 성별
+            emailAuthenticated:
+              type: boolean
+              description: 대학 인증 여부
+            collegeType:
+              type: string
+              description: 학과 정보
+            admissionYear:
+              type: string
+              description: 학번
+            nickname:
+              type: string
+              description: 닉네임
+            mbti:
+              type: string
+              description: 본인 MBTI
+            profileImage:
+              type: object
+              properties:
+                basicUrl:
+                  type: string
+                  description: 회원 개인 프로필 사진 원본
+                lowUrl:
+                  type: string
+                  description: 회원 개인 프로필 사진 저해상도
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-auth-mail-request-533811798:
       type: object
       properties:
@@ -1010,7 +1056,154 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-team-teamId2056589331:
+    v1-credit1610375099:
+      type: object
+      properties:
+        data:
+          type: number
+          description: 사용자의 크레딧 개수가 반환됩니다.
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-meeting-374462745:
+      type: object
+      properties:
+        partnerTeamId:
+          type: number
+          description: 상대 이성 팀 ID
+    v1-meeting-message-738424585:
+      type: object
+      properties:
+        partnerTeamId:
+          type: number
+          description: 상대 이성 팀 ID
+        message:
+          type: string
+          description: 쪽지 내용 (최대 50자)
+    v1-member-role-1164682728:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            isManager:
+              type: boolean
+              description: 팀장 여부
+            hasTeam:
+              type: boolean
+              description: 팀 소속 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-suggestion-check-1067270736:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            teams:
+              type: array
+              items:
+                type: object
+                properties:
+                  leader:
+                    type: object
+                    properties:
+                      college:
+                        type: string
+                        description: 추천 팀 팀장 대학교
+                      emailAuthenticated:
+                        type: boolean
+                        description: 추천 팀 팀장 대학 인증 여부
+                      admissionYear:
+                        type: string
+                        description: 추천 팀 팀장 학번
+                      nickname:
+                        type: string
+                        description: 추천 팀 팀장 닉네임
+                      mbti:
+                        type: string
+                        description: 추천 팀 팀장 MBTI
+                  mainImageURL:
+                    type: string
+                    description: 추천 팀 대표 이미지
+                  teamId:
+                    type: number
+                    description: 추천 팀 아이디
+                  isLiked:
+                    type: boolean
+                    description: 좋아요 여부
+                  region:
+                    type: string
+                    description: 추천 팀 선호 지역
+                  memberNum:
+                    type: number
+                    description: 추천 팀 인원수
+                  profileImageURL:
+                    type: string
+                    description: 추천 팀 팀장 프로필 이미지
+            isReceivedSuggestion:
+              type: boolean
+              description: 오늘의 추천 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-auth-persist667894108:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            basicProfileImage:
+              type: string
+              description: 팀의 존재 여부를 반환합니다.
+            emailAuthenticated:
+              type: boolean
+              description: 이메일 인증 여부를 반환합니다.
+            nickname:
+              type: string
+              description: 사용자의 닉네임을 반환합니다.
+            hasMainProfileImage:
+              type: boolean
+              description: 프로필 이미지 인증 여부를 반환합니다.
+            profileImageAuthenticated:
+              type: boolean
+              description: 선호도 조사 여부를 반환합니다.
+            hasTeam:
+              type: boolean
+              description: 프로필 이미지의 등록 여부를 반환합니다.
+            lowProfileImage:
+              type: string
+              description: 팀의 존재 여부를 반환합니다.
+          description: 응답 데이터
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    meeting-accepted-response:
+      title: meeting-accepted-response
+      type: object
+    v1-auth-phone-validate1564587931:
+      type: object
+      properties:
+        credential:
+          type: string
+          description: 인증 번호
+        phone:
+          type: string
+          description: 휴대폰 번호
+    v1-team-teamId700704606:
       type: object
       properties:
         data:
@@ -1025,6 +1218,9 @@ components:
                 leaderLowProfileImageUrl:
                   type: string
                   description: 팀장 프로필 사진
+                emailAuthenticated:
+                  type: boolean
+                  description: 팀장 프로필 사진 인증 여부
                 collegeType:
                   type: string
                   description: 팀장 학과
@@ -1117,7 +1313,7 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-heart-sent-1774975502:
+    v1-suggestion1159884028:
       type: object
       properties:
         data:
@@ -1130,212 +1326,40 @@ components:
                 properties:
                   college:
                     type: string
-                    description: 상대 팀 팀장 대학교
+                    description: 추천 팀 팀장 대학교
+                  emailAuthenticated:
+                    type: boolean
+                    description: 추천 팀 팀장 대학 인증 여부
                   admissionYear:
                     type: string
-                    description: 상대 팀 팀장 학번
+                    description: 추천 팀 팀장 학번
                   nickname:
                     type: string
-                    description: 상대 팀 팀장 닉네임
+                    description: 추천 팀 팀장 닉네임
                   mbti:
                     type: string
-                    description: 상대 팀 팀장 MBTI
+                    description: 추천 팀 팀장 MBTI
               mainImageURL:
                 type: string
-                description: 상대 팀 메인 이미지 URL
+                description: 추천 팀 대표 이미지
               teamId:
                 type: number
-                description: 상대 팀 아이디
-              sentTime:
+                description: 추천 팀 아이디
+              region:
                 type: string
-                description: 좋아요 보낸 시간
+                description: 추천 팀 선호 지역
               memberNum:
                 type: number
-                description: 상대 팀 인원 수
-              region:
-                type: string
-                description: 상대 팀 선호 지역
+                description: 추천 팀 인원수
               profileImageURL:
                 type: string
-                description: 상대 팀 팀장 프로필 이미지 URL
+                description: 추천 팀 팀장 프로필 이미지
         message:
           type: string
           description: 응답 메시지
         status:
           type: string
           description: 응답 상태
-    v1-credit1610375099:
-      type: object
-      properties:
-        data:
-          type: number
-          description: 사용자의 크레딧 개수가 반환됩니다.
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-meeting-374462745:
-      type: object
-      properties:
-        partnerTeamId:
-          type: number
-          description: 상대 이성 팀 ID
-    v1-meeting-message-738424585:
-      type: object
-      properties:
-        partnerTeamId:
-          type: number
-          description: 상대 이성 팀 ID
-        message:
-          type: string
-          description: 쪽지 내용 (최대 50자)
-    v1-member-role-1164682728:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            isManager:
-              type: boolean
-              description: 팀장 여부
-            hasTeam:
-              type: boolean
-              description: 팀 소속 여부
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-meeting-received9272768:
-      type: object
-      properties:
-        data:
-          type: array
-          description: "보낸 미팅 신청 목록 [배열로 반환]"
-          items:
-            type: object
-            properties:
-              requestTime:
-                type: string
-                description: 미팅 신청 시간
-              leader:
-                type: object
-                properties:
-                  collegeName:
-                    type: string
-                    description: 팀장 대학교 이름
-                  leaderLowProfileImageUrl:
-                    type: string
-                    description: 팀장 프로필 이미지 URL
-                  collegeType:
-                    type: string
-                    description: 팀장 학과
-                  admissionYear:
-                    type: string
-                    description: 팀장 학번
-                  nickname:
-                    type: string
-                    description: 팀장 닉네임
-                  mbti:
-                    type: string
-                    description: 팀장 MBTI
-                  imageAuth:
-                    type: boolean
-                    description: 팀장 프로필 인증 여부
-                  leaderId:
-                    type: number
-                    description: 팀장 ID
-              deleted:
-                type: boolean
-                description: 미팅 신청 삭제 여부
-              partnerTeamDeleted:
-                type: boolean
-                description: 상대 팀 삭제 여부
-              pending:
-                type: boolean
-                description: 미팅 신청 대기 여부
-              memberCount:
-                type: number
-                description: 팀 인원 수
-              teamId:
-                type: number
-                description: 팀 ID
-              meetingRequestId:
-                type: number
-                description: 미팅 신청 ID
-              acceptStatus:
-                type: string
-                description: 응답 상태
-              message:
-                type: string
-                description: 쪽지 내용
-              region:
-                type: string
-                description: 지역
-              teamProfileImageUrl:
-                type: array
-                description: 팀 프로필 이미지 URL
-                items:
-                  oneOf:
-                  - type: object
-                  - type: boolean
-                  - type: string
-                  - type: number
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-auth-persist667894108:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            basicProfileImage:
-              type: string
-              description: 팀의 존재 여부를 반환합니다.
-            emailAuthenticated:
-              type: boolean
-              description: 이메일 인증 여부를 반환합니다.
-            nickname:
-              type: string
-              description: 사용자의 닉네임을 반환합니다.
-            hasMainProfileImage:
-              type: boolean
-              description: 프로필 이미지 인증 여부를 반환합니다.
-            profileImageAuthenticated:
-              type: boolean
-              description: 선호도 조사 여부를 반환합니다.
-            hasTeam:
-              type: boolean
-              description: 프로필 이미지의 등록 여부를 반환합니다.
-            lowProfileImage:
-              type: string
-              description: 팀의 존재 여부를 반환합니다.
-          description: 응답 데이터
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    meeting-accepted-response:
-      title: meeting-accepted-response
-      type: object
-    v1-auth-phone-validate1564587931:
-      type: object
-      properties:
-        credential:
-          type: string
-          description: 인증 번호
-        phone:
-          type: string
-          description: 휴대폰 번호
     v1-team-image486549215:
       type: object
     v1-member-88903508:
@@ -1347,16 +1371,7 @@ components:
         mbti:
           type: string
           description: 본인 MBTI
-    v1-auth-mail-validate521266742:
-      type: object
-      properties:
-        authCode:
-          type: string
-          description: 인증 번호
-        mail:
-          type: string
-          description: 메일 주소
-    v1-meeting-accepted487111904:
+    v1-meeting-accepted499303008:
       type: object
       properties:
         data:
@@ -1373,6 +1388,9 @@ components:
                   leaderLowProfileImageUrl:
                     type: string
                     description: 팀장 저화질 프로필 이미지 URL
+                  emailAuthenticated:
+                    type: boolean
+                    description: 팀장 대학 인증 여부
                   collegeType:
                     type: string
                     description: 팀장 학과
@@ -1427,65 +1445,71 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-suggestion-check44146952:
+    v1-auth-mail-validate521266742:
       type: object
       properties:
-        data:
-          type: object
-          properties:
-            teams:
-              type: array
-              items:
-                type: object
-                properties:
-                  leader:
-                    type: object
-                    properties:
-                      college:
-                        type: string
-                        description: 추천 팀 팀장 대학교
-                      admissionYear:
-                        type: string
-                        description: 추천 팀 팀장 학번
-                      nickname:
-                        type: string
-                        description: 추천 팀 팀장 닉네임
-                      mbti:
-                        type: string
-                        description: 추천 팀 팀장 MBTI
-                  mainImageURL:
-                    type: string
-                    description: 추천 팀 대표 이미지
-                  teamId:
-                    type: number
-                    description: 추천 팀 아이디
-                  isLiked:
-                    type: boolean
-                    description: 좋아요 여부
-                  region:
-                    type: string
-                    description: 추천 팀 선호 지역
-                  memberNum:
-                    type: number
-                    description: 추천 팀 인원수
-                  profileImageURL:
-                    type: string
-                    description: 추천 팀 팀장 프로필 이미지
-            isReceivedSuggestion:
-              type: boolean
-              description: 오늘의 추천 여부
-        message:
+        authCode:
           type: string
-          description: 응답 메시지
-        status:
+          description: 인증 번호
+        mail:
           type: string
-          description: 응답 상태
+          description: 메일 주소
     v1-auth-phone-issue-817510993:
       type: object
       properties:
         target:
           type: string
           description: 휴대폰 번호
+    v1-heart-received2038359125:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              leader:
+                type: object
+                properties:
+                  college:
+                    type: string
+                    description: 상대 팀 팀장 대학교
+                  emailAuthenticated:
+                    type: boolean
+                    description: 상대 팀 팀장 대학 인증 여부
+                  admissionYear:
+                    type: string
+                    description: 상대 팀 팀장 학번
+                  nickname:
+                    type: string
+                    description: 상대 팀 팀장 닉네임
+                  mbti:
+                    type: string
+                    description: 상대 팀 팀장 MBTI
+              mainImageURL:
+                type: string
+                description: 상대 팀 메인 이미지 URL
+              receivedTime:
+                type: string
+                description: 좋아요 받은 시간
+              teamId:
+                type: number
+                description: 상대 팀 아이디
+              memberNum:
+                type: number
+                description: 상대 팀 인원 수
+              region:
+                type: string
+                description: 상대 팀 선호 지역
+              profileImageURL:
+                type: string
+                description: 상대 팀 팀장 프로필 이미지 URL
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-recommend-330443167:
       type: object
       properties:
@@ -1501,47 +1525,7 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-member1362466055:
-      type: object
-      properties:
-        phoneNumber:
-          type: string
-          description: 핸드폰 번호
-        collegeInfo:
-          type: object
-          properties:
-            collegeType:
-              type: string
-              description: 학과 (ENGINEERING)
-            admissionYear:
-              type: string
-              description: 학번 (17)
-            collegeCode:
-              type: string
-              description: 대학교 코드 (CE-001)
-        gender:
-          type: string
-          description: 성별
-        allowMarketing:
-          type: boolean
-          description: 마케팅 수신 동의 여부
-        nickname:
-          type: string
-          description: 닉네임
-        mbti:
-          type: string
-          description: 본인 MBTI
-    member-profile-image-upload:
-      title: member-profile-image-upload
-      type: object
-      properties:
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-team-730309747:
+    v1-team1017300237:
       type: object
       properties:
         data:
@@ -1556,6 +1540,9 @@ components:
                     college:
                       type: string
                       description: 팀장 대학교 정보
+                    emailAuthenticated:
+                      type: boolean
+                      description: 팀장 대학 인증 여부
                     admissionYear:
                       type: string
                       description: 팀장 학번
@@ -1625,7 +1612,37 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-heart-received-357166144:
+    v1-member1362466055:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: 핸드폰 번호
+        collegeInfo:
+          type: object
+          properties:
+            collegeType:
+              type: string
+              description: 학과 (ENGINEERING)
+            admissionYear:
+              type: string
+              description: 학번 (17)
+            collegeCode:
+              type: string
+              description: 대학교 코드 (CE-001)
+        gender:
+          type: string
+          description: 성별
+        allowMarketing:
+          type: boolean
+          description: 마케팅 수신 동의 여부
+        nickname:
+          type: string
+          description: 닉네임
+        mbti:
+          type: string
+          description: 본인 MBTI
+    v1-heart-sent1644510391:
       type: object
       properties:
         data:
@@ -1639,6 +1656,9 @@ components:
                   college:
                     type: string
                     description: 상대 팀 팀장 대학교
+                  emailAuthenticated:
+                    type: boolean
+                    description: 상대 팀 팀장 대학 인증 여부
                   admissionYear:
                     type: string
                     description: 상대 팀 팀장 학번
@@ -1651,12 +1671,12 @@ components:
               mainImageURL:
                 type: string
                 description: 상대 팀 메인 이미지 URL
-              receivedTime:
-                type: string
-                description: 좋아요 받은 시간
               teamId:
                 type: number
                 description: 상대 팀 아이디
+              sentTime:
+                type: string
+                description: 좋아요 보낸 시간
               memberNum:
                 type: number
                 description: 상대 팀 인원 수
@@ -1672,44 +1692,94 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-suggestion1268563556:
+    member-profile-image-upload:
+      title: member-profile-image-upload
+      type: object
+      properties:
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-meeting-received792022336:
       type: object
       properties:
         data:
           type: array
+          description: "보낸 미팅 신청 목록 [배열로 반환]"
           items:
             type: object
             properties:
+              requestTime:
+                type: string
+                description: 미팅 신청 시간
               leader:
                 type: object
                 properties:
-                  college:
+                  collegeName:
                     type: string
-                    description: 추천 팀 팀장 대학교
+                    description: 팀장 대학교 이름
+                  leaderLowProfileImageUrl:
+                    type: string
+                    description: 팀장 프로필 이미지 URL
+                  emailAuthenticated:
+                    type: boolean
+                    description: 팀장 대학 인증 여부
+                  collegeType:
+                    type: string
+                    description: 팀장 학과
                   admissionYear:
                     type: string
-                    description: 추천 팀 팀장 학번
+                    description: 팀장 학번
                   nickname:
                     type: string
-                    description: 추천 팀 팀장 닉네임
+                    description: 팀장 닉네임
                   mbti:
                     type: string
-                    description: 추천 팀 팀장 MBTI
-              mainImageURL:
-                type: string
-                description: 추천 팀 대표 이미지
+                    description: 팀장 MBTI
+                  imageAuth:
+                    type: boolean
+                    description: 팀장 프로필 인증 여부
+                  leaderId:
+                    type: number
+                    description: 팀장 ID
+              deleted:
+                type: boolean
+                description: 미팅 신청 삭제 여부
+              partnerTeamDeleted:
+                type: boolean
+                description: 상대 팀 삭제 여부
+              pending:
+                type: boolean
+                description: 미팅 신청 대기 여부
+              memberCount:
+                type: number
+                description: 팀 인원 수
               teamId:
                 type: number
-                description: 추천 팀 아이디
+                description: 팀 ID
+              meetingRequestId:
+                type: number
+                description: 미팅 신청 ID
+              acceptStatus:
+                type: string
+                description: 응답 상태
+              message:
+                type: string
+                description: 쪽지 내용
               region:
                 type: string
-                description: 추천 팀 선호 지역
-              memberNum:
-                type: number
-                description: 추천 팀 인원수
-              profileImageURL:
-                type: string
-                description: 추천 팀 팀장 프로필 이미지
+                description: 지역
+              teamProfileImageUrl:
+                type: array
+                description: 팀 프로필 이미지 URL
+                items:
+                  oneOf:
+                  - type: object
+                  - type: boolean
+                  - type: string
+                  - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1728,48 +1798,6 @@ components:
             - type: boolean
             - type: string
             - type: number
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-member-1446441168:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            college:
-              type: string
-              description: 대학교명
-            gender:
-              type: string
-              description: 성별
-            collegeType:
-              type: string
-              description: 학과 정보
-            admissionYear:
-              type: string
-              description: 학번
-            nickname:
-              type: string
-              description: 닉네임
-            mbti:
-              type: string
-              description: 본인 MBTI
-            authUnivStatus:
-              type: boolean
-              description: 대학 인증 여부
-            profileImage:
-              type: object
-              properties:
-                basicUrl:
-                  type: string
-                  description: 회원 개인 프로필 사진 원본
-                lowUrl:
-                  type: string
-                  description: 회원 개인 프로필 사진 저해상도
         message:
           type: string
           description: 응답 메시지
