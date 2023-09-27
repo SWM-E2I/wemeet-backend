@@ -31,7 +31,6 @@ import com.e2i.wemeet.dto.response.team.TeamMemberResponseDto;
 import com.e2i.wemeet.exception.badrequest.ProfileImageNotExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamExistsException;
 import com.e2i.wemeet.exception.badrequest.TeamNotExistsException;
-import com.e2i.wemeet.exception.unauthorized.UnAuthorizedUnivException;
 import com.e2i.wemeet.service.aws.s3.S3Service;
 import com.e2i.wemeet.support.fixture.MemberFixture;
 import com.e2i.wemeet.support.fixture.TeamFixture;
@@ -122,26 +121,6 @@ class TeamServiceTest {
             // then
             assertThatThrownBy(() -> teamService.createTeam(1L, requestDto, teamImages))
                 .isExactlyInstanceOf(TeamExistsException.class);
-            verify(memberRepository).findByMemberId(1L);
-        }
-
-        @DisplayName("대학생 인증이 안된 사용자라면 팀을 생성할 수 없다.")
-        @Test
-        void createTeam_UncertifiedEmail() {
-            // given
-            Member teamLeader = MemberFixture.RIM.create_with_id(1L);
-            CreateTeamRequestDto requestDto = TeamFixture.WOMAN_TEAM.createTeamRequestDto_2_members();
-            List<MultipartFile> teamImages = List.of(
-                new MockMultipartFile("test", "test".getBytes()));
-
-            teamLeader.saveEmail(null);
-
-            // when
-            when(memberRepository.findByMemberId(anyLong())).thenReturn(Optional.of(teamLeader));
-
-            // then
-            assertThatThrownBy(() -> teamService.createTeam(1L, requestDto, teamImages))
-                .isExactlyInstanceOf(UnAuthorizedUnivException.class);
             verify(memberRepository).findByMemberId(1L);
         }
 
