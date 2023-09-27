@@ -75,7 +75,7 @@ class BlockControllerTest extends AbstractControllerUnitTest {
                 MockMvcRestDocumentationWrapper.document("차단된 사용자의 목록을 조회합니다.",
                     ResourceSnippetParameters.builder()
                         .tag("차단 관련 API")
-                        .summary("차단된 사용자 목록을 조회합니다.")
+                        .summary("차단한 사용자들의 ID를 조회합니다.")
                         .description(
                             """
                                     차단한 사용자들의 ID를 조회합니다.

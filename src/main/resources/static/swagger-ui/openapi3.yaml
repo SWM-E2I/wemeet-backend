@@ -89,6 +89,62 @@ paths:
                 미팅 신청:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Send meeting request\
                     \ success\",\"data\":null}"
+  /v1/member/block:
+    get:
+      tags:
+        - 차단 관련 API
+      summary: 차단한 사용자들의 ID를 조회합니다.
+      description: |2
+            차단한 사용자들의 ID를 조회합니다.
+      operationId: 차단된 사용자의 목록을 조회합니다.
+      security:
+        - AccessToken: [ ]
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-block-61521594'
+              examples:
+                차단된 사용자의 목록을 조회합니다.:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Read Block Member\
+                    \ Success\",\"data\":[2,3]}"
+  /v1/member/block/{blockMemberId}:
+    post:
+      tags:
+        - 차단 관련 API
+      summary: 지정된 사용자를 차단합니다.
+      description: |2
+            url에서 ID로 넘겨받은 사용자를 차단합니다.
+            차단된 사용자는 다음의 기능에서 노출되지 않습니다.
+              - 추천 API
+              - 받은 좋아요
+              - 보낸 좋아요
+              - 성사된 매칭
+              - 보낸 미팅 신청
+              - 받은 미팅 신청
+      operationId: 차단하기
+      security:
+        - AccessToken: [ ]
+      parameters:
+        - name: blockMemberId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-block-blockMemberId-356556804'
+              examples:
+                차단하기:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Block Member Success\"\
+                    ,\"data\":2}"
   /v1/member:
     get:
       tags:
@@ -1052,6 +1108,36 @@ components:
       name: AccessToken
       in: header
   schemas:
+    v1-member-block-61521594:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 차단된 사용자의 ID
+          items:
+            oneOf:
+              - type: object
+              - type: boolean
+              - type: string
+              - type: number
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-member-block-blockMemberId-356556804:
+      type: object
+      properties:
+        data:
+          type: number
+          description: 차단된 사용자의 ID
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
     v1-team-1407123040:
       type: object
       properties:
