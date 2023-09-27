@@ -206,13 +206,15 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
             // given
             final Long memberId = 1L;
             final Long meetingRequestId = 1L;
-            given(meetingHandleService.acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class)))
+            given(
+                meetingHandleService.acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class)))
                 .willReturn(1L);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/meeting/accept/{meetingRequestId}", meetingRequestId)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON));
+            ResultActions perform = mockMvc.perform(
+                post("/v1/meeting/accept/{meetingRequestId}", meetingRequestId)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON));
 
             // then
             perform
@@ -222,7 +224,8 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.message").value("Meeting was successfully matched"),
                     jsonPath("$.data").value(1L)
                 );
-            verify(meetingHandleService).acceptRequest(anyLong(), anyLong(), any(LocalDateTime.class));
+            verify(meetingHandleService).acceptRequest(anyLong(), anyLong(),
+                any(LocalDateTime.class));
 
             acceptMeetingRequestWriteRestDocs(perform);
         }
@@ -238,9 +241,10 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 .willReturn(AcceptStatus.REJECT);
 
             // when
-            ResultActions perform = mockMvc.perform(post("/v1/meeting/reject/{meetingRequestId}", meetingRequestId)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON));
+            ResultActions perform = mockMvc.perform(
+                post("/v1/meeting/reject/{meetingRequestId}", meetingRequestId)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON));
 
             // then
             perform
@@ -273,7 +277,8 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                                 parameterWithName("meetingRequestId").description("미팅 신청 ID")
                             )
                             .responseFields(
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("status").type(JsonFieldType.STRING)
+                                    .description("응답 상태"),
                                 fieldWithPath("message").type(JsonFieldType.STRING)
                                     .description("응답 메시지"),
                                 fieldWithPath("data").type(JsonFieldType.NUMBER)
@@ -298,7 +303,8 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                                 parameterWithName("meetingRequestId").description("미팅 신청 ID")
                             )
                             .responseFields(
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("status").type(JsonFieldType.STRING)
+                                    .description("응답 상태"),
                                 fieldWithPath("message").type(JsonFieldType.STRING)
                                     .description("응답 메시지"),
                                 fieldWithPath("data").type(JsonFieldType.STRING)
@@ -322,13 +328,13 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 Region.HONGDAE, 1L,
                 "채원", Mbti.INFP,
                 "https://profile.com", "고려대학교",
-                CollegeType.ENGINEERING, "2022", true);
+                CollegeType.ENGINEERING, "2022", true, false);
             final MeetingInformationDto meetingInformationDto2 = new MeetingInformationDto(2L,
                 LocalDateTime.now(), false, null, 2L, 2,
                 Region.HONGDAE, 2L,
                 "째림", Mbti.INFJ,
                 "https://profile.com", "서울대학교",
-                CollegeType.ARTS, "2019", true);
+                CollegeType.ARTS, "2019", true, false);
 
             List<AcceptedMeetingResponseDto> responseDtos = List.of(
                 AcceptedMeetingResponseDto.of(meetingInformationDto1,
@@ -384,14 +390,14 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 Region.HONGDAE, null, 1L,
                 "채원", Mbti.INFP,
                 "https://profile.com", "고려대학교",
-                CollegeType.ENGINEERING, "2022", true);
+                CollegeType.ENGINEERING, "2022", true, true);
             final MeetingRequestInformationDto requestInformationDto2 = new MeetingRequestInformationDto(
                 2L, LocalDateTime.now(), "재미있게 놀아요!",
                 PENDING, 2L, 4,
                 Region.HONGDAE, null, 2L,
                 "쨰림", Mbti.INFJ,
                 "https://profile.com", "서울대학교",
-                CollegeType.ARTS, "2019", true);
+                CollegeType.ARTS, "2019", true, true);
 
             List<SentMeetingResponseDto> sentMeetingResponseDtos = List.of(
                 SentMeetingResponseDto.of(requestInformationDto1, List.of("https://profile1.com")),
@@ -424,7 +430,8 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                     jsonPath("$.data[0].leader.nickname").value("채원"),
                     jsonPath("$.data[0].leader.mbti").value(Mbti.INFP.name()),
                     jsonPath("$.data[0].leader.collegeName").value("고려대학교"),
-                    jsonPath("$.data[0].leader.leaderLowProfileImageUrl").value("https://profile.com"),
+                    jsonPath("$.data[0].leader.leaderLowProfileImageUrl").value(
+                        "https://profile.com"),
                     jsonPath("$.data[0].leader.collegeType").value(CollegeType.ENGINEERING.name()),
                     jsonPath("$.data[0].leader.admissionYear").value("2022"),
                     jsonPath("$.data[0].leader.imageAuth").value(true)
@@ -446,7 +453,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 Region.HONGDAE, null, 1L,
                 "채원", Mbti.INFP,
                 "https://profile.com", "고려대학교",
-                CollegeType.ENGINEERING, "2022", true);
+                CollegeType.ENGINEERING, "2022", true, true);
             final MeetingRequestInformationDto requestInformationDto2 = new MeetingRequestInformationDto(
                 2L, LocalDateTime.now(), "재미있게 놀아요!",
                 PENDING,
@@ -454,7 +461,7 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                 Region.HONGDAE, null, 2L,
                 "쨰림", Mbti.INFJ,
                 "https://profile.com", "서울대학교",
-                CollegeType.ARTS, "2019", true);
+                CollegeType.ARTS, "2019", true, true);
 
             List<ReceivedMeetingResponseDto> receivedMeetingResponseDtos = List.of(
                 ReceivedMeetingResponseDto.of(requestInformationDto1,
@@ -544,6 +551,9 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                                 .description("팀장 프로필 인증 여부"),
                             fieldWithPath("data[].leader.leaderLowProfileImageUrl").type(
                                 JsonFieldType.STRING).description("팀장 저화질 프로필 이미지 URL"),
+                            fieldWithPath("data[].leader.emailAuthenticated").type(
+                                    JsonFieldType.BOOLEAN)
+                                .description("팀장 대학 인증 여부"),
                             fieldWithPath("data[].expired").type(JsonFieldType.BOOLEAN)
                                 .description("미팅 만료 여부")
                         )
@@ -603,6 +613,9 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                                 .description("팀장 학번"),
                             fieldWithPath("data[].leader.imageAuth").type(JsonFieldType.BOOLEAN)
                                 .description("팀장 프로필 인증 여부"),
+                            fieldWithPath("data[].leader.emailAuthenticated").type(
+                                    JsonFieldType.BOOLEAN)
+                                .description("팀장 대학 인증 여부"),
                             fieldWithPath("data[].pending").type(JsonFieldType.BOOLEAN)
                                 .description("미팅 신청 대기 여부"),
                             fieldWithPath("data[].deleted").type(JsonFieldType.BOOLEAN)
@@ -664,6 +677,9 @@ class MeetingControllerTest extends AbstractControllerUnitTest {
                                 .description("팀장 학번"),
                             fieldWithPath("data[].leader.imageAuth").type(JsonFieldType.BOOLEAN)
                                 .description("팀장 프로필 인증 여부"),
+                            fieldWithPath("data[].leader.emailAuthenticated").type(
+                                    JsonFieldType.BOOLEAN)
+                                .description("팀장 대학 인증 여부"),
                             fieldWithPath("data[].pending").type(JsonFieldType.BOOLEAN)
                                 .description("미팅 신청 대기 여부"),
                             fieldWithPath("data[].deleted").type(JsonFieldType.BOOLEAN)

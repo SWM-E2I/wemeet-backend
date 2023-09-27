@@ -74,7 +74,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .map(meetingInformation -> AcceptedMeetingResponseDto.of(
                 meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
             ))
-            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
+            .sorted(
+                Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
             .toList();
     }
 
@@ -133,7 +134,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
     }
 
@@ -158,7 +160,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
         return meetingRequestList.stream()
             .map(meetingRequestInformation -> SentMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
             ))
             .toList();
     }
@@ -184,7 +187,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
         return meetingReceivedList.stream()
             .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
             ))
             .toList();
     }
@@ -207,7 +211,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
     }
 

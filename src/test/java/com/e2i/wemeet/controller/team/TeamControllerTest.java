@@ -150,7 +150,7 @@ class TeamControllerTest extends AbstractControllerUnitTest {
         deleteTeamWriteRestDocs(perform);
     }
 
-    @DisplayName("팀을 조회할 수 있다.")
+    @DisplayName("나의 팀을 조회할 수 있다.")
     @WithCustomMockUser(role = "MANAGER")
     @Test
     void readTeam_Success() throws Exception {
@@ -460,7 +460,10 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.team.leader.college").type(JsonFieldType.STRING)
                             .description("팀장 대학교 정보"),
                         fieldWithPath("data.team.leader.admissionYear").type(JsonFieldType.STRING)
-                            .description("팀장 학번")
+                            .description("팀장 학번"),
+                        fieldWithPath("data.team.leader.emailAuthenticated").type(
+                                JsonFieldType.BOOLEAN)
+                            .description("팀장 대학 인증 여부")
                     )
                 ));
     }
@@ -536,6 +539,8 @@ class TeamControllerTest extends AbstractControllerUnitTest {
                                 JsonFieldType.STRING)
                             .description("팀장 프로필 사진"),
                         fieldWithPath("data.leader.imageAuth").type(JsonFieldType.BOOLEAN)
+                            .description("팀장 프로필 사진 인증 여부"),
+                        fieldWithPath("data.leader.emailAuthenticated").type(JsonFieldType.BOOLEAN)
                             .description("팀장 프로필 사진 인증 여부")
                     )
                 ));

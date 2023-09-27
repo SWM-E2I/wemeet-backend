@@ -26,6 +26,7 @@ public record SuggestionResponseDto(
                 .nickname(data.teamLeader().nickname())
                 .mbti(data.teamLeader().mbti().name())
                 .admissionYear(data.teamLeader().admissionYear())
+                .emailAuthenticated(data.teamLeader().emailAuthenticated())
                 .build()
             ).build();
     }

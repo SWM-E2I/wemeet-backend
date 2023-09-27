@@ -8,7 +8,8 @@ public record TeamLeaderResponseDto(
     String nickname,
     String mbti,
     String college,
-    String admissionYear
+    String admissionYear,
+    Boolean emailAuthenticated
 ) {
 
     public static TeamLeaderResponseDto of(TeamLeaderData data) {
@@ -17,6 +18,7 @@ public record TeamLeaderResponseDto(
             .mbti(data.mbti().name())
             .college(data.college())
             .admissionYear(data.admissionYear())
+            .emailAuthenticated(data.emailAuthenticated())
             .build();
     }
 }
