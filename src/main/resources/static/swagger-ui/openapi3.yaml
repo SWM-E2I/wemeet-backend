@@ -59,63 +59,6 @@ paths:
                 미팅 신청:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Send meeting request\
                     \ success\",\"data\":null}"
-  /v1/member/block:
-    get:
-      tags:
-        - 차단 관련 API
-      summary: 차단한 사용자들의 ID를 조회합니다.
-      description: |2
-            차단한 사용자들의 ID를 조회합니다.
-      operationId: 차단된 사용자의 목록을 조회합니다.
-      security:
-        - AccessToken: [ ]
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/v1-member-block-61521594'
-              examples:
-                차단된 사용자의 목록을 조회합니다.:
-                  value: "{\"status\":\"SUCCESS\",\"message\":\"Read Block Member\
-                    \ Success\",\"data\":[2,3]}"
-  /v1/member/block/{blockMemberId}:
-    post:
-      tags:
-        - 차단 관련 API
-      summary: 지정된 사용자를 차단합니다.
-      description: |2
-            url에서 ID로 넘겨받은 사용자를 차단합니다.
-            차단된 사용자는 다음의 기능에서 노출되지 않습니다.
-              - 추천 API
-              - 받은 좋아요
-              - 보낸 좋아요
-              - 성사된 매칭
-              - 보낸 미팅 신청
-              - 받은 미팅 신청
-              - 팀 상세 정보 조회 불가
-      operationId: 차단하기
-      security:
-        - AccessToken: [ ]
-      parameters:
-        - name: blockMemberId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/v1-member-block-blockMemberId-356556804'
-              examples:
-                차단하기:
-                  value: "{\"status\":\"SUCCESS\",\"message\":\"Block Member Success\"\
-                    ,\"data\":2}"
   /v1/member:
     get:
       tags:
@@ -425,14 +368,14 @@ paths:
         required: true
         schema:
           type: string
-        example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk1ODE3NzczLCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9._zTVKoaeQTfv4wPq2PMLGT0pTCqD3x2xbLjOdYiz579irv-Fa9v-hpcK3Qpm88B5v2-N28840CQ3Ko0qpLpXQQ
+        example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk1ODg4NDA2LCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.gn07UQuFnRZKaSQjoQfgNybjL8hx1NRO8M1G7p5-P5CbYAya6HknPQJfQ6S5PFZAgKe4RElqOIlYUlhEvQ71lQ
       - name: RefreshToken
         in: header
         description: Refresh Token
         required: true
         schema:
           type: string
-        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5ODQwNzk3M30.jGzhlJ522p0fJkls5ihAZRQG4K7NQvrpOCX1DCdHKN0h77Ylhy4oG-Cxs9DMPepm10WuGYUpkvqF292gFSh5Hg
+        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTY5ODQ3ODYwNn0.gZ_9ZUfxj_GjvB7DPfkpnr0xYUWHh_NcTE0_415KMYfb4dLedtzEsruHs7cM4ZTDkpW5kwlqtkiVbE7Z5orpqQ
       responses:
         "200":
           description: "200"
@@ -475,7 +418,7 @@ paths:
                     \ Detail Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"\
                     region\":\"신촌\",\"profileImageURL\":\"https://test.image.com\"\
                     ,\"mainImageURL\":\"https://test.image.com\",\"receivedTime\"\
-                    :\"2023-09-27T20:59:51.500162\",\"leader\":{\"nickname\":\"팀장님\
+                    :\"2023-09-28T16:37:09.230322\",\"leader\":{\"nickname\":\"팀장님\
                     \",\"mbti\":\"ENFP\",\"college\":\"서울대\",\"admissionYear\":\"\
                     19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/sent:
@@ -499,7 +442,7 @@ paths:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Sent Heart Detail\
                     \ Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"region\"\
                     :\"신촌\",\"profileImageURL\":\"https://test.image.com\",\"mainImageURL\"\
-                    :\"https://test.image.com\",\"sentTime\":\"2023-09-27T20:59:51.244415\"\
+                    :\"https://test.image.com\",\"sentTime\":\"2023-09-28T16:37:08.934124\"\
                     ,\"leader\":{\"nickname\":\"팀장님\",\"mbti\":\"ENFP\",\"college\"\
                     :\"서울대\",\"admissionYear\":\"19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/{partnerTeamId}:
@@ -551,14 +494,14 @@ paths:
                 성사된 미팅 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get accepted meeting\
                     \ list success\",\"data\":[{\"meetingId\":1,\"teamId\":1,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-27T20:59:52.113967\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-28T16:37:10.233812\"\
                     ,\"teamProfileImageUrl\":[\"https://profile1.com\"],\"leader\"\
                     :{\"leaderId\":1,\"nickname\":\"채원\",\"mbti\":\"INFP\",\"collegeName\"\
                     :\"고려대학교\",\"collegeType\":\"ENGINEERING\",\"admissionYear\":\"\
                     2022\",\"leaderLowProfileImageUrl\":\"https://profile.com\",\"\
                     imageAuth\":true,\"emailAuthenticated\":false},\"expired\":false,\"\
                     deleted\":false},{\"meetingId\":2,\"teamId\":2,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-27T20:59:52.114124\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-09-28T16:37:10.23534\"\
                     ,\"teamProfileImageUrl\":[\"https://profile2.com\"],\"leader\"\
                     :{\"leaderId\":2,\"nickname\":\"째림\",\"mbti\":\"INFJ\",\"collegeName\"\
                     :\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\":\"2019\"\
@@ -610,12 +553,12 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-received792022336'
+                $ref: '#/components/schemas/v1-meeting-sent792022336'
               examples:
                 받은 미팅 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get receive meeting\
                     \ request list success\",\"data\":[{\"meetingRequestId\":1,\"\
-                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:52.217267\"\
+                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-28T16:37:10.430568\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
@@ -623,7 +566,7 @@ paths:
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
                     :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
-                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:52.217284\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-28T16:37:10.430583\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
@@ -647,12 +590,12 @@ paths:
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/v1-meeting-received792022336'
+                $ref: '#/components/schemas/v1-meeting-sent792022336'
               examples:
                 보낸 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get sent meeting request\
                     \ list success\",\"data\":[{\"meetingRequestId\":1,\"acceptStatus\"\
-                    :\"PENDING\",\"requestTime\":\"2023-09-27T20:59:51.802963\",\"\
+                    :\"PENDING\",\"requestTime\":\"2023-09-28T16:37:09.610419\",\"\
                     partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"region\"\
                     :\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
@@ -660,7 +603,7 @@ paths:
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
                     :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
-                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-27T20:59:51.803127\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-09-28T16:37:09.61059\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
@@ -668,6 +611,25 @@ paths:
                     :\"ARTS\",\"admissionYear\":\"2019\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
                     :true},\"deleted\":false,\"pending\":true}]}"
+  /v1/member/block:
+    get:
+      tags:
+      - 차단 관련 API
+      summary: 차단한 사용자들의 ID를 조회합니다.
+      description: |2
+            차단한 사용자들의 ID를 조회합니다.
+      operationId: 차단된 사용자의 목록을 조회합니다.
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-block-61521594'
+              examples:
+                차단된 사용자의 목록을 조회합니다.:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Read Block Member\
+                    \ Success\",\"data\":[2,3]}"
   /v1/member/profile-image:
     post:
       tags:
@@ -898,7 +860,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-mail-validate521266742'
             examples:
               이메일 인증번호 검증:
-                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"465910\"\
+                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"597246\"\
                   }"
       responses:
         "200":
@@ -954,7 +916,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-phone-validate1564587931'
             examples:
               휴대폰 인증번호 검증:
-                value: "{\"phone\":\"+821088990011\",\"credential\":\"552196\"}"
+                value: "{\"phone\":\"+821088990011\",\"credential\":\"862707\"}"
       responses:
         "200":
           description: "200"
@@ -1021,45 +983,48 @@ paths:
                 미팅 신청 거절:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Meeting request successfully\
                     \ Rejected\",\"data\":\"REJECT\"}"
+  /v1/member/block/{blockMemberId}:
+    post:
+      tags:
+      - 차단 관련 API
+      summary: 지정된 사용자를 차단합니다.
+      description: |2
+            url에서 ID로 넘겨받은 사용자를 차단합니다.
+            차단된 사용자는 다음의 기능에서 노출되지 않습니다.
+              - 추천 API
+              - 받은 좋아요
+              - 보낸 좋아요
+              - 성사된 매칭
+              - 보낸 미팅 신청
+              - 받은 미팅 신청
+              - 팀 상세 조회 불가
+      operationId: 차단하기
+      parameters:
+      - name: blockMemberId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/v1-member-block-blockMemberId-356556804'
+              examples:
+                차단하기:
+                  value: "{\"status\":\"SUCCESS\",\"message\":\"Block Member Success\"\
+                    ,\"data\":2}"
 components:
   schemas:
-    v1-auth-mail-validate2112268002:
-    v1-member-block-61521594:
-      type: object
-      properties:
-        data:
-          type: array
-          description: 차단된 사용자의 ID
-          items:
-            oneOf:
-              - type: object
-              - type: boolean
-              - type: string
-              - type: number
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
     v1-member-block-blockMemberId-356556804:
       type: object
       properties:
         data:
           type: number
           description: 차단된 사용자의 ID
-        message:
-          type: string
-          description: 응답 메시지
-        status:
-          type: string
-          description: 응답 상태
-    v1-team-1407123040:
-      type: object
-      properties:
-        data:
-          type: boolean
-          description: 인증번호 일치 여부
         message:
           type: string
           description: 응답 메시지
@@ -1102,6 +1067,18 @@ components:
                 lowUrl:
                   type: string
                   description: 회원 개인 프로필 사진 저해상도
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-auth-mail-validate2112268002:
+      type: object
+      properties:
+        data:
+          type: boolean
+          description: 인증번호 일치 여부
         message:
           type: string
           description: 응답 메시지
@@ -1239,6 +1216,24 @@ components:
             isReceivedSuggestion:
               type: boolean
               description: 오늘의 추천 여부
+        message:
+          type: string
+          description: 응답 메시지
+        status:
+          type: string
+          description: 응답 상태
+    v1-member-block-61521594:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 차단된 사용자의 ID
+          items:
+            oneOf:
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1790,7 +1785,7 @@ components:
         status:
           type: string
           description: 응답 상태
-    v1-meeting-received792022336:
+    v1-meeting-sent792022336:
       type: object
       properties:
         data:
