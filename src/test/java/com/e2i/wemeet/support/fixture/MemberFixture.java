@@ -31,10 +31,12 @@ public enum MemberFixture {
     JEONGYEOL("정열", Gender.MAN, "+8210333344444", "2014p13@korea.ac.kr",
         KOREA.create(), Mbti.ESFJ, 100, false,
         "/v1/asdf", "/v1/jeong", true, Role.USER),
-
     CHAEWON("채원", Gender.WOMAN, "+821089071365", "2020p13@woman.ac.kr",
         WOMAN.create(), Mbti.ISTJ, 100, false,
-        "/v1/asdf", "/v1/chaechae", true, Role.USER);
+        "/v1/asdf", "/v1/chaechae", true, Role.USER),
+    KARINA("카리나", Gender.WOMAN, "+821099374565", "2025p1234@woman.ac.kr",
+        WOMAN.create(), Mbti.ESTJ, 100, false,
+        "/v1/kaka", "/v1/karina", true, Role.USER);
 
     private final String nickname;
     private final Gender gender;

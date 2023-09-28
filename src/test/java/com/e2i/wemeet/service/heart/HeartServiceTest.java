@@ -1,5 +1,6 @@
 package com.e2i.wemeet.service.heart;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.JEONGYEOL;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.MemberFixture.SEYUN;
@@ -13,6 +14,8 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import com.e2i.wemeet.domain.heart.Heart;
 import com.e2i.wemeet.domain.heart.HeartRepository;
+import com.e2i.wemeet.domain.member.Block;
+import com.e2i.wemeet.domain.member.BlockRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.Team;
@@ -48,8 +51,12 @@ class HeartServiceTest extends AbstractServiceTest {
 
     @Autowired
     private TeamImageRepository teamImageRepository;
+
     @Autowired
     private HeartRepository heartRepository;
+
+    @Autowired
+    private BlockRepository blockRepository;
 
 
     @DisplayName("좋아요 보내기 테스트")
@@ -206,6 +213,33 @@ class HeartServiceTest extends AbstractServiceTest {
                 () -> heartService.getSentHeart(member.getMemberId(), LocalDateTime.now()))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
         }
+
+        @DisplayName("차단한 사용자는 보낸 좋아요 내역을 조회할 때 제외된다.")
+        @Test
+        void getSentHeart_WithoutBlockMembers() {
+            // given
+            Member rim = memberRepository.save(RIM.create(ANYANG_CODE));
+            Member seyun = memberRepository.save(SEYUN.create(KOREA_CODE));
+            Member jeongyeol = memberRepository.save(JEONGYEOL.create(HANYANG_CODE));
+
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team jeonyeolTeam = teamRepository.save(HONGDAE_TEAM_1.create(jeongyeol, create_3_man()));
+            Team seyunTeam = teamRepository.save(HONGDAE_TEAM_1.create(seyun, create_3_man()));
+
+            saveTeamImages(rimTeam, jeonyeolTeam, seyunTeam);
+            saveHeartEntity(rimTeam, jeonyeolTeam, seyunTeam);
+
+            blockRepository.save(new Block(rim, seyun));
+            LocalDateTime requestTime = LocalDateTime.now();
+
+            // when
+            List<SentHeartResponseDto> sentHeart = heartService.getSentHeart(rim.getMemberId(), requestTime);
+
+            // then
+            assertThat(sentHeart).hasSize(1)
+                .extracting("teamId")
+                .containsExactly(jeonyeolTeam.getTeamId());
+        }
     }
 
     @DisplayName("받은 좋아요 조회 테스트")
@@ -275,6 +309,49 @@ class HeartServiceTest extends AbstractServiceTest {
             assertThatThrownBy(
                 () -> heartService.getReceivedHeart(member.getMemberId(), LocalDateTime.now()))
                 .isExactlyInstanceOf(TeamNotExistsException.class);
+        }
+
+        @DisplayName("차단된 사용자는 받은 좋아요 목록에 조회되지 않는다.")
+        @Test
+        void getReceivedHeartWithoutBlockedMember() {
+            // given
+            Member rim = memberRepository.save(RIM.create(ANYANG_CODE));
+            Member seyun = memberRepository.save(SEYUN.create(KOREA_CODE));
+            Member jeongyeol = memberRepository.save(JEONGYEOL.create(HANYANG_CODE));
+
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team jeonyeolTeam = teamRepository.save(HONGDAE_TEAM_1.create(jeongyeol, create_3_man()));
+            Team seyunTeam = teamRepository.save(HONGDAE_TEAM_1.create(seyun, create_3_man()));
+            saveTeamImages(rimTeam, jeonyeolTeam, seyunTeam);
+
+            saveHeartEntity(jeonyeolTeam, rimTeam);
+            saveHeartEntity(seyunTeam, rimTeam);
+
+            blockRepository.save(new Block(rim, seyun));
+            LocalDateTime requestTime = LocalDateTime.now();
+
+            // when
+            List<ReceivedHeartResponseDto> receivedHeart = heartService.getReceivedHeart(rim.getMemberId(), requestTime);
+
+            // then
+            assertThat(receivedHeart).hasSize(1)
+                .extracting("teamId")
+                .containsExactly(jeonyeolTeam.getTeamId());
+        }
+    }
+
+    private void saveHeartEntity(Team team, Team... partnerTeam) {
+        for (Team partner : partnerTeam) {
+            heartRepository.save(Heart.builder()
+                .team(team)
+                .partnerTeam(partner)
+                .build());
+        }
+    }
+
+    private void saveTeamImages(Team... teams) {
+        for (Team team : teams) {
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(team));
         }
     }
 }

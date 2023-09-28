@@ -14,7 +14,8 @@ public record LeaderResponseDto(
     CollegeType collegeType,
     String admissionYear,
     String leaderLowProfileImageUrl,
-    Boolean imageAuth
+    Boolean imageAuth,
+    Boolean emailAuthenticated
 
 ) {
 
@@ -27,7 +28,8 @@ public record LeaderResponseDto(
             leader.getCollegeInfo().getCollegeType(),
             leader.getCollegeInfo().getAdmissionYear(),
             leader.getProfileImage().getLowUrl(),
-            leader.getProfileImage().getImageAuth()
+            leader.getProfileImage().getImageAuth(),
+            (leader.getEmail() != null)
         );
     }
 
@@ -40,11 +42,13 @@ public record LeaderResponseDto(
             meetingInformationDto.getPartnerLeaderCollegeType(),
             meetingInformationDto.getPartnerLeaderAdmissionYear(),
             meetingInformationDto.getPartnerLeaderLowProfileUrl(),
-            meetingInformationDto.getPartnerLeaderImageAuth()
+            meetingInformationDto.getPartnerLeaderImageAuth(),
+            meetingInformationDto.getEmailAuthenticated()
         );
     }
 
-    public static LeaderResponseDto of(final MeetingRequestInformationDto meetingRequestInformationDto) {
+    public static LeaderResponseDto of(
+        final MeetingRequestInformationDto meetingRequestInformationDto) {
         return new LeaderResponseDto(
             meetingRequestInformationDto.getPartnerLeaderId(),
             meetingRequestInformationDto.getPartnerLeaderNickname(),
@@ -53,7 +57,8 @@ public record LeaderResponseDto(
             meetingRequestInformationDto.getPartnerLeaderCollegeType(),
             meetingRequestInformationDto.getPartnerLeaderAdmissionYear(),
             meetingRequestInformationDto.getPartnerLeaderLowProfileUrl(),
-            meetingRequestInformationDto.getPartnerLeaderImageAuth()
+            meetingRequestInformationDto.getPartnerLeaderImageAuth(),
+            meetingRequestInformationDto.getEmailAuthenticated()
         );
     }
 
@@ -68,6 +73,7 @@ public record LeaderResponseDto(
             ", admissionYear='" + admissionYear + '\'' +
             ", leaderLowProfileImageUrl='" + leaderLowProfileImageUrl + '\'' +
             ", imageAuth=" + imageAuth +
+            ", emailAuthentication=" + emailAuthenticated +
             '}';
     }
 }

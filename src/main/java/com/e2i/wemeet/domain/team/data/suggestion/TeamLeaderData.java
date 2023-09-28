@@ -9,7 +9,8 @@ public record TeamLeaderData(
     Mbti mbti,
     String profileImageUrl,
     String college,
-    String admissionYear
+    String admissionYear,
+    Boolean emailAuthenticated
 ) {
 
 }

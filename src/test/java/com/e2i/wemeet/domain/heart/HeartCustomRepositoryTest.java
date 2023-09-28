@@ -1,5 +1,6 @@
 package com.e2i.wemeet.domain.heart;
 
+import static com.e2i.wemeet.support.fixture.MemberFixture.JEONGYEOL;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.MemberFixture.SEYUN;
@@ -10,6 +11,8 @@ import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_woman;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
+import com.e2i.wemeet.domain.member.Block;
+import com.e2i.wemeet.domain.member.BlockRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.Team;
@@ -40,6 +43,9 @@ class HeartCustomRepositoryTest extends AbstractRepositoryUnitTest {
 
     @Autowired
     private HeartRepository heartRepository;
+
+    @Autowired
+    private BlockRepository blockRepository;
 
     @DisplayName("보낸 좋아요 조회 테스트")
     @Nested
@@ -96,6 +102,33 @@ class HeartCustomRepositoryTest extends AbstractRepositoryUnitTest {
             // then
             assertThat(result).isEmpty();
         }
+
+        @DisplayName("차단된 사용자는 보낸 좋아요 목록에 조회되지 않는다.")
+        @Test
+        void getReceivedHeartWithoutBlockedMember() {
+            // given
+            Member rim = memberRepository.save(RIM.create(ANYANG_CODE));
+            Member seyun = memberRepository.save(SEYUN.create(KOREA_CODE));
+            Member jeongyeol = memberRepository.save(JEONGYEOL.create(HANYANG_CODE));
+
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team jeonyeolTeam = teamRepository.save(HONGDAE_TEAM_1.create(jeongyeol, create_3_man()));
+            Team seyunTeam = teamRepository.save(HONGDAE_TEAM_1.create(seyun, create_3_man()));
+
+            saveTeamImages(rimTeam, jeonyeolTeam, seyunTeam);
+            saveHeartEntity(rimTeam, jeonyeolTeam, seyunTeam);
+
+            blockRepository.save(new Block(rim, seyun));
+            LocalDateTime requestTime = LocalDateTime.now();
+
+            // when
+            List<HeartTeamData> receivedHeart = heartCustomRepository.findSentHeart(rimTeam.getTeamId(), requestTime);
+
+            // then
+            assertThat(receivedHeart).hasSize(1)
+                .extracting("teamId")
+                .containsExactly(jeonyeolTeam.getTeamId());
+        }
     }
 
     @DisplayName("받은 좋아요 조회 테스트")
@@ -118,14 +151,8 @@ class HeartCustomRepositoryTest extends AbstractRepositoryUnitTest {
             teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(partnerTeam1));
             teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(partnerTeam2));
 
-            heartRepository.save(Heart.builder()
-                .team(partnerTeam1)
-                .partnerTeam(team)
-                .build());
-            heartRepository.save(Heart.builder()
-                .team(partnerTeam2)
-                .partnerTeam(team)
-                .build());
+            saveHeartEntity(partnerTeam1, team);
+            saveHeartEntity(partnerTeam2, team);
 
             // when
             List<HeartTeamData> result = heartCustomRepository.findReceivedHeart(team.getTeamId(),
@@ -170,6 +197,49 @@ class HeartCustomRepositoryTest extends AbstractRepositoryUnitTest {
 
             // then
             assertThat(result).isEmpty();
+        }
+
+        @DisplayName("차단된 사용자는 받은 좋아요 목록에 조회되지 않는다.")
+        @Test
+        void getReceivedHeartWithoutBlockedMember() {
+            // given
+            Member rim = memberRepository.save(RIM.create(ANYANG_CODE));
+            Member seyun = memberRepository.save(SEYUN.create(KOREA_CODE));
+            Member jeongyeol = memberRepository.save(JEONGYEOL.create(HANYANG_CODE));
+
+            Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+            Team jeonyeolTeam = teamRepository.save(HONGDAE_TEAM_1.create(jeongyeol, create_3_man()));
+            Team seyunTeam = teamRepository.save(HONGDAE_TEAM_1.create(seyun, create_3_man()));
+            saveTeamImages(rimTeam, jeonyeolTeam, seyunTeam);
+
+            saveHeartEntity(jeonyeolTeam, rimTeam);
+            saveHeartEntity(seyunTeam, rimTeam);
+
+            blockRepository.save(new Block(rim, seyun));
+            LocalDateTime requestTime = LocalDateTime.now();
+
+            // when
+            List<HeartTeamData> receivedHeart = heartCustomRepository.findReceivedHeart(rimTeam.getTeamId(), requestTime);
+
+            // then
+            assertThat(receivedHeart).hasSize(1)
+                .extracting("teamId")
+                .containsExactly(jeonyeolTeam.getTeamId());
+        }
+    }
+
+    private void saveHeartEntity(Team team, Team... partnerTeam) {
+        for (Team partner : partnerTeam) {
+            heartRepository.save(Heart.builder()
+                .team(team)
+                .partnerTeam(partner)
+                .build());
+        }
+    }
+
+    private void saveTeamImages(Team... teams) {
+        for (Team team : teams) {
+            teamImageRepository.saveAll(BASIC_TEAM_IMAGE.createTeamImages(team));
         }
     }
 }

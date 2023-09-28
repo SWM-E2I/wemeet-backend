@@ -53,7 +53,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     member.collegeInfo.collegeType.as("collegeType"),
                     member.collegeInfo.admissionYear,
                     member.profileImage.lowUrl.as("leaderLowProfileImageUrl"),
-                    member.profileImage.imageAuth.as("imageAuth")
+                    member.profileImage.imageAuth.as("imageAuth"),
+                    member.email.isNotNull().as("emailAuthenticated")
                 )
             )
             .from(team)
@@ -64,7 +65,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long memberLeaderId, final Long teamId, final LocalDateTime readTime) {
+    public Optional<TeamInformationDto> findTeamInformationByTeamId(final Long memberLeaderId,
+        final Long teamId, final LocalDateTime readTime) {
         com.e2i.wemeet.domain.team.QTeam myTeam = new com.e2i.wemeet.domain.team.QTeam("myTeam");
         TeamInformationDto teamInformationDto = Optional.ofNullable(queryFactory
                 .select(Projections.constructor(TeamInformationDto.class,

@@ -30,12 +30,16 @@ public class MeetingRequestInformationDto {
     private CollegeType partnerLeaderCollegeType;
     private String partnerLeaderAdmissionYear;
     private Boolean partnerLeaderImageAuth;
+    private Boolean emailAuthenticated;
 
     @QueryProjection
-    public MeetingRequestInformationDto(Long meetingRequestId, LocalDateTime requestSentTime, String message, AcceptStatus acceptStatus, Long teamId,
-        int memberCount, Region region, LocalDateTime deletedAt, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti,
-        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName, CollegeType partnerLeaderCollegeType, String partnerLeaderAdmissionYear,
-        Boolean partnerLeaderImageAuth) {
+    public MeetingRequestInformationDto(Long meetingRequestId, LocalDateTime requestSentTime,
+        String message, AcceptStatus acceptStatus, Long teamId,
+        int memberCount, Region region, LocalDateTime deletedAt, Long partnerLeaderId,
+        String partnerLeaderNickname, Mbti partnerLeaderMbti,
+        String partnerLeaderLowProfileUrl, String partnerLeaderCollegeName,
+        CollegeType partnerLeaderCollegeType, String partnerLeaderAdmissionYear,
+        Boolean partnerLeaderImageAuth, Boolean emailAuthenticated) {
         this.meetingRequestId = meetingRequestId;
         this.requestSentTime = requestSentTime;
         this.message = message;
@@ -52,6 +56,7 @@ public class MeetingRequestInformationDto {
         this.partnerLeaderCollegeType = partnerLeaderCollegeType;
         this.partnerLeaderAdmissionYear = partnerLeaderAdmissionYear;
         this.partnerLeaderImageAuth = partnerLeaderImageAuth;
+        this.emailAuthenticated = emailAuthenticated;
     }
 
     @Override
@@ -68,6 +73,7 @@ public class MeetingRequestInformationDto {
             ", partnerLeaderMbti=" + partnerLeaderMbti +
             ", partnerLeaderLowProfileUrl='" + partnerLeaderLowProfileUrl + '\'' +
             ", partnerLeaderCollegeName='" + partnerLeaderCollegeName + '\'' +
+            ", emailAuthenticated='" + emailAuthenticated + '\'' +
             '}';
     }
 
