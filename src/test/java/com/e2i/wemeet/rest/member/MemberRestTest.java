@@ -3,6 +3,7 @@ package com.e2i.wemeet.rest.member;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_GET_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_파일과_함께_POST_요청을_보낸다;
+import static com.e2i.wemeet.security.token.JwtEnv.ACCESS;
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
 import static com.e2i.wemeet.support.fixture.RestAssuredFixture.카이;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,9 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MemberRestTest {
 
@@ -60,7 +59,13 @@ class MemberRestTest {
             .extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(200);
+        JsonPath jsonPath = response.body().jsonPath();
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(200),
+            () -> assertThat(response.header(ACCESS.getKey())).isNotNull(),
+            () -> assertThat(jsonPath.getString("status")).isEqualTo("SUCCESS"),
+            () -> assertThat(jsonPath.getString("message")).isEqualTo("Create Member Success")
+        );
     }
 
     @DisplayName("회원 가입을 하고 유저의 상세 정보를 조회한다.")

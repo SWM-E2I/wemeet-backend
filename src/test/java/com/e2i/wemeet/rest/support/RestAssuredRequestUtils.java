@@ -40,6 +40,7 @@ public abstract class RestAssuredRequestUtils {
     public static ExtractableResponse<Response> 로그인된_상태로_파일과_함께_POST_요청을_보낸다(String url, String accessToken,
         MultipartRequest<Object>... multipartRequests) {
         RequestSpecification request = RestAssured.given()
+            .contentType(ContentType.MULTIPART)
             .header(ACCESS.getKey(), accessToken);
 
         for (MultipartRequest<Object> multipartRequest : multipartRequests) {
