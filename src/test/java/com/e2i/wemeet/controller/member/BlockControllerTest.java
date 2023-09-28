@@ -110,6 +110,7 @@ class BlockControllerTest extends AbstractControllerUnitTest {
                                       - 성사된 매칭
                                       - 보낸 미팅 신청
                                       - 받은 미팅 신청
+                                      - 팀 상세 조회 불가
                                 """)
                         .pathParameters(
                             parameterWithName("blockMemberId").description("차단할 사용자의 ID")

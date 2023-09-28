@@ -124,6 +124,7 @@ paths:
               - 성사된 매칭
               - 보낸 미팅 신청
               - 받은 미팅 신청
+              - 팀 상세 정보 조회 불가
       operationId: 차단하기
       security:
         - AccessToken: [ ]
