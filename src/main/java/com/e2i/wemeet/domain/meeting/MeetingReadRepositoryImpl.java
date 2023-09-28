@@ -79,7 +79,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .map(meetingInformation -> AcceptedMeetingResponseDto.of(
                 meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
             ))
-            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
+            .sorted(
+                Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
             .toList();
     }
 
@@ -204,8 +205,63 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
+    }
+
+    // 보낸 미팅 신청 조회
+    @Override
+    public List<SentMeetingResponseDto> findSentRequestList(final Long memberId) {
+        List<MeetingRequestInformationDto> meetingRequestList = selectMeetingRequestInformationDto()
+            .from(meetingRequest)
+            // My Team & Partner Team
+            .join(meetingRequest.team, team).on(team.deletedAt.isNull())
+            .join(meetingRequest.partnerTeam, partnerTeam)
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
+            .fetch();
+
+        return meetingRequestList.stream()
+            .map(meetingRequestInformation -> SentMeetingResponseDto.of(
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+            ))
+            .toList();
+    }
+
+    // 받은 미팅 신청 조회
+    @Override
+    public List<ReceivedMeetingResponseDto> findReceiveRequestList(final Long memberId) {
+        List<MeetingRequestInformationDto> meetingReceivedList = selectMeetingRequestInformationDto()
+            .from(meetingRequest)
+            // PartnerTeam == RequestReceivedTeam == My Team
+            .join(meetingRequest.team, partnerTeam)
+            .join(meetingRequest.partnerTeam, team).on(team.deletedAt.isNull())
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull()
+            )
+            .fetch();
+
+        return meetingReceivedList.stream()
+            .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+            ))
+            .toList();
     }
 
     private JPAQuery<MeetingRequestInformationDto> selectMeetingRequestInformationDto() {
@@ -226,7 +282,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
     }
 

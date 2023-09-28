@@ -40,7 +40,8 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
                         member.mbti,
                         member.profileImage.basicUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"),
-                        member.collegeInfo.admissionYear.as("admissionYear")
+                        member.collegeInfo.admissionYear.as("admissionYear"),
+                        member.email.isNotNull().as("emailAuthenticated")
                     )))
             .from(heart)
             .join(team).on(heart.team.teamId.eq(team.teamId))
@@ -73,7 +74,8 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.basicUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"),
-                        member.collegeInfo.admissionYear.as("admissionYear"))))
+                        member.collegeInfo.admissionYear.as("admissionYear"),
+                        member.email.isNotNull().as("emailAuthenticated"))))
             .from(heart)
             .join(team).on(heart.partnerTeam.teamId.eq(team.teamId))
             .join(heart.team.teamLeader, member)

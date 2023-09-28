@@ -49,7 +49,8 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.lowUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"),
-                        member.collegeInfo.admissionYear.as("admissionYear"))
+                        member.collegeInfo.admissionYear.as("admissionYear"),
+                        member.email.isNotNull().as("emailAuthenticated"))
                 )
             )
             .from(team)
@@ -105,7 +106,8 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                     Projections.constructor(TeamLeaderData.class, member.nickname, member.mbti,
                         member.profileImage.lowUrl.as("profileImageUrl"),
                         member.collegeInfo.collegeCode.codeValue.as("college"),
-                        member.collegeInfo.admissionYear.as("admissionYear"))
+                        member.collegeInfo.admissionYear.as("admissionYear"),
+                        member.email.isNotNull().as("emailAuthenticated"))
                 )
             )
             .from(history)
