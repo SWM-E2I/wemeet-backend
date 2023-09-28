@@ -1,6 +1,7 @@
 package com.e2i.wemeet.domain.team.suggestion;
 
 import static com.e2i.wemeet.domain.history.QHistory.history;
+import static com.e2i.wemeet.domain.meeting.QMeeting.meeting;
 import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
@@ -40,7 +41,13 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                 history.member.deletedAt.isNull()
             )
             .fetch();
-
+      
+        // 성사된 미팅 조회
+        List<Long> meetingHistory = queryFactory
+            .select(meeting.team.teamId)
+            .from(meeting)
+            .where(meeting.partnerTeam.teamLeader.memberId.eq(memberId))
+            .fetch();
         List<Long> blockList = blockRepository.findBlockMemberIds(memberId);
 
         return queryFactory
@@ -60,6 +67,7 @@ public class SuggestionRepositoryImpl implements SuggestionRepository {
                 team.deletedAt.isNull(),
                 team.gender.ne(gender),
                 team.teamId.notIn(suggestionHistory),
+                team.teamId.notIn(meetingHistory),
                 member.memberId.notIn(blockList),
                 teamImage.sequence.eq(1)
             )
