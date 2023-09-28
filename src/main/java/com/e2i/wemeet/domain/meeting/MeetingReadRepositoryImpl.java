@@ -70,7 +70,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
         List<Long> blockMemberIds = blockRepository.findBlockMemberIds(memberId);
 
         // 내가 미팅 신청하고 성사되었을 때 목록
-        List<MeetingInformationDto> meetingList = findMeetingInformationWhatIRequested(memberId, blockMemberIds);
+        List<MeetingInformationDto> meetingList = findMeetingInformationWhatIRequested(memberId,
+            blockMemberIds);
 
         // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
         meetingList.addAll(findMeetingInformationWhatIReceived(memberId, blockMemberIds));
@@ -110,7 +111,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
         return meetingRequestList.stream()
             .map(meetingRequestInformation -> SentMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
             ))
             .toList();
     }
@@ -141,13 +143,15 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
         return meetingReceivedList.stream()
             .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
             ))
             .toList();
     }
 
     // 내가 미팅 신청하고 성사되었을 때 목록
-    private List<MeetingInformationDto> findMeetingInformationWhatIRequested(final Long memberId, final List<Long> blockMemberIds) {
+    private List<MeetingInformationDto> findMeetingInformationWhatIRequested(final Long memberId,
+        final List<Long> blockMemberIds) {
         return selectMeetingInformationDto()
             .from(meeting)
             // My Team & Partner Team
@@ -168,7 +172,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
     }
 
     // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
-    private List<MeetingInformationDto> findMeetingInformationWhatIReceived(final Long memberId, final List<Long> blockMemberIds) {
+    private List<MeetingInformationDto> findMeetingInformationWhatIReceived(final Long memberId,
+        final List<Long> blockMemberIds) {
         return selectMeetingInformationDto()
             .from(meeting)
             // My Team & Partner Team
@@ -208,60 +213,6 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
                 partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
-    }
-
-    // 보낸 미팅 신청 조회
-    @Override
-    public List<SentMeetingResponseDto> findSentRequestList(final Long memberId) {
-        List<MeetingRequestInformationDto> meetingRequestList = selectMeetingRequestInformationDto()
-            .from(meetingRequest)
-            // My Team & Partner Team
-            .join(meetingRequest.team, team).on(team.deletedAt.isNull())
-            .join(meetingRequest.partnerTeam, partnerTeam)
-            // Me & Partner Team Leader
-            .join(team.teamLeader, member)
-            .join(partnerTeam.teamLeader, partnerTeamLeader)
-            // Partner Team Leader College
-            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(
-                member.memberId.eq(memberId),
-                member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return meetingRequestList.stream()
-            .map(meetingRequestInformation -> SentMeetingResponseDto.of(
-                meetingRequestInformation,
-                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
-            ))
-            .toList();
-    }
-
-    // 받은 미팅 신청 조회
-    @Override
-    public List<ReceivedMeetingResponseDto> findReceiveRequestList(final Long memberId) {
-        List<MeetingRequestInformationDto> meetingReceivedList = selectMeetingRequestInformationDto()
-            .from(meetingRequest)
-            // PartnerTeam == RequestReceivedTeam == My Team
-            .join(meetingRequest.team, partnerTeam)
-            .join(meetingRequest.partnerTeam, team).on(team.deletedAt.isNull())
-            // Me & Partner Team Leader
-            .join(team.teamLeader, member)
-            .join(partnerTeam.teamLeader, partnerTeamLeader)
-            // Partner Team Leader College
-            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(
-                member.memberId.eq(memberId),
-                member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return meetingReceivedList.stream()
-            .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
-                meetingRequestInformation,
-                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
-            ))
-            .toList();
     }
 
     private JPAQuery<MeetingRequestInformationDto> selectMeetingRequestInformationDto() {
