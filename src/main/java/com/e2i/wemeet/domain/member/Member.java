@@ -106,6 +106,9 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<History> history = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Block> blocks = new ArrayList<>();
+
     @Builder
     public Member(String nickname, Gender gender, String phoneNumber, String email,
         CollegeInfo collegeInfo, Mbti mbti, Integer credit, Boolean allowMarketing,
@@ -148,6 +151,14 @@ public class Member extends BaseTimeEntity {
             throw new MemberHasBeenDeletedException();
         }
         return this;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public boolean isActive() {
+        return this.deletedAt == null;
     }
 
     private void validateManager() {
@@ -234,5 +245,15 @@ public class Member extends BaseTimeEntity {
         }
         this.recommenderPhone = recommenderPhone;
     }
+
+    // 차단 목록에 추가
+    public void addBlockMember(final Member blockMember) {
+        Block block = Block.builder()
+            .member(this)
+            .blockMember(blockMember)
+            .build();
+        this.blocks.add(block);
+    }
+
 }
 
