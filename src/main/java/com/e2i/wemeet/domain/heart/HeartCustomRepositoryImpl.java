@@ -5,6 +5,7 @@ import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
 
+import com.e2i.wemeet.domain.member.BlockRepository;
 import com.e2i.wemeet.domain.team.data.suggestion.TeamLeaderData;
 import com.e2i.wemeet.dto.dsl.HeartTeamData;
 import com.querydsl.core.types.Projections;
@@ -19,11 +20,15 @@ import org.springframework.stereotype.Repository;
 public class HeartCustomRepositoryImpl implements HeartCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final BlockRepository blockRepository;
 
     @Override
     public List<HeartTeamData> findSentHeart(Long teamId,
         LocalDateTime requestedTime) {
         LocalDateTime beforeTime = requestedTime.minusDays(1);
+
+        // 차단 목록 조회
+        List<Long> blockMemberIds = blockRepository.findBlockMemberIdsByTeamId(teamId);
 
         return queryFactory
             .select(
@@ -41,12 +46,12 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
             .from(heart)
             .join(team).on(heart.team.teamId.eq(team.teamId))
             .join(heart.partnerTeam.teamLeader, member)
-            .on(heart.partnerTeam.teamLeader.memberId.eq(member.memberId))
             .join(teamImage).on(teamImage.team.teamId.eq(heart.partnerTeam.teamId))
             .where(
                 team.teamId.eq(teamId),
                 team.deletedAt.isNull(),
                 heart.createdAt.between(beforeTime, requestedTime),
+                member.memberId.notIn(blockMemberIds),
                 teamImage.sequence.eq(1)
             )
             .fetch();
@@ -56,6 +61,9 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
     public List<HeartTeamData> findReceivedHeart(Long teamId,
         LocalDateTime requestedTime) {
         LocalDateTime beforeTime = requestedTime.minusDays(1);
+
+        // 차단 목록 조회
+        List<Long> blockMemberIds = blockRepository.findBlockMemberIdsByTeamId(teamId);
 
         return queryFactory
             .select(
@@ -77,6 +85,7 @@ public class HeartCustomRepositoryImpl implements HeartCustomRepository {
                 team.teamId.eq(teamId),
                 team.deletedAt.isNull(),
                 heart.createdAt.between(beforeTime, requestedTime),
+                member.memberId.notIn(blockMemberIds),
                 teamImage.sequence.eq(1)
             )
             .fetch();
