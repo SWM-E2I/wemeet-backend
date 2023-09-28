@@ -459,7 +459,7 @@ class MeetingHandleServiceImplTest extends AbstractServiceTest {
                     .extracting("team", "partnerTeam", "isOver")
                     .contains(kaiTeam, rimTeam, false));
 
-            assertThat(rim.getCredit()).isLessThan(rimCredit);
+            assertThat(rim.getCredit()).isEqualTo(rimCredit - 5);
         }
 
         @DisplayName("받았던 미팅 신청을 여러번 수락할 수 없다.")
