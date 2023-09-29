@@ -42,9 +42,9 @@ public class TeamController {
     @IsManager
     @PutMapping
     public ResponseDto<Void> updateTeam(@MemberId Long memberId,
-        @RequestPart("data") @Valid UpdateTeamRequestDto createTeamRequestDto,
+        @RequestPart("data") @Valid UpdateTeamRequestDto updateTeamRequestDto,
         @RequestPart("images") List<MultipartFile> images) {
-        teamService.updateTeam(memberId, createTeamRequestDto, images);
+        teamService.updateTeam(memberId, updateTeamRequestDto, images);
 
         return ResponseDto.success("Update Team Success");
     }
@@ -58,7 +58,8 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}")
-    public ResponseDto<TeamDetailResponseDto> readTeamById(@MemberId Long memberId, @PathVariable Long teamId) {
+    public ResponseDto<TeamDetailResponseDto> readTeamById(@MemberId Long memberId,
+        @PathVariable Long teamId) {
         final LocalDateTime readTime = LocalDateTime.now();
         TeamDetailResponseDto result = teamService.readByTeamId(memberId, teamId, readTime);
 
