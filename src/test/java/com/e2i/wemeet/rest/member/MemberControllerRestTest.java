@@ -11,34 +11,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.rest.support.MultipartRequest;
+import com.e2i.wemeet.support.module.AbstractAcceptanceTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.io.IOException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MemberRestTest {
-
-    @LocalServerPort
-    int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
-    @Autowired
-    ResourceLoader resourceLoader;
+class MemberControllerRestTest extends AbstractAcceptanceTest {
 
     @DisplayName("회원 가입을 한다.")
     @Test
@@ -102,11 +86,11 @@ class MemberRestTest {
     }
 
     @DisplayName("개인 프로필 이미지를 업로드한다.")
-        //@Test
+    @Test
     void uploadProfile() throws IOException {
         // given
         final String accessToken = 카이.회원가입을_한다();
-        Resource resource = resourceLoader.getResource("classpath:/static/dist/favicon-16x16.png");
+        Resource resource = resourceLoader.getResource("classpath:/static/test_image/software maestro.png");
 
         // when
         final String url = "/v1/member/profile-image";
