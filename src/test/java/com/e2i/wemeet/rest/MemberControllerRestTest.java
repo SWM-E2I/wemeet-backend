@@ -1,4 +1,4 @@
-package com.e2i.wemeet.rest.member;
+package com.e2i.wemeet.rest;
 
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.POST_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_DELETE_요청을_보낸다;
@@ -57,7 +57,7 @@ class MemberControllerRestTest extends AbstractAcceptanceTest {
         assertAll(
             () -> assertThat(getResponse.statusCode()).isEqualTo(200),
             () -> assertThat(jsonPath.getString("data.nickname")).isEqualTo(KAI.getNickname()),
-            () -> assertThat(jsonPath.getBoolean("data.authUnivStatus")).isFalse()
+            () -> assertThat(jsonPath.getBoolean("data.emailAuthenticated")).isFalse()
         );
     }
 
