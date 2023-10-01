@@ -28,12 +28,17 @@ public class MeetingInformationDto {
     private CollegeType partnerLeaderCollegeType;
     private String partnerLeaderAdmissionYear;
     private Boolean partnerLeaderImageAuth;
+    private Boolean emailAuthenticated;
 
     @QueryProjection
-    public MeetingInformationDto(Long meetingId, LocalDateTime meetingAcceptTime, boolean isOver, LocalDateTime deletedAt, Long teamId,
+    public MeetingInformationDto(Long meetingId, LocalDateTime meetingAcceptTime, boolean isOver,
+        LocalDateTime deletedAt, Long teamId,
         int memberCount,
-        Region region, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti, String partnerLeaderLowProfileUrl,
-        String partnerLeaderCollegeName, CollegeType partnerLeaderCollegeType, String partnerLeaderAdmissionYear, Boolean partnerLeaderImageAuth) {
+        Region region, Long partnerLeaderId, String partnerLeaderNickname, Mbti partnerLeaderMbti,
+        String partnerLeaderLowProfileUrl,
+        String partnerLeaderCollegeName, CollegeType partnerLeaderCollegeType,
+        String partnerLeaderAdmissionYear, Boolean partnerLeaderImageAuth,
+        Boolean emailAuthenticated) {
         this.meetingId = meetingId;
         this.meetingAcceptTime = meetingAcceptTime;
         this.isOver = isOver;
@@ -49,6 +54,7 @@ public class MeetingInformationDto {
         this.partnerLeaderCollegeType = partnerLeaderCollegeType;
         this.partnerLeaderAdmissionYear = partnerLeaderAdmissionYear;
         this.partnerLeaderImageAuth = partnerLeaderImageAuth;
+        this.emailAuthenticated = emailAuthenticated;
     }
 
     public boolean isOver() {
@@ -70,6 +76,7 @@ public class MeetingInformationDto {
             ", partnerLeaderMbti=" + partnerLeaderMbti +
             ", partnerLeaderLowProfileUrl='" + partnerLeaderLowProfileUrl + '\'' +
             ", partnerLeaderCollegeName='" + partnerLeaderCollegeName + '\'' +
+            ", emailAuthenticated='" + emailAuthenticated + '\'' +
             '}';
     }
 }

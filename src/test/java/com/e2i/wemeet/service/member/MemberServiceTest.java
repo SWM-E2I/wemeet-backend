@@ -215,7 +215,7 @@ class MemberServiceTest {
                 kai.getMemberId());
             assertThat(memberDetailResponseDto).isNotNull()
                 .extracting("nickname", "college", "collegeType", "mbti", "admissionYear",
-                    "authUnivStatus")
+                    "emailAuthenticated")
                 .contains(kai.getNickname(), "안양대", "인문사회", Mbti.INFJ, "17", true);
         }
 

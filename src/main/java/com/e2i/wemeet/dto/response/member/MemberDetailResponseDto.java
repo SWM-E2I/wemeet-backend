@@ -14,7 +14,7 @@ public record MemberDetailResponseDto(
     String collegeType,
     String admissionYear,
     ProfileImageResponseDto profileImage,
-    Boolean authUnivStatus
+    Boolean emailAuthenticated
 ) {
 
     public static MemberDetailResponseDto of(final Member member, final String college) {
@@ -28,7 +28,7 @@ public record MemberDetailResponseDto(
             .collegeType(member.getCollegeInfo().getCollegeType().getDescription())
             .admissionYear(member.getCollegeInfo().getAdmissionYear())
             .profileImage(profileImage)
-            .authUnivStatus(member.getEmail() != null)
+            .emailAuthenticated(member.getEmail() != null)
             .build();
     }
 }

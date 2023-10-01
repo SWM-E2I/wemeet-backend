@@ -51,6 +51,8 @@ public enum ErrorCode {
     MEETING_ALREADY_EXIST(40042, "meeting.already.exist"),
     RECOMMENDER_ALREADY_EXIST(40043, "recommender.already.exist"),
     IMAGE_COUNT_EXCEEDED(40044, "image.count.exceeded"),
+    BLOCKED_MEMBER(40045, "blocked.member"),
+    BLOCKED_TEAM(40046, "blocked.team"),
 
     NOTFOUND_SMS_CREDENTIAL(40100, "notfound.sms.credential"),
     MEMBER_NOT_FOUND(40101, "member.not.found"),

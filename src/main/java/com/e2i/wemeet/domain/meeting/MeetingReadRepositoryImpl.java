@@ -7,6 +7,7 @@ import static com.e2i.wemeet.domain.member.QMember.member;
 import static com.e2i.wemeet.domain.team.QTeam.team;
 import static com.e2i.wemeet.domain.team_image.QTeamImage.teamImage;
 
+import com.e2i.wemeet.domain.member.BlockRepository;
 import com.e2i.wemeet.domain.member.QMember;
 import com.e2i.wemeet.domain.team.QTeam;
 import com.e2i.wemeet.domain.team.Team;
@@ -33,6 +34,7 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
 
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
+    private final BlockRepository blockRepository;
 
     private final QMember partnerTeamLeader = new QMember("teamLeader");
     private final QTeam partnerTeam = new QTeam("partnerTeam");
@@ -64,22 +66,92 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
     // 성사된 미팅 조회
     @Override
     public List<AcceptedMeetingResponseDto> findAcceptedMeetingList(final Long memberId) {
+        // 차단된 사용자 조회
+        List<Long> blockMemberIds = blockRepository.findBlockMemberIds(memberId);
+
         // 내가 미팅 신청하고 성사되었을 때 목록
-        List<MeetingInformationDto> meetingList = findMeetingInformationWhatIRequested(memberId);
+        List<MeetingInformationDto> meetingList = findMeetingInformationWhatIRequested(memberId,
+            blockMemberIds);
 
         // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
-        meetingList.addAll(findMeetingInformationWhatIReceived(memberId));
+        meetingList.addAll(findMeetingInformationWhatIReceived(memberId, blockMemberIds));
 
         return meetingList.stream()
             .map(meetingInformation -> AcceptedMeetingResponseDto.of(
                 meetingInformation, findTeamProfileImageUrl(meetingInformation.getTeamId())
             ))
-            .sorted(Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
+            .sorted(
+                Comparator.comparing(AcceptedMeetingResponseDto::getMeetingAcceptTime).reversed())
+            .toList();
+    }
+
+    // 보낸 미팅 신청 조회
+    @Override
+    public List<SentMeetingResponseDto> findSentRequestList(final Long memberId) {
+        // 차단된 사용자 조회
+        List<Long> blockMemberIds = blockRepository.findBlockMemberIds(memberId);
+
+        List<MeetingRequestInformationDto> meetingRequestList = selectMeetingRequestInformationDto()
+            .from(meetingRequest)
+            // My Team & Partner Team
+            .join(meetingRequest.team, team).on(team.deletedAt.isNull())
+            .join(meetingRequest.partnerTeam, partnerTeam)
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull(),
+                // filter blocked member
+                partnerTeamLeader.memberId.notIn(blockMemberIds)
+            )
+            .fetch();
+
+        return meetingRequestList.stream()
+            .map(meetingRequestInformation -> SentMeetingResponseDto.of(
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+            ))
+            .toList();
+    }
+
+    // 받은 미팅 신청 조회
+    @Override
+    public List<ReceivedMeetingResponseDto> findReceiveRequestList(final Long memberId) {
+        // 차단된 사용자 조회
+        List<Long> blockMemberIds = blockRepository.findBlockMemberIds(memberId);
+
+        List<MeetingRequestInformationDto> meetingReceivedList = selectMeetingRequestInformationDto()
+            .from(meetingRequest)
+            // meetingRequest.partnerTeam == RequestReceivedTeam == My Team
+            .join(meetingRequest.team, partnerTeam)
+            .join(meetingRequest.partnerTeam, team).on(team.deletedAt.isNull())
+            // Me & Partner Team Leader
+            .join(team.teamLeader, member)
+            .join(partnerTeam.teamLeader, partnerTeamLeader)
+            // Partner Team Leader College
+            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
+            .where(
+                member.memberId.eq(memberId),
+                member.deletedAt.isNull(),
+                // filter blocked member
+                partnerTeamLeader.memberId.notIn(blockMemberIds)
+            )
+            .fetch();
+
+        return meetingReceivedList.stream()
+            .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
+                meetingRequestInformation,
+                findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
+            ))
             .toList();
     }
 
     // 내가 미팅 신청하고 성사되었을 때 목록
-    private List<MeetingInformationDto> findMeetingInformationWhatIRequested(Long memberId) {
+    private List<MeetingInformationDto> findMeetingInformationWhatIRequested(final Long memberId,
+        final List<Long> blockMemberIds) {
         return selectMeetingInformationDto()
             .from(meeting)
             // My Team & Partner Team
@@ -92,13 +164,16 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
             .where(
                 member.memberId.eq(memberId),
-                member.deletedAt.isNull()
+                member.deletedAt.isNull(),
+                // filter blocked member
+                partnerTeamLeader.memberId.notIn(blockMemberIds)
             )
             .fetch();
     }
 
     // 내가 미팅 신청받고 수락하여 성사되었을 때 목록
-    private List<MeetingInformationDto> findMeetingInformationWhatIReceived(Long memberId) {
+    private List<MeetingInformationDto> findMeetingInformationWhatIReceived(final Long memberId,
+        final List<Long> blockMemberIds) {
         return selectMeetingInformationDto()
             .from(meeting)
             // My Team & Partner Team
@@ -111,7 +186,9 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
             .join(partnerTeamLeader.collegeInfo.collegeCode, code)
             .where(
                 member.memberId.eq(memberId),
-                member.deletedAt.isNull()
+                member.deletedAt.isNull(),
+                // filter blocked member
+                partnerTeamLeader.memberId.notIn(blockMemberIds)
             )
             .fetch();
     }
@@ -133,60 +210,9 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
-    }
-
-    // 보낸 미팅 신청 조회
-    @Override
-    public List<SentMeetingResponseDto> findSentRequestList(final Long memberId) {
-        List<MeetingRequestInformationDto> meetingRequestList = selectMeetingRequestInformationDto()
-            .from(meetingRequest)
-            // My Team & Partner Team
-            .join(meetingRequest.team, team).on(team.deletedAt.isNull())
-            .join(meetingRequest.partnerTeam, partnerTeam)
-            // Me & Partner Team Leader
-            .join(team.teamLeader, member)
-            .join(partnerTeam.teamLeader, partnerTeamLeader)
-            // Partner Team Leader College
-            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(
-                member.memberId.eq(memberId),
-                member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return meetingRequestList.stream()
-            .map(meetingRequestInformation -> SentMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
-            ))
-            .toList();
-    }
-
-    // 받은 미팅 신청 조회
-    @Override
-    public List<ReceivedMeetingResponseDto> findReceiveRequestList(final Long memberId) {
-        List<MeetingRequestInformationDto> meetingReceivedList = selectMeetingRequestInformationDto()
-            .from(meetingRequest)
-            // PartnerTeam == RequestReceivedTeam == My Team
-            .join(meetingRequest.team, partnerTeam)
-            .join(meetingRequest.partnerTeam, team).on(team.deletedAt.isNull())
-            // Me & Partner Team Leader
-            .join(team.teamLeader, member)
-            .join(partnerTeam.teamLeader, partnerTeamLeader)
-            // Partner Team Leader College
-            .join(partnerTeamLeader.collegeInfo.collegeCode, code)
-            .where(
-                member.memberId.eq(memberId),
-                member.deletedAt.isNull()
-            )
-            .fetch();
-
-        return meetingReceivedList.stream()
-            .map(meetingRequestInformation -> ReceivedMeetingResponseDto.of(
-                meetingRequestInformation, findTeamProfileImageUrl(meetingRequestInformation.getTeamId())
-            ))
-            .toList();
     }
 
     private JPAQuery<MeetingRequestInformationDto> selectMeetingRequestInformationDto() {
@@ -207,7 +233,8 @@ public class MeetingReadRepositoryImpl implements MeetingReadRepository {
                 code.codeValue.as("partnerLeaderCollegeName"),
                 partnerTeamLeader.collegeInfo.collegeType.as("partnerLeaderCollegeType"),
                 partnerTeamLeader.collegeInfo.admissionYear.as("partnerLeaderAdmissionYear"),
-                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth")
+                partnerTeamLeader.profileImage.imageAuth.as("partnerLeaderImageAuth"),
+                partnerTeamLeader.email.isNotNull().as("emailAuthenticated")
             ));
     }
 
