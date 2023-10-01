@@ -20,6 +20,8 @@ public enum TeamFixture {
 
     HONGDAE_TEAM_1(4, Region.HONGDAE, DrinkRate.LOW, DrinkWithGame.ANY,
         AdditionalActivity.CAFE, "안녕하세요! 반가워요! 홍대팀 1입니다!!", "https://open.kakao.com/o/ajsds1ik"),
+    HONGDAE_TEAM_2(3, Region.HONGDAE, DrinkRate.HIGH, DrinkWithGame.BEGINNER,
+        AdditionalActivity.SHOW, "반갑다 홍대팀 2팀이다.", "character22"),
     WOMAN_TEAM(2, Region.SINCHON, DrinkRate.LOW, DrinkWithGame.ANY,
         AdditionalActivity.CAFE, "안녕하세요! 반가워요! 여자 2인 팀입니다!", "https://open.kakao.com/o/djsi23di"),
     WOMAN_TEAM_2(2, Region.HONGDAE, DrinkRate.MIDDLE, DrinkWithGame.BEGINNER,
@@ -86,6 +88,18 @@ public enum TeamFixture {
 
     public CreateTeamRequestDto createTeamRequestDto(List<TeamMemberRequestDto> members) {
         return CreateTeamRequestDto.builder()
+            .region(this.region.name())
+            .drinkRate(this.drinkRate.name())
+            .drinkWithGame(this.drinkWithGame.name())
+            .additionalActivity(this.additionalActivity.name())
+            .introduction(this.introduction)
+            .chatLink(this.chatLink)
+            .members(members)
+            .build();
+    }
+
+    public UpdateTeamRequestDto getUpdateTeamRequestDto(List<TeamMemberRequestDto> members) {
+        return UpdateTeamRequestDto.builder()
             .region(this.region.name())
             .drinkRate(this.drinkRate.name())
             .drinkWithGame(this.drinkWithGame.name())

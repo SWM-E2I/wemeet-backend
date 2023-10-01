@@ -7,7 +7,7 @@ public record MultipartRequest<T>(
     T data
 ) {
 
-    public static MultipartRequest<File> of(String fileName, File file) {
+    public static MultipartRequest<Object> of(String fileName, File file) {
         return new MultipartRequest<>(fileName, file);
     }
 

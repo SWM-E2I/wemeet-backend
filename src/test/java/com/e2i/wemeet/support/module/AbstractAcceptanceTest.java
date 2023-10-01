@@ -1,7 +1,10 @@
 package com.e2i.wemeet.support.module;
 
+import com.e2i.wemeet.rest.support.MultipartRequest;
 import com.e2i.wemeet.support.config.DatabaseCleaner;
 import io.restassured.RestAssured;
+import java.io.File;
+import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +40,12 @@ public abstract class AbstractAcceptanceTest {
     @Autowired
     protected ResourceLoader resourceLoader;
 
+    protected MultipartRequest<Object> createMultiPartRequest(String partName, String resourcePath) throws IOException {
+        File file = resourceLoader.getResource(resourcePath).getFile();
+        return MultipartRequest.of(partName, file);
+    }
+
+    protected <T> MultipartRequest<T> createMultiPartRequest(String partName, T data) {
+        return MultipartRequest.of(partName, data);
+    }
 }

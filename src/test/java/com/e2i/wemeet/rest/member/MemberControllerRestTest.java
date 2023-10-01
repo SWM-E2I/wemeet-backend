@@ -1,5 +1,6 @@
 package com.e2i.wemeet.rest.member;
 
+import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.POST_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_GET_요청을_보낸다;
 import static com.e2i.wemeet.rest.support.RestAssuredRequestUtils.로그인된_상태로_파일과_함께_POST_요청을_보낸다;
@@ -12,15 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.e2i.wemeet.dto.request.member.CreateMemberRequestDto;
 import com.e2i.wemeet.rest.support.MultipartRequest;
 import com.e2i.wemeet.support.module.AbstractAcceptanceTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.io.Resource;
 
 class MemberControllerRestTest extends AbstractAcceptanceTest {
 
@@ -32,15 +30,7 @@ class MemberControllerRestTest extends AbstractAcceptanceTest {
 
         // when
         final String url = "/v1/member";
-        ExtractableResponse<Response> response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .log().all()
-            .when()
-            .post(url)
-            .then()
-            .log().all()
-            .extract();
+        ExtractableResponse<Response> response = POST_요청을_보낸다(url, request);
 
         //then
         JsonPath jsonPath = response.body().jsonPath();
@@ -90,12 +80,14 @@ class MemberControllerRestTest extends AbstractAcceptanceTest {
     void uploadProfile() throws IOException {
         // given
         final String accessToken = 카이.회원가입을_한다();
-        Resource resource = resourceLoader.getResource("classpath:/static/test_image/software maestro.png");
+        MultipartRequest<Object> multiPartRequest = createMultiPartRequest(
+            "file",
+            "classpath:/static/test_image/software maestro.png"
+        );
 
         // when
         final String url = "/v1/member/profile-image";
-        ExtractableResponse<Response> getResponse = 로그인된_상태로_파일과_함께_POST_요청을_보낸다(
-            url, accessToken, new MultipartRequest<>("file", resource.getFile()));
+        ExtractableResponse<Response> getResponse = 로그인된_상태로_파일과_함께_POST_요청을_보낸다(url, accessToken, multiPartRequest);
 
         // then
         assertThat(getResponse.statusCode()).isEqualTo(200);
