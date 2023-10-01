@@ -19,7 +19,8 @@ public class DatabaseCleaner implements InitializingBean {
 
     private static final List<String> deletionExclusionList = List.of(
         "GROUP_CODE",
-        "CODE"
+        "CODE",
+        "COST"
     );
 
     private List<String> tableNames;
