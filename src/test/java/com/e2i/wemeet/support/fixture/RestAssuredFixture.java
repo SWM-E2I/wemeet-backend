@@ -25,7 +25,9 @@ public enum RestAssuredFixture {
     째림(MemberFixture.RIM),
     유니(MemberFixture.SEYUN),
     워니(MemberFixture.CHAEWON),
-    정열(MemberFixture.JEONGYEOL);
+    정열(MemberFixture.JEONGYEOL),
+    카리나(MemberFixture.KARINA),
+    ;
 
     private final MemberFixture memberFixture;
 
@@ -43,11 +45,17 @@ public enum RestAssuredFixture {
 
     public ExtractableResponse<Response> 회원가입하고_1번_팀을_생성한다(MultipartRequest<Object>... images) {
         String accessToken = 회원가입을_한다();
+        사진을_등록한다(images, accessToken);
         return 홍대1번_팀을_생성한다(accessToken, this.memberFixture.getGender(), images);
+    }
+
+    public void 사진을_등록한다(MultipartRequest<Object>[] images, String accessToken) {
+        로그인된_상태로_파일과_함께_POST_요청을_보낸다("/v1/member/profile-image", accessToken, MultipartRequest.of("file", images[0].data()));
     }
 
     public ExtractableResponse<Response> 회원가입하고_2번_팀을_생성한다(MultipartRequest<Object>... images) {
         String accessToken = 회원가입을_한다();
+        사진을_등록한다(images, accessToken);
         return 홍대2번_팀을_생성한다(accessToken, this.memberFixture.getGender(), images);
     }
 
