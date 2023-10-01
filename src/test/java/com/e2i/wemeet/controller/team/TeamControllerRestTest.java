@@ -10,6 +10,7 @@ import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_2;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.createRequestDto_2_man;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.request.team.UpdateTeamRequestDto;
 import com.e2i.wemeet.rest.support.MultipartRequest;
@@ -25,6 +26,9 @@ class TeamControllerRestTest extends AbstractAcceptanceTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @DisplayName("회원 가입을 하고 팀을 생성할 수 있다.")
     @Test
@@ -78,7 +82,7 @@ class TeamControllerRestTest extends AbstractAcceptanceTest {
     }
 
     @DisplayName("다른 팀을 조회할 수 있다.")
-        //@Test
+    @Test
     void readOtherTeam() throws IOException {
         // given
         final MultipartRequest<Object> imageRequest = createMultiPartRequest("images",
@@ -87,8 +91,11 @@ class TeamControllerRestTest extends AbstractAcceptanceTest {
         카이.홍대1번_팀을_생성한다(accessToken, MAN, imageRequest);
         째림.회원가입하고_1번_팀을_생성한다(imageRequest);
 
+        Long rimId = memberRepository.findByPhoneNumber(째림.getFixture().getPhoneNumber()).get().getMemberId();
+        Long rimTeamId = teamRepository.findByMemberId(rimId).get().getTeamId();
+
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/v1/team/2", accessToken);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/v1/team/" + rimTeamId, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(200);
