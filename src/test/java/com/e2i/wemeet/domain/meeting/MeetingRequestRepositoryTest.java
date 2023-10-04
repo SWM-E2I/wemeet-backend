@@ -2,6 +2,7 @@ package com.e2i.wemeet.domain.meeting;
 
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.ACCEPT;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.EXPIRED;
+import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.PENDING;
 import static com.e2i.wemeet.domain.meeting.data.AcceptStatus.REJECT;
 import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.BASIC_REQUEST;
 import static com.e2i.wemeet.support.fixture.MeetingRequestFixture.WITH_OUT_MESSAGE;
@@ -146,5 +147,50 @@ class MeetingRequestRepositoryTest extends AbstractRepositoryUnitTest {
 
         // then
         assertThat(findMeetingRequest).hasSize(expectedSize);
+    }
+
+    @DisplayName("내 ID를 통해 '대기중' 상태의 받은 신청을 조회할 수 있다.")
+    @Test
+    void findAllByMemberId() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+
+        meetingRequestRepository.save(WITH_OUT_MESSAGE.create(kaiTeam, rimTeam));
+
+        // when
+        List<MeetingRequest> findMeetingRequest = meetingRequestRepository.findAllByMemberId(rim.getMemberId());
+
+        // then
+        assertThat(findMeetingRequest).hasSize(1)
+            .extracting("acceptStatus")
+            .containsOnly(PENDING);
+    }
+
+    @DisplayName("받은 신청을 조회할 때 삭제된 팀 신청 내역은 조회되지 않는다.")
+    @Test
+    void findAllByMemberId_withoutDeletedTeam() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member rim = memberRepository.save(RIM.create(WOMANS_CODE));
+
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        Team rimTeam = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        meetingRequestRepository.save(WITH_OUT_MESSAGE.create(kaiTeam, rimTeam));
+        rimTeam.delete(LocalDateTime.now());
+
+        Team rimTeam2 = teamRepository.save(HONGDAE_TEAM_1.create(rim, create_3_woman()));
+        meetingRequestRepository.save(WITH_OUT_MESSAGE.create(kaiTeam, rimTeam2));
+
+        // when
+        List<MeetingRequest> findMeetingRequest = meetingRequestRepository.findAllByMemberId(rim.getMemberId());
+
+        // then
+        assertThat(findMeetingRequest).hasSize(1)
+            .extracting("acceptStatus")
+            .containsOnly(PENDING);
     }
 }

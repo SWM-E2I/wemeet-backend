@@ -10,7 +10,7 @@ public interface TeamRepository extends JpaRepository<Team, Long>, TeamCustomRep
     SuggestionRepository {
 
     @Query("select t from Team t where t.teamLeader.memberId = :memberId")
-    Optional<Team> findByMemberId(Long memberId);
+    Optional<Team> findByMemberId(@Param("memberId") Long memberId);
 
     /*
     ** 팀이 차단된 사용자의 팀인지 확인
