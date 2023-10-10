@@ -160,7 +160,8 @@ jib {
     }
     container {
         creationTime = 'USE_CURRENT_TIMESTAMP'
-        jvmFlags = ['-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8', '-Duser.timezone=Asia/Seoul']
+        jvmFlags = ['-javaagent:/scouter.agent.jar', '-Dscouter.config=/spring-scouter.conf',
+                    '-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8', '-Duser.timezone=Asia/Seoul']
         ports = ['8080']
     }
 }
