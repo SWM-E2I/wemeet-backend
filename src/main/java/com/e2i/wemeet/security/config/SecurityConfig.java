@@ -69,7 +69,7 @@ public class SecurityConfig {
                 authorize -> authorize
                     .requestMatchers(POST, "/v1/member", "/v1/auth/phone/**", "/v1/auth/refresh").permitAll()
                     .requestMatchers("/test/**", "/health**", "/h2-console",
-                        "/static/**", "/api-docs"
+                        "/static/**", "/api-docs", "/actuator/**"
                     ).permitAll()
                     .anyRequest().authenticated());
 

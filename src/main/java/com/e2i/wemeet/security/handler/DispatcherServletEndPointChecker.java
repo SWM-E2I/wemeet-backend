@@ -1,9 +1,10 @@
 package com.e2i.wemeet.security.handler;
 
+import static com.e2i.wemeet.config.log.OperationExcludePattern.EXCLUDE_PATTERN;
+
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,13 +18,16 @@ import org.springframework.web.servlet.HandlerMapping;
 public class DispatcherServletEndPointChecker implements HttpRequestEndPointChecker {
 
     private final DispatcherServlet dispatcherServlet;
-    private final Pattern pattern = Pattern.compile("/h2-console.*");
 
     @Override
     public boolean isEndPointExist(HttpServletRequest request) {
-        if (StringUtils.hasText(request.getRequestURI()) && pattern.matcher(request.getRequestURI())
-            .matches()) {
-            return true;
+        // check exclude request and pass
+        if (StringUtils.hasText(request.getRequestURI())) {
+            boolean excludeRequest = EXCLUDE_PATTERN.getExcludePattern().stream()
+                .anyMatch(pattern -> pattern.matcher(request.getRequestURI()).matches());
+            if (excludeRequest) {
+                return true;
+            }
         }
 
         List<HandlerMapping> handlerMappings = dispatcherServlet.getHandlerMappings();
