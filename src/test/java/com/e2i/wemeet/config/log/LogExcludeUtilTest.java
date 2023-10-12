@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class LogExceptionPatternTest {
+class LogExcludeUtilTest {
 
     @DisplayName("Swagger 관련 요청일 경우, true를 반환한다.")
     @CsvSource({
@@ -18,7 +18,7 @@ class LogExceptionPatternTest {
     @ParameterizedTest
     void returnTrueWithSwaggerUrl(String requestUrl, boolean expected) {
         // given
-        boolean matchedExceptionUrls = LogExceptionPattern.isMatchedExceptionUrls(requestUrl);
+        boolean matchedExceptionUrls = LogExcludeUtil.isMatchedExcludeUrls(requestUrl);
 
         // when & then
         assertThat(matchedExceptionUrls).isEqualTo(expected);
