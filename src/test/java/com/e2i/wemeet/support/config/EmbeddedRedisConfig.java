@@ -3,18 +3,22 @@ package com.e2i.wemeet.support.config;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import redis.embedded.RedisServer;
+import redis.embedded.exceptions.EmbeddedRedisException;
 
 /*
-* Test 용 EmbeddedRedis / profile 이 local, default 일때만 활성화
-* */
+ * Test 용 EmbeddedRedis / profile 이 local, default 일때만 활성화
+ * */
 @Slf4j
 @Profile({"local", "default"})
 @Configuration
@@ -30,7 +34,14 @@ public class EmbeddedRedisConfig {
         // Application Context 가 2번 이상 실행될 때 포트 충돌 문제 해결
         int port = isRedisRunning() ? findAvailablePort() : redisPort;
 
-        redisServer = new RedisServer(port);
+        if (isArmMac()) {
+            redisServer = new RedisServer(Objects.requireNonNull(getRedisFileForArcMac()),
+                port);
+        }
+        if (!isArmMac()) {
+            redisServer = new RedisServer(port);
+        }
+
         redisServer.start();
     }
 
@@ -38,6 +49,19 @@ public class EmbeddedRedisConfig {
     public void stopRedis() {
         if (redisServer != null) {
             redisServer.stop();
+        }
+    }
+
+    private boolean isArmMac() {
+        return Objects.equals(System.getProperty("os.arch"), "aarch64") &&
+            Objects.equals(System.getProperty("os.name"), "Mac OS X");
+    }
+
+    private File getRedisFileForArcMac() {
+        try {
+            return new ClassPathResource("binary/redis/redis-server").getFile();
+        } catch (Exception e) {
+            throw new EmbeddedRedisException("fail to get redis-server binary file");
         }
     }
 
