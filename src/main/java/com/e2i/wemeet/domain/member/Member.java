@@ -55,7 +55,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 5, nullable = false)
+    @Column(length = 10, nullable = false)
     private String nickname;
 
     @Convert(converter = GenderConverter.class)
@@ -63,11 +63,11 @@ public class Member extends BaseTimeEntity {
     private Gender gender;
 
     @Convert(converter = CryptoConverter.class)
-    @Column(length = 60, unique = true, nullable = false)
+    @Column(length = 80, unique = true, nullable = false)
     private String phoneNumber;
 
     @Convert(converter = CryptoConverter.class)
-    @Column(length = 60, unique = true)
+    @Column(length = 100, unique = true)
     private String email;
 
     @Embedded
@@ -220,7 +220,7 @@ public class Member extends BaseTimeEntity {
         if (this.team.stream().anyMatch(t -> t.getDeletedAt() == null)) {
             throw new TeamExistsException();
         }
-        
+
         if (!isProfileImageExists()) {
             throw new ProfileImageNotExistsException();
         }

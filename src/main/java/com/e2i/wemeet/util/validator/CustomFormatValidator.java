@@ -29,7 +29,7 @@ public abstract class CustomFormatValidator {
     };
     private static final Pattern SMS_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
     private static final Pattern EMAIL_CREDENTIAL_REG = Pattern.compile("^\\d{6}$");
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣\\s]{1,5}$");
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9]{1,10}$");
     private static final Pattern CODE_PK_PATTERN = Pattern.compile("^[A-Z]{2}-\\d{3}$");
     private static final Pattern OPEN_CHAT_LINK_PATTERN = Pattern.compile("https://open\\.kakao\\.com/o/[a-zA-Z0-9]{8}");
 

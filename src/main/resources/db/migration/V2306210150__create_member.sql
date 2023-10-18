@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS `member`
 (
     `member_id`             bigint            NOT NULL AUTO_INCREMENT,
-    `nickname`              varchar(5)        NOT NULL,
+    `nickname`              varchar(10)       NOT NULL,
     `gender`                char(1)           NOT NULL,
-    `phone_number`          char(24)          NOT NULL,
+    `phone_number`          char(80)          NOT NULL,
     `college_code_id`       char(3)           NOT NULL,
     `college_group_code_id` char(2)           NOT NULL,
     `college_type`          tinyint           NOT NULL,
     `admission_year`        char(2)           NOT NULL,
-    `email`                 varchar(70),
+    `email`                 varchar(100),
     `mbti`                  tinyint           NOT NULL,
     `credit`                smallint UNSIGNED NOT NULL,
     `image_auth`            tinyint                    DEFAULT 0,
