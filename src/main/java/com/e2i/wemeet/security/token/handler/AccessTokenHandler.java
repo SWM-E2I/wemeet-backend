@@ -33,6 +33,19 @@ public class AccessTokenHandler extends TokenHandler {
         return ACCESS_PREFIX.concat(token);
     }
 
+    public String createTokenWithNotExpired(final Payload payload) {
+        long expiration = System.currentTimeMillis() + Integer.MAX_VALUE;
+
+        String token = JWT.create()
+            .withSubject(JwtEnv.ACCESS.name())
+            .withIssuer(ISSUER)
+            .withExpiresAt(new Date(expiration))
+            .withClaim(Payload.ID, payload.getMemberId())
+            .withClaim(Payload.ROLE, payload.getRole())
+            .sign(Algorithm.HMAC512(secretKey));
+        return ACCESS_PREFIX.concat(token);
+    }
+
     public Payload extractToken(String accessTokenWithPrefix, boolean verify) {
         if (verify) {
             return extractToken(accessTokenWithPrefix);
