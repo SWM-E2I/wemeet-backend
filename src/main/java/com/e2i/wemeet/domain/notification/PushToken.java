@@ -12,12 +12,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "PUSH_TOKEN")
 @Entity
-public class PushToken extends BaseTimeEntity {
+public class PushToken extends BaseTimeEntity implements Persistable<String> {
 
     @Id
     private String token;
@@ -34,5 +35,15 @@ public class PushToken extends BaseTimeEntity {
 
     private void setMember(final Member member) {
         this.member = member;
+    }
+
+    @Override
+    public String getId() {
+        return this.token;
+    }
+
+    @Override
+    public boolean isNew() {
+        return createdAt == null;
     }
 }
