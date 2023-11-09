@@ -31,7 +31,7 @@ class NotificationServiceTest {
 
     @DisplayName("모든 사용자에게 푸시 알림을 보낼 수 있다.")
     @Test
-    void sendToAllMembers_shouldCallNotificationHandleServiceWithCorrectParameters() {
+    void sendToAllMembers() {
         // given
         given(pushTokenRepository.findAllMemberTokens()).willReturn(tokens);
 
@@ -44,7 +44,7 @@ class NotificationServiceTest {
 
     @DisplayName("팀이 없는 사용자들에게 푸시 알림을 보낼 수 있다.")
     @Test
-    void sendToMembersWithoutTeam_shouldCallNotificationHandleServiceWithCorrectParameters() {
+    void sendToMembersWithoutTeam() {
         // given
         given(pushTokenRepository.findTokensOfMemberWithoutTeam()).willReturn(tokens);
 
