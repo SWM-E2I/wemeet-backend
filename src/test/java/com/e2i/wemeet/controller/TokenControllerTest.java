@@ -2,19 +2,24 @@ package com.e2i.wemeet.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.e2i.wemeet.dto.request.token.PushTokenRequestDto;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
+import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.support.config.AbstractControllerUnitTest;
 import com.e2i.wemeet.support.config.WithCustomMockUser;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +39,7 @@ class TokenControllerTest extends AbstractControllerUnitTest {
         // when
         ResultActions perform = mockMvc.perform(
             get("/v1/auth/persist")
-                .header("Authorization", "Bearer " + "token")
+                .header("AccessToken", "Bearer " + "token")
         );
 
         // then
@@ -55,6 +60,9 @@ class TokenControllerTest extends AbstractControllerUnitTest {
                             """
                                    AccessToken 을 통해 유저의 상태 정보를 반환합니다.
                                 """),
+                    requestHeaders(
+                        headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token")
+                    ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -70,9 +78,11 @@ class TokenControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.hasMainProfileImage").type(JsonFieldType.BOOLEAN)
                             .description("프로필 이미지 인증 여부를 반환합니다."),
                         fieldWithPath("data.basicProfileImage").type(JsonFieldType.STRING)
-                            .description("팀의 존재 여부를 반환합니다."),
+                            .description("일반 프로필 이미지 사진 경로를 반환합니다."),
                         fieldWithPath("data.lowProfileImage").type(JsonFieldType.STRING)
-                            .description("팀의 존재 여부를 반환합니다.")
+                            .description("작은 프로필 이미지 사진 경로를 반환합니다."),
+                        fieldWithPath("data.pushTokens").type(JsonFieldType.ARRAY)
+                            .description("사용자의 푸시 토큰들을 반환합니다.")
                     )
                 ));
     }
@@ -113,6 +123,12 @@ class TokenControllerTest extends AbstractControllerUnitTest {
                                    이미 DB 저장되어있는 토큰에 memberId를 업데이트하려면
                                    body에 token, AccessToken 헤더에 해당 User에 AccessToken을 전달하면 됩니다.
                                 """),
+                    requestHeaders(
+                        headerWithName(JwtEnv.ACCESS.getKey()).description("Access Token")
+                    ),
+                    requestFields(
+                        fieldWithPath("pushToken").type(JsonFieldType.STRING).description("푸시 토큰")
+                    ),
                     responseFields(
                         fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -154,6 +170,7 @@ class TokenControllerTest extends AbstractControllerUnitTest {
             .hasMainProfileImage(true)
             .lowProfileImage("lowUrl")
             .basicProfileImage("basicUrl")
+            .pushTokens(List.of("expo token1", "expo token2"))
             .build();
     }
 }

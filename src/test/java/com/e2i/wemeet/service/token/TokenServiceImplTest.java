@@ -33,7 +33,18 @@ class TokenServiceImplTest extends AbstractServiceTest {
     @Test
     void persistLoginSuccess() {
         // given
-        final Long memberId = memberRepository.save(KAI.create(ANYANG_CODE)).getMemberId();
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        final Long memberId = kai.getMemberId();
+
+        PushToken token1 = PushToken.builder()
+            .token("token1")
+            .member(kai)
+            .build();
+        PushToken token2 = PushToken.builder()
+            .token("token2")
+            .member(kai)
+            .build();
+        pushTokenRepository.saveAll(List.of(token1, token2));
 
         // when
         PersistResponseDto persistResponseDto = tokenService.persistLogin(memberId);
@@ -44,8 +55,8 @@ class TokenServiceImplTest extends AbstractServiceTest {
             .extracting(
                 "nickname", "emailAuthenticated",
                 "hasMainProfileImage", "basicProfileImage",
-                "lowProfileImage", "profileImageAuthenticated", "hasTeam")
-            .contains(KAI.getNickname(), true, true, KAI.getBasicUrl(), KAI.getLowUrl(), KAI.getImageAuth(), false);
+                "lowProfileImage", "profileImageAuthenticated", "hasTeam", "pushTokens")
+            .contains(KAI.getNickname(), true, true, KAI.getBasicUrl(), KAI.getLowUrl(), KAI.getImageAuth(), List.of("token1", "token2"));
     }
 
     @DisplayName("존재하지 않는 사용자의 persist 정보를 가져오는데 실패한다.")
