@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.e2i.wemeet.security.token.JwtEnv;
 import com.e2i.wemeet.security.token.Payload;
 import java.util.Date;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -49,6 +50,15 @@ public class AccessTokenHandler extends TokenHandler {
         // AccessToken 검증 & 파싱
         DecodedJWT decodedJWT = decodeToken(accessToken);
         return new Payload(decodedJWT.getClaims());
+    }
+
+    public Optional<Long> extractMemberId(String accessTokenWithPrefix) {
+        Payload payload = extractToken(accessTokenWithPrefix);
+
+        if (payload == null) {
+            return Optional.empty();
+        }
+        return Optional.of(payload.getMemberId());
     }
 
     public Payload extractTokenWithNoVerify(String accessTokenWithPrefix) {
