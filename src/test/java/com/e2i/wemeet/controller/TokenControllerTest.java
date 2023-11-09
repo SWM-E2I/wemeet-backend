@@ -115,7 +115,7 @@ class TokenControllerTest extends AbstractControllerUnitTest {
             .andDo(
                 MockMvcRestDocumentationWrapper.document("PUSH TOKEN 저장 요청",
                     ResourceSnippetParameters.builder()
-                        .tag("PUSH TOKEN 저장")
+                        .tag("토큰 관련 API")
                         .summary("PUSH TOKEN을 저장합니다.")
                         .description(
                             """
