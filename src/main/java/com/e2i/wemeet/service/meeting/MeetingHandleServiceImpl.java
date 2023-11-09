@@ -66,7 +66,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam, MEETING_REQUEST);
+        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam,
+            MEETING_REQUEST);
         return request.getMeetingRequestId();
     }
 
@@ -110,7 +111,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         // 미팅 성사 이벤트 발행
         Team myTeam = meetingRequest.getTeam();
         String leaderNickname = meetingRequest.getPartnerTeam().getTeamLeader().getNickname();
-        publishMeetingEvent(getMeetingAcceptMessage(leaderNickname), memberLeaderId, myTeam, MEETING_ACCEPT);
+        publishMeetingEvent(getMeetingAcceptMessage(leaderNickname), memberLeaderId, myTeam,
+            MEETING_ACCEPT);
 
         return saveMeeting(meetingRequest).getMeetingId();
     }
@@ -181,8 +183,11 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         final Team targetTeam, final Spent spent) {
         String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(
             targetTeam.getTeamId());
+        String leaderPushToken = meetingRepository.findLeaderPushTokenById(
+            targetTeam.getTeamId()).orElse(null);
+        
         eventPublisher.publishEvent(
-            MeetingEvent.of(leaderPhoneNumber, message, spent, memberLeaderId)
+            MeetingEvent.of(leaderPhoneNumber, leaderPushToken, message, spent, memberLeaderId)
         );
     }
 
