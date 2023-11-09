@@ -54,8 +54,9 @@ dependencies {
     testImplementation 'org.projectlombok:lombok:1.18.26'
 
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
+    testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
 
     implementation platform('software.amazon.awssdk:bom:2.20.26')
 

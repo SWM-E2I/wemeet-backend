@@ -12,6 +12,7 @@ import com.e2i.wemeet.controller.member.RecommendController;
 import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
 import com.e2i.wemeet.controller.team.TeamImageController;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.credit.CreditService;
 import com.e2i.wemeet.service.heart.HeartService;
@@ -99,6 +100,9 @@ public abstract class AbstractControllerUnitTest {
 
     @MockBean
     protected BlockService blockService;
+
+    @MockBean
+    protected AccessTokenHandler accessTokenHandler;
 
     protected MockMvc mockMvc;
 

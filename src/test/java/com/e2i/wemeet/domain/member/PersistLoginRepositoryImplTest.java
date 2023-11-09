@@ -6,10 +6,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.persist.PersistLoginRepository;
+import com.e2i.wemeet.domain.notification.PushToken;
+import com.e2i.wemeet.domain.notification.PushTokenRepository;
 import com.e2i.wemeet.domain.team.TeamRepository;
 import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 import com.e2i.wemeet.support.fixture.TeamMemberFixture;
 import com.e2i.wemeet.support.module.AbstractRepositoryUnitTest;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +29,9 @@ class PersistLoginRepositoryImplTest extends AbstractRepositoryUnitTest {
     @Autowired
     private PersistLoginRepository persistLoginRepository;
 
+    @Autowired
+    private PushTokenRepository pushTokenRepository;
+
     @DisplayName("사용자의 상태 정보를 가져올 수 있다.")
     @Test
     void persistLogin() {
@@ -33,6 +39,16 @@ class PersistLoginRepositoryImplTest extends AbstractRepositoryUnitTest {
         Member kai = memberRepository.save(KAI.create_image_auth(true));
         teamRepository.save(HONGDAE_TEAM_1.create(kai, TeamMemberFixture.create_3_man()));
         Long kaiId = kai.getMemberId();
+
+        PushToken token1 = PushToken.builder()
+            .token("token1")
+            .member(kai)
+            .build();
+        PushToken token2 = PushToken.builder()
+            .token("token2")
+            .member(kai)
+            .build();
+        pushTokenRepository.saveAll(List.of(token1, token2));
 
         // when
         PersistResponseDto response = persistLoginRepository.findPersistResponseById(kaiId)
@@ -44,11 +60,11 @@ class PersistLoginRepositoryImplTest extends AbstractRepositoryUnitTest {
             .extracting(
                 "nickname", "emailAuthenticated",
                 "hasMainProfileImage", "basicProfileImage", "lowProfileImage",
-                "profileImageAuthenticated", "hasTeam")
+                "profileImageAuthenticated", "hasTeam", "pushTokens")
             .contains(
                 KAI.getNickname(), true,
                 true, KAI.getBasicUrl(), KAI.getLowUrl(),
-                true, true
+                true, true, List.of("token1", "token2")
             );
     }
 
@@ -114,6 +130,27 @@ class PersistLoginRepositoryImplTest extends AbstractRepositoryUnitTest {
                 KAI.getNickname(), true,
                 false, null, null,
                 false, true
+            );
+    }
+
+    @DisplayName("토큰이 없을 경우 pushTokens 는 빈 배열을 반환한다.")
+    @Test
+    void persistLoginNoTokens() {
+        // given
+        ProfileImage noProfileImage = new ProfileImage(null, null, false);
+        Long kaiId = memberRepository.save(KAI.create_profile_image(noProfileImage)).getMemberId();
+
+        // when
+        PersistResponseDto response = persistLoginRepository.findPersistResponseById(kaiId)
+            .orElseThrow();
+
+        // then
+        assertThat(response)
+            .isNotNull()
+            .extracting(
+                "nickname", "emailAuthenticated", "pushTokens")
+            .contains(
+                KAI.getNickname(), true, List.of()
             );
     }
 

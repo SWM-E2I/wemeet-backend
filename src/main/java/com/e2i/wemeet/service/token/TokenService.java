@@ -5,4 +5,7 @@ import com.e2i.wemeet.dto.response.persist.PersistResponseDto;
 public interface TokenService {
 
     PersistResponseDto persistLogin(Long memberId);
+
+    void savePushToken(String pushToken, Long memberId);
+
 }
