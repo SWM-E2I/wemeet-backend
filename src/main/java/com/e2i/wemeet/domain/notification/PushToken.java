@@ -33,7 +33,7 @@ public class PushToken extends BaseTimeEntity implements Persistable<String> {
         this.member = member;
     }
 
-    private void setMember(final Member member) {
+    public void setMember(final Member member) {
         this.member = member;
     }
 
