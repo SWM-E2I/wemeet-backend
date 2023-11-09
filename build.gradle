@@ -84,6 +84,9 @@ dependencies {
 
     // Component that test code convert to Swagger file and include restDocs Api
     testImplementation('com.epages:restdocs-api-spec-mockmvc:0.18.2') //2.2
+
+    // expo push notification
+    implementation('io.github.jav:expo-server-sdk:1.1.0')
 }
 
 // Querydsl
