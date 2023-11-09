@@ -1,7 +1,7 @@
 package com.e2i.wemeet.domain.notification;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +19,7 @@ public interface PushTokenRepository extends JpaRepository<PushToken, String> {
         from PushToken p
         join Member m on m.memberId = p.member.memberId
         where p.member.memberId is not null
-        and m.role = 'ROLE_MEMBER'
+        and m.role = 'USER'
         """)
     List<String> findTokensOfMemberWithoutTeam();
 }
