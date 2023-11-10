@@ -67,6 +67,14 @@
   <img width="800" alt="image" src="https://github.com/SWM-E2I/wemeet-backend/assets/99247279/bc4988a8-87c2-4d73-a4b8-b3ec0f661401" />
 </p>
 
+## 📚 API Docs
+- Rest Docs의 테스트를 통한 API 문서 생성과 Swagger-UI의 장점을 합쳐 API 문서화
+- #### 🖇 [Reference](https://tech.kakaopay.com/post/openapi-documentation/)
+
+<p align="center">
+  <img width="800" alt="image" src="https://github.com/SWM-E2I/wemeet-backend/assets/99247279/fea1a32f-6b5a-47f5-bb73-da02d93501ee" />
+</p>
+
 
 &nbsp;
 
