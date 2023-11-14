@@ -4,18 +4,18 @@ info:
   description: We:meet API Documentation
   version: 0.1.0
 servers:
-  - url: http://localhost:8080
-    description: LOCAL server
-  - url: http://ec2-52-78-215-171.ap-northeast-2.compute.amazonaws.com:8080
-    description: Develop Server
-  - url: http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com
-    description: Production Server
-tags: [ ]
+- url: http://localhost:8080
+  description: LOCAL server
+- url: http://ec2-52-78-215-171.ap-northeast-2.compute.amazonaws.com:8080
+  description: Develop Server
+- url: http://wemeet-elb-1696815651.ap-northeast-2.elb.amazonaws.com
+  description: Production Server
+tags: []
 paths:
   /v1/credit:
     get:
       tags:
-        - 크레딧 관련 API
+      - 크레딧 관련 API
       summary: 로그인한 사용자의 크레딧을 조회합니다
       description: |2
             로그인한 사용자의 크레딧을 조회합니다.
@@ -34,7 +34,7 @@ paths:
   /v1/meeting:
     post:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 상대 이성 팀에게 미팅을 신청합니다.
       description: |2
             상대 이성 팀에게 미팅을 신청합니다.
@@ -62,7 +62,7 @@ paths:
   /v1/member:
     get:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 로그인된 사용자의 정보를 조회합니다
       description: |2
             AccessToken 을 통해 로그인된 사용자의 상세 정보를 조회합니다.
@@ -83,7 +83,7 @@ paths:
                     ,\"lowUrl\":\"/v1/kai\"},\"emailAuthenticated\":true}}"
     post:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 회원가입 API 입니다.
       description: |2
             회원 정보를 통해 회원가입을 진행합니다.
@@ -112,7 +112,7 @@ paths:
                     ,\"data\":null}"
     delete:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 회원 탈퇴 API 입니다.
       description: |2
             회원 탈퇴를 수행합니다. (deleteAt 컬럼에 현재 시간을 기록합니다.)
@@ -130,7 +130,7 @@ paths:
                     ,\"data\":null}"
     patch:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 회원 상세 정보를 수정합니다
       description: |2
             회원의 상세 정보를 수정합니다.
@@ -158,7 +158,7 @@ paths:
   /v1/push:
     post:
       tags:
-        - 토큰 관련 API
+      - 토큰 관련 API
       summary: PUSH TOKEN을 저장합니다.
       description: |2
            PUSH 토큰을 저장합니다. AccessToken 헤더를 전달하지 않으면 memberId가 null 로 저장됩니다.
@@ -166,13 +166,13 @@ paths:
            body에 token, AccessToken 헤더에 해당 User에 AccessToken을 전달하면 됩니다.
       operationId: PUSH TOKEN 저장 요청
       parameters:
-        - name: AccessToken
-          in: header
-          description: Access Token
-          required: true
-          schema:
-            type: string
-          example: Bearer token
+      - name: AccessToken
+        in: header
+        description: Access Token
+        required: true
+        schema:
+          type: string
+        example: Bearer token
       requestBody:
         content:
           application/json;charset=UTF-8:
@@ -195,7 +195,7 @@ paths:
   /v1/recommend:
     post:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 추천인을 등록합니다.
       description: |2
             위밋을 추천해준 추천인의 전화번호를 입력하여 추천인으로 등록합니다.
@@ -223,7 +223,7 @@ paths:
   /v1/suggestion:
     get:
       tags:
-        - 추천 관련 API
+      - 추천 관련 API
       summary: 오늘의 추천 받기 API 입니다.
       description: |2
             오늘의 추천 정보를 반환합니다.
@@ -247,7 +247,7 @@ paths:
   /v1/team:
     get:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 내 팀 정보를 조회합니다.
       description: |2
             내 팀 정보를 조회합니다.
@@ -273,7 +273,7 @@ paths:
                     :\"23\",\"emailAuthenticated\":true}}}}"
     put:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 수정 API 입니다.
       description: "    나의 팀 정보를 수정합니다.\n    multipart/form-data 데이터로 보내주어야함 (data는\
         \ json!)\n    part - 'images': 사진 파일\n    part - 'data': 팀 수정 요청 데이터\n\n \
@@ -310,7 +310,7 @@ paths:
                     ,\"data\":null}"
     post:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 생성 API 입니다.
       description: "    팀을 생성합니다.\n    multipart/form-data 데이터로 보내주어야함 (data는 json!)\n\
         \    part - 'images': 사진 파일\n    part - 'data': 팀 수정 요청 데이터\n\n    성공 시 AccessToken\
@@ -348,7 +348,7 @@ paths:
                     ,\"data\":null}"
     delete:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 삭제 API 입니다.
       description: |2
             현재 속한 팀을 삭제합니다.
@@ -370,19 +370,19 @@ paths:
   /v1/auth/persist:
     get:
       tags:
-        - 토큰 관련 API
+      - 토큰 관련 API
       summary: AccessToken 을 통해 유저의 상태 정보를 반환합니다.
       description: |2
            AccessToken 을 통해 유저의 상태 정보를 반환합니다.
       operationId: PERSIST LOGIN 요청
       parameters:
-        - name: AccessToken
-          in: header
-          description: Access Token
-          required: true
-          schema:
-            type: string
-          example: Bearer token
+      - name: AccessToken
+        in: header
+        description: Access Token
+        required: true
+        schema:
+          type: string
+        example: Bearer token
       responses:
         "200":
           description: "200"
@@ -401,27 +401,27 @@ paths:
   /v1/auth/refresh:
     post:
       tags:
-        - 토큰 관련 API
+      - 토큰 관련 API
       summary: "RefreshToken 을 사용하여 Access, Refresh Token을 갱신합니다."
       description: "    Access Token & RefreshToken 을 사용하여 Access, Refresh Token을\
         \ 갱신합니다. \n\n    Access Token과 Refresh Token 을 Header 에 넘겨주어야합니다.\n    Access\
         \ Token 은 유저의 값을 받아오는 용도이기 때문에 만료된 상태여도 상관 없습니다.\n"
       operationId: Refresh Token
       parameters:
-        - name: AccessToken
-          in: header
-          description: Access Token
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk5NTE0NDg0LCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.2Sg6hTYlQAcx3hmCmjmSbebPPPHukAa3iDIvO117ETZZZ0i1kS_6bgmyzbAmYI0Md2cOfjCeXZmrJ72nbVThPg
-        - name: RefreshToken
-          in: header
-          description: Refresh Token
-          required: true
-          schema:
-            type: string
-          example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTcwMjEwNDY4NH0.UdEkkGDm7cY62H49o_Zjf5Hf5GQ_5JuvvOZILUr_HeEAaWTCHmPXm9D7e_OD1kYbtyMwo8qrGEc6Cksd7RAwgA
+      - name: AccessToken
+        in: header
+        description: Access Token
+        required: true
+        schema:
+          type: string
+        example: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJpc3MiOiJXRTpNRUVUIiwiZXhwIjoxNjk5OTUyNzQ4LCJpZCI6MTAwLCJyb2xlIjoiVVNFUiJ9.4aTyxZI8wlHxYaoEocyZNDFQrhTIZP7FswsJkzdaQYOTtsEch22Y31sZVwQTSOfMv4V-46xCPzdMK8zEzrV8uQ
+      - name: RefreshToken
+        in: header
+        description: Refresh Token
+        required: true
+        schema:
+          type: string
+        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSRUZSRVNIIiwiaXNzIjoiV0U6TUVFVCIsImV4cCI6MTcwMjU0Mjk0OH0.YIvB5vy0CsJVwI67wU6vkVunYMRg-cpKLSx7TyNRu0ewDPrhPpxNWruaBZIjmZN46EjFRSaw6E5BRVBokTAZLg
       responses:
         "200":
           description: "200"
@@ -445,7 +445,7 @@ paths:
   /v1/heart/received:
     get:
       tags:
-        - 좋아요 관련 API
+      - 좋아요 관련 API
       summary: 받은 좋아요 내역을 조회합니다.
       description: |2
            나의 팀이 받은 좋아요 내역을 조회합니다.
@@ -464,13 +464,13 @@ paths:
                     \ Detail Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"\
                     region\":\"신촌\",\"profileImageURL\":\"https://test.image.com\"\
                     ,\"mainImageURL\":\"https://test.image.com\",\"receivedTime\"\
-                    :\"2023-11-09T15:51:30.318742\",\"leader\":{\"nickname\":\"팀장님\
+                    :\"2023-11-14T17:36:07.654838\",\"leader\":{\"nickname\":\"팀장님\
                     \",\"mbti\":\"ENFP\",\"college\":\"서울대\",\"admissionYear\":\"\
                     19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/sent:
     get:
       tags:
-        - 좋아요 관련 API
+      - 좋아요 관련 API
       summary: 보낸 좋아요 내역을 조회합니다.
       description: |2
            내가 보낸 좋아요 내역을 조회합니다.
@@ -488,13 +488,13 @@ paths:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get Sent Heart Detail\
                     \ Success\",\"data\":[{\"teamId\":1,\"memberNum\":3,\"region\"\
                     :\"신촌\",\"profileImageURL\":\"https://test.image.com\",\"mainImageURL\"\
-                    :\"https://test.image.com\",\"sentTime\":\"2023-11-09T15:51:30.283166\"\
+                    :\"https://test.image.com\",\"sentTime\":\"2023-11-14T17:36:07.445422\"\
                     ,\"leader\":{\"nickname\":\"팀장님\",\"mbti\":\"ENFP\",\"college\"\
                     :\"서울대\",\"admissionYear\":\"19\",\"emailAuthenticated\":true}}]}"
   /v1/heart/{partnerTeamId}:
     post:
       tags:
-        - 좋아요 관련 API
+      - 좋아요 관련 API
       summary: 상대 팀에게 좋아요를 보냅니다.
       description: |2+
             상대 팀에게 좋아요를 보냅니다.
@@ -502,12 +502,12 @@ paths:
 
       operationId: 좋아요 보내기
       parameters:
-        - name: partnerTeamId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
+      - name: partnerTeamId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: "200"
@@ -522,7 +522,7 @@ paths:
   /v1/meeting/accepted:
     get:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 성사된 미팅 리스트를 조회합니다.
       description: |2
             성사된 미팅 리스트를 조회합니다.
@@ -540,14 +540,14 @@ paths:
                 성사된 미팅 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get accepted meeting\
                     \ list success\",\"data\":[{\"meetingId\":1,\"teamId\":1,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-11-09T15:51:30.435221\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-11-14T17:36:08.178798\"\
                     ,\"teamProfileImageUrl\":[\"https://profile1.com\"],\"leader\"\
                     :{\"leaderId\":1,\"nickname\":\"채원\",\"mbti\":\"INFP\",\"collegeName\"\
                     :\"고려대학교\",\"collegeType\":\"ENGINEERING\",\"admissionYear\":\"\
                     2022\",\"leaderLowProfileImageUrl\":\"https://profile.com\",\"\
                     imageAuth\":true,\"emailAuthenticated\":false},\"deleted\":false,\"\
                     expired\":false},{\"meetingId\":2,\"teamId\":2,\"memberCount\"\
-                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-11-09T15:51:30.435273\"\
+                    :2,\"region\":\"HONGDAE\",\"meetingAcceptTime\":\"2023-11-14T17:36:08.178959\"\
                     ,\"teamProfileImageUrl\":[\"https://profile2.com\"],\"leader\"\
                     :{\"leaderId\":2,\"nickname\":\"째림\",\"mbti\":\"INFJ\",\"collegeName\"\
                     :\"서울대학교\",\"collegeType\":\"ARTS\",\"admissionYear\":\"2019\"\
@@ -557,7 +557,7 @@ paths:
   /v1/meeting/message:
     post:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 상대 이성 팀에게 쪽지와 함께 미팅을 신청합니다.
       description: |2
             상대 이성 팀에게 쪽지와 함께 미팅을 신청합니다.
@@ -586,7 +586,7 @@ paths:
   /v1/meeting/received:
     get:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 받은 미팅 신청 리스트를 조회합니다.
       description: |2
             우리 팀이 받은 미팅 신청 리스트를 조회합니다.
@@ -604,7 +604,7 @@ paths:
                 받은 미팅 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get receive meeting\
                     \ request list success\",\"data\":[{\"meetingRequestId\":1,\"\
-                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-09T15:51:30.46193\"\
+                    acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-14T17:36:08.298026\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
@@ -612,7 +612,7 @@ paths:
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
                     :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
-                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-09T15:51:30.461934\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-14T17:36:08.298032\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
@@ -623,7 +623,7 @@ paths:
   /v1/meeting/sent:
     get:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 보낸 미팅 신청 리스트를 조회합니다.
       description: |2
             보낸 미팅 신청 리스트를 조회합니다.
@@ -641,7 +641,7 @@ paths:
                 보낸 신청 리스트 조회:
                   value: "{\"status\":\"SUCCESS\",\"message\":\"Get sent meeting request\
                     \ list success\",\"data\":[{\"meetingRequestId\":1,\"acceptStatus\"\
-                    :\"PENDING\",\"requestTime\":\"2023-11-09T15:51:30.384274\",\"\
+                    :\"PENDING\",\"requestTime\":\"2023-11-14T17:36:07.933014\",\"\
                     partnerTeamDeleted\":false,\"teamId\":1,\"memberCount\":4,\"region\"\
                     :\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile1.com\"],\"leader\":{\"leaderId\":1,\"nickname\"\
@@ -649,7 +649,7 @@ paths:
                     :\"ENGINEERING\",\"admissionYear\":\"2022\",\"leaderLowProfileImageUrl\"\
                     :\"https://profile.com\",\"imageAuth\":true,\"emailAuthenticated\"\
                     :true},\"deleted\":false,\"pending\":true},{\"meetingRequestId\"\
-                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-09T15:51:30.384322\"\
+                    :2,\"acceptStatus\":\"PENDING\",\"requestTime\":\"2023-11-14T17:36:07.933116\"\
                     ,\"partnerTeamDeleted\":false,\"teamId\":2,\"memberCount\":4,\"\
                     region\":\"HONGDAE\",\"message\":\"재미있게 놀아요!\",\"teamProfileImageUrl\"\
                     :[\"https://profile2.com\"],\"leader\":{\"leaderId\":2,\"nickname\"\
@@ -660,7 +660,7 @@ paths:
   /v1/member/block:
     get:
       tags:
-        - 차단 관련 API
+      - 차단 관련 API
       summary: 차단한 사용자들의 ID를 조회합니다.
       description: |2
             차단한 사용자들의 ID를 조회합니다.
@@ -679,7 +679,7 @@ paths:
   /v1/member/profile-image:
     post:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 회원 프로필 등록 API 입니다.
       description: |2
             회원의 프로필 사진을 등록합니다.
@@ -703,7 +703,7 @@ paths:
   /v1/member/role:
     get:
       tags:
-        - 회원 관련 API
+      - 회원 관련 API
       summary: 회원 Role 정보 조회 API 입니다.
       description: |2
             사용자의 팀장 여부와 팀 소속 여부를 조회할 수 있습니다.
@@ -722,7 +722,7 @@ paths:
   /v1/suggestion/check:
     get:
       tags:
-        - 추천 관련 API
+      - 추천 관련 API
       summary: 오늘의 추천 받기 여부 확인 API 입니다.
       description: |2
             오늘의 추천을 받았는지에 대한 정보를 확인할 수 있습니다.
@@ -746,7 +746,7 @@ paths:
   /v1/team/image:
     put:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 이미지를 업데이트합니다.
       description: |
         팀 이미지를 업데이트합니다.
@@ -771,7 +771,7 @@ paths:
                     ]}"
     post:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 이미지를 업로드합니다.
       description: |
         팀 이미지를 업로드 합니다.
@@ -797,7 +797,7 @@ paths:
                     ]}"
     delete:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 이미지를 삭제합니다.
       description: |
         팀 이미지를 삭제합니다.
@@ -827,18 +827,18 @@ paths:
   /v1/team/{teamId}:
     get:
       tags:
-        - 팀 관련 API
+      - 팀 관련 API
       summary: 팀 상세 정보 조회 API 입니다.
       description: |2
             팀 ID로 상세정보를 조회합니다.
       operationId: 팀 상세 정보 조회
       parameters:
-        - name: teamId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
+      - name: teamId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: "200"
@@ -866,7 +866,7 @@ paths:
   /v1/auth/mail/request:
     post:
       tags:
-        - 인증 관련 API
+      - 인증 관련 API
       summary: 이메일 인증번호를 발급하는 API 입니다.
       description: |2
             mail 값으로 넘어온 이메일에 인증 번호를 발송합니다.
@@ -894,7 +894,7 @@ paths:
   /v1/auth/mail/validate:
     post:
       tags:
-        - 인증 관련 API
+      - 인증 관련 API
       summary: 이메일 인증번호가 일치하는지 검증합니다
       description: |2
             이메일로 전송했던 인증 번호가 일치하는지 검증합니다.
@@ -906,7 +906,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-mail-validate521266742'
             examples:
               이메일 인증번호 검증:
-                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"452113\"\
+                value: "{\"mail\":\"ghkdalsgus0809@swu.ac.kr\",\"authCode\":\"628410\"\
                   }"
       responses:
         "200":
@@ -922,7 +922,7 @@ paths:
   /v1/auth/phone/issue:
     post:
       tags:
-        - 인증 관련 API
+      - 인증 관련 API
       summary: 휴대폰 인증번호를 발급하는 API 입니다.
       description: |2
             target 값으로 넘어온 휴대폰 번호에 SMS 인증 번호를 발송합니다.
@@ -949,7 +949,7 @@ paths:
   /v1/auth/phone/validate:
     post:
       tags:
-        - 인증 관련 API
+      - 인증 관련 API
       summary: 휴대폰 인증번호가 일치하는지 검증하는 API 입니다.
       description: "    SMS 인증 번호를 확인하는 API 입니다 \n\n    인증 번호가 일치하면 AccessToken 과\
         \ RefreshToken을 반환합니다 \n\n    인증 번호가 일치하지만 회원가입 되어있지 않은 사용자라면 Token을 반환하지\
@@ -962,7 +962,7 @@ paths:
               $ref: '#/components/schemas/v1-auth-phone-validate1564587931'
             examples:
               휴대폰 인증번호 검증:
-                value: "{\"phone\":\"+821088990011\",\"credential\":\"135167\"}"
+                value: "{\"phone\":\"+821088990011\",\"credential\":\"429954\"}"
       responses:
         "200":
           description: "200"
@@ -978,7 +978,7 @@ paths:
   /v1/meeting/accept/{meetingRequestId}:
     post:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 미팅 신청을 수락합니다.
       description: |2
             상대 이성 팀으로부터 받은 미팅 신청을 수락합니다.
@@ -986,12 +986,12 @@ paths:
             data 에는 미팅 ID가 반환됩니다.
       operationId: 미팅 신청 수락
       parameters:
-        - name: meetingRequestId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
+      - name: meetingRequestId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: "200"
@@ -1006,18 +1006,18 @@ paths:
   /v1/meeting/reject/{meetingRequestId}:
     post:
       tags:
-        - 미팅 관련 API
+      - 미팅 관련 API
       summary: 미팅 신청을 거절합니다.
       description: |2
             상대 이성 팀으로부터 받은 미팅 신청을 거절합니다.
       operationId: 미팅 신청 거절
       parameters:
-        - name: meetingRequestId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
+      - name: meetingRequestId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: "200"
@@ -1032,7 +1032,7 @@ paths:
   /v1/member/block/{blockMemberId}:
     post:
       tags:
-        - 차단 관련 API
+      - 차단 관련 API
       summary: 지정된 사용자를 차단합니다.
       description: |2
             url에서 ID로 넘겨받은 사용자를 차단합니다.
@@ -1046,12 +1046,12 @@ paths:
               - 팀 상세 조회 불가
       operationId: 차단하기
       parameters:
-        - name: blockMemberId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
+      - name: blockMemberId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: "200"
@@ -1082,10 +1082,10 @@ components:
               description: 사용자의 푸시 토큰들을 반환합니다.
               items:
                 oneOf:
-                  - type: object
-                  - type: boolean
-                  - type: string
-                  - type: number
+                - type: object
+                - type: boolean
+                - type: string
+                - type: number
             nickname:
               type: string
               description: 사용자의 닉네임을 반환합니다.
@@ -1319,10 +1319,10 @@ components:
           description: 차단된 사용자의 ID
           items:
             oneOf:
-              - type: object
-              - type: boolean
-              - type: string
-              - type: number
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1441,10 +1441,10 @@ components:
               description: 팀 사진 URL
               items:
                 oneOf:
-                  - type: object
-                  - type: boolean
-                  - type: string
-                  - type: number
+                - type: object
+                - type: boolean
+                - type: string
+                - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1573,10 +1573,10 @@ components:
                 description: 팀 프로필 이미지 URL
                 items:
                   oneOf:
-                    - type: object
-                    - type: boolean
-                    - type: string
-                    - type: number
+                  - type: object
+                  - type: boolean
+                  - type: string
+                  - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1914,10 +1914,10 @@ components:
                 description: 팀 프로필 이미지 URL
                 items:
                   oneOf:
-                    - type: object
-                    - type: boolean
-                    - type: string
-                    - type: number
+                  - type: object
+                  - type: boolean
+                  - type: string
+                  - type: number
         message:
           type: string
           description: 응답 메시지
@@ -1932,10 +1932,10 @@ components:
           description: 업로드된 이미지 URL 목록을 반환합니다.
           items:
             oneOf:
-              - type: object
-              - type: boolean
-              - type: string
-              - type: number
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
         message:
           type: string
           description: 응답 메시지

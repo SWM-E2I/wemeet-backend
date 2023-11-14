@@ -42,6 +42,18 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long>, Meeting
         join MeetingRequest mr on mr.partnerTeam = pt and mr.team = t
         where mr.meetingRequestId = :meetingRequestId
         """)
-    List<LocalDateTime> findCreatedAtByMeetingRequestId(@Param("meetingRequestId") final Long meetingRequestId);
+    List<LocalDateTime> findCreatedAtByMeetingRequestId(
+        @Param("meetingRequestId") final Long meetingRequestId);
+
+    /*
+     * 팀장의 pushToken 조회
+     * */
+    @Query("""
+        select p.token
+        from PushToken p
+        join Team t on t.teamLeader.memberId = p.member.memberId and t.deletedAt is null
+        where t.teamId = :teamId
+        """)
+    Optional<String> findLeaderPushTokenById(@Param("teamId") final Long teamId);
 
 }
