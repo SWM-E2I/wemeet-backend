@@ -23,7 +23,7 @@ spring:
       max-request-size: 100MB
 
   config:
-    import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml
+    import: sub/application-jwt.yml, sub/application-aws.yml, sub/application-enc.yml, sub/monitor/application-monitor.yml
   profiles:
     active: local
 

@@ -2,6 +2,7 @@ package com.e2i.wemeet.dto.response.persist;
 
 import com.e2i.wemeet.domain.member.data.ProfileImage;
 import com.e2i.wemeet.domain.member.persist.PersistData;
+import java.util.List;
 import java.util.Objects;
 import lombok.Builder;
 
@@ -13,17 +14,19 @@ public record PersistResponseDto(
     String basicProfileImage,
     String lowProfileImage,
     boolean profileImageAuthenticated,
-    boolean hasTeam
+    boolean hasTeam,
+    List<String> pushTokens
 ) {
 
-    public static PersistResponseDto of(PersistData persistData) {
+    public static PersistResponseDto of(PersistData persistData, List<String> pushTokens) {
         final boolean emailAuthenticated = persistData.email() != null;
         final boolean hasTeam = persistData.teamId() != null;
 
         PersistResponseDtoBuilder builder = PersistResponseDto.builder()
             .nickname(persistData.nickname())
             .emailAuthenticated(emailAuthenticated)
-            .hasTeam(hasTeam);
+            .hasTeam(hasTeam)
+            .pushTokens(pushTokens);
 
         if (Objects.isNull(persistData.profileImage())) {
             return createResponseHasNoImage(builder);

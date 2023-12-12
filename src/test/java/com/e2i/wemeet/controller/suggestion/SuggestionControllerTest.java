@@ -42,6 +42,8 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                     .college("서울대학교")
                     .mbti(Mbti.ENFP.name())
                     .nickname("짱구")
+                    .admissionYear("19")
+                    .emailAuthenticated(true)
                     .build())
             .build();
 
@@ -58,7 +60,8 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                 jsonPath("$.data[0].profileImageURL").value(response.profileImageURL()),
                 jsonPath("$.data[0].leader.college").value(response.leader().college()),
                 jsonPath("$.data[0].leader.mbti").value(Mbti.ENFP.name()),
-                jsonPath("$.data[0].leader.nickname").value(response.leader().nickname())
+                jsonPath("$.data[0].leader.nickname").value(response.leader().nickname()),
+                jsonPath("$.data[0].leader.admissionYear").value(response.leader().admissionYear())
             );
         verify(suggestionService).readSuggestion(anyLong(), any());
 
@@ -84,6 +87,8 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                                 .college("서울대학교")
                                 .mbti(Mbti.ENFP.name())
                                 .nickname("짱구")
+                                .admissionYear("19")
+                                .emailAuthenticated(true)
                                 .build())
                         .build()
                 )
@@ -139,7 +144,13 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                             .description("추천 팀 팀장 MBTI"),
                         fieldWithPath("data[].leader.college").type(
                                 JsonFieldType.STRING)
-                            .description("추천 팀 팀장 대학교")
+                            .description("추천 팀 팀장 대학교"),
+                        fieldWithPath("data[].leader.emailAuthenticated").type(
+                                JsonFieldType.BOOLEAN)
+                            .description("추천 팀 팀장 대학 인증 여부"),
+                        fieldWithPath("data[].leader.admissionYear").type(
+                                JsonFieldType.STRING)
+                            .description("추천 팀 팀장 학번")
                     )
                 ));
 
@@ -179,7 +190,13 @@ class SuggestionControllerTest extends AbstractControllerUnitTest {
                         fieldWithPath("data.teams[].leader.mbti").type(JsonFieldType.STRING)
                             .description("추천 팀 팀장 MBTI"),
                         fieldWithPath("data.teams[].leader.college").type(JsonFieldType.STRING)
-                            .description("추천 팀 팀장 대학교")
+                            .description("추천 팀 팀장 대학교"),
+                        fieldWithPath("data.teams[].leader.emailAuthenticated").type(
+                                JsonFieldType.BOOLEAN)
+                            .description("추천 팀 팀장 대학 인증 여부"),
+                        fieldWithPath("data.teams[].leader.admissionYear").type(
+                                JsonFieldType.STRING)
+                            .description("추천 팀 팀장 학번")
                     )
                 ));
     }

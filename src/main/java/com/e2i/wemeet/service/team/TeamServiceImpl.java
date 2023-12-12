@@ -1,5 +1,7 @@
 package com.e2i.wemeet.service.team;
 
+import static com.e2i.wemeet.exception.ErrorCode.BLOCKED_TEAM;
+
 import com.e2i.wemeet.domain.code.Code;
 import com.e2i.wemeet.domain.code.CodePk;
 import com.e2i.wemeet.domain.code.CodeRepository;
@@ -18,6 +20,7 @@ import com.e2i.wemeet.dto.response.LeaderResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamDetailResponseDto;
 import com.e2i.wemeet.dto.response.team.MyTeamResponseDto;
 import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
+import com.e2i.wemeet.exception.badrequest.BlockedException;
 import com.e2i.wemeet.exception.notfound.CodeNotFoundException;
 import com.e2i.wemeet.exception.notfound.MemberNotFoundException;
 import com.e2i.wemeet.exception.notfound.TeamNotFoundException;
@@ -110,6 +113,10 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public TeamDetailResponseDto readByTeamId(final Long memberId, final Long teamId, final LocalDateTime readTime) {
+        if (teamRepository.isBlockedTeam(memberId, teamId)) {
+            throw new BlockedException(BLOCKED_TEAM);
+        }
+
         TeamInformationDto teamInformation = teamRepository.findTeamInformationByTeamId(memberId, teamId, readTime)
             .orElseThrow(TeamNotFoundException::new);
         LeaderResponseDto leader = teamRepository.findLeaderByTeamId(teamId)
@@ -134,6 +141,9 @@ public class TeamServiceImpl implements TeamService {
 
 
     private void updateTeamImages(List<MultipartFile> images, Team team) {
+        if (images.isEmpty()) {
+            return;
+        }
         teamImageRepository.deleteAllByTeamTeamId(team.getTeamId());
         uploadTeamImages(images, team);
     }

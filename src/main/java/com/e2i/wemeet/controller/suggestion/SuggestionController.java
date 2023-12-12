@@ -22,9 +22,7 @@ public class SuggestionController {
     @GetMapping
     public ResponseDto<List<SuggestionResponseDto>> readSuggestion(@MemberId Long memberId) {
         LocalDateTime requestTime = LocalDateTime.now();
-//        List<SuggestionResponseDto> response = suggestionService.readSuggestion(memberId, requestTime);
-        // 사전 예약 카드 노출
-        List<SuggestionResponseDto> response = suggestionService.tempSuggestion(memberId,
+        List<SuggestionResponseDto> response = suggestionService.readSuggestion(memberId,
             requestTime);
 
         return ResponseDto.success("Get Suggestion Success", response);

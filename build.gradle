@@ -41,7 +41,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.1.0'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
+    // Query Details
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'com.auth0:java-jwt:4.4.0'
     implementation 'org.flywaydb:flyway-core'
@@ -49,14 +54,18 @@ dependencies {
     testImplementation 'org.projectlombok:lombok:1.18.26'
 
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
+    testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
 
     implementation platform('software.amazon.awssdk:bom:2.20.26')
 
     implementation 'software.amazon.awssdk:sns:2.20.90'
     implementation 'software.amazon.awssdk:ses:2.20.86'
     implementation 'software.amazon.awssdk:s3:2.20.82'
+
+    // REST - Assured
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
@@ -76,6 +85,16 @@ dependencies {
 
     // Component that test code convert to Swagger file and include restDocs Api
     testImplementation('com.epages:restdocs-api-spec-mockmvc:0.18.2') //2.2
+
+
+//    Json Serializer
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0'
+
+    // expo push notification
+    implementation('io.github.jav:expo-server-sdk:1.1.0')
 }
 
 // Querydsl
@@ -151,13 +170,14 @@ jib {
         image = 'eclipse-temurin:17-jdk-alpine'
     }
     to {
-        image = '075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr'
+        image = '634460857598.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-ecr'
         tags = [inputTag]
         credHelper = 'ecr-login'
     }
     container {
         creationTime = 'USE_CURRENT_TIMESTAMP'
-        jvmFlags = ['-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8', '-Duser.timezone=Asia/Seoul']
+        jvmFlags = ['-javaagent:/scouter.agent.jar', '-Dscouter.config=/spring-scouter.conf',
+                    '-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8', '-Duser.timezone=Asia/Seoul']
         ports = ['8080']
     }
 }

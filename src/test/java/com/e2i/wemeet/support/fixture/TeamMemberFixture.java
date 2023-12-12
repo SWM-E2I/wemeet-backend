@@ -66,6 +66,36 @@ public enum TeamMemberFixture {
         );
     }
 
+    public static List<TeamMemberRequestDto> createRequestDto_3_woman() {
+        return List.of(
+            OLIVIA.createTeamMemberRequestDto(),
+            RACHEL.createTeamMemberRequestDto(),
+            EMMA.createTeamMemberRequestDto()
+        );
+    }
+
+    public static List<TeamMemberRequestDto> createRequestDto_3_man() {
+        return List.of(
+            OLIVER.createTeamMemberRequestDto(),
+            TOM.createTeamMemberRequestDto(),
+            WILSON.createTeamMemberRequestDto()
+        );
+    }
+
+    public static List<TeamMemberRequestDto> createRequestDto_2_woman() {
+        return List.of(
+            OLIVIA.createTeamMemberRequestDto(),
+            RACHEL.createTeamMemberRequestDto()
+        );
+    }
+
+    public static List<TeamMemberRequestDto> createRequestDto_2_man() {
+        return List.of(
+            NOAH.createTeamMemberRequestDto(),
+            JAMES.createTeamMemberRequestDto()
+        );
+    }
+
     public TeamMemberRequestDto createTeamMemberRequestDto() {
         CollegeInfoRequestDto collegeInfoRequestDto = createCollegeInfoRequestDto();
 

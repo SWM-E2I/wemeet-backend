@@ -128,7 +128,7 @@ public class Team extends BaseTimeEntity {
         this.region = Region.valueOf(updateTeamRequestDto.region());
         this.drinkRate = DrinkRate.valueOf(updateTeamRequestDto.drinkRate());
         this.drinkWithGame = DrinkWithGame.valueOf(updateTeamRequestDto.drinkWithGame());
-        this.additionalActivity = AdditionalActivity.valueOf(
+        this.additionalActivity = AdditionalActivity.findBy(
             updateTeamRequestDto.additionalActivity());
         this.introduction = updateTeamRequestDto.introduction();
         this.chatLink = updateTeamRequestDto.chatLink();

@@ -151,7 +151,7 @@ public class GlobalExceptionController {
     // SQL 관련 예외 핸들링 + sql & sql 예외 원인 Logging
     @ExceptionHandler({DataAccessException.class, UndeclaredThrowableException.class})
     public ResponseEntity<ErrorResponse> handleDatabaseAccessException(
-        final DataAccessException e) {
+        final RuntimeException e) {
         final int code = DATA_ACCESS.getCode();
 
         String message = messageSourceAccessor.getMessage(DATA_ACCESS.getMessageKey());

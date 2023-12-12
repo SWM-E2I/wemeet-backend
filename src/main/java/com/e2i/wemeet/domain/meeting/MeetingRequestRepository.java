@@ -38,4 +38,14 @@ public interface MeetingRequestRepository extends JpaRepository<MeetingRequest, 
         """)
     List<MeetingRequest> findAllByTeamAndAcceptStatus(@Param("team") Team team, @Param("acceptStatus") AcceptStatus acceptStatus);
 
+    // 내 받은 신청 조회 (대기중)
+    @Query("""
+        select mr from MeetingRequest mr
+        join mr.partnerTeam pt
+        join pt.teamLeader m
+        where m.memberId = :memberId and pt.deletedAt is null
+        and mr.acceptStatus = 0
+        """)
+    List<MeetingRequest> findAllByMemberId(@Param("memberId") Long memberId);
+
 }

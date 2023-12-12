@@ -6,17 +6,24 @@ import com.e2i.wemeet.controller.TokenController;
 import com.e2i.wemeet.controller.credit.CreditController;
 import com.e2i.wemeet.controller.heart.HeartController;
 import com.e2i.wemeet.controller.meeting.MeetingController;
+import com.e2i.wemeet.controller.member.BlockController;
 import com.e2i.wemeet.controller.member.MemberController;
+import com.e2i.wemeet.controller.member.RecommendController;
 import com.e2i.wemeet.controller.suggestion.SuggestionController;
 import com.e2i.wemeet.controller.team.TeamController;
+import com.e2i.wemeet.controller.team.TeamImageController;
+import com.e2i.wemeet.security.token.handler.AccessTokenHandler;
 import com.e2i.wemeet.service.code.CodeService;
 import com.e2i.wemeet.service.credit.CreditService;
 import com.e2i.wemeet.service.heart.HeartService;
 import com.e2i.wemeet.service.meeting.MeetingHandleService;
 import com.e2i.wemeet.service.meeting.MeetingListService;
+import com.e2i.wemeet.service.member.BlockService;
 import com.e2i.wemeet.service.member.MemberService;
+import com.e2i.wemeet.service.member.RecommendService;
 import com.e2i.wemeet.service.member_image.MemberImageService;
 import com.e2i.wemeet.service.suggestion.SuggestionService;
+import com.e2i.wemeet.service.team.TeamImageService;
 import com.e2i.wemeet.service.team.TeamService;
 import com.e2i.wemeet.service.token.TokenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,7 +53,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
     MeetingController.class,
     SuggestionController.class,
     HeartController.class,
-    CreditController.class
+    CreditController.class,
+    RecommendController.class,
+    TeamImageController.class,
+    BlockController.class
 })
 public abstract class AbstractControllerUnitTest {
 
@@ -82,6 +92,17 @@ public abstract class AbstractControllerUnitTest {
     @MockBean
     protected CreditService creditService;
 
+    @MockBean
+    protected RecommendService recommendService;
+
+    @MockBean
+    protected TeamImageService teamImageService;
+
+    @MockBean
+    protected BlockService blockService;
+
+    @MockBean
+    protected AccessTokenHandler accessTokenHandler;
 
     protected MockMvc mockMvc;
 

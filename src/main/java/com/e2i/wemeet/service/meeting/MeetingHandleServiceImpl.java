@@ -15,6 +15,7 @@ import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingAcceptMessag
 import static com.e2i.wemeet.service.sns.SnsMessageFormat.getMeetingRequestMessage;
 import static com.e2i.wemeet.util.validator.CustomExpirationValidator.isExpiredOfDays;
 
+import com.e2i.wemeet.domain.cost.Spent;
 import com.e2i.wemeet.domain.meeting.Meeting;
 import com.e2i.wemeet.domain.meeting.MeetingRepository;
 import com.e2i.wemeet.domain.meeting.MeetingRequest;
@@ -65,7 +66,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
+        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam,
+            MEETING_REQUEST);
         return request.getMeetingRequestId();
     }
 
@@ -87,7 +89,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         MeetingRequest request = meetingRequestRepository.save(meetingRequest);
 
         // 이벤트 발행
-        publishMeetingWithMessageEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam);
+        publishMeetingEvent(getMeetingRequestMessage(), memberLeaderId, partnerTeam,
+            MEETING_REQUEST_WITH_MESSAGE);
         return request.getMeetingRequestId();
     }
 
@@ -108,7 +111,8 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
         // 미팅 성사 이벤트 발행
         Team myTeam = meetingRequest.getTeam();
         String leaderNickname = meetingRequest.getPartnerTeam().getTeamLeader().getNickname();
-        publishMeetingEvent(getMeetingAcceptMessage(leaderNickname), memberLeaderId, myTeam);
+        publishMeetingEvent(getMeetingAcceptMessage(leaderNickname), memberLeaderId, myTeam,
+            MEETING_ACCEPT);
 
         return saveMeeting(meetingRequest).getMeetingId();
     }
@@ -176,25 +180,16 @@ public class MeetingHandleServiceImpl implements MeetingHandleService {
 
     // 미팅 이벤트 발행
     private void publishMeetingEvent(final String message, final Long memberLeaderId,
-        final Team targetTeam) {
+        final Team targetTeam, final Spent spent) {
         String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(
             targetTeam.getTeamId());
+        String leaderPushToken = meetingRepository.findLeaderPushTokenById(
+            targetTeam.getTeamId()).orElse(null);
+        
         eventPublisher.publishEvent(
-            MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST, memberLeaderId)
+            MeetingEvent.of(leaderPhoneNumber, leaderPushToken, message, spent, memberLeaderId)
         );
     }
-
-    // 미팅 이벤트 발행
-    private void publishMeetingWithMessageEvent(final String message, final Long memberLeaderId,
-        final Team targetTeam) {
-        String leaderPhoneNumber = meetingRepository.findLeaderPhoneNumberById(
-            targetTeam.getTeamId());
-        eventPublisher.publishEvent(
-            MeetingEvent.of(leaderPhoneNumber, message, MEETING_REQUEST_WITH_MESSAGE,
-                memberLeaderId)
-        );
-    }
-
 
     // 중복된 미팅 요청인지 검증
     private void checkDuplicateMeetingRequest(Team team, Team partnerTeam,

@@ -41,7 +41,10 @@ public record MyTeamDetailResponseDto(
             .leader(TeamLeaderResponseDto.builder()
                 .nickname(teamLeader.getNickname())
                 .mbti(teamLeader.getMbti().name())
-                .college(teamLeader.getCollegeInfo().getCollegeCode().getCodeValue()).build()
+                .college(teamLeader.getCollegeInfo().getCollegeCode().getCodeValue())
+                .admissionYear(teamLeader.getCollegeInfo().getAdmissionYear())
+                .emailAuthenticated(teamLeader.getEmail() != null)
+                .build()
             )
             .images(
                 teamImages.stream()

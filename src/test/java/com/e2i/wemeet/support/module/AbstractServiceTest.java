@@ -15,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.TestPropertySource;
 
+@TestPropertySource(locations = "classpath:/sub/application-aws.yml")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @SpringBootTest
 public abstract class AbstractServiceTest {

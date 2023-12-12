@@ -1,16 +1,20 @@
 package com.e2i.wemeet.service.team;
 
 import static com.e2i.wemeet.support.fixture.MemberFixture.KAI;
+import static com.e2i.wemeet.support.fixture.MemberFixture.KARINA;
 import static com.e2i.wemeet.support.fixture.MemberFixture.RIM;
 import static com.e2i.wemeet.support.fixture.TeamFixture.HONGDAE_TEAM_1;
 import static com.e2i.wemeet.support.fixture.TeamImagesFixture.BASIC_TEAM_IMAGE;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_man;
 import static com.e2i.wemeet.support.fixture.TeamMemberFixture.create_3_woman;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 import com.e2i.wemeet.domain.heart.Heart;
 import com.e2i.wemeet.domain.heart.HeartRepository;
+import com.e2i.wemeet.domain.member.Block;
+import com.e2i.wemeet.domain.member.BlockRepository;
 import com.e2i.wemeet.domain.member.Member;
 import com.e2i.wemeet.domain.member.MemberRepository;
 import com.e2i.wemeet.domain.member.data.CollegeType;
@@ -23,6 +27,7 @@ import com.e2i.wemeet.domain.team.data.DrinkWithGame;
 import com.e2i.wemeet.domain.team.data.Region;
 import com.e2i.wemeet.domain.team_image.TeamImageRepository;
 import com.e2i.wemeet.dto.response.team.TeamDetailResponseDto;
+import com.e2i.wemeet.exception.badrequest.BlockedException;
 import com.e2i.wemeet.support.module.AbstractServiceTest;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +52,9 @@ class TeamServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private HeartRepository heartRepository;
+
+    @Autowired
+    private BlockRepository blockRepository;
 
     @DisplayName("TeamID로 Team 정보를 조회할 수 있다.")
     @Test
@@ -91,5 +99,22 @@ class TeamServiceImplTest extends AbstractServiceTest {
                 "collegeType", "leaderLowProfileImageUrl")
             .contains(kai.getMemberId(), kai.getNickname(), kai.getCollegeName(),
                 kai.getCollegeInfo().getCollegeType(), kai.getProfileImage().getLowUrl());
+    }
+
+    @DisplayName("차단된 사용자의 팀은 조회할 수 없다.")
+    @Test
+    void readByTeamId_withBlockTeam() {
+        // given
+        Member kai = memberRepository.save(KAI.create(ANYANG_CODE));
+        Member karina = memberRepository.save(KARINA.create(HANYANG_CODE));
+        Team kaiTeam = teamRepository.save(HONGDAE_TEAM_1.create(kai, create_3_man()));
+        Team karinaTeam = teamRepository.save(HONGDAE_TEAM_1.create(karina, create_3_woman()));
+
+        blockRepository.save(new Block(kai, karina));
+        LocalDateTime requestTime = LocalDateTime.now();
+
+        // when & then
+        assertThatThrownBy(() -> teamService.readByTeamId(kai.getMemberId(), karinaTeam.getTeamId(), requestTime))
+            .isExactlyInstanceOf(BlockedException.class);
     }
 }

@@ -43,7 +43,7 @@ public class LogFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         // 요청이 Logging 제외 목록에 포함 되어있을 경우, 로그를 남기지 않고 요청 전송
-        if (LogExceptionPattern.isMatchedExceptionUrls(request.getRequestURI())) {
+        if (LogExcludeUtil.isMatchedExcludeUrls(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
