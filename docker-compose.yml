@@ -20,7 +20,7 @@ services:
     platform: linux/x86_64
 
   web:
-    image: 075584359222.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-dev-ecr
+    image: 634460857598.dkr.ecr.ap-northeast-2.amazonaws.com/wemeet-ecr
     container_name: web
     env_file: ./.env
     restart: always
